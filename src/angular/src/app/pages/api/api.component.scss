@@ -1,0 +1,145 @@
+// CONTENAIRS
+.content {
+    margin: 0.5em 1em 1.5em;
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+}
+
+// TITLES
+h2 {
+    font-weight: 200;
+    margin-left: 0.8em;
+}
+
+// apitab
+.box-apitab {
+    align-items: flex-end;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+button.apitab {
+    margin-left: 1em;
+    border-radius: 4px;
+}
+
+button.apitab:enabled {
+    background-color: #0096a3;
+    color: white;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+    transition: background-color 0.2s ease-in-out;
+}
+
+button.apitab:enabled:hover {
+    background-color: #007683;
+}
+
+// BUTTONS
+button {
+    border: none;
+    padding: 0.5em;
+}
+
+button:disabled {
+    background-color: #eee;
+    color: #aaa;
+    box-shadow: rgb(0 0 0 / 5%) 0px 0px 0px 1px;
+}
+
+// links
+.box-links {
+    align-items: stretch;
+    flex-direction: row;
+    display: flex;
+    justify-content: space-between;
+    margin: 0 2em;
+}
+
+button.links:enabled {
+    background-color: #84b035;
+    color: white;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+    transition: background-color 0.2s ease-in-out;
+}
+
+button.links:enabled:hover {
+    background-color: #649015;
+}
+
+// DISABLED INPUTES
+.ids {
+    display: flex;
+    flex-direction: column;
+    margin: 0.5em;
+}
+
+.box-ids {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.box-ids-input {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-around;
+}
+
+input.ids:read-only {
+    width: 100%;
+    border-radius: 2px;
+    text-align: center;
+    font: inherit;
+    font-weight: 200;
+    border: none;
+    padding: 0.3em;
+    border-radius: 60px;
+    background-color: transparent;
+    transition: all 1s ease-in-out;
+}
+
+input.ids:focus-visible {
+    outline: none;
+}
+
+input.ids.focused {
+    background-color: #555;
+    transition: all 0.2s ease-in-out;
+}
+
+label.ids {
+    margin: .2em .5em .2em 1em;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    letter-spacing: 0.1em;
+}
+
+button.copy-ids {
+    background-color: white;
+    transition: all 0.2s ease-in-out;
+    border-radius: 20px;
+    margin-left: 1em;
+}
+
+button.copy-ids:hover {
+    transition: all 0.2s ease-in-out;
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
+}
+
+button.copy-ids:active {
+    transition: all 0.2s ease-in-out;
+    box-shadow: inset rgba(0, 0, 0, 0.18) 0px 2px 4px;
+}
+
+button.copy-ids:hover img.copy-ids {
+    filter: invert(42%) sepia(93%) saturate(1352%) hue-rotate(40deg) brightness(90%) contrast(119%);
+    transition: filter 0.2s ease-in-out;
+}
+
+img.copy-ids {
+    height: 20px;
+}

@@ -1,0 +1,33 @@
+<button (click)="close()" class="close">CLOSE</button>
+<div class="container">
+    <div class="token-container" *ngFor="let token of tokens">
+        <div class="token">
+            <table>
+                <tr>
+                    <th>Key:</th>
+                    <td>
+                        <div>{{token.key}}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Creation Time:</th>
+                    <td>
+                        <div>{{(token.created_time * 1000)| date:'yyyy-MM-dd HH:mm:ss' }}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Last Used Time:</th>
+                    <td>
+                        <div *ngIf="token.last_used">{{(token.last_used * 1000)| date:'yyyy-MM-dd HH:mm:ss'}}</div>
+                        <div *ngIf="!token.last_used" style="color: #f44336;font-weight: 400;"> Never</div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="delete">
+            <button (click)="deleteToken(token.id)">
+                <img src="assets/delete.svg" alt="delete">
+            </button>
+        </div>
+    </div>
+</div>

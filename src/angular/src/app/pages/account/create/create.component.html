@@ -1,0 +1,15 @@
+<div class="content" *ngIf='token'>
+    <div class="box-token">
+        <label class="token" for="token">
+            NEW API TOKEN                
+        </label>
+        <div class="cloud">manage{{session.domain}}</div>
+        <div class=token-input>
+            <textarea class="token" type="text" readonly rows="3" [ngClass]="focused == 'token'? 'focused' : ''" id="token" #token_input>{{token.key}}</textarea>
+            <button class="copy-token" name="copy" (click)="copyToken(token_input)">
+                <img class="copy-token" src="assets/copy.svg" alt="copy">
+            </button>
+        </div>
+    </div>
+    <button (click)="close()" class="close">CLOSE</button>
+</div>

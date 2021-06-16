@@ -1,0 +1,108 @@
+// CONTENAIRS
+.content {
+    margin: 1em;
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+}
+
+.popup {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    height: 453px;
+    width: 375px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    visibility: visible;
+    opacity: 1;
+    transition: visibility 0.2s ease-in-out, opacity 0.2s ease-in-out;
+}
+
+.popup.white {
+    background: #fff;
+}
+
+.popup.transparent {
+    background: rgb(185 185 185 / 70%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.popup.hidden {
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0.2s ease-in-out, opacity 0.2s ease-in-out;
+}
+
+// clouds
+.box-cloud {
+    margin: 2.5em 1em;
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+    border: 1px solid #eee;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    border-radius: 2px;
+}
+
+.title-cloud-box {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    background-color: white;
+    border-radius: 2px;
+    margin-top: 0em;
+    transition: background-color 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.title-cloud-box:hover {
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+    background-color: #ddd;
+}
+
+.title-cloud {
+    color: black;
+    font-weight: 200;
+    margin: 0.2em;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.title-cloud img {
+    margin-left: 0.5em;
+    opacity: 0.5;
+    height: 1em;
+}
+
+.text-cloud {
+    margin: 1em auto 2em;
+    font-weight: 200;
+}
+
+.cloud {
+    width: 50%;
+    transition: background-color 0.2s ease-in-out;
+    background-color: #ddd;
+}
+
+.cloud:hover {
+    background-color: #bbb;
+}
+
+// BUTTONS
+button {
+    border: none;
+    padding: 0.5em;
+}
+
+button:disabled {
+    background-color: #eee;
+    color: #aaa;
+    box-shadow: rgb(0 0 0 / 5%) 0px 0px 0px 1px;
+}

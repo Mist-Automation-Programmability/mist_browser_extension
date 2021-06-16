@@ -1,0 +1,20 @@
+<div *ngFor="let session of sessions">
+    <div *ngIf="session.email" class="box-cloud">
+        <div>
+            <div class="title-cloud-box">
+                <h2 class="title-cloud" (click)="openTab('mistcom')">
+                    manage{{session.domain}}
+                    <img src="assets/open.svg" alt="open">
+                </h2>
+            </div>
+        </div>
+        <div class="text-cloud">Logged in as <b>{{session.email}}</b></div>
+        <div>
+            <button class="cloud" (click)="openManageTokens(session.domain)">Manage Tokens</button>
+            <button class="cloud" (click)="openCreateToken(session.domain)">Create New Token</button>
+        </div>
+    </div>
+</div>
+
+<app-account-manage [ngClass]="{hidden: manageTokens == ''}" class="popup white" [sessionEvent]="enventSession.asObservable()" (closeManageTokens)="closeManageTokens()" [enventManageTokens]="enventManageTokens.asObservable()"></app-account-manage>
+<app-account-create [ngClass]="{hidden: createToken == ''}" class="popup transparent" [sessionEvent]="enventSession.asObservable()" (closeCreateToken)="closeCreateToken()" [enventCreateToken]="enventCreateToken.asObservable()"></app-account-create>
