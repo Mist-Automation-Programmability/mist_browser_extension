@@ -25,3 +25,9 @@ Chrome extension to get easier access to Mist APIs and Mist API Tokens.
 <img src="._readme/img/accounts_create.png" width="40%">
 <img src="._readme/img/accounts_manage.png" width="40%">
 </div>
+
+
+# Installation
+This extension is not yet available on the [Chrome Web Store](https://chrome.google.com/), but it is possible to install it in Chromium / Chrome web browser. To do so:
+1. Go to the web browser Extensions Page: <a href="chrome://extensions" target="_blank">chrome://extensions</a> 
+2. Enable the **Developper Mode**
