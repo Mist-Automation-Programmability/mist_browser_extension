@@ -2,7 +2,7 @@
     <div *ngIf="session.email" class="box-cloud">
         <div>
             <div class="title-cloud-box">
-                <h2 class="title-cloud" (click)="openTab('mistcom')">
+                <h2 class="title-cloud" (click)="openTab(session.domain)">
                     manage{{session.domain}}
                     <img src="assets/open.svg" alt="open">
                 </h2>
