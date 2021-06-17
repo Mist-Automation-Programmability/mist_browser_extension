@@ -1,3 +1,4 @@
+These commands must be used inside the `src`folder.
 # Start in Live Mode
 * `npm start`
   * The project is automatically being watched/build
