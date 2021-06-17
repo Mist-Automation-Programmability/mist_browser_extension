@@ -35,3 +35,7 @@ This extension is not yet available on the [Chrome Web Store](https://chrome.goo
 4. Enable the **Developper Mode**
 5. Click **Load Unpacked** and select the unzipped folder
 6. The extension is ready to use!
+
+
+<img src="._readme/img/dev_mode.png" width="80%">
+<img src="._readme/img/load_unpacked.png" width="40%">
