@@ -28,10 +28,14 @@ Chrome extension to get easier access to Mist APIs and Mist API Tokens.
 
 
 # Installation
-This extension is not yet available on the [Chrome Web Store](https://chrome.google.com/), but it is possible to install it in Chromium / Chrome web browser. To do so:
+This extension is not yet available on the [Chrome Web Store](https://chrome.google.com/), but it is possible to install it in Chrome / Chromium (Edge, Brave, Sidekick, ...) web browsers. To do so:
 1. Download the [latest release](https://github.com/tmunzer/mist_chrome_extension/releases)
 2. Unzip the downloaded archive
 3. Go to the web browser Extensions Page: <a href="chrome://extensions" target="_blank">chrome://extensions</a> 
 4. Enable the **Developper Mode**
 5. Click **Load Unpacked** and select the unzipped folder
 6. The extension is ready to use!
+
+
+<img src="._readme/img/dev_mode.png" width="80%">
+<img src="._readme/img/load_unpacked.png" width="40%">
