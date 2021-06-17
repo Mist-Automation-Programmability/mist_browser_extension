@@ -11,7 +11,7 @@
     top: 50px;
     left: 0;
     height: 453px;
-    width: 375px;
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: stretch;
@@ -81,8 +81,16 @@
 }
 
 .text-cloud {
-    margin: 1em auto 2em;
+    margin: 0.2em auto;
     font-weight: 200;
+}
+
+.text-cloud.first {
+    margin-top: 1.5em;
+}
+
+.text-cloud.last {
+    margin-bottom: 2em;
 }
 
 .cloud {

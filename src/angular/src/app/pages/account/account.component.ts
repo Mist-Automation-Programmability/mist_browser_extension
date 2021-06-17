@@ -8,6 +8,7 @@ export interface SessionElement {
   csrftoken: string;
   email: string;
   has_sessionid: boolean;
+  expires_at: number;
 }
 
 @Component({
@@ -73,10 +74,12 @@ export class AccountComponent implements OnInit {
         if (i > -1) {
           if (cookie.name.startsWith("csrftoken")) this.sessions[i].csrftoken = cookie.value;
           else if (cookie.name.startsWith("sessionid")) this.sessions[i].has_sessionid = true;
+          // if the current cookie has a shorter lifetime than the previous one, use its expirationDate instead
+          if (this.sessions[i].expires_at > cookie.expirationDate) this.sessions[i].expires_at = cookie.expirationDate
           // otherwise, add a new entry in the list
         } else {
-          if (cookie.name.startsWith("csrftoken")) this.sessions.push({ domain: cookie.domain, email: null, csrftoken: cookie.value, has_sessionid: false });
-          else if (cookie.name.startsWith("sessionid")) this.sessions.push({ domain: cookie.domain, email: null, csrftoken: null, has_sessionid: true });
+          if (cookie.name.startsWith("csrftoken")) this.sessions.push({ domain: cookie.domain, email: null, csrftoken: cookie.value, has_sessionid: false, expires_at: cookie.expirationDate });
+          else if (cookie.name.startsWith("sessionid")) this.sessions.push({ domain: cookie.domain, email: null, csrftoken: null, has_sessionid: true, expires_at: cookie.expirationDate });
         }
       }
     }

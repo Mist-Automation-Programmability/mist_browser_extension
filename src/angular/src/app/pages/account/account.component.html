@@ -8,7 +8,8 @@
                 </h2>
             </div>
         </div>
-        <div class="text-cloud">Logged in as <b>{{session.email}}</b></div>
+        <div class="text-cloud first">Logged in as <b>{{session.email}}</b></div>
+        <div class="text-cloud last">Session expires at <b>{{(session.expires_at * 1000) | date:'yyyy-MM-dd HH:mm:ss' }}</b></div>
         <div>
             <button class="cloud" (click)="openManageTokens(session.domain)">Manage Tokens</button>
             <button class="cloud" (click)="openCreateToken(session.domain)">Create New Token</button>
