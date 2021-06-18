@@ -7,9 +7,10 @@ import { ApiComponent } from './pages/api/api.component';
 import { AccountComponent } from './pages/account/account.component';
 import { AccountManageComponent } from './pages/account/manage/manage.component';
 import { AccountCreateComponent } from './pages/account/create/create.component'
+import { DocComponent } from './pages/doc/doc.component'
 
 @NgModule({
-  declarations: [AppComponent, ApiComponent, AccountComponent, AccountManageComponent, AccountCreateComponent],
+  declarations: [AppComponent, ApiComponent, AccountComponent, AccountManageComponent, AccountCreateComponent, DocComponent],
   imports: [BrowserModule, AppRoutingModule, HttpClientModule],
   bootstrap: [AppComponent]
 })

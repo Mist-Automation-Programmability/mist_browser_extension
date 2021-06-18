@@ -9,6 +9,7 @@
 <div class="app-container">
     <app-api *ngIf="display=='api'"></app-api>
     <app-account *ngIf="display=='account'"></app-account>
+    <app-doc *ngIf="display=='doc'"></app-doc>
 </div>
 
 <div class="bottom">
@@ -19,5 +20,9 @@
     <button class="bottom" (click)="show('account')" [ngClass]="display == 'account'? 'selected' : ''">
         <img class="bottom" src="assets/account.svg" alt="api">
         <div class="bottom">Accounts</div>
+    </button>
+    <button class="bottom" (click)="show('doc')" [ngClass]="display == 'doc'? 'selected' : ''">
+        <img class="bottom" src="assets/help.svg" alt="api">
+        <div class="bottom">DOCUMENTATION</div>
     </button>
 </div>
