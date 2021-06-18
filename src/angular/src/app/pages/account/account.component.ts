@@ -45,6 +45,7 @@ export class AccountComponent implements OnInit {
 
 
   ngOnInit() {
+    //console.log(chrome.runtime.getManifest())
     //console.log(this.cookies)
     this.sessions = [];
     chrome.cookies.getAll({}, (cookies) => {
