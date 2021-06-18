@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "Mist Extension",
     "short_name": "mist-chrome-extension",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "description": "Chrome Extension for Mist Developpers to provide easier access to Mist APIs",
     "icons": {
         "16": "assets/icon16.png",
