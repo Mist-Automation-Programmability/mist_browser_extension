@@ -77,10 +77,15 @@ export class ApiComponent implements OnInit {
   }
   forgeSiteStats(groups: { [key: string]: string; }, obj: string, extra_param: string): string {
     let url = "";
+    this.obj_name = obj.substr(0, obj.length - 1).toUpperCase();
     if (groups.detail && groups.detail != "new") {
       this.obj_id = groups.uuid_1;
       this.site_id = groups.uuid_2;
       url = "https://api." + groups.host + "/api/v1/sites/" + groups.uuid_2 + "/stats/" + obj + "/" + groups.uuid_1;
+    } else {
+      this.site_id = groups.uuid_1;
+      url = "https://api." + groups.host + "/api/v1/sites/" + groups.uuid_1 + "/stats/" + obj;
+      if (extra_param) url += "?" + extra_param
     }
     return url;
   }
@@ -90,10 +95,9 @@ export class ApiComponent implements OnInit {
     this.api_url_stats_obj = "";
     const re = /https:\/\/manage\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/?(?<detail>detail|template|site|rfTemplate|admin|edgedetail|clusterdetail|new)?\/?([0-9])*?\/?(?<uuid_1>[0-9a-f-]*)?\/?(?<uuid_2>[0-9a-f-]*)?/gi;
     let res = re.exec(this.tabUrl);
-    console.log(res)
     if (res) {
       this.org_id = res.groups.org_id;
-      if (res.groups.host && res.groups.org_id && res.groups.obj) {
+      if (res.groups.host && res.groups.org_id && res.groups.obj) {        
         switch (res.groups.obj.toLowerCase()) {
           // SITE
           case "ap":
