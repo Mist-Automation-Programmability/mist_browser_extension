@@ -39,9 +39,11 @@ This extension is not yet available on the [Chrome Web Store](https://chrome.goo
 2. Unzip the downloaded archive
 3. Go to the web browser Extensions Page: <a href="chrome://extensions" target="_blank">chrome://extensions</a> 
 4. Enable the **Developper Mode**
+
+<img src="._readme/img/dev_mode.png" width="80%">
 5. Click **Load Unpacked** and select the unzipped folder
+
+<img src="._readme/img/load_unpacked.png" width="40%">
 6. The extension is ready to use!
 
 
-<img src="._readme/img/dev_mode.png" width="80%">
-<img src="._readme/img/load_unpacked.png" width="40%">
