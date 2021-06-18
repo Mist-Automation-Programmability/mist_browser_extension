@@ -16,6 +16,10 @@
         </div>
     </div>
 </div>
+<div *ngIf="sessions.length == 0" class="no-account">
+    <div>Sorry, I'm not able to find any Mist Session in this browser...</div>
+    <div>Please log in to your Mist Dashobard first.</div>
+</div>
 
 <app-account-manage [ngClass]="{hidden: manageTokens == ''}" class="popup white" [sessionEvent]="enventSession.asObservable()" (closeManageTokens)="closeManageTokens()" [enventManageTokens]="enventManageTokens.asObservable()"></app-account-manage>
 <app-account-create [ngClass]="{hidden: createToken == ''}" class="popup transparent" [sessionEvent]="enventSession.asObservable()" (closeCreateToken)="closeCreateToken()" [enventCreateToken]="enventCreateToken.asObservable()"></app-account-create>

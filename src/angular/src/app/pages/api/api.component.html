@@ -8,7 +8,8 @@
 <div class="content grow">
     <h2>Page Info</h2>
     <div *ngIf="!org_id" class="not_mist">
-        Information only available on Mist Cloud pages...
+        <div>Sorry, this website does not look like a Mist Dashboard...</div>
+        <div>If you think I'm wrong, please send me an email with the current URL.</div>
     </div>
     <div *ngIf="org_id">
         <div class="box-ids" *ngIf="org_id">

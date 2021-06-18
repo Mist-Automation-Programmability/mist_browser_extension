@@ -6,6 +6,17 @@
     flex-direction: column;
 }
 
+.no-account {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 1em;
+    text-align: center;
+    font-weight: 200;
+    height: 100%;
+}
+
 .popup {
     position: absolute;
     top: 50px;

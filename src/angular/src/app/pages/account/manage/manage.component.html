@@ -1,5 +1,9 @@
 <button (click)="close()" class="close">CLOSE</button>
 <div class="container">
+    <div *ngIF="tokens.length == 0">
+        <div>This account doesn't have any API Token yet...</div>
+        <div>You can go back and create a new API Token directly from this extension!</div>
+    </div>
     <div class="token-container" *ngFor="let token of tokens">
         <div class="token">
             <table>
