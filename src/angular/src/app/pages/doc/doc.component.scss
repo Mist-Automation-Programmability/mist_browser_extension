@@ -23,7 +23,10 @@ h2 {
 // BUTTONS
 button {
     border: none;
-    padding: 0.5em;
+    padding: .5em;
+    width: 80%;
+    margin: 1em;
+    height: 3em;
 }
 
 button:disabled {
@@ -34,10 +37,10 @@ button:disabled {
 
 // links
 .box-links {
-    align-items: stretch;
-    flex-direction: row;
+    align-items: center;
+    flex-direction: column;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     margin: 0 2em;
 }
 
