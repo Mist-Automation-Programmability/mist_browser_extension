@@ -32,6 +32,13 @@ app-account {
     justify-content: flex-start;
 }
 
+app-about {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+}
+
 //
 .app-container {
     height: 450px;

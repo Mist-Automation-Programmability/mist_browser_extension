@@ -4,3 +4,19 @@ body {
     width: 350px !important;
     margin: 0 !important;
 }
+
+button:hover {
+    transition: all 0.2s ease-in-out;
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px !important;
+}
+
+button:active {
+    transition: all 0.2s ease-in-out;
+    box-shadow: inset rgba(0, 0, 0, 0.18) 0px 2px 4px !important;
+}
+
+img.icon-open {
+    height: 1.2em;
+    filter: invert(1);
+    margin-left: 1em;
+}

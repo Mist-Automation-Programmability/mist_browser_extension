@@ -34,7 +34,7 @@ textarea.token:read-only {
     font: inherit;
     font-weight: 200;
     border: none;
-    padding: 1em 2em;
+    padding: 1em 1em;
     margin: 1em 0;
     border-radius: 6px;
     background-color: transparent;
@@ -62,16 +62,6 @@ button.copy-token {
     background-color: white;
     transition: all 0.2s ease-in-out;
     margin: 1em 0;
-}
-
-button.copy-token:hover {
-    transition: all 0.2s ease-in-out;
-    box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
-}
-
-button.copy-token:active {
-    transition: all 0.2s ease-in-out;
-    box-shadow: inset rgba(0, 0, 0, 0.18) 0px 2px 4px;
 }
 
 button.copy-token:hover img.copy-token {
