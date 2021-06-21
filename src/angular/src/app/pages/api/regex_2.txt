@@ -1,0 +1,13 @@
+https:\/\/manage\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/insights\/(?<obj>[a-z]+)\/(?<uuid_1>[a-z0-9-]+)\/(?<period>[a-z0-9]+)\/(?<start>[0-9])*\/(?<stop>[0-9])*\/(?<uuid_2>[0-9a-f-]*)$
+
+
+https://manage.mist.com/admin/?org_id=xxxxxxxx-xxxx-xxxx-0001-xxxxxxxxxxxx#!dashboard/insights/site/xxxxxxxx-xxxx-xxxx-0002-xxxxxxxxxxxx/customRange/1623621600/1624266000/xxxxxxxx-xxxx-xxxx-0002-xxxxxxxxxxxx
+https://manage.mist.com/admin/?org_id=xxxxxxxx-xxxx-xxxx-0001-xxxxxxxxxxxx#!dashboard/insights/device/00000000-0000-0000-1000-5c5b35f1b6b8/customRange/1623621600/1624266000/xxxxxxxx-xxxx-xxxx-0002-xxxxxxxxxxxx
+
+https://manage.mist.com/admin/?org_id=xxxxxxxx-xxxx-xxxx-0001-xxxxxxxxxxxx#!dashboard/insights/client/102c6bf3fdbe/today/1624140000/1624216520/xxxxxxxx-xxxx-xxxx-0002-xxxxxxxxxxxx
+
+https://manage.mist.com/admin/?org_id=xxxxxxxx-xxxx-xxxx-0001-xxxxxxxxxxxx#!dashboard/insights/juniperSwitch/00000000-0000-0000-1000-2c21311c37b0/24h/1624176000/1624262412/xxxxxxxx-xxxx-xxxx-0002-xxxxxxxxxxxx
+https://manage.mist.com/admin/?org_id=xxxxxxxx-xxxx-xxxx-0001-xxxxxxxxxxxx#!dashboard/insights/juniperGateway/00000000-0000-0000-1000-9ccc83b1f480/customRange/1623621600/1624266000/xxxxxxxx-xxxx-xxxx-0002-xxxxxxxxxxxx
+https://manage.mist.com/admin/?org_id=xxxxxxxx-xxxx-xxxx-0001-xxxxxxxxxxxx#!dashboard/insights/wiredClient/5c5b3550bd2e/24h/1624176000/1624262412/xxxxxxxx-xxxx-xxxx-0002-xxxxxxxxxxxx
+
+https://manage.mist.com/admin/?org_id=xxxxxxxx-xxxx-xxxx-0001-xxxxxxxxxxxx#!dashboard/insights/edge/00000000-0000-0000-1000-82fc6cfdea1a/customRange/1623621600/1624266000/xxxxxxxx-xxxx-xxxx-0002-xxxxxxxxxxxx
