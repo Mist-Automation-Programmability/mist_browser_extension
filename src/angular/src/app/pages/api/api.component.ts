@@ -294,9 +294,9 @@ export class ApiComponent implements OnInit {
         case "switch":
         case "gateway":
           this.obj_name = res.groups.obj;
-          this.forgeSiteObject("devices", res.groups.host, res.groups.detail, res.groups.uuid_1, res.groups.uuid_2, "type=" + res.groups.obj);
-          this.forgeSiteObjectStats("devices", res.groups.host, res.groups.detail, res.groups.uuid_1, res.groups.uuid_2, "type=" + res.groups.obj);
-          this.forgeSiteObjectEvents("devices", res.groups.host, res.groups.detail, res.groups.uuid_1, res.groups.uuid_2, "type=" + res.groups.obj);
+          this.forgeSiteObject("devices", res.groups.host, res.groups.detail, res.groups.uuid_1, res.groups.uuid_2);
+          this.forgeSiteObjectStats("devices", res.groups.host, res.groups.detail, res.groups.uuid_1, res.groups.uuid_2);
+          this.forgeSiteObjectEvents("devices", res.groups.host, res.groups.detail, res.groups.uuid_1, res.groups.uuid_2);
           break;
         case "assets":
           this.obj_name = res.groups.obj.substr(0, res.groups.obj.length - 1);
