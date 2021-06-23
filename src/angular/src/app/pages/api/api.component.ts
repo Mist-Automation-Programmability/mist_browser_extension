@@ -458,8 +458,8 @@ export class ApiComponent implements OnInit {
   // API URL ENTRYPOINT
   
   generateApiUrl() {
-    const insights_re = /https:\/\/manage\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/insights\/(?<obj>[a-z]+)?\/?(?<uuid_1>[a-z0-9-]+)\/?(?<period>[a-z0-9]+)?\/?(?<start>[0-9]*)?\/?(?<stop>[0-9]*)?\/?(?<uuid_2>[0-9a-f-]*)?/iys;
-    const common_re = /https:\/\/manage\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/?(?<detail>detail|template|site|rfTemplate|admin|edgedetail|clusterdetail|new)?\/?([0-9])*?\/?(?<uuid_1>[0-9a-f-]*)?\/?(?<uuid_2>[0-9a-f-]*)?/iys;
+    const insights_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/insights\/(?<obj>[a-z]+)?\/?(?<uuid_1>[a-z0-9-]+)\/?(?<period>[a-z0-9]+)?\/?(?<start>[0-9]*)?\/?(?<stop>[0-9]*)?\/?(?<uuid_2>[0-9a-f-]*)?/iys;
+    const common_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/?(?<detail>detail|template|site|rfTemplate|admin|edgedetail|clusterdetail|new)?\/?([0-9])*?\/?(?<uuid_1>[0-9a-f-]*)?\/?(?<uuid_2>[0-9a-f-]*)?/iys;
 
     const insights = insights_re.exec(this.tabUrl)
     const common = common_re.exec(this.tabUrl)
