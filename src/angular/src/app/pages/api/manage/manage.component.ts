@@ -27,7 +27,7 @@ export class ApiManageComponent implements OnInit {
 
   constructor(
     @Inject(TAB_URL) readonly tabUrl: string,
-    private _cd: ChangeDetectorRef,
+    private _cd: ChangeDetectorRef
   ) { }
 
 
@@ -51,174 +51,178 @@ export class ApiManageComponent implements OnInit {
 
   ////////////////////// MAC 
   getMac(uuid: string): string {
-    const splitted_uuid = uuid.split("-")
-    return splitted_uuid[splitted_uuid.length - 1]
+
+    const splitted_uuid = uuid.split("-");
+    return splitted_uuid[splitted_uuid.length - 1];
+  }
+
+  setName(obj_name: string, detail: string) {
+    if (detail && detail != "new") {
+      this.obj_name = obj_name
+    } else {
+      if (["switch"].includes(obj_name)) {
+        this.obj_name = "switches";
+      } else {
+        this.obj_name = obj_name + "s";
+      }
+    }
   }
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// COMMON ORG FUNCTIONS
-  forgeOrgObject(obj_name: string, host: string, detail: string, org_id: string, uuid_1: string = null, extra_param: string = null): void {
+  forgeOrgObject(obj_name: string, host: string, detail: string, extra_param: string = null): void {
     let url = "";
     if (detail && detail != "new") {
-      // set IDS
-      this.obj_id = uuid_1;
       // set QUICK LINK
-      url = "https://api." + host + "/api/v1/orgs/" + org_id + "/" + obj_name + "/" + uuid_1;
-      this.quick_links.push({ url: url, name: this.obj_name })
+      url = "https://api." + host + "/api/v1/orgs/" + this.org_id + "/" + obj_name + "/" + this.obj_id;
+      this.quick_links.push({ url: url, name: this.obj_name });
     } else {
       // set QUICK LINK
-      url = "https://api." + host + "/api/v1/orgs/" + org_id + "/" + obj_name;
-      if (extra_param) url += "?" + extra_param
-      if (this.obj_name == "switch") {
-        this.obj_name = "switches"
-      } else {
-        this.obj_name += "s"
-      }
-      this.quick_links.push({ url: url, name: this.obj_name })
+      url = "https://api." + host + "/api/v1/orgs/" + this.org_id + "/" + obj_name;
+      if (extra_param) url += "?" + extra_param;
+      this.quick_links.push({ url: url, name: this.obj_name });
     }
   }
 
-  forgeOrgObjectStats(obj_name: string, host: string, detail: string, org_id: string, uuid_1: string = null, extra_param: string = null): void {
+  forgeOrgObjectStats(obj_name: string, host: string, detail: string, extra_param: string = null): void {
     let url = "";
     if (detail && detail != "new") {
-      // set IDS
-      this.obj_id = uuid_1;
       // set QUICK LINK
-      url = "https://api." + host + "/api/v1/orgs/" + org_id + "/stats/" + obj_name + "/" + uuid_1;
-      if (extra_param) url += "?" + extra_param
-      this.quick_links.push({ url: url, name: this.obj_name + " STATS" })
+      url = "https://api." + host + "/api/v1/orgs/" + this.org_id + "/stats/" + obj_name + "/" + this.obj_id;
+      if (extra_param) url += "?" + extra_param;
+      this.quick_links.push({ url: url, name: this.obj_name + " STATS" });
     }
   }
 
 
-  forgeOrgObjectEvents(obj_name: string, host: string, detail: string, org_id: string, uuid_1: string = null, extra_param: string = null): void {
+  forgeOrgObjectEvents(obj_name: string, host: string, detail: string, extra_param: string = null): void {
     let url = "";
     if (detail && detail != "new") {
       // MAC
-      const mac = this.getMac(uuid_1);
+      const mac = this.getMac(this.obj_id);
       // set QUICK LINK
-      url = "https://api." + host + "/api/v1/orgs/" + org_id + "/" + obj_name + "/events/search?limit=1000&mac=" + mac;
+      url = "https://api." + host + "/api/v1/orgs/" + this.org_id + "/" + obj_name + "/events/search?limit=1000&mac=" + mac;
       if (!extra_param) {
-        url += "&duration=1d"
+        url += "&duration=1d";
       } else {
-        url += "&" + extra_param
+        url += "&" + extra_param;
       }
-      this.quick_links.push({ url: url, name: this.obj_name + " EVENTS" })
+      this.quick_links.push({ url: url, name: this.obj_name + " EVENTS" });
     } else {
-      url = "https://api." + host + "/api/v1/orgs/" + org_id + "/" + obj_name + "/events/search?limit=1000&device_type=" + obj_name;
+      url = "https://api." + host + "/api/v1/orgs/" + this.org_id + "/" + obj_name + "/events/search?limit=1000&device_type=" + obj_name;
       if (!extra_param) {
-        url += "&duration=1d"
+        url += "&duration=1d";
       } else {
-        url += "&" + extra_param
+        url += "&" + extra_param;
       }
-      this.quick_links.push({ url: url, name: this.obj_name + " EVENTS" })
+      this.quick_links.push({ url: url, name: this.obj_name + " EVENTS" });
     }
   }
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// COMMON SITE FUNCTIONS
-  forgeSiteObject(obj_name: string, host: string, detail: string, uuid_1: string, uuid_2: string = null, extra_param: string = null): void {
+  forgeSiteObject(obj_name: string, host: string, detail: string, extra_param: string = null): void {
     let url = "";
     if (detail && detail != "new") {
-      // set IDS
-      this.obj_id = uuid_1;
-      this.site_id = uuid_2;
       // set QUICK LINK
-      url = "https://api." + host + "/api/v1/sites/" + uuid_2 + "/" + obj_name + "/" + uuid_1;
-      this.quick_links.push({ url: url, name: this.obj_name })
-      if (this.obj_name == "switch") {
-        this.quick_links.push({ url: url + "/config_cmd", name: this.obj_name + " CMDS" })
+      url = "https://api." + host + "/api/v1/sites/" + this.site_id + "/" + obj_name + "/" + this.obj_id;
+      this.quick_links.push({ url: url, name: this.obj_name });
+      if (["switch", "gateway"].includes(this.obj_name)) {
+        this.quick_links.push({ url: url + "/config_cmd", name: this.obj_name + " CMDS" });
       }
     } else {
-      // set IDS
-      this.site_id = uuid_1;
       // set QUICK LINK
-      url = "https://api." + host + "/api/v1/sites/" + uuid_1 + "/" + obj_name;
-      if (extra_param) url += "?" + extra_param
-      if (this.obj_name == "switch") {
-        this.obj_name = "switches"
-      } else {
-        this.obj_name += "s"
-      }
-      this.quick_links.push({ url: url, name: this.obj_name })
+      url = "https://api." + host + "/api/v1/sites/" + this.site_id + "/" + obj_name;
+      if (extra_param) url += "?" + extra_param;
+      this.quick_links.push({ url: url, name: this.obj_name });
     }
   }
 
-  forgeSiteObjectStats(obj_name: string, host: string, detail: string, uuid_1: string, uuid_2: string = null, extra_param: string = null): void {
+  forgeSiteObjectSearch(obj_name: string, host: string, detail: string, extra_param: string = null): void {
     let url = "";
     if (detail && detail != "new") {
-      // set IDS
-      this.obj_id = uuid_1;
-      this.site_id = uuid_2;
       // set QUICK LINK
-      url = "https://api." + host + "/api/v1/sites/" + uuid_2 + "/stats/" + obj_name + "/" + uuid_1;
-      if (extra_param) url += "?" + extra_param
-      this.quick_links.push({ url: url, name: this.obj_name + " STATS" })
+      url = "https://api." + host + "/api/v1/sites/" + this.site_id + "/" + obj_name + "/search?mac=" + this.obj_id;
+      this.quick_links.push({ url: url, name: this.obj_name });
     } else {
-      // set IDS
-      this.site_id = uuid_1;
       // set QUICK LINK
-      url = "https://api." + host + "/api/v1/sites/" + uuid_1 + "/stats/" + obj_name;
-      if (extra_param) url += "?" + extra_param
-      this.quick_links.push({ url: url, name: this.obj_name + " STATS" })
+      url = "https://api." + host + "/api/v1/sites/" + this.site_id + "/" + obj_name + "/search";
+      if (extra_param) url += "?" + extra_param;
+      this.quick_links.push({ url: url, name: this.obj_name });
     }
   }
 
-  forgeSiteObjectEvents(obj_name: string, host: string, detail: string, uuid_1: string, uuid_2: string = null, extra_param: string = null): void {
+  forgeSiteObjectStats(obj_name: string, host: string, detail: string, extra_param: string = null): void {
+    let url = "";
+    if (detail && detail != "new") {
+      // set QUICK LINK
+      url = "https://api." + host + "/api/v1/sites/" + this.site_id + "/stats/" + obj_name + "/" + this.obj_id;
+      if (extra_param) url += "?" + extra_param;
+      this.quick_links.push({ url: url, name: this.obj_name + " STATS" });
+    } else {
+      // set QUICK LINK
+      url = "https://api." + host + "/api/v1/sites/" + this.site_id + "/stats/" + obj_name;
+      if (extra_param) url += "?" + extra_param;
+      this.quick_links.push({ url: url, name: this.obj_name + " STATS" });
+    }
+  }
+
+  forgeSiteObjectEvents(obj_name: string, device_type: string, host: string, detail: string, extra_param: string = null): void {
     let url = "";
     if (detail && detail != "new") {
       // MAC
-      const mac = this.getMac(uuid_1);
+      const mac = this.getMac(this.obj_id);
       // set QUICK LINK
-      url = "https://api." + host + "/api/v1/sites/" + uuid_2 + "/" + obj_name + "/events/search?limit=1000&mac=" + mac;
+      url = "https://api." + host + "/api/v1/sites/" + this.site_id + "/" + obj_name + "/events/search?limit=1000&mac=" + mac;
       if (!extra_param) {
-        url += "&duration=1d"
+        url += "&duration=1d";
       } else {
-        url += "&" + extra_param
+        url += "&" + extra_param;
       }
       this.quick_links.push({ url: url, name: this.obj_name + " EVENTS" })
     } else {
-      url = "https://api." + host + "/api/v1/sites/" + uuid_1 + "/" + obj_name + "/events/search?limit=1000&device_type=" + obj_name;
-      if (!extra_param) {
-        url += "&duration=1d"
-      } else {
-        url += "&" + extra_param
+      url = "https://api." + host + "/api/v1/sites/" + this.site_id + "/" + obj_name + "/events/search?limit=1000";
+      if (device_type) {
+        url += "&device_type=" + device_type;
       }
-      this.quick_links.push({ url: url, name: this.obj_name + " EVENTS" })
+      if (!extra_param) {
+        url += "&duration=1d";
+      } else {
+        url += "&" + extra_param;
+      }
+      this.quick_links.push({ url: url, name: this.obj_name + " EVENTS" });
     }
   }
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// SITE SECURITY FUNCTION
-  forgeSiteSecurity(host: string, uuid_1: string): void {
-    this.site_id = uuid_1;
+  forgeSiteSecurity(host: string): void {
     this.quick_links.push({
-      url: "https://api." + host + "/api/v1/sites/" + uuid_1 + "/rogues/events/search?limit=100&duration=1d",
+      url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/rogues/events/search?limit=100&duration=1d",
       name: "rogues events"
     }, {
-      url: "https://api." + host + "/api/v1/sites/" + uuid_1 + "/insights/rogues?limit=100&duration=1d&type=honeypot",
+      url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/insights/rogues?limit=100&duration=1d&type=honeypot",
       name: "honeypot aps"
     }, {
-      url: "https://api." + host + "/api/v1/sites/" + uuid_1 + "/insights/rogues?limit=100&duration=1d&type=rogue",
+      url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/insights/rogues?limit=100&duration=1d&type=rogue",
       name: "rogues aps"
     }, {
-      url: "https://api." + host + "/api/v1/sites/" + uuid_1 + "/insights/rogues?limit=100&duration=1d&type=spoof",
+      url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/insights/rogues?limit=100&duration=1d&type=spoof",
       name: "spoof aps"
     }, {
-      url: "https://api." + host + "/api/v1/sites/" + uuid_1 + "/insights/rogues?limit=100&duration=1d&type=others",
+      url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/insights/rogues?limit=100&duration=1d&type=others",
       name: "others aps"
     }, {
-      url: "https://api." + host + "/api/v1/sites/" + uuid_1 + "/insights/rogues/clients?limit=100&duration=1d",
+      url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/insights/rogues/clients?limit=100&duration=1d",
       name: "rogues clients"
     })
   }
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// SITE SWITCH CONF FUNCTION
-  forgeSiteSwitchConfig(host: string, uuid_1: string): void {
-    this.site_id = uuid_1;
+  forgeSiteSwitchConfig(host: string): void {
     this.quick_links.push({
-      url: "https://api." + host + "/api/v1/sites/" + uuid_1 + "/setting/derived",
+      url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/setting/derived",
       name: "switchconfig"
     })
   }
@@ -236,41 +240,68 @@ export class ApiManageComponent implements OnInit {
   }
 
   ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////// SITE ASSETS FUNCTION
+
+  forgeAsset(host: string, mac: string): void {
+    this.quick_links.push({
+      url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/zones/visits/search?duration=1d&interval=3600&user_type=asset&scope=zone&user=" + mac,
+      name: "asset zones visits"
+    })
+  }
+
+  forgeSiteAssetStats(obj_name: string, host: string, detail: string, extra_param: string = null): void {
+    let url = "";
+    if (detail && detail != "new") {
+      // set QUICK LINK
+      url = "https://api." + host + "/api/v1/sites/" + this.site_id + "/stats/" + obj_name + "/" + this.obj_id;
+      if (extra_param) url += "?" + extra_param;
+      this.quick_links.push({ url: url, name: this.obj_name + " STATS" });
+    } else {
+      // set QUICK LINK
+      url = "https://api." + host + "/api/v1/sites/" + this.site_id + "/stats/assets";
+      if (extra_param) url += "?" + extra_param;
+      this.quick_links.push({ url: url, name: "ASSETS STATS" });
+
+      url = "https://api." + host + "/api/v1/sites/" + this.site_id + "/stats/discovered_assets";
+      if (extra_param) url += "?" + extra_param;
+      this.quick_links.push({ url: url, name: "DISCOVERED ASSETS STATS" });
+    }
+  }
+  ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// SITE OBJ FUNCTION
-  forgeSite(host: string, uuid_1: string, extra_params: string = null): void {
-    this.site_id = uuid_1;
+  forgeSite(host: string, extra_params: string = null): void {
     this.obj_name = "site"
     if (extra_params) {
-      extra_params = "?"+extra_params;
+      extra_params = "?" + extra_params;
     } else {
       extra_params = "";
     }
     this.quick_links.push({
-      url: "https://api." + host + "/api/v1/sites/" + uuid_1,
+      url: "https://api." + host + "/api/v1/sites/" + this.site_id,
       name: "site info"
     }, {
-      url: "https://api." + host + "/api/v1/sites/" + uuid_1 + "/setting",
+      url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/setting",
       name: "site setting"
     }, {
-      url: "https://api." + host + "/api/v1/sites/" + uuid_1 + "/stats" + extra_params,
+      url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/stats" + extra_params,
       name: "site stats"
     }, {
-      url: "https://api." + host + "/api/v1/sites/" + uuid_1 + "/devices/events/search" + extra_params,
+      url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/devices/events/search" + extra_params,
       name: "site devices events"
     })
   }
 
   ////////////////////////////////////////////////////////////////////////////////////
-  ////////////////////// MIST EDGEFUNCTION
-  forgeEdge(host: string, detail: string, uuid_1: string): void {
+  ////////////////////// MIST EDGE FUNCTION
+  forgeEdge(host: string, detail: string): void {
     if (detail == "edgedetail") {
       this.obj_name = "mxedge";
-      this.forgeOrgObject("mxedges", host, detail, this.org_id, uuid_1);
-      this.forgeOrgObjectStats("mxedges", host, detail, this.org_id, uuid_1);
-      this.forgeSiteObjectEvents("mxedges", host, detail, this.org_id, uuid_1);
+      this.forgeOrgObject("mxedges", host, detail);
+      this.forgeOrgObjectStats("mxedges", host, detail);
+      this.forgeSiteObjectEvents("mxedges", "mxedge", host, detail);
     } else if (detail == "clusterdetail") {
       this.obj_name = "mxcluster";
-      this.forgeOrgObject("mxclusters", host, detail, this.org_id, uuid_1);
+      this.forgeOrgObject("mxclusters", host, detail);
     } else {
       this.quick_links.push({
         url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/mxedges",
@@ -283,114 +314,163 @@ export class ApiManageComponent implements OnInit {
   }
 
   ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////// DISCOVERED SWITCHES FUNCTION
+  forgeSiteDiscoveredSwitchUrl(host: string, mac: string = null): void {
+    if (mac) {
+      this.quick_links.push({
+        url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/stats/discovered_switches/search?system_name=" + mac,
+        name: "discovered switch"
+      })
+    } else if (!this.obj_id) {
+      this.quick_links.push({
+        url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/stats/discovered_switches/search",
+        name: "discovered switches"
+      })
+    }
+  }
+  ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// COMMON URL FUNCTION DISPATCHER
   commonUrl(res: RegExpExecArray): void {
     this.org_id = res.groups.org_id;
+    let extra_params = null
+    const uuid_re = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/
+    console.log(res.groups)
     if (res.groups.host && res.groups.org_id && res.groups.obj) {
+      this.obj_id = res.groups.obj_id;
+      this.site_id = res.groups.site_id;
       switch (res.groups.obj.toLowerCase()) {
         // SITE
         case "ap":
-        case "switch":
         case "gateway":
-          this.obj_name = res.groups.obj;
-          this.forgeSiteObject("devices", res.groups.host, res.groups.detail, res.groups.uuid_1, res.groups.uuid_2);
-          this.forgeSiteObjectStats("devices", res.groups.host, res.groups.detail, res.groups.uuid_1, res.groups.uuid_2);
-          this.forgeSiteObjectEvents("devices", res.groups.host, res.groups.detail, res.groups.uuid_1, res.groups.uuid_2);
+          this.setName(res.groups.obj, res.groups.detail);
+          if (!res.groups.details) extra_params = "type=" + res.groups.obj;
+          this.forgeSiteObject("devices", res.groups.host, res.groups.detail, extra_params);
+          this.forgeSiteObjectStats("devices", res.groups.host, res.groups.detail, extra_params);
+          this.forgeSiteObjectEvents("devices", res.groups.obj, res.groups.host, res.groups.detail);
+          break;
+        case "switch":
+          const is_uuid = uuid_re.test(this.obj_id)
+          if (this.obj_id && !is_uuid) {
+            this.obj_name = "discoveredswitch";
+            this.setName("discoveredswitch", "detail");
+            this.forgeSiteDiscoveredSwitchUrl(res.groups.host, this.obj_id);
+          } else {
+            this.setName(res.groups.obj, res.groups.detail);
+            if (!res.groups.details) extra_params = "type=" + res.groups.obj;
+            this.forgeSiteObject("devices", res.groups.host, res.groups.detail, extra_params);
+            this.forgeSiteObjectStats("devices", res.groups.host, res.groups.detail, extra_params);
+            this.forgeSiteObjectEvents("devices", res.groups.obj, res.groups.host, res.groups.detail);
+            this.forgeSiteDiscoveredSwitchUrl(res.groups.host);
+          }
           break;
         case "assets":
-          this.obj_name = res.groups.obj.substr(0, res.groups.obj.length - 1);
-          this.forgeSiteObject(res.groups.obj, res.groups.host, res.groups.detail, res.groups.uuid_1, res.groups.uuid_2);
-          this.forgeSiteObjectStats(res.groups.obj, res.groups.host, res.groups.detail, res.groups.uuid_1, res.groups.uuid_2);
+          // need to retrieve the asset ID to generate the detail request
+          if (!res.groups.detail) {
+            this.setName(res.groups.obj.substr(0, res.groups.obj.length - 1), res.groups.detail);
+            this.forgeSiteObject(res.groups.obj, res.groups.host, res.groups.detail);
+            this.forgeSiteAssetStats(res.groups.obj, res.groups.host, res.groups.detail);
+          } else {
+            this.forgeAsset(res.groups.host, this.org_id)
+          }
           break;
         case "wlan":
-          this.obj_name = res.groups.obj;
-          this.forgeSiteObject("wlans", res.groups.host, res.groups.detail, res.groups.uuid_1, res.groups.uuid_2);
+          this.setName(res.groups.obj, res.groups.detail);
+          this.forgeSiteObject("wlans", res.groups.host, res.groups.detail);
           break;
         case "tags":
-          this.obj_name = "wxtag";
-          this.forgeSiteObject("wxtags", res.groups.host, res.groups.detail, res.groups.uuid_1, res.groups.uuid_2);
+          this.setName("wxtag", res.groups.detail);
+          this.forgeSiteObject("wxtags", res.groups.host, res.groups.detail);
           break;
         case "psk":
-          this.obj_name = res.groups.obj;
-          this.forgeSiteObject("psks", res.groups.host, res.groups.detail, res.groups.uuid_1, res.groups.uuid_2);
+          this.setName(res.groups.obj, res.groups.detail);
+          this.forgeSiteObject("psks", res.groups.host, res.groups.detail);
           break;
         // case "siteedge":
         //   this.forgeSiteObject(res.groups, "mxedges", null);
         //    this.forgeSiteObjectStats(res.groups, "mxedges", null);
         //   break;
         case "tunnels":
-          this.obj_name = "wxtunnel";
-          this.forgeSiteObject("wxtunnels", res.groups.host, res.groups.detail, res.groups.uuid_1, res.groups.uuid_2);
-          this.forgeSiteObjectStats("wxtunnels", res.groups.host, res.groups.detail, res.groups.uuid_1, res.groups.uuid_2);
+          this.setName("wxtunnel", res.groups.detail);
+          this.forgeSiteObject("wxtunnels", res.groups.host, res.groups.detail);
+          this.forgeSiteObjectStats("wxtunnels", res.groups.host, res.groups.detail);
           break;
         case "clients":
         case "sdkclients":
-          this.obj_name = res.groups.obj.substr(0, res.groups.obj.length - 1);
-          this.forgeSiteObjectStats(res.groups.obj, res.groups.host, res.groups.detail, res.groups.uuid_1, res.groups.uuid_2);
+          this.setName(res.groups.obj.substr(0, res.groups.obj.length - 1), res.groups.detail);
+          this.forgeSiteObjectSearch(res.groups.obj, res.groups.host, res.groups.detail);
+          this.forgeSiteObjectStats(res.groups.obj, res.groups.host, res.groups.detail);
+          break;
+        case "wiredclients":
+          this.setName(res.groups.obj.substr(0, res.groups.obj.length - 1), res.groups.detail);
+          this.forgeSiteObjectSearch("wired_clients", res.groups.host, res.groups.detail);
           break;
         case "wxlan":
-          this.obj_name = "wxrule";
-          this.forgeSiteObject("wxrules", res.groups.host, res.groups.detail, res.groups.uuid_1, res.groups.uuid_2);
-          this.forgeSiteObjectStats("wxrules", res.groups.host, res.groups.detail, res.groups.uuid_1, res.groups.uuid_2,);
+          this.setName("wxrule", res.groups.detail);
+          this.forgeSiteObject("wxrules", res.groups.host, res.groups.detail);
+          this.forgeSiteObjectStats("wxrules", res.groups.host, res.groups.detail,);
           break;
         case "security":
-          this.forgeSiteSecurity(res.groups.host, res.groups.uuid_1)
+          this.forgeSiteSecurity(res.groups.host)
           break;
         case "switchconfig":
-          this.forgeSiteSwitchConfig(res.groups.host, res.groups.uuid_1);
+          this.setName("switchconfig", res.groups.detail);
+          this.forgeSiteSwitchConfig(res.groups.host);
           break;
         case "pcap":
-          this.obj_name = res.groups.obj.substr(0, res.groups.obj.length - 1);
-          this.forgeSiteObject("pcaps", res.groups.host, res.groups.detail, res.groups.uuid_1, res.groups.uuid_2);
+          this.setName(res.groups.obj.substr(0, res.groups.obj.length - 1), res.groups.detail);
+          this.forgeSiteObject("pcaps", res.groups.host, res.groups.detail);
           break;
         // ORG
         case "orgtags":
-          this.obj_name = "wxtag";
-          this.forgeOrgObject("wxtags", res.groups.host, res.groups.detail, res.groups.org_id, res.groups.uuid_1);
+          this.setName("wxtag", res.groups.detail);
+          this.forgeOrgObject("wxtags", res.groups.host, res.groups.detail);
           break;
         case "misttunnels":
-          this.obj_name = "mxtunnel";
-          this.forgeOrgObject("mxtunnels", res.groups.host, res.groups.detail, res.groups.org_id, res.groups.uuid_1);
+          this.setName("mxtunnel", res.groups.detail);
+          this.forgeOrgObject("mxtunnels", res.groups.host, res.groups.detail);
           break;
         case "switchtemplate":
-          this.obj_name = res.groups.obj;
-          this.forgeOrgObject("networktemplates", res.groups.host, res.groups.detail, res.groups.org_id, res.groups.uuid_1);
+          this.setName(res.groups.obj, res.groups.detail);
+          this.forgeOrgObject("networktemplates", res.groups.host, res.groups.detail);
           break;
         case "deviceprofiles":
-          this.obj_name = res.groups.obj.substr(0, res.groups.obj.length - 1);
-          this.forgeOrgObject("deviceprofiles", res.groups.host, res.groups.detail, res.groups.org_id, res.groups.uuid_1);
+          this.setName(res.groups.obj.substr(0, res.groups.obj.length - 1), res.groups.detail);
+          this.forgeOrgObject("deviceprofiles", res.groups.host, res.groups.detail);
           break;
         case "org":
+          this.setName("org", res.groups.detail);
           this.forgeOrg(res.groups.host);
           break;
         case "configuration":
-          this.forgeSite(res.groups.host, res.groups.uuid_1);
+          this.setName("site", res.groups.detail);
+          this.forgeSite(res.groups.host, this.obj_id);
           break;
         case "rftemplates":
         case "templates":
-          this.obj_name = res.groups.obj.substr(0, res.groups.obj.length - 1);
-          this.forgeOrgObject(res.groups.obj, res.groups.host, res.groups.detail, res.groups.org_id, res.groups.uuid_1);
+          this.setName(res.groups.obj.substr(0, res.groups.obj.length - 1), res.groups.detail);
+          this.forgeOrgObject(res.groups.obj, res.groups.host, res.groups.detail);
           break;
         case "auditlogs":
-          this.obj_name = res.groups.obj.substr(0, res.groups.obj.length - 1);
-          this.forgeOrgObject("logs", res.groups.host, res.groups.detail, res.groups.org_id, res.groups.uuid_1);
+          this.setName(res.groups.obj.substr(0, res.groups.obj.length - 1), res.groups.detail);
+          this.forgeOrgObject("logs", res.groups.host, res.groups.detail);
           break;
         case "apinventory":
           this.obj_name = "inventory";
-          this.forgeOrgObject("inventory", res.groups.host, res.groups.detail, res.groups.org_id, res.groups.uuid_1);
+          this.forgeOrgObject("inventory", res.groups.host, res.groups.detail);
           break;
         case "adminconfig":
-          this.obj_name = "admin";
-          this.forgeOrgObject("admins", res.groups.host, res.groups.detail, res.groups.org_id, res.groups.uuid_1);
+          this.setName("admin", res.groups.detail);
+          this.forgeOrgObject("admins", res.groups.host, res.groups.detail);
           break;
 
         case "subscription":
-          this.obj_name = res.groups.obj
-          this.forgeOrgObject("licenses", res.groups.host, res.groups.detail, res.groups.org_id, res.groups.uuid_1);
+          this.setName(res.groups.obj, res.groups.detail);
+          this.forgeOrgObject("licenses", res.groups.host, res.groups.detail);
           break;
         case "edge":
-          this.forgeEdge(res.groups.host, res.groups.detail, res.groups.uuid_1)
+          this.setName("mxedge", res.groups.detail);
+          this.forgeEdge(res.groups.host, res.groups.detail)
           break;
       }
     }
@@ -408,46 +488,47 @@ export class ApiManageComponent implements OnInit {
     if (res.groups.start && res.groups.stop) {
       extra_params = "start=" + res.groups.start + "&end=" + res.groups.stop;
     }
-    if (res.groups.host && res.groups.org_id ) {
+    if (res.groups.host && res.groups.org_id) {
       switch (res.groups.obj) {
         case "device":
-          this.obj_name = "ap";
-          this.forgeSiteObject("devices", res.groups.host, "detail", res.groups.uuid_1, res.groups.uuid_2);
-          this.forgeSiteObjectStats("devices", res.groups.host, "detail", res.groups.uuid_1, res.groups.uuid_2, extra_params);
-          this.forgeSiteObjectEvents("devices", res.groups.host, "detail", res.groups.uuid_1, res.groups.uuid_2, extra_params);
+          this.setName("ap", "insights");
+          this.forgeSiteObject("devices", res.groups.host, "detail");
+          this.forgeSiteObjectStats("devices", res.groups.host, "detail", extra_params);
+          this.forgeSiteObjectEvents("devices", "ap", res.groups.host, "detail", extra_params);
           break;
         case "client":
-          this.obj_name = "client";
-          this.forgeSiteObject("clients", res.groups.host, "detail", res.groups.uuid_1, res.groups.uuid_2);
-          this.forgeSiteObjectStats("clients", res.groups.host, "detail", res.groups.uuid_1, res.groups.uuid_2, extra_params);
-          this.forgeSiteObjectEvents("clients", res.groups.host, "detail", res.groups.uuid_1, res.groups.uuid_2, extra_params);
+          this.setName("client", "insights");
+          this.forgeSiteObjectSearch("clients", res.groups.host, "detail");
+          this.forgeSiteObjectStats("clients", res.groups.host, "detail", extra_params);
+          this.forgeSiteObjectEvents("clients", null, res.groups.host, "detail", extra_params);
           break;
-        case "juniperswitch":
-          this.obj_name = "switch";
-          this.forgeSiteObject("devices", res.groups.host, "detail", res.groups.uuid_1, res.groups.uuid_2);
-          this.forgeSiteObjectStats("devices", res.groups.host, "detail", res.groups.uuid_1, res.groups.uuid_2, extra_params);
-          this.forgeSiteObjectEvents("devices", res.groups.host, "detail", res.groups.uuid_1, res.groups.uuid_2, extra_params);
+        case "juniperSwitch":
+          this.setName("switch", "insights");
+          this.forgeSiteObject("devices", res.groups.host, "detail");
+          this.forgeSiteObjectStats("devices", res.groups.host, "detail", extra_params);
+          this.forgeSiteObjectEvents("devices", "switch", res.groups.host, "detail", extra_params);
           break;
-        case "junipergateway":
-          this.obj_name = "gateway";
-          this.forgeSiteObject("devices", res.groups.host, "detail", res.groups.uuid_1, res.groups.uuid_2);
-          this.forgeSiteObjectStats("devices", res.groups.host, "detail", res.groups.uuid_1, res.groups.uuid_2, extra_params);
-          this.forgeSiteObjectEvents("devices", res.groups.host, "detail", res.groups.uuid_1, res.groups.uuid_2, extra_params);
+        case "juniperGateway":
+          this.setName("gateway", "insights");
+          this.forgeSiteObject("devices", res.groups.host, "detail");
+          this.forgeSiteObjectStats("devices", res.groups.host, "detail", extra_params);
+          this.forgeSiteObjectEvents("devices", "gateway", res.groups.host, "detail", extra_params);
           break;
-        case "wiredclient":
-          this.obj_name = "wired client";
-          this.forgeSiteObject("wired_clients", res.groups.host, "detail", res.groups.uuid_1, res.groups.uuid_2);
-          this.forgeSiteObjectStats("wired_clients", res.groups.host, "detail", res.groups.uuid_1, res.groups.uuid_2, extra_params);
-          this.forgeSiteObjectEvents("wired_clients", res.groups.host, "detail", res.groups.uuid_1, res.groups.uuid_2, extra_params);
+        case "wiredClient":
+          this.setName("wired client", "insights");
+          this.forgeSiteObjectSearch("wired_clients", res.groups.host, "detail", extra_params);
+          this.forgeSiteObjectEvents("wired_clients", null, res.groups.host, "detail", extra_params);
           break;
         case "edge":
-          this.obj_name = "mxedge";
-          this.forgeSiteObject("mxedges", res.groups.host, "detail", res.groups.uuid_1, res.groups.uuid_2);
-          this.forgeSiteObjectStats("mxedges", res.groups.host, "detail", res.groups.uuid_1, res.groups.uuid_2, extra_params);
-          this.forgeSiteObjectEvents("mxedges", res.groups.host, "detail", res.groups.uuid_1, res.groups.uuid_2, extra_params);
+          this.setName("mxedge", "insights");
+          this.forgeOrgObject("mxedges", res.groups.host, "detail");
+          this.forgeOrgObjectStats("mxedges", res.groups.host, "detail", extra_params);
+          this.forgeOrgObjectEvents("mxedges", res.groups.host, "detail", extra_params);
+          break;
         case "site":
         case undefined:
-          this.forgeSite(res.groups.host, res.groups.uuid_1, extra_params);
+          this.setName("site", "insights");
+          this.forgeSite(res.groups.host, extra_params);
           break;
       }
     }
@@ -456,10 +537,10 @@ export class ApiManageComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
   // API URL ENTRYPOINT
-  
+
   generateApiUrl() {
-    const insights_re = /https:\/\/manage\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/insights\/(?<obj>[a-z]+)?\/?(?<uuid_1>[a-z0-9-]+)\/?(?<period>[a-z0-9]+)?\/?(?<start>[0-9]*)?\/?(?<stop>[0-9]*)?\/?(?<uuid_2>[0-9a-f-]*)?/iys;
-    const common_re = /https:\/\/manage\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/?(?<detail>detail|template|site|rfTemplate|admin|edgedetail|clusterdetail|new)?\/?([0-9])*?\/?(?<uuid_1>[0-9a-f-]*)?\/?(?<uuid_2>[0-9a-f-]*)?/iys;
+    const insights_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/insights\/((?<obj>[a-z]+)\/)?((?<obj_id>[a-z0-9-]+)\/)((?<period>[a-z0-9]+)\/)?((?<start>[0-9]*)\/)?((?<stop>[0-9]*)\/)?(?<site_id>[0-9a-f-]*)?/iys;
+    const common_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/?((?<detail>detail|template|site|rfTemplate|admin|edgedetail|clusterdetail|new)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*)\/)?(?<site_id>[0-9a-f-]*)?/yis;
 
     const insights = insights_re.exec(this.tabUrl)
     const common = common_re.exec(this.tabUrl)
