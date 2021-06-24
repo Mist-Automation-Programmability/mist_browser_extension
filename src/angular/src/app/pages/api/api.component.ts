@@ -293,7 +293,7 @@ export class ApiComponent implements OnInit {
   }
 
   ////////////////////////////////////////////////////////////////////////////////////
-  ////////////////////// MIST EDGEFUNCTION
+  ////////////////////// MIST EDGE FUNCTION
   forgeEdge(host: string, detail: string): void {
     if (detail == "edgedetail") {
       this.obj_name = "mxedge";
@@ -315,9 +315,19 @@ export class ApiComponent implements OnInit {
   }
 
   ////////////////////////////////////////////////////////////////////////////////////
-  ////////////////////////////////////////////////////////////////////////////////////
-  ////////////////////// DISCOVERED SWITCHES URL FUNCTION DISPATCHER
-  discoveredSwitchUrl(res: RegExpExecArray): void {
+  ////////////////////// DISCOVERED SWITCHES FUNCTION
+  forgeSiteDiscoveredSwitchUrl(host: string, mac: string = null): void {
+    if (mac) {
+      this.quick_links.push({
+        url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/stats/discovered_switches/search?system_name=" + mac,
+        name: "discovered switch"
+      })
+    } else if (!this.obj_id) {
+      this.quick_links.push({
+        url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/stats/discovered_switches/search",
+        name: "discovered switches"
+      })
+    }
   }
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
@@ -328,8 +338,8 @@ export class ApiComponent implements OnInit {
     const uuid_re = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/
     console.log(res.groups)
     if (res.groups.host && res.groups.org_id && res.groups.obj) {
-      this.obj_id = res.groups.uuid_1;
-      this.site_id = res.groups.uuid_2;
+      this.obj_id = res.groups.obj_id;
+      this.site_id = res.groups.site_id;
       switch (res.groups.obj.toLowerCase()) {
         // SITE
         case "ap":
@@ -341,20 +351,18 @@ export class ApiComponent implements OnInit {
           this.forgeSiteObjectEvents("devices", res.groups.obj, res.groups.host, res.groups.detail);
           break;
         case "switch":
-          const is_uuid = uuid_re.test(res.groups.uuid_1)
-          if (!res.groups.uuid_1 || is_uuid) {
+          const is_uuid = uuid_re.test(this.obj_id)
+          if (this.obj_id && !is_uuid) {
+            this.obj_name = "discoveredswitch";
+            this.setName("discoveredswitch", "detail");
+            this.forgeSiteDiscoveredSwitchUrl(res.groups.host, this.obj_id);
+          } else {
             this.setName(res.groups.obj, res.groups.detail);
             if (!res.groups.details) extra_params = "type=" + res.groups.obj;
             this.forgeSiteObject("devices", res.groups.host, res.groups.detail, extra_params);
             this.forgeSiteObjectStats("devices", res.groups.host, res.groups.detail, extra_params);
             this.forgeSiteObjectEvents("devices", res.groups.obj, res.groups.host, res.groups.detail);
-          } else {
-            this.obj_name = "discoveredswitch";
-            this.setName("discoveredswitch", "detail");
-            this.quick_links.push({
-              url: "https://api." + res.groups.host + "/api/v1/sites/" + this.site_id + "/stats/discovered_switches/search?system_name=" + res.groups.uuid_1,
-              name: "discovered switch"
-            })
+            this.forgeSiteDiscoveredSwitchUrl(res.groups.host);
           }
           break;
         case "assets":
@@ -437,7 +445,7 @@ export class ApiComponent implements OnInit {
           break;
         case "configuration":
           this.setName("site", res.groups.detail);
-          this.forgeSite(res.groups.host, res.groups.uuid_1);
+          this.forgeSite(res.groups.host, this.obj_id);
           break;
         case "rftemplates":
         case "templates":
@@ -475,8 +483,8 @@ export class ApiComponent implements OnInit {
   insightsUrl(res: RegExpExecArray): void {
     console.log(res)
     this.org_id = res.groups.org_id;
-    this.site_id = res.groups.uuid_2;
-    this.obj_id = res.groups.uuid_1;
+    this.site_id = res.groups.site_id;
+    this.obj_id = res.groups.obj_id;
     let extra_params = null;
     if (res.groups.start && res.groups.stop) {
       extra_params = "start=" + res.groups.start + "&end=" + res.groups.stop;
@@ -491,7 +499,7 @@ export class ApiComponent implements OnInit {
           break;
         case "client":
           this.setName("client", "insights");
-          //this.forgeSiteObject("clients", res.groups.host, "detail");
+          this.forgeSiteObjectSearch("clients", res.groups.host, "detail");
           this.forgeSiteObjectStats("clients", res.groups.host, "detail", extra_params);
           this.forgeSiteObjectEvents("clients", null, res.groups.host, "detail", extra_params);
           break;
@@ -532,8 +540,8 @@ export class ApiComponent implements OnInit {
   // API URL ENTRYPOINT
 
   generateApiUrl() {
-    const insights_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/insights\/((?<obj>[a-z]+)\/)?((?<uuid_1>[a-z0-9-]+)\/)((?<period>[a-z0-9]+)\/)?((?<start>[0-9]*)\/)?((?<stop>[0-9]*)\/)?(?<uuid_2>[0-9a-f-]*)?/iys;
-    const common_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/?((?<detail>detail|template|site|rfTemplate|admin|edgedetail|clusterdetail|new)\/)?([0-9]\/)?((?<uuid_1>[0-9a-f-]*)\/)?(?<uuid_2>[0-9a-f-]*)?/yis;
+    const insights_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/insights\/((?<obj>[a-z]+)\/)?((?<obj_id>[a-z0-9-]+)\/)((?<period>[a-z0-9]+)\/)?((?<start>[0-9]*)\/)?((?<stop>[0-9]*)\/)?(?<site_id>[0-9a-f-]*)?/iys;
+    const common_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/?((?<detail>detail|template|site|rfTemplate|admin|edgedetail|clusterdetail|new)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*)\/)?(?<site_id>[0-9a-f-]*)?/yis;
 
     const insights = insights_re.exec(this.tabUrl)
     const common = common_re.exec(this.tabUrl)
