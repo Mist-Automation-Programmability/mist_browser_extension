@@ -229,6 +229,17 @@ export class ApiComponent implements OnInit {
   }
 
   ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////// SITE DEVICE LAST CONFIG FUNCTION
+  forgeSiteApLastConfig(host: string, device_type: string): void {
+    const mac = this.getMac(this.obj_id)
+    if (device_type == "ap" && mac) {
+      this.quick_links.push({
+        url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/devices/last_config/search?" + device_type + "=" + mac,
+        name: "Last Config"
+      })
+    }
+  }
+  ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// ORG OBJ FUNCTION
   forgeOrg(host: string) {
     this.quick_links.push({
@@ -349,6 +360,7 @@ export class ApiComponent implements OnInit {
           this.forgeSiteObject("devices", res.groups.host, res.groups.detail, extra_params);
           this.forgeSiteObjectStats("devices", res.groups.host, res.groups.detail, extra_params);
           this.forgeSiteObjectEvents("devices", res.groups.obj, res.groups.host, res.groups.detail);
+          this.forgeSiteApLastConfig(res.groups.host, res.groups.obj);
           break;
         case "switch":
           const is_uuid = uuid_re.test(this.obj_id)
@@ -496,6 +508,7 @@ export class ApiComponent implements OnInit {
           this.forgeSiteObject("devices", res.groups.host, "detail");
           this.forgeSiteObjectStats("devices", res.groups.host, "detail", extra_params);
           this.forgeSiteObjectEvents("devices", "ap", res.groups.host, "detail", extra_params);
+          this.forgeSiteApLastConfig(res.groups.host, 'ap');
           break;
         case "client":
           this.setName("client", "insights");
@@ -541,7 +554,7 @@ export class ApiComponent implements OnInit {
 
   generateApiUrl() {
     const insights_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/insights\/((?<obj>[a-z]+)\/)?((?<obj_id>[a-z0-9-]+)\/)((?<period>[a-z0-9]+)\/)?((?<start>[0-9]*)\/)?((?<stop>[0-9]*)\/)?(?<site_id>[0-9a-f-]*)?/iys;
-    const common_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/?((?<detail>detail|template|site|rfTemplate|admin|edgedetail|clusterdetail|new)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*)\/)?(?<site_id>[0-9a-f-]*)?/yis;
+    const common_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/?((?<detail>detail|template|site|rfTemplate|admin|edgedetail|clusterdetail|new|view)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*)\/)?(?<site_id>[0-9a-f-]*)?/yis;
 
     const insights = insights_re.exec(this.tabUrl)
     const common = common_re.exec(this.tabUrl)
