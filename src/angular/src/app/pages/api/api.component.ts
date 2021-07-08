@@ -358,6 +358,21 @@ export class ApiComponent implements OnInit {
       name: "Worst sites by " + worstsle
     });
   }
+
+  ////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////  SLE FUNCTION
+  forgeSlehUrl(host: string, scope: string, site_id: string, scope_id: string, sles: string[], extra_params: string = null): void {
+    /*
+    host: mist.com, eu.mist.com, gc1.mist.com
+    scope: wifi, wire, wan
+    */
+    sles.forEach(sle => {
+      this.quick_links.push({
+        url: "https://api." + host + "/api/v1/sites/" + site_id + "/sle/" + scope + "/" + scope_id + "/metric/" + sle + "/summary-trend?" + extra_params,
+        name: sle + " " + scope + " SLE"
+      });
+    })
+  }
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// COMMON URL FUNCTION DISPATCHER
@@ -593,18 +608,79 @@ export class ApiComponent implements OnInit {
   }
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////// SLE URL FUNCTION DISPATCHER
+
+  sleUrl(res: RegExpExecArray): void {
+    console.log(res)
+    this.org_id = res.groups.org_id;
+    this.site_id = res.groups.site_id;
+    let extra_params = null;
+    let scope = "";
+    if (res.groups.scope != "site") {
+      this.setName(res.groups.scope, "sle");
+      this.obj_id = res.groups.scope_id;
+    }
+    if (res.groups.scope == "juniperSwitch") {
+      scope = "switch";
+    } else if (res.groups.scope == "juniperGateway") {
+      scope = "gateway";
+    } else if (res.groups.scope == "device") {
+      scope = "ap";
+    }else {
+      scope = res.groups.scope;
+    }
+    if (res.groups.start && res.groups.stop) {
+      extra_params = "start=" + res.groups.start + "&end=" + res.groups.stop;
+    }
+    if (res.groups.host && res.groups.org_id) {
+      let sles: string[] = []
+      switch (res.groups.detail) {
+        case "serviceLevels":
+          sles = [
+            "time-to-connect",
+            "failed-to-connect",
+            "roaming",
+            "throughput",
+            "coverage",
+            "capacity",
+            "ap-availability"
+          ]
+          break;
+        case "wiredServiceLevels":
+          sles = [
+            "switch-stc",
+            "switch-health",
+            "switch-throughput"
+          ]
+          break;
+        case "wanServiceLevels":
+          sles = [
+            "gateway-health",
+            "wan-link-health"
+          ]
+          break;
+      }
+      this.forgeSlehUrl(res.groups.host, scope, res.groups.site_id, res.groups.scope_id, sles, extra_params)
+    }
+  }
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
   // API URL ENTRYPOINT
 
   generateApiUrl() {
     const orgsle_re = /https:\/\/manage\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/(?<scope>siteComparison|wiredSiteComparison|wanSiteComparison)\/(?<sle>[a-z-]*)\/(?<worstsle>[a-z-]*)\/([a-z-_]*)\/(?<period>[0-9a-z-]*)\/(?<start>[0-9]*)\/(?<stop>[0-9]*)/iys;
+    const sle_re = /https:\/\/manage\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/(?<detail>serviceLevels|wiredserviceLevels|wanserviceLevels)\/(?<scope>[a-z-]*)\/(?<scope_id>[a-f0-9-]*)\/(?<period>[0-9a-z-]*)\/(?<start>[0-9]*)\/(?<stop>[0-9]*)\/(?<site_id>[a-f0-9-]*)/iys;
     const insights_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/insights\/((?<obj>[a-z]+)\/)?((?<obj_id>[a-z0-9-]+)\/)((?<period>[a-z0-9]+)\/)?((?<start>[0-9]*)\/)?((?<stop>[0-9]*)\/)?(?<site_id>[0-9a-f-]*)?/iys;
     const common_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/?((?<detail>detail|template|site|rfTemplate|admin|edgedetail|clusterdetail|new|view)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*)\/)?(?<site_id>[0-9a-f-]*)?/yis;
 
     const orgsle = orgsle_re.exec(this.tabUrl);
+    const sle = sle_re.exec(this.tabUrl);
     const insights = insights_re.exec(this.tabUrl);
     const common = common_re.exec(this.tabUrl);
     if (orgsle) {
       this.orgSleUrl(orgsle);
+    } else if (sle) {
+      this.sleUrl(sle);
     } else if (insights) {
       this.insightsUrl(insights);
     } else if (common) {
