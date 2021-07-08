@@ -49,8 +49,8 @@ function checkUrl(tabUrl: string) {
     
     function apiBadge(show:boolean) {
         if (show){
-            chrome.action.setBadgeBackgroundColor({color: "#1ba3f2"})
-            chrome.action.setBadgeText({"text": "API"});
+            chrome.action.setBadgeBackgroundColor({color: "#4caf50"})
+            chrome.action.setBadgeText({"text": "\u2713"});
         } else {
             chrome.action.setBadgeText({"text": ""});
         }
