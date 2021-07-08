@@ -8,7 +8,5 @@ chrome.runtime.onMessage.addListener((request, sender, respond) => {
   });
 
   handler.then(message => respond(message)).catch(error => respond(error));
-
   return true;
 });
-
