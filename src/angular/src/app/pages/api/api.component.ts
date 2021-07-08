@@ -524,6 +524,55 @@ export class ApiComponent implements OnInit {
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////// ALARM URL FUNCTION DISPATCHER
+  alarmUrl(res: RegExpExecArray): void {
+    this.org_id = res.groups.org_id;
+    let extra_params = "";
+    let severity_array = [];
+    let scope = "";
+    let scope_id = "";
+    if (res.groups.scope == "org") {
+      scope = "orgs";
+      scope_id = res.groups.org_id;
+    } else {
+      if (res.groups.site_id) {
+        this.site_id = res.groups.site_id;
+      } else {
+        this.site_id = res.groups.uuid;
+      }
+      scope = "sites";
+      scope_id = this.site_id;
+    }
+    if (res.groups.start && res.groups.stop) {
+      extra_params = "start=" + res.groups.start + "&end=" + res.groups.stop;
+    }
+    if (res.groups.show_crit && res.groups.show_crit == "true") severity_array.push("critical")
+    if (res.groups.show_warn && res.groups.show_warn == "true") severity_array.push("warn")
+    if (res.groups.show_info && res.groups.show_info == "true") severity_array.push("info")
+    if (severity_array.length > 0) extra_params += "&severity=" + severity_array.join(",")
+    else extra_params += "&severity=none"
+
+    if (res.groups.group && res.groups.group != "any%20type") extra_params += "&group=" + res.groups.group;
+
+    if (res.groups.show_ack && res.groups.show_ack == "false") extra_params += "&acked=false";
+
+    this.quick_links.push({
+      url: "https://api." + res.groups.host + "/api/v1/" + scope + "/" + scope_id + "/alarms/search?" + extra_params,
+      name: scope + " Alarms"
+    }, {
+      url: "https://api." + res.groups.host + "/api/v1/" + scope + "/" + scope_id + "/alarms/count?" + extra_params,
+      name: scope + " Alarms count"
+    }, {
+      url: "https://api." + res.groups.host + "/api/v1/orgs/" + this.org_id + "/alarmtemplates",
+      name: " Alarms Templates"
+    }, {
+      url: "https://api." + res.groups.host + "/api/v1/const/alarm_defs",
+      name: " Alarms Definitions"
+    });
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// INSIGHTS URL FUNCTION DISPATCHER
   insightsUrl(res: RegExpExecArray): void {
     this.org_id = res.groups.org_id;
@@ -626,7 +675,7 @@ export class ApiComponent implements OnInit {
       scope = "gateway";
     } else if (res.groups.scope == "device") {
       scope = "ap";
-    }else {
+    } else {
       scope = res.groups.scope;
     }
     if (res.groups.start && res.groups.stop) {
@@ -671,11 +720,13 @@ export class ApiComponent implements OnInit {
     const orgsle_re = /https:\/\/manage\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/(?<scope>siteComparison|wiredSiteComparison|wanSiteComparison)\/(?<sle>[a-z-]*)\/(?<worstsle>[a-z-]*)\/([a-z-_]*)\/(?<period>[0-9a-z-]*)\/(?<start>[0-9]*)\/(?<stop>[0-9]*)/iys;
     const sle_re = /https:\/\/manage\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/(?<detail>serviceLevels|wiredserviceLevels|wanserviceLevels)\/(?<scope>[a-z-]*)\/(?<scope_id>[a-f0-9-]*)\/(?<period>[0-9a-z-]*)\/(?<start>[0-9]*)\/(?<stop>[0-9]*)\/(?<site_id>[a-f0-9-]*)/iys;
     const insights_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/insights\/((?<obj>[a-z]+)\/)?((?<obj_id>[a-z0-9-]+)\/)((?<period>[a-z0-9]+)\/)?((?<start>[0-9]*)\/)?((?<stop>[0-9]*)\/)?(?<site_id>[0-9a-f-]*)?/iys;
+    const alarm_re = /https:\/\/manage\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!alerts\/?(?<scope>org|site)?\/?(?<uuid>[0-9a-z-]*)\/?(?<period>[0-9a-z]*)?\/?(?<start>[0-9]*)?\/?(?<stop>[0-9]*)?\/?(?<show_ack>true|false)?\/?(?<group>[a-z%0-9]*)?\/?(?<show_crit>true|false)?\/?(?<show_warn>true|false)?\/?(?<show_info>true|false)?\/?(?<site_id>[0-9a-z-]*)?/iys;
     const common_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/?((?<detail>detail|template|site|rfTemplate|admin|edgedetail|clusterdetail|new|view)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*)\/)?(?<site_id>[0-9a-f-]*)?/yis;
 
     const orgsle = orgsle_re.exec(this.tabUrl);
     const sle = sle_re.exec(this.tabUrl);
     const insights = insights_re.exec(this.tabUrl);
+    const alarm = alarm_re.exec(this.tabUrl);
     const common = common_re.exec(this.tabUrl);
     if (orgsle) {
       this.orgSleUrl(orgsle);
@@ -683,10 +734,11 @@ export class ApiComponent implements OnInit {
       this.sleUrl(sle);
     } else if (insights) {
       this.insightsUrl(insights);
+    } else if (alarm) {
+      this.alarmUrl(alarm);
     } else if (common) {
       this.commonUrl(common);
     }
-
     this._cd.detectChanges()
   }
 
