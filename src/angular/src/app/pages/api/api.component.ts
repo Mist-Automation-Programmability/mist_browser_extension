@@ -2,6 +2,7 @@ import { group } from '@angular/animations';
 import { Component, Inject, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { TAB_URL } from '../../providers/tab-url.provider';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 export interface linkElement {
   url: string,
@@ -340,6 +341,23 @@ export class ApiComponent implements OnInit {
       })
     }
   }
+
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////// ORG SLE FUNCTION
+  forgeOrgSlehUrl(host: string, scope: string, sle: string, worstsle: string = null, extra_params: string = null): void {
+    /*
+    host: mist.com, eu.mist.com, gc1.mist.com
+    scope: wifi, wire, wan
+    */
+    if (!worstsle || worstsle == "-") worstsle = sle;
+    this.quick_links.push({
+      url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/insights/sites-sle?sle=" + scope + "&" + extra_params,
+      name: scope + " Org SLEs"
+    }, {
+      url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/insights/worst-sites-by-sle?sle=" + worstsle + "&" + extra_params,
+      name: "Worst sites by " + worstsle
+    });
+  }
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// COMMON URL FUNCTION DISPATCHER
@@ -493,7 +511,6 @@ export class ApiComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// INSIGHTS URL FUNCTION DISPATCHER
   insightsUrl(res: RegExpExecArray): void {
-    console.log(res)
     this.org_id = res.groups.org_id;
     this.site_id = res.groups.site_id;
     this.obj_id = res.groups.obj_id;
@@ -548,20 +565,50 @@ export class ApiComponent implements OnInit {
     }
   }
 
+
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////// ORG SLE URL FUNCTION DISPATCHER
+
+  orgSleUrl(res: RegExpExecArray): void {
+    console.log(res)
+    this.org_id = res.groups.org_id;
+    let extra_params = null;
+    if (res.groups.start && res.groups.stop) {
+      extra_params = "start=" + res.groups.start + "&end=" + res.groups.stop;
+    }
+    if (res.groups.host && res.groups.org_id) {
+      switch (res.groups.scope) {
+        case "siteComparison":
+          this.forgeOrgSlehUrl(res.groups.host, "wifi", res.groups.sle, res.groups.worstsle, extra_params);
+          break;
+        case "wiredSiteComparison":
+          this.forgeOrgSlehUrl(res.groups.host, "wired", res.groups.sle, res.groups.worstsle, extra_params);
+          break;
+        case "wanSiteComparison":
+          this.forgeOrgSlehUrl(res.groups.host, "wan", res.groups.sle, res.groups.worstsle, extra_params);
+          break;
+      }
+    }
+  }
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
   // API URL ENTRYPOINT
 
   generateApiUrl() {
+    const orgsle_re = /https:\/\/manage\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/(?<scope>siteComparison|wiredSiteComparison|wanSiteComparison)\/(?<sle>[a-z-]*)\/(?<worstsle>[a-z-]*)\/([a-z-_]*)\/(?<period>[0-9a-z-]*)\/(?<start>[0-9]*)\/(?<stop>[0-9]*)/iys;
     const insights_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/insights\/((?<obj>[a-z]+)\/)?((?<obj_id>[a-z0-9-]+)\/)((?<period>[a-z0-9]+)\/)?((?<start>[0-9]*)\/)?((?<stop>[0-9]*)\/)?(?<site_id>[0-9a-f-]*)?/iys;
     const common_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/?((?<detail>detail|template|site|rfTemplate|admin|edgedetail|clusterdetail|new|view)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*)\/)?(?<site_id>[0-9a-f-]*)?/yis;
 
-    const insights = insights_re.exec(this.tabUrl)
-    const common = common_re.exec(this.tabUrl)
-    if (insights) {
-      this.insightsUrl(insights)
+    const orgsle = orgsle_re.exec(this.tabUrl);
+    const insights = insights_re.exec(this.tabUrl);
+    const common = common_re.exec(this.tabUrl);
+    if (orgsle) {
+      this.orgSleUrl(orgsle);
+    } else if (insights) {
+      this.insightsUrl(insights);
     } else if (common) {
-      this.commonUrl(common)
+      this.commonUrl(common);
     }
 
     this._cd.detectChanges()
