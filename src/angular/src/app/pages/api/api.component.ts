@@ -249,6 +249,12 @@ export class ApiComponent implements OnInit {
     }, {
       url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/stats",
       name: "org stats"
+    }, {
+      url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/ssos",
+      name: "org ssos"
+    }, {
+      url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/webhooks",
+      name: "org webhooks"
     })
   }
 
