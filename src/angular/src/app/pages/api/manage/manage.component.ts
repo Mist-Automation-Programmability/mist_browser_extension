@@ -44,6 +44,40 @@ export class ApiManageComponent implements OnInit {
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
+  // API URL ENTRYPOINT
+  generateApiUrl() {
+    const orgsle_re = /https:\/\/manage\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/(?<scope>siteComparison|wiredSiteComparison|wanSiteComparison)\/(?<sle>[a-z-]*)\/(?<worstsle>[a-z-]*)\/([a-z-_]*)\/(?<period>[0-9a-z-]*)\/(?<start>[0-9]*)\/(?<stop>[0-9]*)/iys;
+    const sle_re = /https:\/\/manage\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/(?<detail>serviceLevels|wiredserviceLevels|wanserviceLevels)\/(?<scope>[a-z-]*)\/(?<scope_id>[a-f0-9-]*)\/(?<period>[0-9a-z-]*)\/(?<start>[0-9]*)\/(?<stop>[0-9]*)\/(?<site_id>[a-f0-9-]*)/iys;
+    const insights_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/insights\/((?<obj>[a-z]+)\/)?((?<obj_id>[a-z0-9-]+)\/)((?<period>[a-z0-9]+)\/)?((?<start>[0-9]*)\/)?((?<stop>[0-9]*)\/)?(?<site_id>[0-9a-f-]*)?/iys;
+    const alarm_re = /https:\/\/manage\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!alerts\/?(?<scope>org|site)?\/?(?<uuid>[0-9a-z-]*)\/?(?<period>[0-9a-z]*)?\/?(?<start>[0-9]*)?\/?(?<stop>[0-9]*)?\/?(?<show_ack>true|false)?\/?(?<group>[a-z%0-9]*)?\/?(?<show_crit>true|false)?\/?(?<show_warn>true|false)?\/?(?<show_info>true|false)?\/?(?<site_id>[0-9a-z-]*)?/iys;
+    const templates_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/(?<detail>template|rfTemplate)\/(?<obj_id>[0-9a-z_-]*)/yis;
+    const common_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*)\/)?(?<site_id>[0-9a-f-]*)?/yis;
+    const common_objs = ["ap", "gateway", "switch", "assets", "wlan", "tags", "psk", "tunnels", "clients", "sdkclients", "wiredclients", "wxlan", "security", "switchconfig", "pcap", "orgtags", "misttunnels", "switchtemplate", "deviceprofiles", "org", "configuration", "rftemplates", "templates", "auditlogs", "apinventory", "adminconfig", "subscription", "edge"]
+
+    const orgsle = orgsle_re.exec(this.tabUrl);
+    const sle = sle_re.exec(this.tabUrl);
+    const insights = insights_re.exec(this.tabUrl);
+    const alarm = alarm_re.exec(this.tabUrl);
+    const templates = templates_re.exec(this.tabUrl);
+    const common = common_re.exec(this.tabUrl);
+    if (orgsle) {
+      this.orgSleUrl(orgsle);
+    } else if (sle) {
+      this.sleUrl(sle);
+    } else if (insights) {
+      this.insightsUrl(insights);
+    } else if (alarm) {
+      this.alarmUrl(alarm);
+    } else if (templates) {
+      this.commonUrl(templates);
+    } else if (common && common["groups"] && common_objs.includes(common["groups"]["obj"].toLowerCase())) {
+      this.commonUrl(common);
+    }
+    this._cd.detectChanges()
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
   // API URL
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
@@ -51,7 +85,6 @@ export class ApiManageComponent implements OnInit {
 
   ////////////////////// MAC 
   getMac(uuid: string): string {
-
     const splitted_uuid = uuid.split("-");
     return splitted_uuid[splitted_uuid.length - 1];
   }
@@ -228,6 +261,17 @@ export class ApiManageComponent implements OnInit {
   }
 
   ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////// SITE DEVICE LAST CONFIG FUNCTION
+  forgeSiteApLastConfig(host: string, device_type: string): void {
+    const mac = this.getMac(this.obj_id)
+    if (device_type == "ap" && mac) {
+      this.quick_links.push({
+        url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/devices/last_config/search?" + device_type + "=" + mac,
+        name: "Last Config"
+      })
+    }
+  }
+  ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// ORG OBJ FUNCTION
   forgeOrg(host: string) {
     this.quick_links.push({
@@ -236,6 +280,12 @@ export class ApiManageComponent implements OnInit {
     }, {
       url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/stats",
       name: "org stats"
+    }, {
+      url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/ssos",
+      name: "org ssos"
+    }, {
+      url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/webhooks",
+      name: "org webhooks"
     })
   }
 
@@ -328,6 +378,38 @@ export class ApiManageComponent implements OnInit {
       })
     }
   }
+
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////// ORG SLE FUNCTION
+  forgeOrgSlehUrl(host: string, scope: string, sle: string, worstsle: string = null, extra_params: string = null): void {
+    /*
+    host: mist.com, eu.mist.com, gc1.mist.com
+    scope: wifi, wire, wan
+    */
+    if (!worstsle || worstsle == "-") worstsle = sle;
+    this.quick_links.push({
+      url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/insights/sites-sle?sle=" + scope + "&" + extra_params,
+      name: scope + " Org SLEs"
+    }, {
+      url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/insights/worst-sites-by-sle?sle=" + worstsle + "&" + extra_params,
+      name: "Worst sites by " + worstsle
+    });
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////  SLE FUNCTION
+  forgeSlehUrl(host: string, scope: string, site_id: string, scope_id: string, sles: string[], extra_params: string = null): void {
+    /*
+    host: mist.com, eu.mist.com, gc1.mist.com
+    scope: wifi, wire, wan
+    */
+    sles.forEach(sle => {
+      this.quick_links.push({
+        url: "https://api." + host + "/api/v1/sites/" + site_id + "/sle/" + scope + "/" + scope_id + "/metric/" + sle + "/summary-trend?" + extra_params,
+        name: sle + " " + scope + " SLE"
+      });
+    })
+  }
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// COMMON URL FUNCTION DISPATCHER
@@ -348,6 +430,7 @@ export class ApiManageComponent implements OnInit {
           this.forgeSiteObject("devices", res.groups.host, res.groups.detail, extra_params);
           this.forgeSiteObjectStats("devices", res.groups.host, res.groups.detail, extra_params);
           this.forgeSiteObjectEvents("devices", res.groups.obj, res.groups.host, res.groups.detail);
+          this.forgeSiteApLastConfig(res.groups.host, res.groups.obj);
           break;
         case "switch":
           const is_uuid = uuid_re.test(this.obj_id)
@@ -418,7 +501,7 @@ export class ApiManageComponent implements OnInit {
           this.forgeSiteSwitchConfig(res.groups.host);
           break;
         case "pcap":
-          this.setName(res.groups.obj.substr(0, res.groups.obj.length - 1), res.groups.detail);
+          this.setName(res.groups.obj, res.groups.detail);
           this.forgeSiteObject("pcaps", res.groups.host, res.groups.detail);
           break;
         // ORG
@@ -478,9 +561,57 @@ export class ApiManageComponent implements OnInit {
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////// ALARM URL FUNCTION DISPATCHER
+  alarmUrl(res: RegExpExecArray): void {
+    this.org_id = res.groups.org_id;
+    let extra_params = "";
+    let severity_array = [];
+    let scope = "";
+    let scope_id = "";
+    if (res.groups.scope == "org") {
+      scope = "orgs";
+      scope_id = res.groups.org_id;
+    } else {
+      if (res.groups.site_id) {
+        this.site_id = res.groups.site_id;
+      } else {
+        this.site_id = res.groups.uuid;
+      }
+      scope = "sites";
+      scope_id = this.site_id;
+    }
+    if (res.groups.start && res.groups.stop) {
+      extra_params = "start=" + res.groups.start + "&end=" + res.groups.stop;
+    }
+    if (res.groups.show_crit && res.groups.show_crit == "true") severity_array.push("critical")
+    if (res.groups.show_warn && res.groups.show_warn == "true") severity_array.push("warn")
+    if (res.groups.show_info && res.groups.show_info == "true") severity_array.push("info")
+    if (severity_array.length > 0) extra_params += "&severity=" + severity_array.join(",")
+    else extra_params += "&severity=none"
+
+    if (res.groups.group && res.groups.group != "any%20type") extra_params += "&group=" + res.groups.group;
+
+    if (res.groups.show_ack && res.groups.show_ack == "false") extra_params += "&acked=false";
+
+    this.quick_links.push({
+      url: "https://api." + res.groups.host + "/api/v1/" + scope + "/" + scope_id + "/alarms/search?" + extra_params,
+      name: scope + " Alarms"
+    }, {
+      url: "https://api." + res.groups.host + "/api/v1/" + scope + "/" + scope_id + "/alarms/count?" + extra_params,
+      name: scope + " Alarms count"
+    }, {
+      url: "https://api." + res.groups.host + "/api/v1/orgs/" + this.org_id + "/alarmtemplates",
+      name: " Alarms Templates"
+    }, {
+      url: "https://api." + res.groups.host + "/api/v1/const/alarm_defs",
+      name: " Alarms Definitions"
+    });
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// INSIGHTS URL FUNCTION DISPATCHER
   insightsUrl(res: RegExpExecArray): void {
-    console.log(res)
     this.org_id = res.groups.org_id;
     this.site_id = res.groups.site_id;
     this.obj_id = res.groups.obj_id;
@@ -495,6 +626,7 @@ export class ApiManageComponent implements OnInit {
           this.forgeSiteObject("devices", res.groups.host, "detail");
           this.forgeSiteObjectStats("devices", res.groups.host, "detail", extra_params);
           this.forgeSiteObjectEvents("devices", "ap", res.groups.host, "detail", extra_params);
+          this.forgeSiteApLastConfig(res.groups.host, 'ap');
           break;
         case "client":
           this.setName("client", "insights");
@@ -534,22 +666,86 @@ export class ApiManageComponent implements OnInit {
     }
   }
 
+
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
-  // API URL ENTRYPOINT
+  ////////////////////// ORG SLE URL FUNCTION DISPATCHER
 
-  generateApiUrl() {
-    const insights_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/insights\/((?<obj>[a-z]+)\/)?((?<obj_id>[a-z0-9-]+)\/)((?<period>[a-z0-9]+)\/)?((?<start>[0-9]*)\/)?((?<stop>[0-9]*)\/)?(?<site_id>[0-9a-f-]*)?/iys;
-    const common_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/?((?<detail>detail|template|site|rfTemplate|admin|edgedetail|clusterdetail|new)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*)\/)?(?<site_id>[0-9a-f-]*)?/yis;
-
-    const insights = insights_re.exec(this.tabUrl)
-    const common = common_re.exec(this.tabUrl)
-    if (insights) {
-      this.insightsUrl(insights)
-    } else if (common) {
-      this.commonUrl(common)
+  orgSleUrl(res: RegExpExecArray): void {
+    this.org_id = res.groups.org_id;
+    let extra_params = null;
+    if (res.groups.start && res.groups.stop) {
+      extra_params = "start=" + res.groups.start + "&end=" + res.groups.stop;
     }
-    this._cd.detectChanges()
+    if (res.groups.host && res.groups.org_id) {
+      switch (res.groups.scope) {
+        case "siteComparison":
+          this.forgeOrgSlehUrl(res.groups.host, "wifi", res.groups.sle, res.groups.worstsle, extra_params);
+          break;
+        case "wiredSiteComparison":
+          this.forgeOrgSlehUrl(res.groups.host, "wired", res.groups.sle, res.groups.worstsle, extra_params);
+          break;
+        case "wanSiteComparison":
+          this.forgeOrgSlehUrl(res.groups.host, "wan", res.groups.sle, res.groups.worstsle, extra_params);
+          break;
+      }
+    }
+  }
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////// SLE URL FUNCTION DISPATCHER
+
+  sleUrl(res: RegExpExecArray): void {
+    this.org_id = res.groups.org_id;
+    this.site_id = res.groups.site_id;
+    let extra_params = null;
+    let scope = "";
+    if (res.groups.scope != "site") {
+      this.setName(res.groups.scope, "sle");
+      this.obj_id = res.groups.scope_id;
+    }
+    if (res.groups.scope == "juniperSwitch") {
+      scope = "switch";
+    } else if (res.groups.scope == "juniperGateway") {
+      scope = "gateway";
+    } else if (res.groups.scope == "device") {
+      scope = "ap";
+    } else {
+      scope = res.groups.scope;
+    }
+    if (res.groups.start && res.groups.stop) {
+      extra_params = "start=" + res.groups.start + "&end=" + res.groups.stop;
+    }
+    if (res.groups.host && res.groups.org_id) {
+      let sles: string[] = []
+      switch (res.groups.detail) {
+        case "serviceLevels":
+          sles = [
+            "time-to-connect",
+            "failed-to-connect",
+            "roaming",
+            "throughput",
+            "coverage",
+            "capacity",
+            "ap-availability"
+          ]
+          break;
+        case "wiredServiceLevels":
+          sles = [
+            "switch-stc",
+            "switch-health",
+            "switch-throughput"
+          ]
+          break;
+        case "wanServiceLevels":
+          sles = [
+            "gateway-health",
+            "wan-link-health"
+          ]
+          break;
+      }
+      this.forgeSlehUrl(res.groups.host, scope, res.groups.site_id, res.groups.scope_id, sles, extra_params)
+    }
   }
 
 
