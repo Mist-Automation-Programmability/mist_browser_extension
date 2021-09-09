@@ -35,6 +35,7 @@ export class ApiComponent implements OnInit {
 
 
   hosts = [
+    "integration.mistsys.com",
     "manage.mist.com",
     "integration.mist.com",
     "manage.eu.mist.com",
@@ -49,13 +50,14 @@ export class ApiComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////
   // API URL ENTRYPOINT
   generateApiUrl() {
-    const orgsle_re = /https:\/\/manage\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/(?<scope>siteComparison|wiredSiteComparison|wanSiteComparison)\/(?<sle>[a-z-]*)\/(?<worstsle>[a-z-]*)\/([a-z-_]*)\/(?<period>[0-9a-z-]*)\/(?<start>[0-9]*)\/(?<stop>[0-9]*)/iys;
-    const sle_re = /https:\/\/manage\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/(?<detail>serviceLevels|wiredserviceLevels|wanserviceLevels)\/(?<scope>[a-z-]*)\/(?<scope_id>[a-f0-9-]*)\/(?<period>[0-9a-z-]*)\/(?<start>[0-9]*)\/(?<stop>[0-9]*)\/(?<site_id>[a-f0-9-]*)/iys;
-    const insights_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/insights\/((?<obj>[a-z]+)\/)?((?<obj_id>[a-z0-9-]+)\/)((?<period>[a-z0-9]+)\/)?((?<start>[0-9]*)\/)?((?<stop>[0-9]*)\/)?(?<site_id>[0-9a-f-]*)?/iys;
-    const alarm_re = /https:\/\/manage\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!alerts\/?(?<scope>org|site)?\/?(?<uuid>[0-9a-z-]*)\/?(?<period>[0-9a-z]*)?\/?(?<start>[0-9]*)?\/?(?<stop>[0-9]*)?\/?(?<show_ack>true|false)?\/?(?<group>[a-z%0-9]*)?\/?(?<show_crit>true|false)?\/?(?<show_warn>true|false)?\/?(?<show_info>true|false)?\/?(?<site_id>[0-9a-z-]*)?/iys;
-    const templates_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/(?<detail>template|rfTemplate)\/(?<obj_id>[0-9a-z_-]*)/yis;
-    const common_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*)\/)?(?<site_id>[0-9a-f-]*)?/yis;
+    const orgsle_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/(?<scope>siteComparison|wiredSiteComparison|wanSiteComparison)\/(?<sle>[a-z-]*)\/(?<worstsle>[a-z-]*)\/([a-z-_]*)\/(?<period>[0-9a-z-]*)\/(?<start>[0-9]*)\/(?<stop>[0-9]*)/iys;
+    const sle_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/(?<detail>serviceLevels|wiredserviceLevels|wanserviceLevels)\/(?<scope>[a-z-]*)\/(?<scope_id>[a-f0-9-]*)\/(?<period>[0-9a-z-]*)\/(?<start>[0-9]*)\/(?<stop>[0-9]*)\/(?<site_id>[a-f0-9-]*)/iys;
+    const insights_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/insights\/((?<obj>[a-z]+)\/)?((?<obj_id>[a-z0-9-]+)\/)((?<period>[a-z0-9]+)\/)?((?<start>[0-9]*)\/)?((?<stop>[0-9]*)\/)?(?<site_id>[0-9a-f-]*)?/iys;
+    const alarm_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!alerts\/?(?<scope>org|site)?\/?(?<uuid>[0-9a-z-]*)\/?(?<period>[0-9a-z]*)?\/?(?<start>[0-9]*)?\/?(?<stop>[0-9]*)?\/?(?<show_ack>true|false)?\/?(?<group>[a-z%0-9]*)?\/?(?<show_crit>true|false)?\/?(?<show_warn>true|false)?\/?(?<show_info>true|false)?\/?(?<site_id>[0-9a-z-]*)?/iys;
+    const templates_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/(?<detail>template|rfTemplate)\/(?<obj_id>[0-9a-z_-]*)/yis;
+    const common_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*)\/)?(?<site_id>[0-9a-f-]*)?/yis;
     const common_objs = ["ap", "gateway", "switch", "assets", "wlan", "tags", "psk", "tunnels", "clients", "sdkclients", "wiredclients", "wxlan", "security", "switchconfig", "pcap", "orgtags", "misttunnels", "switchtemplate", "deviceprofiles", "org", "configuration", "rftemplates", "templates", "auditlogs", "apinventory", "adminconfig", "subscription", "edge"]
+    const base_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!/yis;
 
     const orgsle = orgsle_re.exec(this.tabUrl);
     const sle = sle_re.exec(this.tabUrl);
@@ -63,6 +65,8 @@ export class ApiComponent implements OnInit {
     const alarm = alarm_re.exec(this.tabUrl);
     const templates = templates_re.exec(this.tabUrl);
     const common = common_re.exec(this.tabUrl);
+    const base = base_re.exec(this.tabUrl);
+
     if (orgsle) {
       this.orgSleUrl(orgsle);
     } else if (sle) {
@@ -75,6 +79,8 @@ export class ApiComponent implements OnInit {
       this.commonUrl(templates);
     } else if (common && common["groups"] && common_objs.includes(common["groups"]["obj"].toLowerCase())) {
       this.commonUrl(common);
+    } else if (base) {
+      this.baseUrl(base);
     }
     this._cd.detectChanges()
   }
@@ -322,26 +328,39 @@ export class ApiComponent implements OnInit {
   }
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// SITE OBJ FUNCTION
-  forgeSite(host: string, extra_params: string = null): void {
-    this.obj_name = "site"
+  forgeSite(host: string, detail: string, extra_params: string = null): void {
     if (extra_params) {
       extra_params = "?" + extra_params;
     } else {
       extra_params = "";
     }
-    this.quick_links.push({
-      url: "https://api." + host + "/api/v1/sites/" + this.site_id,
-      name: "site info"
-    }, {
-      url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/setting",
-      name: "site setting"
-    }, {
-      url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/stats" + extra_params,
-      name: "site stats"
-    }, {
-      url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/devices/events/search" + extra_params,
-      name: "site devices events"
-    })
+    if (detail == "site") {
+      this.obj_name = "site"
+      this.quick_links.push({
+        url: "https://api." + host + "/api/v1/sites/" + this.site_id,
+        name: "site info"
+      }, {
+        url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/setting",
+        name: "site setting"
+      }, {
+        url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/stats" + extra_params,
+        name: "site stats"
+      }, {
+        url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/devices/events/search" + extra_params,
+        name: "site devices events"
+      })
+    } else {
+      this.quick_links.push({
+        url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/sites",
+        name: "sites"
+      }, {
+        url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/sites/search",
+        name: "site configs"
+      }, {
+        url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/sitegroups",
+        name: "site groups"
+      })
+    }
   }
 
   ////////////////////////////////////////////////////////////////////////////////////
@@ -413,6 +432,14 @@ export class ApiComponent implements OnInit {
       });
     })
   }
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////// BASE URL FUNCTION DISPATCHER
+
+  baseUrl(res: RegExpExecArray): void {
+    this.org_id = res.groups.org_id;
+  }
+
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// COMMON URL FUNCTION DISPATCHER
@@ -530,7 +557,7 @@ export class ApiComponent implements OnInit {
           break;
         case "configuration":
           this.setName("site", res.groups.detail);
-          this.forgeSite(res.groups.host, this.obj_id);
+          this.forgeSite(res.groups.host, res.groups.detail);
           break;
         case "rftemplates":
         case "templates":
