@@ -54,6 +54,7 @@ export class ApiComponent implements OnInit {
     const sle_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/(?<detail>serviceLevels|wiredserviceLevels|wanserviceLevels)\/(?<scope>[a-z-]*)\/(?<scope_id>[a-f0-9-]*)\/(?<period>[0-9a-z-]*)\/(?<start>[0-9]*)\/(?<stop>[0-9]*)\/(?<site_id>[a-f0-9-]*)/iys;
     const insights_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/insights\/((?<obj>[a-z]+)\/)?((?<obj_id>[a-z0-9-]+)\/)((?<period>[a-z0-9]+)\/)?((?<start>[0-9]*)\/)?((?<stop>[0-9]*)\/)?(?<site_id>[0-9a-f-]*)?/iys;
     const alarm_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!alerts\/?(?<scope>org|site)?\/?(?<uuid>[0-9a-z-]*)\/?(?<period>[0-9a-z]*)?\/?(?<start>[0-9]*)?\/?(?<stop>[0-9]*)?\/?(?<show_ack>true|false)?\/?(?<group>[a-z%0-9]*)?\/?(?<show_crit>true|false)?\/?(?<show_warn>true|false)?\/?(?<show_info>true|false)?\/?(?<site_id>[0-9a-z-]*)?/iys;
+    const events_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!marvis\/?(?<scope>org|site)?\/?(?<period>[0-9a-z]*)?\/?(?<start>[0-9]*)?\/?(?<stop>[0-9]*)?\/?(?<site_id>[0-9a-z-]*)?/iys;
     const templates_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/(?<detail>template|rfTemplate)\/(?<obj_id>[0-9a-z_-]*)/yis;
     const common_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*)\/)?(?<site_id>[0-9a-f-]*)?/yis;
     const common_objs = ["ap", "gateway", "switch", "assets", "wlan", "tags", "psk", "tunnels", "clients", "sdkclients", "wiredclients", "wxlan", "security", "switchconfig", "pcap", "orgtags", "misttunnels", "switchtemplate", "deviceprofiles", "org", "configuration", "rftemplates", "templates", "auditlogs", "apinventory", "adminconfig", "subscription", "edge"]
@@ -63,6 +64,7 @@ export class ApiComponent implements OnInit {
     const sle = sle_re.exec(this.tabUrl);
     const insights = insights_re.exec(this.tabUrl);
     const alarm = alarm_re.exec(this.tabUrl);
+    const events = events_re.exec(this.tabUrl);
     const templates = templates_re.exec(this.tabUrl);
     const common = common_re.exec(this.tabUrl);
     const base = base_re.exec(this.tabUrl);
@@ -75,6 +77,8 @@ export class ApiComponent implements OnInit {
       this.insightsUrl(insights);
     } else if (alarm) {
       this.alarmUrl(alarm);
+    } else if (events) {
+      this.eventsUrl(events);
     } else if (templates) {
       this.commonUrl(templates);
     } else if (common && common["groups"] && common_objs.includes(common["groups"]["obj"].toLowerCase())) {
@@ -447,7 +451,6 @@ export class ApiComponent implements OnInit {
     this.org_id = res.groups.org_id;
     let extra_params = null
     const uuid_re = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/
-    console.log(res.groups)
     if (res.groups.host && res.groups.org_id && res.groups.obj) {
       this.obj_id = res.groups.obj_id;
       this.site_id = res.groups.site_id;
@@ -636,6 +639,27 @@ export class ApiComponent implements OnInit {
       url: "https://api." + res.groups.host + "/api/v1/const/alarm_defs",
       name: " Alarms Definitions"
     });
+  }
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////// EVENTS URL FUNCTION DISPATCHER
+  eventsUrl(res: RegExpExecArray): void {
+    this.org_id = res.groups.org_id;
+    let extra_params = "";
+    if (res.groups.site_id) {
+      this.site_id = res.groups.site_id;
+    } else {
+      this.site_id = res.groups.uuid;
+    }
+
+    if (res.groups.start && res.groups.stop) {
+      extra_params = "start=" + res.groups.start + "&end=" + res.groups.stop;
+    }
+
+    this.quick_links.push({
+      url: "https://api." + res.groups.host + "/api/v1/sites/" + this.site_id + "/insights/marvis?" + extra_params,
+      name: "Site Events"
+    })
   }
 
   ////////////////////////////////////////////////////////////////////////////////////
