@@ -25,7 +25,7 @@
         </div>
         <div class="version-info">
             <div class="version-text">Lastest Version:</div>
-            <div class="version-unknown" *ngIf="!last_version">
+            <div class="version-unknown" *ngIf="!last_version && !error_happened">
                 <div>Unknown</div>
                 <img src="assets/question.svg" alt="unknow version">
             </div>
@@ -38,6 +38,9 @@
                     <div>Downlaod</div>
                     <img src="assets/download.svg" alt="download">
                 </button>
+            </div>
+            <div class="version-error" *ngIf="error_happened">
+                <div>{{error_message}}</div>
             </div>
         </div>
         <button class="check-version" (click)="checkNewRelease()">Check For New Version</button>

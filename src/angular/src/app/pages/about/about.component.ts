@@ -18,6 +18,8 @@ export class AboutComponent implements OnInit {
   current_version: string;
   last_version: string;
   up_to_date: boolean;
+  error_happened: boolean;
+  error_message: string;
   download_url: string;
   html_url: string;
   constructor(private _http: HttpClient) { }
@@ -28,7 +30,12 @@ export class AboutComponent implements OnInit {
 
 
   checkNewRelease(): void {
-    this._http.get<any>(this.github_release_url).subscribe(data => {
+    this.up_to_date = undefined;
+    this.download_url = undefined;
+    this.error_happened = undefined;
+    this.error_message = undefined;
+    this._http.get<any>(this.github_release_url).subscribe(
+      data => {
       this.last_version = data.name;
       if (this.current_version < this.last_version) {
         this.up_to_date = false;
@@ -41,6 +48,11 @@ export class AboutComponent implements OnInit {
       } else {
         this.up_to_date = true;
       }
+    },
+    error => {
+      this.error_happened = true;
+      this.error_message = "unable to fetch data from the server"
+      console.log(error)
     })
   }
 
