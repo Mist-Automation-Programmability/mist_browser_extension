@@ -98,7 +98,7 @@ export class AccountComponent implements OnInit {
   }
 
   openTab(domain: string) {
-    let dest_url = "https://manage" + domain
+    let dest_url = "https://manage" + domain + "/cloud.html";
     chrome.tabs.create({ url: dest_url });
   }
 
