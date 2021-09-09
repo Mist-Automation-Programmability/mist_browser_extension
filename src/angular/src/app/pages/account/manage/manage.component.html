@@ -1,8 +1,8 @@
 <button (click)="close()" class="close">CLOSE</button>
-<div class="container">
-    <div *ngIF="tokens.length == 0">
-        <div>This account doesn't have any API Token yet...</div>
-        <div>You can go back and create a new API Token directly from this extension!</div>
+<div class="container" style="height: 100%; display: flex; flex-direction: column; justify-content: flex-start;">
+    <div *ngIf="tokens.length == 0" style="height: 100%;display: flex;justify-content: center;flex-direction: column;text-align: center; font-weight: lighter; margin: 1em;">
+        <div style="margin: 1em;">This account doesn't have any API Token yet...</div>
+        <div style="margin: 0 2em;">You can go back and create a new API Token directly from this extension!</div>
     </div>
     <div class="token-container" *ngFor="let token of tokens">
         <div class="token">
