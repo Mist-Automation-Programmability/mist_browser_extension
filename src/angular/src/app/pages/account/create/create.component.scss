@@ -7,6 +7,8 @@
     background-color: white;
     margin: 1em;
     padding: 0;
+    border: 1px solid #bbb;
+    border-radius: 2px;
 }
 
 .cloud {
@@ -81,6 +83,7 @@ button {
 
 button.close {
     width: 100%;
+    border-radius: 0 0 2px 2px;
     background-color: #0096a3;
     color: white;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;

@@ -3,12 +3,18 @@ import { HttpClient } from '@angular/common/http';
 import { AccountManageComponent } from './manage/manage.component';
 import { Subject } from 'rxjs';
 
+export interface OrgElement {
+  org_id: string;
+  name: string;
+}
+
 export interface SessionElement {
   domain: string;
   csrftoken: string;
   email: string;
   has_sessionid: boolean;
   expires_at: number;
+  orgs: OrgElement[];
 }
 
 @Component({
@@ -30,12 +36,14 @@ export class AccountComponent implements OnInit {
 
   manageTokens: string = "";
   createToken: string = "";
+  scope: string = "";
   constructor(
     private _cd: ChangeDetectorRef,
     private _http: HttpClient
   ) { }
 
   domains = [
+    "mistsys.com",
     ".mist.com",
     ".eu.mist.com",
     ".gc1.mist.com"
@@ -78,8 +86,8 @@ export class AccountComponent implements OnInit {
           if (this.sessions[i].expires_at > cookie.expirationDate) this.sessions[i].expires_at = cookie.expirationDate
           // otherwise, add a new entry in the list
         } else {
-          if (cookie.name.startsWith("csrftoken")) this.sessions.push({ domain: cookie.domain, email: null, csrftoken: cookie.value, has_sessionid: false, expires_at: cookie.expirationDate });
-          else if (cookie.name.startsWith("sessionid")) this.sessions.push({ domain: cookie.domain, email: null, csrftoken: null, has_sessionid: true, expires_at: cookie.expirationDate });
+          if (cookie.name.startsWith("csrftoken")) this.sessions.push({ domain: cookie.domain, email: null, csrftoken: cookie.value, has_sessionid: false, expires_at: cookie.expirationDate, orgs: [] });
+          else if (cookie.name.startsWith("sessionid")) this.sessions.push({ domain: cookie.domain, email: null, csrftoken: null, has_sessionid: true, expires_at: cookie.expirationDate, orgs: [] });
         }
       }
     }
@@ -90,12 +98,33 @@ export class AccountComponent implements OnInit {
       if (session.has_sessionid && session.csrftoken) {
         let url = "https://api" + session.domain + "/api/v1/self"
         this._http.get(url).subscribe((data) => {
-          session.email= data["email"];
+          session.email = data["email"];
+          session.orgs = this.processOrgs(data["privileges"]);
           this._cd.detectChanges()
         })
       }
     })
   }
+
+  processOrgs(privileges: any[]): OrgElement[] {
+    let orgs: OrgElement[] = [];
+    privileges.forEach(privilege => {
+      if (["admin", "write"].indexOf(privilege["role"]) > -1) {
+        if (privilege["scope"] == "org") {
+          orgs.push({ org_id: privilege["org_id"], name: privilege["name"] });
+        }
+      }
+    })
+
+    orgs.sort(function (a, b) {
+      let c = b.name.toLowerCase() < a.name.toLowerCase()
+      if (c) return 1
+      else return -1
+    });;
+
+    return orgs;
+  }
+
 
   openTab(domain: string) {
     let dest_url = "https://manage" + domain + "/cloud.html";
@@ -106,8 +135,9 @@ export class AccountComponent implements OnInit {
   ////////////
   // MANAGE TOKENS
   ////////////
-  openManageTokens(domain: string): void {
+  openManageTokens(domain: string, scope: string): void {
     this.manageTokens = domain;
+    this.scope = scope;
     this.enventManageTokens.next(true)
     this.sessions.forEach(session => {
       if (session.domain == domain) {
@@ -119,6 +149,7 @@ export class AccountComponent implements OnInit {
 
   closeManageTokens(): void {
     this.manageTokens = "";
+    this.scope = "";
     this.enventManageTokens.next(false)
     this._cd.detectChanges();
   }
@@ -126,8 +157,9 @@ export class AccountComponent implements OnInit {
   ////////////
   // CREATE TOKENS
   ////////////
-  openCreateToken(domain: string): void {
+  openCreateToken(domain: string, scope: string): void {
     this.createToken = domain;
+    this.scope = scope;
     this.enventCreateToken.next(true)
     this.sessions.forEach(session => {
       if (session.domain == domain) {
@@ -139,6 +171,7 @@ export class AccountComponent implements OnInit {
 
   closeCreateToken(): void {
     this.createToken = "";
+    this.scope = "";
     this.enventCreateToken.next(false)
     this._cd.detectChanges();
   }

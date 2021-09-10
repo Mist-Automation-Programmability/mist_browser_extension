@@ -9,10 +9,44 @@
             </div>
         </div>
         <div class="text-cloud first">Logged in as <b>{{session.email}}</b></div>
-        <div class="text-cloud last">Session expires at <b>{{(session.expires_at * 1000) | date:'yyyy-MM-dd HH:mm:ss' }}</b></div>
-        <div>
-            <button class="cloud" (click)="openManageTokens(session.domain)">Manage Tokens</button>
-            <button class="cloud" (click)="openCreateToken(session.domain)">Create New Token</button>
+        <div class="text-cloud last">Session expires at <b>{{(session.expires_at * 1000) | date:'yyyy-MM-dd HH:mm:ss'}}</b></div>
+        <div style="display: flex; flex-direction: row;">
+            <div style="display: flex;flex-direction: column;width: 45%;margin: 1em;border: 1px solid #bbb;border-radius: 2px;align-items: stretch;">
+                <div style="display: flex;flex-direction: row;justify-content: center;">
+                    <img class="bottom icon" src="assets/user.svg" alt="user" style="height: 20px; margin: 4px;">
+                    <div style="display: flex;justify-content: center;flex-direction: column;"> User Token
+                    </div>
+                </div>
+
+                <div style="display: flex;flex-direction: row;">
+                    <button class="cloud token tooltip left" (click)="openManageTokens(session.domain, 'user')">
+                            <img class="icon"src="assets/list.svg">
+                            <span class="tooltiptext">Manage</span>
+                    </button>
+                    <button class="cloud token tooltip right" (click)="openCreateToken(session.domain, 'user')">
+                        <img class="icon" src="assets/add.svg">
+                        <span class="tooltiptext">Create</span>
+                    </button>
+                </div>
+            </div>
+            <div style="display: flex;flex-direction: column;width: 45%;margin: 1em;border: 1px solid #bbb;border-radius: 2px;align-items: stretch;">
+                <div style="display: flex;flex-direction: row;justify-content: center;">
+                    <img class="bottom icon" src="assets/org.svg" alt="user" style="height: 20px; margin: 4px;">
+                    <div style="display: flex;justify-content: center;flex-direction: column;">
+                        Org Token
+                    </div>
+                </div>
+                <div style="display: flex;flex-direction: row;">
+                    <button class="cloud token tooltip left" (click)="openManageTokens(session.domain, 'org')">
+                        <img class="icon"src="assets/list.svg">
+                        <span class="tooltiptext">Manage</span>
+                    </button>
+                    <button class="cloud token tooltip right" (click)="openCreateToken(session.domain, 'org')">
+                        <img class="icon" src="assets/add.svg">
+                        <span class="tooltiptext">Create</span>
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -21,5 +55,7 @@
     <div>Please log in to your Mist Dashobard first.</div>
 </div>
 
-<app-account-manage [ngClass]="{hidden: manageTokens == ''}" class="popup white" [sessionEvent]="enventSession.asObservable()" (closeManageTokens)="closeManageTokens()" [enventManageTokens]="enventManageTokens.asObservable()"></app-account-manage>
-<app-account-create [ngClass]="{hidden: createToken == ''}" class="popup transparent" [sessionEvent]="enventSession.asObservable()" (closeCreateToken)="closeCreateToken()" [enventCreateToken]="enventCreateToken.asObservable()"></app-account-create>
+<app-account-manage [ngClass]="{hidden: manageTokens == '' || scope !='user'}" class="popup white" [sessionEvent]="enventSession.asObservable()" (closeManageTokens)="closeManageTokens()" [enventManageTokens]="enventManageTokens.asObservable()"></app-account-manage>
+<app-account-create [ngClass]="{hidden: createToken == '' || scope != 'user'}" class="popup transparent" [sessionEvent]="enventSession.asObservable()" (closeCreateToken)="closeCreateToken()" [enventCreateToken]="enventCreateToken.asObservable()"></app-account-create>
+<app-account-manage-org [ngClass]="{hidden: manageTokens == '' || scope != 'org'}" class="popup white" [sessionEvent]="enventSession.asObservable()" (closeManageTokens)="closeManageTokens()" [enventManageTokens]="enventManageTokens.asObservable()"></app-account-manage-org>
+<app-account-create-org [ngClass]="{hidden: createToken == '' || scope != 'org'}" class="popup transparent" [sessionEvent]="enventSession.asObservable()" (closeCreateToken)="closeCreateToken()" [enventCreateToken]="enventCreateToken.asObservable()"></app-account-create-org>

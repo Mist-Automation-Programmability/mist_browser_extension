@@ -1,0 +1,48 @@
+<div class="content" *ngIf="session">
+    <div class="box-token">
+        <label class="token" for="token">
+            NEW API TOKEN
+        </label>
+        <div class="cloud">manage{{session.domain}}</div>
+        <div class="org_select">
+            <select name=org_id [(ngModel)]="org_id">
+                <option class="none" value="none">
+                    <div style="width: 100%; text-align: center;">-- Please Select an Org --</div>
+                </option>
+                <option *ngFor="let org of orgs" [value]="org.org_id">
+                    <div>{{org.name}}</div>
+                </option>
+            </select>
+            <select name="role" [(ngModel)]="role">
+                <option value="admin">Super User</option>
+                <option value="write">Network Admin</option>
+                <option value="read">Observer</option>
+            </select>
+            <select name="scope" [(ngModel)]="scope">
+                <option value="org">Org</option>
+                <option value="site" disabled>Site</option>
+                <option value="sitegroup" disabled>SiteGroup</option>
+            </select>
+
+            <select *ngIf="scope=='site'" name="site_id" [(ngModel)]="site_id">                
+                <option class="none" value="none">
+                    <div style="width: 100%; text-align: center;">-- Please Select a Site --</div>
+                </option>
+            </select>
+            <select *ngIf="scope=='sitegroup'" name="sitegroup_id" [(ngModel)]="sitegroup_id">  
+                <option class="none" value="none">
+                    <div style="width: 100%; text-align: center;">-- Please Select a Site Group --</div>
+                </option>
+            </select>
+
+            <button (click)="createToken()">Create</button>
+        </div>
+        <div class=token-input>
+            <textarea class="token" type="text" readonly rows="3" [ngClass]="focused == 'token '? 'focused ' : ' '" id="token" #token_input>{{token.key}}</textarea>
+            <button class="copy-token" name="copy" (click)="copyToken(token_input)">
+                <img class="copy-token" src="assets/copy.svg" alt="copy">
+            </button>
+        </div>
+    </div>
+    <button (click)="close()" class="close">CLOSE</button>
+</div>

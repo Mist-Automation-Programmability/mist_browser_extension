@@ -1,0 +1,29 @@
+select {
+    width: 80%;
+    margin-bottom: 1em;
+}
+
+.org_select {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-content: center;
+    justify-content: space-between;
+    margin: 1em;
+}
+
+select {
+    padding: 0.5em;
+    border: 1px solid #bbb;
+    width: 100%;
+    box-shadow: rgb(0 0 0 / 5%) 0px 0px 0px 1px;
+    text-align: center;
+}
+
+option {
+    text-align: start;
+}
+
+option.none {
+    text-align: center !important;
+}
