@@ -24,3 +24,7 @@ img.icon-open {
 h2 {
     cursor: default;
 }
+
+input:focus, textarea:focus, select:focus{
+    outline: none;
+}
