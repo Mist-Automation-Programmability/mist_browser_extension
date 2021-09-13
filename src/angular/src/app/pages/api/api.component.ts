@@ -572,8 +572,12 @@ export class ApiComponent implements OnInit {
           this.forgeOrgObject("logs", res.groups.host, res.groups.detail);
           break;
         case "apinventory":
-          this.obj_name = "inventory";
-          this.forgeOrgObject("inventory", res.groups.host, res.groups.detail);
+          this.obj_name = "APs inventory";
+          this.forgeOrgObject("inventory", res.groups.host, res.groups.detail, "type=ap");
+          this.obj_name = "Switches inventory";
+          this.forgeOrgObject("inventory", res.groups.host, res.groups.detail, "type=switch");
+          this.obj_name = "Gateways inventory";
+          this.forgeOrgObject("inventory", res.groups.host, res.groups.detail, "type=gateway");
           break;
         case "adminconfig":
           this.setName("admin", res.groups.detail);
