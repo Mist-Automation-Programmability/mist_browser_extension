@@ -13,8 +13,8 @@ Chrome extension to get easier access to Mist APIs and Mist API Tokens.
 
 ## Account Tab
 * List all the current valid Mist session in the web browser for manage.mist.com, manage.eu.mist.com, manage.gc1.mist.com
-* Create a new API Token in one click
-* List and delete API Tokens in one click
+* Manage User API Token (list / delete / create)
+* Manage Org API Token (list / delete / create)
 
 
 <div>
