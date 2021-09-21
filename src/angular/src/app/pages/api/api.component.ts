@@ -57,7 +57,7 @@ export class ApiComponent implements OnInit {
     const events_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!marvis\/?(?<scope>org|site)?\/?(?<period>[0-9a-z]*)?\/?(?<start>[0-9]*)?\/?(?<stop>[0-9]*)?\/?(?<site_id>[0-9a-z-]*)?/iys;
     const templates_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/(?<detail>template|rfTemplate)\/(?<obj_id>[0-9a-z_-]*)/yis;
     const common_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*)\/)?(?<site_id>[0-9a-f-]*)?/yis;
-    const common_objs = ["ap", "gateway", "switch", "assets", "wlan", "tags", "psk", "tunnels", "clients", "sdkclients", "wiredclients", "wxlan", "security", "switchconfig", "pcap", "orgtags", "misttunnels", "switchtemplate", "deviceprofiles", "org", "configuration", "rftemplates", "templates", "auditlogs", "apinventory", "adminconfig", "subscription", "edge"]
+    const common_objs = ["ap", "gateway", "switch", "assets", "wlan", "tags", "psk", "tunnels", "clients", "sdkclients", "wiredclients", "wxlan", "security", "switchconfig", "pcap", "orgtags", "misttunnels", "switchtemplate", "deviceprofiles", "org", "orgpsk", "configuration", "rftemplates", "templates", "auditlogs", "apinventory", "adminconfig", "subscription", "edge"]
     const base_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!/yis;
 
     const orgsle = orgsle_re.exec(this.tabUrl);
@@ -541,6 +541,10 @@ export class ApiComponent implements OnInit {
         case "orgtags":
           this.setName("wxtag", res.groups.detail);
           this.forgeOrgObject("wxtags", res.groups.host, res.groups.detail);
+          break;
+        case "orgpsk":
+          this.setName("org psk", res.groups.detail);
+          this.forgeOrgObject("psks", res.groups.host, res.groups.detail);
           break;
         case "misttunnels":
           this.setName("mxtunnel", res.groups.detail);
