@@ -678,7 +678,6 @@ export class ApiComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// EVENTS URL FUNCTION DISPATCHER
   floorplansUrl(res: RegExpExecArray): void {
-    console.log(res)
     this.org_id = res.groups.org_id;
     if (res.groups.site_id) {
       this.site_id = res.groups.site_id;
