@@ -7,7 +7,7 @@ body {
 
 button:hover {
     transition: all 0.2s ease-in-out;
-    box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px !important;
+    box-shadow: inset rgba(0, 0, 0, 0.15) 0px 2px 8px !important;
 }
 
 button:active {
@@ -23,4 +23,8 @@ img.icon-open {
 
 h2 {
     cursor: default;
+}
+
+input:focus, textarea:focus, select:focus{
+    outline: none;
 }

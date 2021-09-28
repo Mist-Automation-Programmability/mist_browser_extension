@@ -1,7 +1,19 @@
 <button (click)="close()" class="close">CLOSE</button>
+<select name=org_id [(ngModel)]="org_id" (change)="getTokens()">
+    <option class="none" value="none">
+        <div style="width: 100%; text-align: center;">-- Please Select an Org --</div>
+    </option>
+    <option *ngFor="let org of orgs" [value]="org.org_id">
+        <div>{{org.name}}</div>
+    </option>
+</select>
+
 <div class="container" style="height: 100%; display: flex; flex-direction: column; justify-content: flex-start;">
-    <div *ngIf="tokens.length == 0" style="height: 100%;display: flex;justify-content: center;flex-direction: column;text-align: center; font-weight: lighter; margin: 1em;">
-        <div style="margin: 1em;">This account doesn't have any API Token yet...</div>
+    <div *ngIf="org_id == 'none'" style="height: 100%;display: flex;justify-content: center;flex-direction: column;text-align: center; font-weight: lighter; margin: 1em;">
+        <div style="margin: 1em;">Please select an Org...</div>
+    </div>
+    <div *ngIf="tokens.length == 0 && org_id != 'none'" style="height: 100%;display: flex;justify-content: center;flex-direction: column;text-align: center; font-weight: lighter; margin: 1em;">
+        <div style="margin: 1em;">This Org doesn't have any API Token yet...</div>
         <div style="margin: 0 2em;">You can go back and create a new API Token directly from this extension!</div>
     </div>
     <div class="token-container" *ngFor="let token of tokens">
