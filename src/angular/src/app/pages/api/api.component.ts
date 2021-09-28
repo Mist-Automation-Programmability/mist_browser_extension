@@ -56,6 +56,7 @@ export class ApiComponent implements OnInit {
     const alarm_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!alerts\/?(?<scope>org|site)?\/?(?<uuid>[0-9a-z-]*)\/?(?<period>[0-9a-z]*)?\/?(?<start>[0-9]*)?\/?(?<stop>[0-9]*)?\/?(?<show_ack>true|false)?\/?(?<group>[a-z%0-9]*)?\/?(?<show_crit>true|false)?\/?(?<show_warn>true|false)?\/?(?<show_info>true|false)?\/?(?<site_id>[0-9a-z-]*)?/iys;
     const events_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!marvis\/?(?<scope>org|site)?\/?(?<period>[0-9a-z]*)?\/?(?<start>[0-9]*)?\/?(?<stop>[0-9]*)?\/?(?<site_id>[0-9a-z-]*)?/iys;
     const templates_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/(?<detail>template|rfTemplate)\/(?<obj_id>[0-9a-z_-]*)/yis;
+    const floorplans_re = /https:\/\/manage\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/(?<detail>view|config|validationPath|wayfinding)?\/?(?<uuid>[0-9a-f-]*)\/?(floorplan|beaconsAndZones)?\/?(?<site_id>[0-9a-f-]*)?/iys;
     const common_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*)\/)?(?<site_id>[0-9a-f-]*)?/yis;
     const common_objs = ["ap", "gateway", "switch", "assets", "wlan", "tags", "psk", "tunnels", "clients", "sdkclients", "wiredclients", "wxlan", "security", "switchconfig", "pcap", "orgtags", "misttunnels", "switchtemplate", "deviceprofiles", "org", "orgpsk", "configuration", "rftemplates", "templates", "auditlogs", "apinventory", "adminconfig", "subscription", "edge"]
     const base_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!/yis;
@@ -66,6 +67,7 @@ export class ApiComponent implements OnInit {
     const alarm = alarm_re.exec(this.tabUrl);
     const events = events_re.exec(this.tabUrl);
     const templates = templates_re.exec(this.tabUrl);
+    const floorplans = floorplans_re.exec(this.tabUrl);
     const common = common_re.exec(this.tabUrl);
     const base = base_re.exec(this.tabUrl);
 
@@ -81,6 +83,8 @@ export class ApiComponent implements OnInit {
       this.eventsUrl(events);
     } else if (templates) {
       this.commonUrl(templates);
+    } else if (floorplans) {
+      this.floorplansUrl(floorplans);
     } else if (common && common["groups"] && common_objs.includes(common["groups"]["obj"].toLowerCase())) {
       this.commonUrl(common);
     } else if (base) {
@@ -668,6 +672,23 @@ export class ApiComponent implements OnInit {
       url: "https://api." + res.groups.host + "/api/v1/sites/" + this.site_id + "/insights/marvis?" + extra_params,
       name: "Site Events"
     })
+  }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////// EVENTS URL FUNCTION DISPATCHER
+  floorplansUrl(res: RegExpExecArray): void {
+    console.log(res)
+    this.org_id = res.groups.org_id;
+    if (res.groups.site_id) {
+      this.site_id = res.groups.site_id;
+      this.obj_id = res.groups.uuid;
+    } else {
+      this.site_id = res.groups.uuid;
+    }
+
+    this.setName("floor plan", res.groups.detail);
+    this.forgeSiteObject("maps", res.groups.host, res.groups.detail);
   }
 
   ////////////////////////////////////////////////////////////////////////////////////
