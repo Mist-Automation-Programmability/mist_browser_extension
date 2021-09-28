@@ -28,11 +28,15 @@ def process_sub(parent_path: dict, splitted_path: list, specs: dict):
     return parent_path
 
 
+
+### entry point
+# open file
 with open(js_path, 'r') as js:
     js_data = json.loads(js.read())
 
-
+# loop on each path from the open api spec
 for path in js_data["paths"]:
+    # split the path to create the JSON levels
     splitted_path = path.split("/")[1:]
     specs = js_data["paths"][path]
     js_chrome["paths"] = process_sub(js_chrome["paths"], splitted_path, specs)
