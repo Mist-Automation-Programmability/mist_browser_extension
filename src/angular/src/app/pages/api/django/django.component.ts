@@ -8,23 +8,27 @@ export interface linkElement {
 }
 
 @Component({
-  selector: 'app-api-manage',
-  templateUrl: 'manage.component.html',
+  selector: 'app-api-django',
+  templateUrl: 'django.component.html',
   styleUrls: ['../api.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ApiManageComponent implements OnInit {
+export class ApiDjangoComponent implements OnInit {
   message: string;
   mist_url: string = "";
 
   quick_links: linkElement[] = []
 
-  org_id: string = "";
-  site_id: string = "";
-  obj_id: string = "";
-  obj_name: string = "";
-  focused: string = "";
-
+  scope: string;
+  scope_id: string;
+  path_params = [];
+  query_params = [];
+  docs = {
+    "get": {},
+    "post": {},
+    "put": {},
+    "delete": {},
+  }
   constructor(
     @Inject(TAB_URL) readonly tabUrl: string,
     private _cd: ChangeDetectorRef
@@ -32,10 +36,9 @@ export class ApiManageComponent implements OnInit {
 
 
   hosts = [
-    "manage.mist.com",
-    "integration.mist.com",
-    "manage.eu.mist.com",
-    "manage.gc1.mist.com"
+    "api.mist.com",
+    "api.eu.mist.com",
+    "api.gc1.mist.com"
   ]
 
   ngOnInit() {

@@ -1,0 +1,41 @@
+<div class="content no-grow">
+    <h2>API Info</h2>
+    <div style="display: flex; flex-direction: column;">
+        <h3>Path Parameters</h3>
+        <div *ngFor="let path for path_params" style="display: flex; flex-direction: row;">
+            <div>{{path.name}}</div>
+            <div>{{path.value}}</div>
+        </div>
+    </div>
+    <div>
+        <h3>Query Parameters</h3>
+        <div *ngFor="let query for query_params" style="display: flex; flex-direction: row;">
+            <div>{{query.name}}</div>
+            <div>{{query.value}}</div>
+        </div>
+    </div>
+    <div>
+        <h3>Documentation</h3>
+        <div *ngId="docs.get" style="display: flex; flex-direction: row;">
+            <div>GET</div>
+            <div>{{docs.get.operationId}}</div>
+            <div>{{docs.get.link}}</div>
+        </div>
+        <div *ngId="docs.post" style="display: flex; flex-direction: row;">
+            <div>POST</div>
+            <div>{{docs.post.operationId}}</div>
+            <div>{{docs.post.link}}</div>
+        </div>
+        <div *ngId="docs.put" style="display: flex; flex-direction: row;">
+            <div>PUT</div>
+            <div>{{docs.put.operationId}}</div>
+            <div>{{docs.put.link}}</div>
+        </div>
+        <div *ngId="docs.delete" style="display: flex; flex-direction: row;">
+            <div>DELETE</div>
+            <div>{{docs.delete.operationId}}</div>
+            <div>{{docs.delete.link}}</div>
+        </div>
+    </div>
+
+</div>
