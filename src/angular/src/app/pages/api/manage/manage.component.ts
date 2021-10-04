@@ -1,4 +1,5 @@
 import { group } from '@angular/animations';
+import { escapeIdentifier } from '@angular/compiler/src/output/abstract_emitter';
 import { Component, Inject, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { TAB_URL } from '../../../providers/tab-url.provider';
 
@@ -38,6 +39,12 @@ export class ApiManageComponent implements OnInit {
     "manage.gc1.mist.com"
   ]
 
+  external_links = {
+    doc: "https://doc.mist-lab.fr",
+    postman: "https://documenter.getpostman.com/view/224925/SzYgQufe",
+    mist: "https://api.mist.com/api/v1/docs"
+  }
+
   ngOnInit() {
     this.generateApiUrl()
   }
@@ -51,13 +58,14 @@ export class ApiManageComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////
   // API URL ENTRYPOINT
   generateApiUrl() {
+    console.log(this.tabUrl)
     const orgsle_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/(?<scope>siteComparison|wiredSiteComparison|wanSiteComparison)\/(?<sle>[a-z-]*)\/(?<worstsle>[a-z-]*)\/([a-z-_]*)\/(?<period>[0-9a-z-]*)\/(?<start>[0-9]*)\/(?<stop>[0-9]*)/iys;
     const sle_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/(?<detail>serviceLevels|wiredserviceLevels|wanserviceLevels)\/(?<scope>[a-z-]*)\/(?<scope_id>[a-f0-9-]*)\/(?<period>[0-9a-z-]*)\/(?<start>[0-9]*)\/(?<stop>[0-9]*)\/(?<site_id>[a-f0-9-]*)/iys;
     const insights_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/insights\/((?<obj>[a-z]+)\/)?((?<obj_id>[a-z0-9-]+)\/)((?<period>[a-z0-9]+)\/)?((?<start>[0-9]*)\/)?((?<stop>[0-9]*)\/)?(?<site_id>[0-9a-f-]*)?/iys;
     const alarm_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!alerts\/?(?<scope>org|site)?\/?(?<uuid>[0-9a-z-]*)\/?(?<period>[0-9a-z]*)?\/?(?<start>[0-9]*)?\/?(?<stop>[0-9]*)?\/?(?<show_ack>true|false)?\/?(?<group>[a-z%0-9]*)?\/?(?<show_crit>true|false)?\/?(?<show_warn>true|false)?\/?(?<show_info>true|false)?\/?(?<site_id>[0-9a-z-]*)?/iys;
     const events_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!marvis\/?(?<scope>org|site)?\/?(?<period>[0-9a-z]*)?\/?(?<start>[0-9]*)?\/?(?<stop>[0-9]*)?\/?(?<site_id>[0-9a-z-]*)?/iys;
-    const templates_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/(?<detail>template|rfTemplate)\/(?<obj_id>[0-9a-z_-]*)/yis;
-    const floorplans_re = /https:\/\/manage\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/(?<detail>view|config|validationPath|wayfinding)?\/?(?<uuid>[0-9a-f-]*)\/?(floorplan|beaconsAndZones)?\/?(?<site_id>[0-9a-f-]*)?/iys;
+    const templates_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>template|rfTemplate)\/(?<detail>template|rfTemplate)\/(?<obj_id>[0-9a-z_-]*)/yis;
+    const floorplans_re = /https:\/\/manage\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!cliLocation\/(?<detail>view|config|validationPath|wayfinding)?\/?(?<uuid>[0-9a-f-]*)\/?(floorplan|beaconsAndZones)?\/?(?<site_id>[0-9a-f-]*)?/iys;
     const common_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*)\/)?(?<site_id>[0-9a-f-]*)?/yis;
     const common_objs = ["ap", "gateway", "switch", "assets", "wlan", "tags", "psk", "tunnels", "clients", "sdkclients", "wiredclients", "wxlan", "security", "switchconfig", "pcap", "orgtags", "misttunnels", "switchtemplate", "deviceprofiles", "org", "orgpsk", "configuration", "rftemplates", "templates", "auditlogs", "apinventory", "adminconfig", "subscription", "edge"]
     const base_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!/yis;
@@ -280,13 +288,15 @@ export class ApiManageComponent implements OnInit {
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// SITE DEVICE LAST CONFIG FUNCTION
-  forgeSiteApLastConfig(host: string, device_type: string): void {
-    const mac = this.getMac(this.obj_id)
-    if (device_type == "ap" && mac) {
-      this.quick_links.push({
-        url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/devices/last_config/search?" + device_type + "=" + mac,
-        name: "Last Config"
-      })
+  forgeSiteApLastConfig(detail, host: string, device_type: string): void {
+    if (detail) {
+      const mac = this.getMac(this.obj_id)
+      if (device_type == "ap" && mac) {
+        this.quick_links.push({
+          url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/devices/last_config/search?" + device_type + "=" + mac,
+          name: "Last Config"
+        })
+      }
     }
   }
   ////////////////////////////////////////////////////////////////////////////////////
@@ -468,7 +478,7 @@ export class ApiManageComponent implements OnInit {
           this.forgeSiteObject("devices", res.groups.host, res.groups.detail, extra_params);
           this.forgeSiteObjectStats("devices", res.groups.host, res.groups.detail, extra_params);
           this.forgeSiteObjectEvents("devices", res.groups.obj, res.groups.host, res.groups.detail);
-          this.forgeSiteApLastConfig(res.groups.host, res.groups.obj);
+          this.forgeSiteApLastConfig(res.groups.detail, res.groups.host, res.groups.obj);
           break;
         case "switch":
           const is_uuid = uuid_re.test(this.obj_id)
@@ -709,7 +719,7 @@ export class ApiManageComponent implements OnInit {
           this.forgeSiteObject("devices", res.groups.host, "detail");
           this.forgeSiteObjectStats("devices", res.groups.host, "detail", extra_params);
           this.forgeSiteObjectEvents("devices", "ap", res.groups.host, "detail", extra_params);
-          this.forgeSiteApLastConfig(res.groups.host, 'ap');
+          this.forgeSiteApLastConfig(res.groups.detail, res.groups.host, 'ap');
           break;
         case "client":
           this.setName("client", "insights");
@@ -837,10 +847,20 @@ export class ApiManageComponent implements OnInit {
   // OTHER FUNCTIONS
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
+
+  // open a new tab with the url passed in parameter
   openApiTab(url: string) {
     chrome.tabs.create({ url: url });
   }
 
+  // open a new tab 
+  openTab(target: string) {
+    if (target in this.external_links) {
+      chrome.tabs.create({ url: this.external_links[target] });
+    }
+  }
+
+  // copy the id (org_id, site_id, ...) into the clipboard
   copyId(inputElement: HTMLInputElement): void {
     this.focused = inputElement.id;
     inputElement.select();
@@ -852,21 +872,5 @@ export class ApiManageComponent implements OnInit {
     inputElement.setSelectionRange(0, 0);
   }
 
-  openTab(target: string) {
-    let dest_url = ""
-    switch (target) {
-      case "openapi":
-        dest_url = "https://doc.mist-lab.fr";
-        break;
-      case "postman":
-        dest_url = "https://documenter.getpostman.com/view/224925/SzYgQufe";
-        break;
-      case "mist":
-        dest_url = "https://api.mist.com/api/v1/docs";
-        break;
-    }
-    if (dest_url) {
-      chrome.tabs.create({ url: dest_url });
-    }
-  }
+
 }
