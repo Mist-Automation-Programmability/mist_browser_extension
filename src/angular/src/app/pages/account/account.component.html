@@ -50,9 +50,12 @@
         </div>
     </div>
 </div>
-<div *ngIf="sessions.length == 0" class="no-account">
+<div *ngIf="sessions.length == 0 && is_working == false" class="no-account">
     <div>Sorry, I'm not able to find any Mist Session in this browser...</div>
     <div>Please log in to your Mist Dashobard first.</div>
+</div>
+<div *ngIf="sessions.length == 0 && is_working == true" class="no-account">
+    <div>I'm still working... Please wait a bit more... Thanks!</div>
 </div>
 
 <app-account-manage [ngClass]="{hidden: manageTokens == '' || scope !='user'}" class="popup white" [sessionEvent]="enventSession.asObservable()" (closeManageTokens)="closeManageTokens()" [enventManageTokens]="enventManageTokens.asObservable()"></app-account-manage>
