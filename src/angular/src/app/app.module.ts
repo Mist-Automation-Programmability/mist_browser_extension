@@ -6,6 +6,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ApiComponent } from './pages/api/api.component';
 import { ApiManageComponent } from './pages/api/manage/manage.component';
+import { ApiDjangoComponent } from './pages/api/django/django.component';
 import { AccountComponent } from './pages/account/account.component';
 import { AccountManageComponent } from './pages/account/manage/manage.component';
 import { AccountCreateComponent } from './pages/account/create/create.component'
@@ -14,7 +15,11 @@ import { AccountCreateOrgComponent } from './pages/account/create_org/create_org
 import { AboutComponent } from './pages/about/about.component'
 
 @NgModule({
-  declarations: [AppComponent, ApiComponent, AccountComponent, AccountManageComponent, AccountCreateComponent, AccountManageOrgComponent, AccountCreateOrgComponent, AboutComponent],
+  declarations: [
+    AppComponent, 
+    ApiComponent, ApiManageComponent, ApiDjangoComponent,
+    AccountComponent, AccountManageComponent, AccountCreateComponent, AccountManageOrgComponent, AccountCreateOrgComponent, 
+    AboutComponent],
   imports: [BrowserModule, AppRoutingModule, FormsModule, HttpClientModule],
   bootstrap: [AppComponent]
 })

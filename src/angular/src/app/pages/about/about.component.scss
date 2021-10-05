@@ -53,6 +53,7 @@ button.links:enabled {
     color: white;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
     transition: background-color 0.2s ease-in-out;
+    cursor: pointer;
 }
 
 button.links:enabled:hover {
@@ -125,6 +126,7 @@ button.links:enabled:hover {
     margin: 0;
     transition: background-color 0.2s ease-in-out;
     background-color: #ddd;
+    cursor: pointer;
 }
 
 .check-version:hover {

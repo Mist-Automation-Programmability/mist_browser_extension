@@ -33,7 +33,7 @@ export class ApiComponent implements OnInit {
   ngOnInit() {
     let host = this.tabUrl.split("/")[2]
     if (this.hosts_manage.indexOf(host) > -1) this.display = "manage"
-    else if (this.hosts_api.indexOf(host) > -1) this.display = "api"
+    else if (this.hosts_api.indexOf(host) > -1 && this.tabUrl.indexOf("/api/v1/docs") < 0) this.display = "django"
   }
 
 }

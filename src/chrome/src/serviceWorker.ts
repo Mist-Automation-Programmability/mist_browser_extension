@@ -25,17 +25,24 @@ function checkUrl(tabUrl: string) {
 
     const base_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!/yis;
     const base = base_re.exec(tabUrl);
+    const api_re = /https:\/\/api\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/api\/v1\/(?<scope>const|installer|invite|login|logout|mobile|msps|orgs|recover|register|self|sites|utils)/yis;
+    const api = api_re.exec(tabUrl);
 
     if (base) {
-        apiBadge(true);
+        apiBadge(true, false);
+    } else if (api) {
+        apiBadge(false, true);
     } else {
-        apiBadge(false);
+        apiBadge(false, false);
     }
 }
 
-function apiBadge(show: boolean) {
-    if (show) {
+function apiBadge(showManage: boolean, showDjango: boolean) {
+    if (showManage) {
         chrome.action.setBadgeBackgroundColor({ color: "#4caf50" })
+        chrome.action.setBadgeText({ "text": "\u2713" });
+    } else if (showDjango) {
+        chrome.action.setBadgeBackgroundColor({ color: "#094f85" })
         chrome.action.setBadgeText({ "text": "\u2713" });
     } else {
         chrome.action.setBadgeText({ "text": "" });
