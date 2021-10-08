@@ -49,11 +49,11 @@ export class AccountComponent implements OnInit {
     ".gc1.mist.com"
   ]
 
-  sessions: SessionElement[] = []
-
+  sessions: SessionElement[] = [];
+  is_working=true;
 
   ngOnInit() {
-    //console.log(this.cookies)
+    this.is_working = true;
     this.sessions = [];
     chrome.cookies.getAll({}, (cookies) => {
       cookies.forEach((cookie) => {
@@ -104,6 +104,7 @@ export class AccountComponent implements OnInit {
         })
       }
     })
+    this.is_working = false;
   }
 
   processOrgs(privileges: any[]): OrgElement[] {

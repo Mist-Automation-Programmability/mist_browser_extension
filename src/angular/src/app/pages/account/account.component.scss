@@ -6,17 +6,6 @@
     flex-direction: column;
 }
 
-.no-account {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin: 1em;
-    text-align: center;
-    font-weight: 200;
-    height: 100%;
-}
-
 .popup {
     position: absolute;
     top: 50px;
@@ -83,6 +72,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    cursor: pointer;
 }
 
 .title-cloud img {
@@ -145,43 +135,11 @@ button.token {
     align-items: center;
     justify-content: center;
     padding: 0.1em;
+    cursor: pointer;
 }
 
-///////////////////////
-// TOOTLTIP
-.tooltip {
-    position: relative;
-    display: inline-block;
-}
-
+// tooltip
 .tooltip .tooltiptext {
-    visibility: hidden;
-    width: 60px;
-    background-color: #00000061;
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 4px 0;
-    position: absolute;
-    z-index: 1;
-    top: 150%;
-    left: 50%;
-    margin-left: -30px;
-    font-size: smaller;
-}
-
-.tooltip .tooltiptext::after {
-    content: "";
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: transparent transparent #00000061 transparent;
-}
-
-.tooltip:hover .tooltiptext {
-    visibility: visible;
-    transition: visibility 0.2s ease-in-out, opacity 0.2s ease-in-out;
+    top: 130%;
+    left: 30%;
 }

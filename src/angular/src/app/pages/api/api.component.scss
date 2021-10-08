@@ -131,3 +131,17 @@ button.copy-ids:hover img.copy-ids {
 img.copy-ids {
     height: 20px;
 }
+
+button.request {
+    margin: 2em;
+    background-color: unset;
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: rgb(0 0 0 / 5%) 0px 0px 0px 1px;
+    transition: background-color 0.2s ease-in-out;
+}
+
+button.request:hover {
+    background-color: lightgray;
+}

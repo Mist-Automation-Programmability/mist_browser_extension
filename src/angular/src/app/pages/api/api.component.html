@@ -1,46 +1,11 @@
-<div class="content no-grow">
-    <h2>Page Info</h2>
-    <div *ngIf="!org_id" class="not_mist">
-        <div>Sorry, this website does not look like a Mist Organization...</div>
-        <div>If you think I'm wrong, please send me an email with the current URL.</div>
+<app-api-manage *ngIf="display=='manage'"></app-api-manage>
+<app-api-django *ngIf="display=='django'"></app-api-django>
+<div *ngIf="display !='manage' && display!='django'" class="notice-text">
+    <div>
+        This page is not supported by the application yet...
     </div>
-    <div *ngIf="org_id">
-        <div class="box-ids" *ngIf="org_id">
-            <label class="ids" for="org_id">ORG ID</label>
-            <div class=box-ids-input>
-                <input class="ids" type="text" readonly [(value)]="org_id" [ngClass]="focused == 'org_id'? 'focused' : ''" id="org_id" #org_id_input>
-                <button class="copy-ids" name="copy" (click)="copyId(org_id_input)">
-                    <img class="copy-ids" src="assets/copy.svg" alt="copy">
-                </button>
-            </div>
-        </div>
-        <div class="box-ids" *ngIf="site_id">
-            <label class="ids" for="site_id">SITE ID</label>
-            <div class=box-ids-input>
-                <input class="ids" type="text" readonly [(value)]="site_id" [ngClass]="focused == 'site_id'? 'focused' : ''" id="site_id" #site_id_input>
-                <button class="copy-ids" name="copy" (click)="copyId(site_id_input)">
-                    <img class="copy-ids" src="assets/copy.svg" alt="copy">
-                </button>
-            </div>
-        </div>
-        <div class="box-ids" *ngIf="obj_id">
-            <label class="ids" for="obj_id">{{obj_name | uppercase}} ID</label>
-            <div class=box-ids-input>
-                <input class="ids" type="text" readonly [(value)]="obj_id" [ngClass]="focused == 'obj_id'? 'focused': ''" id="obj_id" #obj_id_input>
-                <button class="copy-ids" name="copy" (click)="copyId(obj_id_input)">
-                    <img class="copy-ids" src="assets/copy.svg" alt="copy">
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-<div *ngIf="quick_links.length > 0" class="content no-grow">
-    <h2>Quick API Access</h2>
-    <div class="box-apitab">
-        <button *ngFor="let quick_link of quick_links"  class="apitab" (click)="openApiTab(quick_link.url)">
-            <div>{{quick_link.name | uppercase}}</div>
-            <img class="icon-open" src="assets/open.svg" alt="open">
-        </button>
-
+    <div style="margin-top:1em;">If you think it should, please create a request to report your current URL.</div>
+    <div>
+        <button class="request" (click)="openTab()">Create a Request</button>
     </div>
 </div>

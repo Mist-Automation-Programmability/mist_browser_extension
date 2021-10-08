@@ -1,0 +1,106 @@
+<div class="content no-grow">
+    <div>
+        <h2>Query Parameters</h2>
+        <div *ngIf="query_params.length > 0">
+            <button class="update" (click)="updateUrl()">
+                <span>Update URL</span>
+            </button>
+            <div class="grid-wrapper">
+                <div *ngFor="let query of query_params" class="grid-item">
+                    <label>{{query.name}}
+                        <div *ngIf="query.description" class="tooltip">
+                            <img class="help icon" src="assets/question.svg">
+                            <span class="tooltiptext">{{query.description}}</span>
+                        </div>
+                    </label>
+
+
+                    <select *ngIf="query.schema.enum" [(ngModel)]="query.value" [name]="query.value">
+                        <option *ngFor="let enum of query.schema.enum" [value]="enum">{{enum}}</option>
+                    </select>
+
+                    <div *ngIf="!query.schema.enum">
+                        <select *ngIf="query.schema.type=='boolean'" [(ngModel)]="query.value" [name]="query.value">
+                            <option value="true">True</option>
+                            <option value="false">False</option>
+                        </select>
+
+                        <input *ngIf=" query.schema.type=='string'" type="string" [(ngModel)]="query.value" />
+
+                        <div *ngIf="query.schema.type=='integer'">
+                            <div *ngIf="'minimum' in query.schema">
+                                <input type="number" [min]="query.schema.minimum" [(ngModel)]="query.value" />
+                            </div>
+                            <div *ngIf="!'minimum' in query.schema">
+                                <input type="number" [(ngModel)]="query.value" />
+                            </div>
+                        </div>
+
+                        <div *ngIf="query.schema.type=='number'">
+                            <div *ngIf="'minimum' in query.schema">
+                                <input type="number" [min]="query.schema.minimum" step="0.01" [(ngModel)]="query.value" />
+                            </div>
+                            <div *ngIf="!'minimum' in query.schema">
+                                <input type="number" step="0.01" [(ngModel)]="query.value" />
+                            </div>
+                        </div>
+
+                        <input *ngIf="query.schema.type!='integer' && query.schema.type!='number' && query.schema.type!='string'" [(ngModel)]="query.value" />
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div *ngIf="query_params.length == 0" class="notice-text">
+            This API call doesn't not support any query parameters.
+        </div>
+    </div>
+    <div>
+        <h2>Documentation</h2>
+        <button *ngIf="docs.get" class="doc-link" (click)="openDoc(docs.get.operationId)">
+            <div class="method get">GET</div>
+            <div class="operation">
+                <span class="operationId">
+                    {{docs.get.operationId}}
+                </span>
+                <div class="tooltip">
+                    <img src="assets/manual.svg" alt="question">
+                </div>
+            </div>
+        </button>
+        <button *ngIf="docs.post" class="doc-link" (click)="openDoc(docs.post.operationId)">
+            <div class="method post">POST</div>
+            <div class="operation">
+                <span class="operationId">
+                    {{docs.post.operationId}}
+                </span>
+                <div class="tooltip">
+                    <img src="assets/manual.svg" alt="question">
+                </div>
+            </div>
+        </button>
+        <button *ngIf="docs.put" class="doc-link" (click)="openDoc(docs.put.operationId)">
+            <div class="method put">PUT</div>
+            <div class="operation">
+                <span class="operationId">
+                    {{docs.put.operationId}}
+                </span>
+                <div class="tooltip">
+                    <img src="assets/manual.svg" alt="question">
+                </div>
+            </div>
+        </button>
+        <button *ngIf="docs.delete" class="doc-link" (click)="openDoc(docs.delete.operationId)">
+            <div class="method delete">DELETE</div>
+            <div class="operation">
+                <span class="operationId">
+                    {{docs.delete.operationId}}
+                </span>
+                <div class="tooltip">
+                    <img src="assets/manual.svg" alt="question">
+                </div>
+            </div>
+        </button>
+    </div>
+
+</div>
