@@ -3,12 +3,21 @@ Chrome extension to get easier access to Mist APIs and Mist API Tokens.
  
 # Features
 ## API Tab
+### When on the Mist Dashboard
 * Quick access to the Mist IDs (org_id, site_id and object_id) from the current Mist dashboard page
 * Direct access to the Mist API Pages (Django) from the current Mist dashboard page
 
 <div>
 <img src="._readme/img/api.png" width="50%">
+</div>
 
+### When on a Django Page
+* Lists all the available query parameters
+* Allows to easily customize the query parameters
+* Direct access to the Online API Documentation for the current API Call (GET/POST/PUT/DELETE)
+
+<div>
+<img src="._readme/img/django.png" width="50%">
 </div>
 
 ## Account Tab
@@ -23,6 +32,10 @@ Chrome extension to get easier access to Mist APIs and Mist API Tokens.
 <div>
 <img src="._readme/img/accounts_create.png" width="40%">
 <img src="._readme/img/accounts_manage.png" width="40%">
+</div>
+<div>
+<img src="._readme/img/accounts_org_create.png" width="40%">
+<img src="._readme/img/accounts_org_manage.png" width="40%">
 </div>
 
 ## About Tab
