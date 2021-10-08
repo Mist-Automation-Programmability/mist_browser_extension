@@ -56,4 +56,4 @@ js_chrome["components"]["parameters"] = js_data["components"]["parameters"]
 with open(res_path, "w") as f:
     json.dump(js_chrome, f)
 
-shutil.copy("./api.json", "./src/angular/src/app/pages/api/django/api.json")
+shutil.copy("./api.json", "./src/angular/src/assets/api.json")

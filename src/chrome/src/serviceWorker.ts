@@ -42,7 +42,7 @@ function apiBadge(showManage: boolean, showDjango: boolean) {
         chrome.action.setBadgeBackgroundColor({ color: "#4caf50" })
         chrome.action.setBadgeText({ "text": "\u2713" });
     } else if (showDjango) {
-        chrome.action.setBadgeBackgroundColor({ color: "#094f85" })
+        chrome.action.setBadgeBackgroundColor({ color: "#f38019" })
         chrome.action.setBadgeText({ "text": "\u2713" });
     } else {
         chrome.action.setBadgeText({ "text": "" });

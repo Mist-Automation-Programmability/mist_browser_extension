@@ -50,11 +50,11 @@
         </div>
     </div>
 </div>
-<div *ngIf="sessions.length == 0 && is_working == false" class="no-account">
+<div *ngIf="sessions.length == 0 && is_working == false" class="notice-text">
     <div>Sorry, I'm not able to find any Mist Session in this browser...</div>
     <div>Please log in to your Mist Dashobard first.</div>
 </div>
-<div *ngIf="sessions.length == 0 && is_working == true" class="no-account">
+<div *ngIf="sessions.length == 0 && is_working == true" class="notice-text">
     <div>I'm still eating your cookies... Not done yet...</div>
     <div>Please wait a bit more... Thanks!</div>
 </div>

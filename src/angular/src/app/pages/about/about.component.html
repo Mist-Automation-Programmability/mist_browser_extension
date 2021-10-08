@@ -29,10 +29,10 @@
                 <div>Unknown</div>
                 <img src="assets/question.svg" alt="unknow version">
             </div>
-            <div class="version-uptodate" *ngIf="last_version && current_version == last_version">
+            <div class="version-uptodate" *ngIf="last_version && up_to_date">
                 <div>You have the lastest Version</div>
             </div>
-            <div class="version-newversion" *ngIf="last_version && current_version != last_version">
+            <div class="version-newversion" *ngIf="last_version && !up_to_date">
                 <div>New version available ({{last_version}})</div>
                 <button class="download" (click)="openTab('download_url')">
                     <div>Downlaod</div>

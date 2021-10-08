@@ -1,4 +1,24 @@
-.doc_link {
+// GRID
+.grid-wrapper {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    justify-items: stretch;
+    align-items: stretch;
+    justify-content: center;
+}
+
+.grid-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+    font-weight: 100;
+    margin: .2em .5em;
+    width: 150px;
+}
+
+// LINKS
+.doc-link {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -9,9 +29,14 @@
     box-shadow: rgb(0 0 0 / 10%) 0px 1px 3px 0px, rgb(0 0 0 / 6%) 0px 1px 2px 0px;
     cursor: pointer;
     margin: 1em 0;
+    transition: all 0.2s ease-in-out;
 }
 
-.doc_link .operation {
+.doc-link:hover {
+    transition: all 0.2s ease-in-out;
+}
+
+.doc-link .operation {
     color: black;
     font-weight: 200;
     display: flex;
@@ -23,20 +48,23 @@
     justify-content: space-between;
     width: 100%;
     font-size: small;
-    margin: 0 1em;
     padding: 0 0.5em;
 }
 
-.doc_link:hover {
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
-    background-color: #ddd;
-}
-
-.doc_link .operation img {
+.doc-link .operation img {
     color: gray;
     height: 1.5em;
     margin: 0.5em;
-    filter: invert(100%) sepia(0) saturate(1352%) hue-rotate( 0deg) brightness(10%) contrast(0);
+    filter: invert(100%) sepia(0) saturate(1352%) hue-rotate(0deg) brightness(10%) contrast(0);
+}
+
+.operationId {
+    width: 14em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: gray;
+    text-align: start;
 }
 
 .method {
@@ -66,4 +94,54 @@
 .delete {
     color: red;
     border: 1px solid red;
+}
+
+////// INPUT
+.help.icon {
+    filter: invert(100%) sepia(0) saturate(1352%) hue-rotate(0deg) brightness(10%) contrast(0);
+    height: 15px;
+    margin-left: 1px;
+}
+
+input {
+    border: 1px solid lightgray;
+    padding: 5px 0 5px 5px;
+    margin: 2px 0;
+}
+
+select:focus,
+input:focus {
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 10%), 0 1px 2px 0 rgb(0 0 0 / 6%);
+}
+
+.ng-untouched {
+    color: gray;
+}
+
+select {
+    width: 100%;
+    padding: 4px;
+    border: 1px solid lightgray;
+    margin: 2px 0;
+}
+
+// BUTTON
+button.update {
+    background-color: #84b035;
+    color: white;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+    transition: background-color 0.2s ease-in-out;
+    cursor: pointer;
+    width: 100%;
+    margin: 1em 0;
+}
+
+button.update:enabled:hover {
+    background-color: #649015;
+}
+
+// tooltip
+.tooltip .tooltiptext {
+    top: 100%;
+    left: -30%;
 }

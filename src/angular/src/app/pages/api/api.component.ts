@@ -36,4 +36,7 @@ export class ApiComponent implements OnInit {
     else if (this.hosts_api.indexOf(host) > -1 && this.tabUrl.indexOf("/api/v1/docs") < 0) this.display = "django"
   }
 
+  openTab() {
+    chrome.tabs.create({ url: "https://github.com/tmunzer/mist_chrome_extension/issues/new" })
+  }
 }

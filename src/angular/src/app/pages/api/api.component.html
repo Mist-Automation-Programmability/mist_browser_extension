@@ -1,2 +1,11 @@
 <app-api-manage *ngIf="display=='manage'"></app-api-manage>
 <app-api-django *ngIf="display=='django'"></app-api-django>
+<div *ngIf="display !='manage' && display!='django'" class="notice-text">
+    <div>
+        This page is not supported by the application yet...
+    </div>
+    <div style="margin-top:1em;">If you think it should, please create a request to report your current URL.</div>
+    <div>
+        <button class="request" (click)="openTab()">Create a Request</button>
+    </div>
+</div>
