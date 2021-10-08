@@ -1,6 +1,9 @@
 # Mist Chrome Extension
 Chrome extension to get easier access to Mist APIs and Mist API Tokens.
  
+* [Features](https://github.com/tmunzer/mist_chrome_extension#features)
+* [Installation](https://github.com/tmunzer/mist_chrome_extension#installation)
+
 # Features
 ## API Tab
 ### When on the Mist Dashboard
