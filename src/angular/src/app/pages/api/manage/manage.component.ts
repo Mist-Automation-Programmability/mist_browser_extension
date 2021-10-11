@@ -260,6 +260,9 @@ export class ApiManageComponent implements OnInit {
       url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/rogues/events/search?limit=100&duration=1d",
       name: "rogues events"
     }, {
+      url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/insights/rogues?limit=100&duration=1d",
+      name: "all aps"
+    }, {
       url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/insights/rogues?limit=100&duration=1d&type=honeypot",
       name: "honeypot aps"
     }, {
