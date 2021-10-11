@@ -25,7 +25,7 @@
                             <option value="false">False</option>
                         </select>
 
-                        <input *ngIf=" query.schema.type=='string'" type="string" [(ngModel)]="query.value" />
+                        <input *ngIf="query.schema.type=='string'" type="string" [(ngModel)]="query.value" />
 
                         <div *ngIf="query.schema.type=='integer'">
                             <div *ngIf="'minimum' in query.schema">
@@ -45,7 +45,7 @@
                             </div>
                         </div>
 
-                        <input *ngIf="query.schema.type!='integer' && query.schema.type!='number' && query.schema.type!='string'" [(ngModel)]="query.value" />
+                        <input *ngIf="query.schema.type!='boolean' && query.schema.type!='integer' && query.schema.type!='number' && query.schema.type!='string'" [(ngModel)]="query.value" />
                     </div>
 
                 </div>
