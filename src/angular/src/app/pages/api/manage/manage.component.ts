@@ -585,9 +585,14 @@ export class ApiManageComponent implements OnInit {
           this.forgeSite(res.groups.host, res.groups.detail);
           break;
         case "rftemplates":
+          this.setName(res.groups.obj.substr(0, res.groups.obj.length - 1), res.groups.detail);
+          this.forgeOrgObject(res.groups.obj, res.groups.host, res.groups.detail);
+          break;
         case "templates":
           this.setName(res.groups.obj.substr(0, res.groups.obj.length - 1), res.groups.detail);
           this.forgeOrgObject(res.groups.obj, res.groups.host, res.groups.detail);
+          this.obj_name = "org wlans";
+          this.forgeOrgObject("wlans", res.groups.host, undefined);
           break;
         case "auditlogs":
           this.setName(res.groups.obj.substr(0, res.groups.obj.length - 1), res.groups.detail);
