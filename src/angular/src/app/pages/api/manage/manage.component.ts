@@ -61,13 +61,14 @@ export class ApiManageComponent implements OnInit {
     console.log(this.tabUrl)
     const orgsle_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/(?<scope>siteComparison|wiredSiteComparison|wanSiteComparison)\/(?<sle>[a-z-]*)\/(?<worstsle>[a-z-]*)\/([a-z-_]*)\/(?<period>[0-9a-z-]*)\/(?<start>[0-9]*)\/(?<stop>[0-9]*)/iys;
     const sle_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/(?<detail>serviceLevels|wiredserviceLevels|wanserviceLevels)\/(?<scope>[a-z-]*)\/(?<scope_id>[a-f0-9-]*)\/(?<period>[0-9a-z-]*)\/(?<start>[0-9]*)\/(?<stop>[0-9]*)\/(?<site_id>[a-f0-9-]*)/iys;
-    const insights_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/insights\/((?<obj>[a-z]+)\/)?((?<obj_id>[a-z0-9-]+)\/)((?<period>[a-z0-9]+)\/)?((?<start>[0-9]*)\/)?((?<stop>[0-9]*)\/)?(?<site_id>[0-9a-f-]*)?/iys;
+    const insights_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/insights\/((?<obj>[a-z]+)\/)?((?<obj_id>[a-z0-9-]+)\/)?((?<period>[a-z0-9]+)\/)?((?<start>[0-9]*)\/)?((?<stop>[0-9]*)\/)?(?<site_id>[0-9a-f-]*)?/iys;
     const alarm_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!alerts\/?(?<scope>org|site)?\/?(?<uuid>[0-9a-z-]*)\/?(?<period>[0-9a-z]*)?\/?(?<start>[0-9]*)?\/?(?<stop>[0-9]*)?\/?(?<show_ack>true|false)?\/?(?<group>[a-z%0-9]*)?\/?(?<show_crit>true|false)?\/?(?<show_warn>true|false)?\/?(?<show_info>true|false)?\/?(?<site_id>[0-9a-z-]*)?/iys;
     const events_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!marvis\/?(?<scope>org|site)?\/?(?<period>[0-9a-z]*)?\/?(?<start>[0-9]*)?\/?(?<stop>[0-9]*)?\/?(?<site_id>[0-9a-z-]*)?/iys;
-    const templates_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>template|rfTemplate)\/(?<detail>template|rfTemplate)\/(?<obj_id>[0-9a-z_-]*)/yis;
-    const floorplans_re = /https:\/\/manage\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!cliLocation\/(?<detail>view|config|validationPath|wayfinding)?\/?(?<uuid>[0-9a-f-]*)\/?(floorplan|beaconsAndZones)?\/?(?<site_id>[0-9a-f-]*)?/iys;
-    const common_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*)\/)?(?<site_id>[0-9a-f-]*)?/yis;
-    const common_objs = ["ap", "gateway", "switch", "assets", "wlan", "tags", "psk", "tunnels", "clients", "sdkclients", "wiredclients", "wxlan", "security", "switchconfig", "pcap", "orgtags", "misttunnels", "switchtemplate", "deviceprofiles", "org", "orgpsk", "configuration", "rftemplates", "templates", "auditlogs", "apinventory", "adminconfig", "subscription", "edge"]
+    const floorplans_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!cliLocation\/(?<detail>view|config|validationPath|wayfinding)?\/?(?<uuid>[0-9a-f-]*)\/?(floorplan|beaconsAndZones)?\/?(?<site_id>[0-9a-f-]*)?/iys;
+    const site_common_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*)\/)?(?<site_id>[0-9a-f-]*)?/yis;
+    const site_common_objs = ["ap", "gateway", "switch", "assets", "wlan", "tags", "psk", "tunnels", "clients", "sdkclients", "wiredclients", "wxlan", "security", "switchconfig", "pcap"]
+    const org_common_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view|template|rfTemplate)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*))/yis;
+    const org_common_objs = ["orgtags", "misttunnels", "switchtemplate", "gatewaytemplates", "deviceprofiles", "org", "orgpsk", "configuration", "auditlogs", "apinventory", "adminconfig", "subscription", "edge", "vpns", "template", "rftemplates", "services", "networks"]
     const base_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!/yis;
 
     const orgsle = orgsle_re.exec(this.tabUrl);
@@ -75,9 +76,9 @@ export class ApiManageComponent implements OnInit {
     const insights = insights_re.exec(this.tabUrl);
     const alarm = alarm_re.exec(this.tabUrl);
     const events = events_re.exec(this.tabUrl);
-    const templates = templates_re.exec(this.tabUrl);
     const floorplans = floorplans_re.exec(this.tabUrl);
-    const common = common_re.exec(this.tabUrl);
+    const site_common = site_common_re.exec(this.tabUrl);
+    const org_common = org_common_re.exec(this.tabUrl);
     const base = base_re.exec(this.tabUrl);
 
     if (orgsle) {
@@ -90,12 +91,12 @@ export class ApiManageComponent implements OnInit {
       this.alarmUrl(alarm);
     } else if (events) {
       this.eventsUrl(events);
-    } else if (templates) {
-      this.commonUrl(templates);
     } else if (floorplans) {
       this.floorplansUrl(floorplans);
-    } else if (common && common["groups"] && common_objs.includes(common["groups"]["obj"].toLowerCase())) {
-      this.commonUrl(common);
+    } else if (site_common && site_common["groups"] && site_common_objs.includes(site_common["groups"]["obj"].toLowerCase())) {
+      this.commonSiteUrl(site_common);
+    } else if (org_common && org_common["groups"] && org_common_objs.includes(org_common["groups"]["obj"].toLowerCase())) {
+      this.commonOrgUrl(org_common);
     } else if (base) {
       this.baseUrl(base);
     }
@@ -137,6 +138,7 @@ export class ApiManageComponent implements OnInit {
       this.quick_links.push({ url: url, name: this.obj_name });
     } else {
       // set QUICK LINK
+      this.obj_id = null;
       url = "https://api." + host + "/api/v1/orgs/" + this.org_id + "/" + obj_name;
       if (extra_param) url += "?" + extra_param;
       this.quick_links.push({ url: url, name: this.obj_name });
@@ -372,6 +374,7 @@ export class ApiManageComponent implements OnInit {
         name: "site devices events"
       })
     } else {
+      this.obj_id = null;
       this.quick_links.push({
         url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/sites",
         name: "sites"
@@ -464,8 +467,8 @@ export class ApiManageComponent implements OnInit {
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
-  ////////////////////// COMMON URL FUNCTION DISPATCHER
-  commonUrl(res: RegExpExecArray): void {
+  ////////////////////// COMMON URL FUNCTION DISPATCHER FOR SITE URLS
+  commonSiteUrl(res: RegExpExecArray): void {
     this.org_id = res.groups.org_id;
     let extra_params = null
     const uuid_re = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/
@@ -516,7 +519,6 @@ export class ApiManageComponent implements OnInit {
           this.setName("wxtag", res.groups.detail);
           this.forgeSiteObject("wxtags", res.groups.host, res.groups.detail);
           break;
-        case "psk":
           this.setName(res.groups.obj, res.groups.detail);
           this.forgeSiteObject("psks", res.groups.host, res.groups.detail);
           break;
@@ -555,7 +557,29 @@ export class ApiManageComponent implements OnInit {
           this.setName(res.groups.obj, res.groups.detail);
           this.forgeSiteObject("pcaps", res.groups.host, res.groups.detail);
           break;
+      }
+    }
+  }
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////// COMMON URL FUNCTION DISPATCHER FOR ORG URLS
+  commonOrgUrl(res: RegExpExecArray): void {
+    this.org_id = res.groups.org_id;
+    let extra_params = null
+    const uuid_re = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/
+    if (res.groups.host && res.groups.org_id && res.groups.obj) {
+      this.obj_id = res.groups.obj_id;
+      switch (res.groups.obj.toLowerCase()) {
         // ORG
+        case "org":
+          this.obj_id = null;
+          this.setName("org", res.groups.detail);
+          this.forgeOrg(res.groups.host);
+          break;
+        case "configuration":
+          this.setName("site", res.groups.detail);
+          this.forgeSite(res.groups.host, res.groups.detail);
+          break;
         case "orgtags":
           this.setName("wxtag", res.groups.detail);
           this.forgeOrgObject("wxtags", res.groups.host, res.groups.detail);
@@ -571,22 +595,6 @@ export class ApiManageComponent implements OnInit {
         case "switchtemplate":
           this.setName(res.groups.obj, res.groups.detail);
           this.forgeOrgObject("networktemplates", res.groups.host, res.groups.detail);
-          break;
-        case "deviceprofiles":
-          this.setName(res.groups.obj.substr(0, res.groups.obj.length - 1), res.groups.detail);
-          this.forgeOrgObject("deviceprofiles", res.groups.host, res.groups.detail);
-          break;
-        case "org":
-          this.setName("org", res.groups.detail);
-          this.forgeOrg(res.groups.host);
-          break;
-        case "configuration":
-          this.setName("site", res.groups.detail);
-          this.forgeSite(res.groups.host, res.groups.detail);
-          break;
-        case "rftemplates":
-          this.setName(res.groups.obj.substr(0, res.groups.obj.length - 1), res.groups.detail);
-          this.forgeOrgObject(res.groups.obj, res.groups.host, res.groups.detail);
           break;
         case "templates":
           this.setName(res.groups.obj.substr(0, res.groups.obj.length - 1), res.groups.detail);
@@ -618,6 +626,15 @@ export class ApiManageComponent implements OnInit {
         case "edge":
           this.setName("mxedge", res.groups.detail);
           this.forgeEdge(res.groups.host, res.groups.detail)
+          break;
+        case "services":
+        case "rftemplates":
+        case "vpns":
+        case "deviceprofiles":
+        case "gatewaytemplates":
+        case "networks":
+          this.setName(res.groups.obj.substr(0, res.groups.obj.length - 1), res.groups.detail);
+          this.forgeOrgObject(res.groups.obj.toLowerCase(), res.groups.host, res.groups.detail);
           break;
       }
     }

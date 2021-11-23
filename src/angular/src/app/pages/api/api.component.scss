@@ -119,7 +119,8 @@ label.ids {
 button.copy-ids {
     background-color: white;
     transition: all 0.2s ease-in-out;
-    border-radius: 20px;
+    border-radius: 5px;
+    display: flex;
     margin-left: 1em;
 }
 
