@@ -778,7 +778,7 @@ export class ApiManageComponent implements OnInit {
         case "site":
         case undefined:
           this.setName("site", "insights");
-          this.forgeSite(res.groups.host, extra_params);
+          this.forgeSite(res.groups.host, "site", extra_params);
           break;
       }
     }
