@@ -519,6 +519,7 @@ export class ApiManageComponent implements OnInit {
           this.setName("wxtag", res.groups.detail);
           this.forgeSiteObject("wxtags", res.groups.host, res.groups.detail);
           break;
+        case "psk":
           this.setName(res.groups.obj, res.groups.detail);
           this.forgeSiteObject("psks", res.groups.host, res.groups.detail);
           break;
