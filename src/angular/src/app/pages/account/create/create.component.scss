@@ -75,6 +75,12 @@ img.copy-token {
     height: 20px;
 }
 
+.token_opt {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
 // BUTTONS
 button {
     border: none;
