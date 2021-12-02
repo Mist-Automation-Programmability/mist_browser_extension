@@ -4,10 +4,11 @@ import { Observable } from 'rxjs';
 
 
 export interface TokenElement {
-  id: string;
-  last_used: number | null;
-  created_time: number;
-  key: string;
+  name: string | null,
+  id: string,
+  last_used: number | null,
+  created_time: number,
+  key: string
 }
 export interface OrgElement {
   org_id: string;

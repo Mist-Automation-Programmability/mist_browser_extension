@@ -8,6 +8,12 @@
         <div class="token">
             <table>
                 <tr>
+                    <th>Name:</th>
+                    <td>
+                        <div>{{token.name}}</div>
+                    </td>
+                </tr>
+                <tr>
                     <th>Key:</th>
                     <td>
                         <div>{{token.key}}</div>
@@ -23,7 +29,7 @@
                     <th>Last Used Time:</th>
                     <td>
                         <div *ngIf="token.last_used">{{(token.last_used * 1000)| date:'yyyy-MM-dd HH:mm:ss'}}</div>
-                        <div *ngIf="!token.last_used" style="color: #f44336;font-weight: 400;"> Never</div>
+                        <div *ngIf="!token.last_used" style="color: #f44336;font-weight: 400;">Never</div>
                     </td>
                 </tr>
             </table>
