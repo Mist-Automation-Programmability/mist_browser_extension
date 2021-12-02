@@ -42,10 +42,10 @@ export class AccountManageComponent {
   ngOnInit() {
     this.now = new Date().getTime();
     this.enventManageTokens.subscribe(status => this.do_manage = status)
-    this.tokens = [];
     this.sessionEvent.subscribe(session => {
-        this.session = session;
-        this.getTokens();
+      this.tokens = [];
+      this.session = session;
+      this.getTokens();
     })
   }
 
@@ -59,7 +59,7 @@ export class AccountManageComponent {
       let url = "https://api" + this.session.domain + "/api/v1/self/apitokens"
       this._http.get(url, { headers: { "X-CSRFTOKEN": this.session.csrftoken } }).subscribe((data: [TokenElement]) => {
         this.tokens = data;
-        this.tokens.sort((a, b)=> {
+        this.tokens.sort((a, b) => {
           return a.created_time - b.created_time;
         })
         this._cd.detectChanges();

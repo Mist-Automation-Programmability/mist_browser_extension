@@ -49,8 +49,8 @@ export class AccountManageOrgComponent implements OnInit {
   ngOnInit() {
     this.now = new Date().getTime();
     this.enventManageTokens.subscribe(status => this.do_manage = status)
-    this.tokens = [];
     this.sessionEvent.subscribe(session => {
+      this.tokens = [];
       this.session = session;
       this.orgs = session.orgs;
       this.org_id = "none";
