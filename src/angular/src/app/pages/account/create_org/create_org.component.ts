@@ -7,18 +7,19 @@ export interface TokenElement {
   last_used: number | null;
   created_time: number;
   key: string;
-}
-
-export interface OrgElement {
-  org_id: string;
   name: string;
 }
 
+export interface OrgElement {
+  org_id: string,
+  name: string,
+}
+
 export interface SessionElement {
-  domain: string;
-  csrftoken: string;
-  email: string;
-  orgs: OrgElement[];
+  domain: string,
+  csrftoken: string,
+  email: string,
+  orgs: OrgElement[],
 }
 
 @Component({
@@ -43,10 +44,14 @@ export class AccountCreateOrgComponent implements OnInit {
   token: TokenElement;
   orgs: OrgElement[] = [];
   org_id: string;
+  // Token parameters
+  token_name: string;
   role: string;
   scope: string;
+  name: string;
   site_id: string;
   sitegroup_id: string;
+  // action
   do_create: boolean = false;
 
   ngOnInit() {
@@ -61,7 +66,8 @@ export class AccountCreateOrgComponent implements OnInit {
         id: null,
         last_used: null,
         created_time: 0,
-        key: ""
+        key: "", 
+        name: ""
       }
     })
   }
@@ -71,7 +77,7 @@ export class AccountCreateOrgComponent implements OnInit {
   ////////////
   createToken(): void {
     let body = {
-      name: this.session.email,
+      name: this.token_name,
       privileges: [{
         role: this.role,
         scope: this.scope
@@ -82,7 +88,6 @@ export class AccountCreateOrgComponent implements OnInit {
     } else if (this.scope == "sitegroupo" && this.sitegroup_id) {
       body.privileges[0]["sitegroup_id"] = this.sitegroup_id;
     }
-    console.log(body)
     if (this.do_create && this.org_id != "none") {
       let url = "https://api" + this.session.domain + "/api/v1/orgs/" + this.org_id + "/apitokens"
       this._http.post(url, body, { headers: { "X-CSRFTOKEN": this.session.csrftoken } }).subscribe((token: TokenElement) => {

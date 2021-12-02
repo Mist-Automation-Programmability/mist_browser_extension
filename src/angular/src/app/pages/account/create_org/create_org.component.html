@@ -5,6 +5,7 @@
         </label>
         <div class="cloud">manage{{session.domain}}</div>
         <div class="org_select">
+            <input type="text" [(ngModel)]="token_name" placeholder="Token Name (optional)" style="margin: 1em 0;padding: 0.5em;border: 1px solid #a7a7a7;" />
             <select name=org_id [(ngModel)]="org_id">
                 <option class="none" value="none">
                     <div style="width: 100%; text-align: center;">-- Please Select an Org --</div>
