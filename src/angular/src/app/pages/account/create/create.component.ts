@@ -1,4 +1,4 @@
-import { Component, Input, Output, ChangeDetectionStrategy, ChangeDetectorRef, EventEmitter } from '@angular/core';
+import { Component, Input, Output, ChangeDetectionStrategy, ChangeDetectorRef, EventEmitter, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -22,7 +22,7 @@ export interface SessionElement {
   styleUrls: ['create.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AccountCreateComponent {
+export class AccountCreateComponent implements OnInit {
 
   //@Input() domain: string;
   @Input() sessionEvent: Observable<SessionElement>;
@@ -59,9 +59,8 @@ export class AccountCreateComponent {
   ////////////
   createToken(): void {
     if (this.do_create) {
-      let url = "https://api" + this.session.domain + "/api/v1/self/apitokens"
+      let url = "https://api" + this.session.domain + "/api/v1/self/apitokens";
       this._http.post(url, {name: this.token_name}, { headers: { "X-CSRFTOKEN": this.session.csrftoken } }).subscribe((token: TokenElement) => {
-        this.token_name = "";
         this.token = token;
         this._cd.detectChanges();
       })
