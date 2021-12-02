@@ -36,9 +36,11 @@ export class AccountManageComponent {
   ) { }
 
   tokens = [];
+  now: number;
   do_manage: boolean = false;
 
   ngOnInit() {
+    this.now = new Date().getTime();
     this.enventManageTokens.subscribe(status => this.do_manage = status)
     this.tokens = [];
     this.sessionEvent.subscribe(session => {

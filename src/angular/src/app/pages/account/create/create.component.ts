@@ -3,16 +3,17 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface TokenElement {
-  id: string;
-  last_used: number | null;
-  created_time: number;
-  key: string;
+  id: string,
+  name: string,
+  last_used: number | null,
+  created_time: number,
+  key: string,
 }
 
 export interface SessionElement {
-  domain: string;
-  csrftoken: string;
-  email: string;
+  domain: string,
+  csrftoken: string,
+  email: string,
 }
 
 @Component({
@@ -34,6 +35,7 @@ export class AccountCreateComponent {
     private _http: HttpClient
   ) { }
 
+  token_name:string = "";
   token: TokenElement;
   do_create: boolean = false;
 
@@ -41,7 +43,14 @@ export class AccountCreateComponent {
     this.enventCreateToken.subscribe(status => this.do_create = status)
     this.sessionEvent.subscribe(session => {
       this.session = session;
-      this.createToken()
+      this.token_name = "";
+      this.token = {
+        id: null,
+        last_used: null,
+        created_time: 0,
+        key: "", 
+        name: ""
+      }
     })
   }
 
@@ -51,7 +60,8 @@ export class AccountCreateComponent {
   createToken(): void {
     if (this.do_create) {
       let url = "https://api" + this.session.domain + "/api/v1/self/apitokens"
-      this._http.post(url, {}, { headers: { "X-CSRFTOKEN": this.session.csrftoken } }).subscribe((token: TokenElement) => {
+      this._http.post(url, {name: this.token_name}, { headers: { "X-CSRFTOKEN": this.session.csrftoken } }).subscribe((token: TokenElement) => {
+        this.token_name = "";
         this.token = token;
         this._cd.detectChanges();
       })
