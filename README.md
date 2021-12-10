@@ -11,7 +11,7 @@ Chrome extension to get easier access to Mist APIs and Mist API Tokens.
 * Direct access to the Mist API Pages (Django) from the current Mist dashboard page
 
 <div>
-<img src="._readme/img/api.png" width="50%">
+<img src="https://github.com/tmunzer/mist_chrome_extension/raw/main/._readme/img/api.png" width="50%">
 </div>
 
 ### When on a Django Page
@@ -20,7 +20,7 @@ Chrome extension to get easier access to Mist APIs and Mist API Tokens.
 * Direct access to the Online API Documentation for the current API Call (GET/POST/PUT/DELETE)
 
 <div>
-<img src="._readme/img/django.png" width="50%">
+<img src="https://github.com/tmunzer/mist_chrome_extension/raw/main/._readme/img/django.png" width="50%">
 </div>
 
 ## Account Tab
@@ -30,22 +30,22 @@ Chrome extension to get easier access to Mist APIs and Mist API Tokens.
 
 
 <div>
-<img src="._readme/img/accounts_list.png" width="40%">
+<img src="https://github.com/tmunzer/mist_chrome_extension/raw/main/._readme/img/accounts_list.png" width="40%">
 </div>
 <div>
-<img src="._readme/img/accounts_create.png" width="40%">
-<img src="._readme/img/accounts_manage.png" width="40%">
+<img src="https://github.com/tmunzer/mist_chrome_extension/raw/main/._readme/img/accounts_create.png" width="40%">
+<img src="https://github.com/tmunzer/mist_chrome_extension/raw/main/._readme/img/accounts_manage.png" width="40%">
 </div>
 <div>
-<img src="._readme/img/accounts_org_create.png" width="40%">
-<img src="._readme/img/accounts_org_manage.png" width="40%">
+<img src="https://github.com/tmunzer/mist_chrome_extension/raw/main/._readme/img/accounts_org_create.png" width="40%">
+<img src="https://github.com/tmunzer/mist_chrome_extension/raw/main/._readme/img/accounts_org_manage.png" width="40%">
 </div>
 
 ## About Tab
 * Quick access to the Mist API documentation (Mist official documentation, Postman documentation, OpenAPI documentation)
 * Version check from the extension to know if a new version is available, and download new versions directly from the extension
 <div>
-<img src="._readme/img/about.png" width="40%">
+<img src="https://github.com/tmunzer/mist_chrome_extension/raw/main/._readme/img/about.png" width="40%">
 </div>
 
 
