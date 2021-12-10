@@ -68,9 +68,11 @@ This extension is not yet available on the [Chrome Web Store](https://chrome.goo
 4. Enable the **Developper Mode**
 
 <img src="https://github.com/tmunzer/mist_chrome_extension/raw/main/._readme/img/dev_mode.png" width="80%">
+
 5. Click **Load Unpacked** and select the unzipped folder
 
 <img src="https://github.com/tmunzer/mist_chrome_extension/raw/main/._readme/img/load_unpacked.png" width="40%">
+
 6. The extension is ready to use!
 
 
