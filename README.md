@@ -35,18 +35,23 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 </div>
 
 ## Account Tab
+
 * List all the current valid Mist session in the web browser for manage.mist.com, manage.eu.mist.com, manage.gc1.mist.com
-* Manage User API Token (list / delete / create)
-* Manage Org API Token (list / delete / create)
-
-
 <div>
 <img src="https://github.com/tmunzer/mist_chrome_extension/raw/main/._readme/img/accounts_list.png" width="40%">
 </div>
+
+
+* Manage User API Token (list / delete / create)
+
 <div>
 <img src="https://github.com/tmunzer/mist_chrome_extension/raw/main/._readme/img/accounts_create.png" width="40%">
 <img src="https://github.com/tmunzer/mist_chrome_extension/raw/main/._readme/img/accounts_manage.png" width="40%">
 </div>
+
+
+* Manage Org API Token (list / delete / create)
+
 <div>
 <img src="https://github.com/tmunzer/mist_chrome_extension/raw/main/._readme/img/accounts_org_create.png" width="40%">
 <img src="https://github.com/tmunzer/mist_chrome_extension/raw/main/._readme/img/accounts_org_manage.png" width="40%">
