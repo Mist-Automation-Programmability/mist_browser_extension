@@ -1,6 +1,6 @@
 {
     "name": "mist-chrome-extension",
-    "version": "2.2.1",
+    "version": "2.3.0",
     "description": "Generated with @larscom/ng-chrome-extension",
     "scripts": {
         "ng": "ng",
