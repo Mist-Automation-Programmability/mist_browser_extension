@@ -363,13 +363,17 @@ export class ApiManageComponent implements OnInit {
       extra_params = "";
     }
     if (detail == "site") {
-      this.obj_name = "site"
+      this.site_id = this.obj_id
+      this.obj_id = null
       this.quick_links.push({
         url: "https://api." + host + "/api/v1/sites/" + this.site_id,
         name: "site info"
       }, {
         url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/setting",
         name: "site setting"
+      }, {
+        url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/webhooks",
+        name: "site webhooks"
       }, {
         url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/stats" + extra_params,
         name: "site stats"
@@ -573,6 +577,7 @@ export class ApiManageComponent implements OnInit {
     let extra_params = null
     const uuid_re = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/
     if (res.groups.host && res.groups.org_id && res.groups.obj) {
+      console.log(res)
       this.obj_id = res.groups.obj_id;
       switch (res.groups.obj.toLowerCase()) {
         // ORG
@@ -581,7 +586,7 @@ export class ApiManageComponent implements OnInit {
           this.setName("org", res.groups.detail);
           this.forgeOrg(res.groups.host);
           break;
-        case "configuration":
+        case "configuration":          
           this.setName("site", res.groups.detail);
           this.forgeSite(res.groups.host, res.groups.detail);
           break;
