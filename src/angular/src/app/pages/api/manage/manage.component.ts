@@ -66,6 +66,7 @@ export class ApiManageComponent implements OnInit {
     const events_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!marvis\/?(?<scope>org|site)?\/?(?<period>[0-9a-z]*)?\/?(?<start>[0-9]*)?\/?(?<stop>[0-9]*)?\/?(?<site_id>[0-9a-z-]*)?/iys;
     const floorplans_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*mist\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!cliLocation\/(?<detail>view|config|validationPath|wayfinding)?\/?(?<uuid>[0-9a-f-]*)\/?(floorplan|beaconsAndZones)?\/?(?<site_id>[0-9a-f-]*)?/iys;
     const evpn_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!evpn\/site\/?([0-9]\/)?(?<site_id>[0-9a-z_-]*)?(\/(?<topology_id>[0-9a-f-]*))?/yis;
+    const site_wlan_template_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!wlan\/orgWlanDetail\/(?<template_id>[0-9a-z_-]*)\/(?<wlan_id>[0-9a-f-]*)\/(?<site_id>[0-9a-f-]*)/is;
     const site_common_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*)\/)?(?<site_id>[0-9a-f-]*)?/yis;
     const site_common_objs = ["ap", "gateway", "switch", "assets", "wlan", "tags", "psk", "tunnels", "clients", "sdkclients", "wiredclients", "wxlan", "security", "switchconfig", "pcap"]
     const org_common_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view|template|rfTemplate)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*))/yis;
@@ -77,6 +78,7 @@ export class ApiManageComponent implements OnInit {
     const insights = insights_re.exec(this.tabUrl);
     const alarm = alarm_re.exec(this.tabUrl);
     const evpn = evpn_re.exec(this.tabUrl);
+    const site_wlan_template = site_wlan_template_re.exec(this.tabUrl);
     const events = events_re.exec(this.tabUrl);
     const floorplans = floorplans_re.exec(this.tabUrl);
     const site_common = site_common_re.exec(this.tabUrl);
@@ -93,6 +95,8 @@ export class ApiManageComponent implements OnInit {
       this.alarmUrl(alarm);
     } else if (evpn) {
       this.evpnUrl(evpn);
+    } else if (site_wlan_template) {
+      this.siteWlanTemplateUrl(site_wlan_template);
     } else if (events) {
       this.eventsUrl(events);
     } else if (floorplans) {
@@ -475,6 +479,24 @@ export class ApiManageComponent implements OnInit {
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////// ORG WLANS FUNCTION DISPATCHER FOR SITE URLS
+  siteWlanTemplateUrl(res: RegExpExecArray): void {
+    this.org_id = res.groups.org_id;
+    this.site_id = res.groups.site_id;
+    this.obj_id = res.groups.wlan_id;
+
+    this.quick_links.push(
+      {
+        url: "https://api." + res.groups.host + "/api/v1/orgs/" + this.org_id + "/wlans/" + res.groups.wlan_id,
+        name: "Org Wlan in use"
+      }, {
+      url: "https://api." + res.groups.host + "/api/v1/orgs/" + this.org_id + "/templates/" + res.groups.template_id,
+      name: "Org Config Template in use"
+    });
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// COMMON URL FUNCTION DISPATCHER FOR SITE URLS
   commonSiteUrl(res: RegExpExecArray): void {
     this.org_id = res.groups.org_id;
@@ -586,7 +608,7 @@ export class ApiManageComponent implements OnInit {
           this.setName("org", res.groups.detail);
           this.forgeOrg(res.groups.host);
           break;
-        case "configuration":          
+        case "configuration":
           this.setName("site", res.groups.detail);
           this.forgeSite(res.groups.host, res.groups.detail);
           break;
