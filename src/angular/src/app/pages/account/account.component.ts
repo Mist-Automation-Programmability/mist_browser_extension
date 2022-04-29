@@ -50,7 +50,7 @@ export class AccountComponent implements OnInit {
   ]
 
   sessions: SessionElement[] = [];
-  is_working=true;
+  is_working = true;
 
   ngOnInit() {
     this.is_working = true;
@@ -117,10 +117,10 @@ export class AccountComponent implements OnInit {
       }
     })
 
-    orgs.sort(function (a, b) {
-      let c = b.name.toLowerCase() < a.name.toLowerCase()
-      if (c) return 1
-      else return -1
+    orgs.sort((a, b) => {
+      if (a.name.toLowerCase() > b.name.toLowerCase()) return 1
+      else if (a.name.toLowerCase() < b.name.toLowerCase()) return -1
+      else return 0
     });;
 
     return orgs;
