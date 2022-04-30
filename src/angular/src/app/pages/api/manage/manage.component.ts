@@ -517,7 +517,8 @@ export class ApiManageComponent implements OnInit {
           this.forgeSiteApLastConfig(res.groups.detail, res.groups.host, res.groups.obj);
           break;
         case "switch":
-          const is_uuid = uuid_re.test(this.obj_id)
+          if (["list", "topology", "location"].includes(this.obj_id)) this.obj_id = null;
+          const is_uuid = uuid_re.test(this.obj_id);
           if (this.obj_id && !is_uuid) {
             this.obj_name = "discoveredswitch";
             this.setName("discoveredswitch", "detail");
@@ -911,7 +912,8 @@ export class ApiManageComponent implements OnInit {
         case "wanServiceLevels":
           sles = [
             "gateway-health",
-            "wan-link-health"
+            "wan-link-health",
+            "application-health"
           ]
           break;
       }
