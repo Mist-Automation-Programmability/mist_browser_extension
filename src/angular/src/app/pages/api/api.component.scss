@@ -6,6 +6,15 @@
     flex-direction: column;
 }
 
+.notice-text {
+    padding: 1em;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    height: 100%;
+    user-select: none;
+}
+
 .content.no-grow {
     flex-grow: 0;
 }
@@ -23,6 +32,7 @@ h2 {
 .not_mist {
     text-align: center;
     font-weight: 100;
+    user-select: none;
 }
 
 // apitab
@@ -42,6 +52,7 @@ button.apitab {
     flex-direction: row;
     justify-content: center;
     justify-items: center;
+    align-items: center;
 }
 
 button.apitab:enabled {
@@ -51,13 +62,15 @@ button.apitab:enabled {
 }
 
 button.apitab:enabled:hover {
-    background-color: #007683;
+    // background-color: #007683;
+    box-shadow: #32325d40 0 30px 60px -12px inset, #0000004d 0 18px 36px -18px inset;
 }
 
 // BUTTONS
 button {
     border: none;
     padding: 0.5em;
+    cursor: pointer;
 }
 
 button:disabled {
@@ -145,4 +158,10 @@ button.request {
 
 button.request:hover {
     background-color: lightgray;
+}
+
+img.icon-open {
+    height: 15px;
+    padding: 0 5px;
+    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%);
 }

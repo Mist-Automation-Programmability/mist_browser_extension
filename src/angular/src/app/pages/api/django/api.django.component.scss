@@ -137,7 +137,8 @@ button.update {
 }
 
 button.update:enabled:hover {
-    background-color: #649015;
+    // background-color: #649015;
+    box-shadow: #32325d40 0 30px 60px -12px inset, #0000004d 0 18px 36px -18px inset;
 }
 
 // tooltip

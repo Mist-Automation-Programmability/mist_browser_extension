@@ -43,7 +43,7 @@
 <div *ngIf="quick_links.length > 0" class="content no-grow">
     <h2>Quick API Access</h2>
     <div class="box-apitab">
-        <button *ngFor="let quick_link of quick_links"  class="apitab" (click)="openApiTab(quick_link.url)">
+        <button *ngFor="let quick_link of quick_links" class="apitab" (click)="openApiTab(quick_link.url)">
             <div>{{quick_link.name | uppercase}}</div>
             <img class="icon-open" src="assets/open.svg" alt="open">
         </button>
