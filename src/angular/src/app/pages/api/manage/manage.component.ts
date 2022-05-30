@@ -58,7 +58,6 @@ export class ApiManageComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////
   // API URL ENTRYPOINT
   generateApiUrl() {
-    console.log(this.tabUrl)
     const orgsle_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/(?<scope>siteComparison|wiredSiteComparison|wanSiteComparison)\/(?<sle>[a-z-]*)\/(?<worstsle>[a-z-]*)\/([a-z-_]*)\/(?<period>[0-9a-z-]*)\/(?<start>[0-9]*)\/(?<stop>[0-9]*)/iys;
     const sle_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/(?<detail>serviceLevels|wiredserviceLevels|wanserviceLevels)\/(?<scope>[a-z-]*)\/(?<scope_id>[a-f0-9-]*)\/(?<period>[0-9a-z-]*)\/(?<start>[0-9]*)\/(?<stop>[0-9]*)\/(?<site_id>[a-f0-9-]*)/iys;
     const insights_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/insights\/((?<obj>[a-z]+)\/)?((?<obj_id>[a-z0-9-]+)\/)?((?<period>[a-z0-9]+)\/)?((?<start>[0-9]*)\/)?((?<stop>[0-9]*)\/)?(?<site_id>[0-9a-f-]*)?/iys;
@@ -70,7 +69,7 @@ export class ApiManageComponent implements OnInit {
     const site_common_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*)\/)?(?<site_id>[0-9a-f-]*)?/yis;
     const site_common_objs = ["ap", "gateway", "switch", "assets", "wlan", "tags", "psk", "tunnels", "clients", "sdkclients", "wiredclients", "wxlan", "security", "switchconfig", "pcap"]
     const org_common_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view|template|rfTemplate)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*))/yis;
-    const org_common_objs = ["orgtags", "misttunnels", "templates", "switchtemplate", "gatewaytemplates", "deviceprofiles", "org", "orgpsk", "configuration", "auditlogs", "apinventory", "adminconfig", "subscription", "edge", "vpns", "template", "rftemplates", "services", "networks"]
+    const org_common_objs = ["orgtags", "misttunnels", "templates", "switchtemplate", "gatewaytemplates", "deviceprofiles", "org", "orgpsk", "configuration", "auditlogs", "apinventory", "adminconfig", "subscription", "edge", "vpns", "template", "rftemplates", "services", "networks", "nactags", "naccertificates", "nacpolicy"]
     const base_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!/yis;
 
     const orgsle = orgsle_re.exec(this.tabUrl);
@@ -125,11 +124,14 @@ export class ApiManageComponent implements OnInit {
   }
 
   setName(obj_name: string, detail: string) {
+    obj_name = obj_name.toLowerCase();
     if (detail && detail != "new") {
       this.obj_name = obj_name
     } else {
-      if (["switch"].includes(obj_name)) {
-        this.obj_name = "switches";
+      if (obj_name.includes("switch")) {
+        this.obj_name = obj_name.replace("switch", "switches");
+      } else if (obj_name.includes("policy")) {
+        this.obj_name = obj_name.replace("policy", "policies");
       } else {
         this.obj_name = obj_name + "s";
       }
@@ -668,6 +670,22 @@ export class ApiManageComponent implements OnInit {
         case "networks":
           this.setName(res.groups.obj.substr(0, res.groups.obj.length - 1), res.groups.detail);
           this.forgeOrgObject(res.groups.obj.toLowerCase(), res.groups.host, res.groups.detail);
+          break;
+        case "nactags":
+          this.setName("NAC Tag", res.groups.detail);
+          this.forgeOrgObject(res.groups.obj.toLowerCase(), res.groups.host, res.groups.detail);
+          break;
+        case "naccertificates":
+          this.setName("NAC Certificates", res.groups.detail);
+          this.quick_links.push({
+            url: "https://api." + res.groups.host + "/api/v1/orgs/" + this.org_id + "/setting",
+            name: "org setting"
+          }
+          )
+          break;
+        case "nacpolicy":
+          this.setName("NAC Policy", res.groups.detail);
+          this.forgeOrgObject("nacrules", res.groups.host, res.groups.detail);
           break;
       }
     }
