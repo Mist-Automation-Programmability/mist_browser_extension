@@ -69,7 +69,7 @@ export class ApiManageComponent implements OnInit {
     const site_common_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*)\/)?(?<site_id>[0-9a-f-]*)?/yis;
     const site_common_objs = ["ap", "gateway", "switch", "assets", "wlan", "tags", "psk", "tunnels", "clients", "sdkclients", "wiredclients", "wxlan", "security", "switchconfig", "pcap"]
     const org_common_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view|template|rfTemplate)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*))/yis;
-    const org_common_objs = ["orgtags", "misttunnels", "templates", "switchtemplate", "gatewaytemplates", "deviceprofiles", "org", "orgpsk", "configuration", "auditlogs", "apinventory", "adminconfig", "subscription", "edge", "vpns", "template", "rftemplates", "services", "networks", "nactags", "naccertificates", "nacpolicy"]
+    const org_common_objs = ["orgtags", "misttunnels", "templates", "switchtemplate", "gatewaytemplates", "deviceprofiles", "org", "orgpsk", "configuration", "auditlogs", "apinventory", "adminconfig", "subscription", "edge", "vpns", "template", "rftemplates", "services", "networks", "applicationpolicy", "nactags", "naccertificates", "nacpolicy", "onboardingworkflow"]
     const base_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!/yis;
 
     const orgsle = orgsle_re.exec(this.tabUrl);
@@ -602,7 +602,6 @@ export class ApiManageComponent implements OnInit {
     let extra_params = null
     const uuid_re = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/
     if (res.groups.host && res.groups.org_id && res.groups.obj) {
-      console.log(res)
       this.obj_id = res.groups.obj_id;
       switch (res.groups.obj.toLowerCase()) {
         // ORG
@@ -671,6 +670,10 @@ export class ApiManageComponent implements OnInit {
           this.setName(res.groups.obj.substr(0, res.groups.obj.length - 1), res.groups.detail);
           this.forgeOrgObject(res.groups.obj.toLowerCase(), res.groups.host, res.groups.detail);
           break;
+        case "applicationpolicy":
+          this.setName("servicepolicy", res.groups.details);
+          this.forgeOrgObject("servicepolicies", res.groups.host, res.groups.detail);
+          break;
         case "nactags":
           this.setName("NAC Tag", res.groups.detail);
           this.forgeOrgObject(res.groups.obj.toLowerCase(), res.groups.host, res.groups.detail);
@@ -687,6 +690,11 @@ export class ApiManageComponent implements OnInit {
           this.setName("NAC Policy", res.groups.detail);
           this.forgeOrgObject("nacrules", res.groups.host, res.groups.detail);
           break;
+        case "onboardingworkflow":
+          this.setName("Psk Portal", res.groups.detail);
+          this.forgeOrgObject("pskportals", res.groups.host, res.groups.detail);
+          break;
+
       }
     }
   }
