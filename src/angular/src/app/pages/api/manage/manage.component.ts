@@ -69,7 +69,7 @@ export class ApiManageComponent implements OnInit {
     const site_common_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*)\/)?(?<site_id>[0-9a-f-]*)?/yis;
     const site_common_objs = ["ap", "gateway", "switch", "assets", "wlan", "tags", "psk", "tunnels", "clients", "sdkclients", "wiredclients", "wxlan", "security", "switchconfig", "pcap"]
     const org_common_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view|template|rfTemplate)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*))/yis;
-    const org_common_objs = ["orgtags", "misttunnels", "templates", "switchtemplate", "gatewaytemplates", "deviceprofiles", "org", "orgpsk", "configuration", "auditlogs", "apinventory", "adminconfig", "subscription", "edge", "vpns", "template", "rftemplates", "services", "networks", "applicationpolicy", "nactags", "naccertificates", "nacpolicy", "onboardingworkflow"]
+    const org_common_objs = ["orgtags", "misttunnels", "templates", "switchtemplate", "gatewaytemplates", "hubs", "deviceprofiles", "org", "orgpsk", "configuration", "auditlogs", "apinventory", "adminconfig", "subscription", "edge", "vpns", "template", "rftemplates", "services", "networks", "applicationpolicy", "nactags", "naccertificates", "nacpolicy", "onboardingworkflow"]
     const base_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-1.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!/yis;
 
     const orgsle = orgsle_re.exec(this.tabUrl);
@@ -425,6 +425,20 @@ export class ApiManageComponent implements OnInit {
   }
 
   ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////// HUB PROFILE FUNCTION
+  forgeHubProfile(host: string, detail: string): void {
+    if (detail == "detail") {
+      this.obj_name = "hubprofile";
+      this.forgeOrgObject("deviceprofiles", host, detail);
+    } else {
+      this.quick_links.push({
+        url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/deviceprofiles?type=gateway",
+        name: "hubprofiles"
+      })
+    }
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// DISCOVERED SWITCHES FUNCTION
   forgeSiteDiscoveredSwitchUrl(host: string, mac: string = null): void {
     if (mac) {
@@ -660,6 +674,10 @@ export class ApiManageComponent implements OnInit {
         case "edge":
           this.setName("mxedge", res.groups.detail);
           this.forgeEdge(res.groups.host, res.groups.detail)
+          break;
+        case "hubs":
+          this.setName("hubprofile", res.groups.detail);
+          this.forgeHubProfile(res.groups.host, res.groups.detail)
           break;
         case "services":
         case "rftemplates":
