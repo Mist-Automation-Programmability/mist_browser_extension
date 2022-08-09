@@ -43,10 +43,12 @@ export class AccountComponent implements OnInit {
   ) { }
 
   domains = [
-    "mistsys.com",
+    ".mistsys.com",
     ".mist.com",
     ".eu.mist.com",
-    ".gc1.mist.com"
+    ".gc1.mist.com",
+    ".gc2.mist.com",
+    ".ac2.mist.com"
   ]
 
   sessions: SessionElement[] = [];

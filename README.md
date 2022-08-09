@@ -16,6 +16,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 
 # Features
+## Supported Mist Clouds:
+* Global 01 (manage.mist.com)
+* Global 02 (manage.gc1.mist.com)
+* Global 03 (manage.ac2.mist.com)
+* Global 04 (manage.gc2.mist.com)
+* Europe 01 (manage.eu.mist.com)
+
 ## API Tab
 ### When on the Mist Dashboard
 * Quick access to the Mist IDs (org_id, site_id and object_id) from the current Mist dashboard page

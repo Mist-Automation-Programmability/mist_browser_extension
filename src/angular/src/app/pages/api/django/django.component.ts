@@ -39,7 +39,9 @@ export class ApiDjangoComponent implements OnInit {
   hosts = [
     "api.mist.com",
     "api.eu.mist.com",
-    "api.gc1.mist.com"
+    "api.gc1.mist.com",
+    "api.gc2.mist.com",
+    "api.ac2.mist.com"
   ]
 
   doc_link = "https://doc.mist-lab.fr";

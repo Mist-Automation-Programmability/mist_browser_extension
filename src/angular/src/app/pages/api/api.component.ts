@@ -22,12 +22,16 @@ export class ApiComponent implements OnInit {
     "manage.mist.com",
     "integration.mist.com",
     "manage.eu.mist.com",
-    "manage.gc1.mist.com"
+    "manage.gc1.mist.com",
+    "manage.gc2.mist.com",
+    "manage.ac2.mist.com"
   ]
   hosts_api = [
     "api.mist.com",
     "api.eu.mist.com",
-    "api.gc1.mist.com"
+    "api.gc1.mist.com",
+    "api.gc2.mist.com",
+    "api.ac2.mist.com"
   ]
 
   ngOnInit() {
