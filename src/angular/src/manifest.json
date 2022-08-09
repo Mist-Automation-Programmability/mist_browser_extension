@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "Mist Extension",
     "short_name": "mist-chrome-extension",
-    "version": "2.4.1",
+    "version": "2.5.0",
     "description": "Chrome Extension for Mist Developpers to provide easier access to Mist APIs",
     "icons": {
         "16": "assets/favicon-16x16.png",
@@ -34,6 +34,8 @@
     "host_permissions": [
         "https://*.mist.com/*",
         "https://manage.eu.mist.com/*",
-        "https://manage.gc1.mist.com/*"
+        "https://manage.gc1.mist.com/*",
+        "https://manage.gc2.mist.com/*",
+        "https://manage.ac2.mist.com/*"
     ]
 }
