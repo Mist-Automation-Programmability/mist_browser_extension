@@ -1,0 +1,161 @@
+.content {
+  margin: 0.5em 1em;
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+}
+
+.notice-text {
+  padding: 1em;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  height: 100%;
+  user-select: none;
+}
+
+.content.no-grow {
+  flex-grow: 0;
+}
+
+.content.grow {
+  flex-grow: 1;
+}
+
+h2 {
+  font-weight: 200;
+  margin-left: 0.8em;
+}
+
+.not_mist {
+  text-align: center;
+  font-weight: 100;
+  user-select: none;
+}
+
+.box-apitab {
+  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+button.apitab {
+  margin: 0.2em;
+  border-radius: 4px;
+  padding: 0.5em;
+  font-size: small;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  justify-items: center;
+  align-items: center;
+}
+
+button.apitab:enabled {
+  background-color: #0096a3;
+  color: white;
+  transition: background-color 0.2s ease-in-out;
+}
+
+button.apitab:enabled:hover {
+  box-shadow: #32325d40 0 30px 60px -12px inset, #0000004d 0 18px 36px -18px inset;
+}
+
+button {
+  border: none;
+  padding: 0.5em;
+  cursor: pointer;
+}
+
+button:disabled {
+  background-color: #eee;
+  color: #aaa;
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
+}
+
+.ids {
+  display: flex;
+  flex-direction: column;
+  margin: 0.5em;
+}
+
+.box-ids {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.box-ids-input {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-around;
+}
+
+input.ids:read-only {
+  width: 100%;
+  border-radius: 2px;
+  text-align: center;
+  font: inherit;
+  font-weight: 200;
+  border: none;
+  padding: 0.3em;
+  border-radius: 60px;
+  background-color: transparent;
+  transition: all 1s ease-in-out;
+}
+
+input.ids:focus-visible {
+  outline: none;
+}
+
+input.ids.focused {
+  background-color: #555;
+  transition: all 0.2s ease-in-out;
+}
+
+label.ids {
+  margin: 0.2em 0.5em 0.2em 1em;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  letter-spacing: 0.1em;
+}
+
+button.copy-ids {
+  background-color: white;
+  transition: all 0.2s ease-in-out;
+  border-radius: 5px;
+  display: flex;
+  margin-left: 1em;
+}
+
+button.copy-ids:hover img.copy-ids {
+  filter: invert(42%) sepia(93%) saturate(1352%) hue-rotate(40deg) brightness(90%) contrast(119%);
+  transition: filter 0.2s ease-in-out;
+}
+
+img.copy-ids {
+  height: 20px;
+}
+
+button.request {
+  margin: 2em;
+  background-color: unset;
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+button.request:hover {
+  background-color: lightgray;
+}
+
+img.icon-open {
+  height: 15px;
+  padding: 0 5px;
+  filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%);
+}

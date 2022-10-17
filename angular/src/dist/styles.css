@@ -1,0 +1,78 @@
+/* You can add global styles to this file, and also import other style files */
+body {
+  width: 350px !important;
+  margin: 0 !important;
+}
+
+button:hover {
+  transition: all 0.2s ease-in-out;
+  box-shadow: inset rgba(0, 0, 0, 0.15) 0px 2px 8px !important;
+}
+
+button:active {
+  transition: all 0.2s ease-in-out;
+  box-shadow: inset rgba(0, 0, 0, 0.18) 0px 2px 4px !important;
+}
+
+img.icon-open {
+  height: 1.2em;
+  filter: invert(1);
+  margin-left: 1em;
+}
+
+h2 {
+  cursor: default;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+}
+
+.notice-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 1em;
+  text-align: center;
+  font-weight: 200;
+  height: 100%;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 80px;
+  background-color: rgba(0, 0, 0, 0.59);
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 4px;
+  position: absolute;
+  z-index: 1;
+  margin-left: -30px;
+  font-size: smaller;
+  font-weight: 300;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #00000061 transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  transition: visibility 0.2s ease-in-out, opacity 0.2s ease-in-out;
+}

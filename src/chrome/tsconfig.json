@@ -4,9 +4,17 @@
     "target": "es5",
     "module": "commonjs",
     "sourceMap": false,
-    "types": ["@types/chrome"],
-    "typeRoots": ["node_modules/@types"],
+    "types": [
+      "@types/chrome"
+    ],
+    "typeRoots": [
+      "node_modules/@types",
+      "node_modules/web-ext-types"
+    ],
     "moduleResolution": "node",
-    "lib": ["es2017", "dom"]
+    "lib": [
+      "es2017",
+      "dom"
+    ]
   }
 }

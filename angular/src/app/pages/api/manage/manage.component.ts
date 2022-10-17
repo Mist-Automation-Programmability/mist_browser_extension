@@ -1,5 +1,3 @@
-import { group } from '@angular/animations';
-import { escapeIdentifier } from '@angular/compiler/src/output/abstract_emitter';
 import { Component, Inject, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { TAB_URL } from '../../../providers/tab-url.provider';
 
@@ -69,7 +67,7 @@ export class ApiManageComponent implements OnInit {
     const evpn_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!evpn\/site\/?([0-9]\/)?(?<site_id>[0-9a-z_-]*)?(\/(?<topology_id>[0-9a-f-]*))?/yis;
     const site_wlan_template_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!wlan\/orgWlanDetail\/(?<template_id>[0-9a-z_-]*)\/(?<wlan_id>[0-9a-f-]*)\/(?<site_id>[0-9a-f-]*)/is;
     const site_common_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*)\/)?(?<site_id>[0-9a-f-]*)?/yis;
-    const site_common_objs = ["ap", "gateway", "switch", "assets", "wlan", "tags", "psk", "tunnels", "clients", "sdkclients", "wiredclients", "wxlan", "security", "switchconfig", "pcap"]
+    const site_common_objs = ["ap", "gateway", "switch", "assets", "wlan", "tags", "psk", "tunnels", "clients", "sdkclients", "wiredclients", "wxlan", "security", "switchconfig", "pcap", "siteedge"]
     const org_common_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view|template|rfTemplate)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*))/yis;
     const org_common_objs = ["orgtags", "misttunnels", "templates", "switchtemplate", "gatewaytemplates", "hubs", "deviceprofiles", "org", "orgpsk", "configuration", "auditlogs", "apinventory", "adminconfig", "subscription", "edge", "vpns", "template", "rftemplates", "services", "networks", "applicationpolicy", "nactags", "naccertificates", "nacpolicy", "nacidentityproviders", "onboardingworkflow"]
     const base_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!/yis;
@@ -192,17 +190,17 @@ export class ApiManageComponent implements OnInit {
     }
   }
 
-  forgeOrgNacIdp(host: string): void {    
+  forgeOrgNacIdp(host: string): void {
     if (this.obj_id) {
       this.quick_links.push(
-        { name: "NAC IDP", url:  "https://api." + host + "/api/v1/orgs/" + this.org_id + "/ssos/" + this.obj_id },
-        { name: "NAC IDP Metadata", url:  "https://api." + host + "/api/v1/orgs/" + this.org_id + "/ssos/" + this.obj_id + "/metadata"},
-        { name: "DOWNLOAD NAC IDP Metadata", url:  "https://api." + host + "/api/v1/orgs/" + this.org_id + "/ssos/" + this.obj_id + "/metadata.xml"},
-        { name: "NAC IDP Latest failures", url:  "https://api." + host + "/api/v1/orgs/" + this.org_id + "/ssos/" + this.obj_id + "/failures"}
-        );
+        { name: "NAC IDP", url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/ssos/" + this.obj_id },
+        { name: "NAC IDP Metadata", url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/ssos/" + this.obj_id + "/metadata" },
+        { name: "DOWNLOAD NAC IDP Metadata", url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/ssos/" + this.obj_id + "/metadata.xml" },
+        { name: "NAC IDP Latest failures", url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/ssos/" + this.obj_id + "/failures" }
+      );
     } else {
       this.quick_links.push(
-        { name: "ORG SSOS", url:  "https://api." + host + "/api/v1/orgs/" + this.org_id + "/ssos" }
+        { name: "ORG SSOS", url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/ssos" }
       )
     }
   }
@@ -588,8 +586,9 @@ export class ApiManageComponent implements OnInit {
           this.forgeSiteObject("psks", res.groups.host, res.groups.detail);
           break;
         // case "siteedge":
-        //   this.forgeSiteObject(res.groups, "mxedges", null);
-        //    this.forgeSiteObjectStats(res.groups, "mxedges", null);
+        //   // NOT ABLE TO GET SITE ID FROM URL
+        //   this.forgeSiteObject("mxedges", res.groups.host, res.groups.detail);
+        //   this.forgeSiteObjectStats("mxedges", res.groups.host, res.groups.detail);
         //   break;
         case "tunnels":
           this.setName("wxtunnel", res.groups.detail);
