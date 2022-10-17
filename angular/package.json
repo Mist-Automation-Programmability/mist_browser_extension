@@ -33,6 +33,7 @@
         "@angular/platform-browser": "^14.2.6",
         "@angular/platform-browser-dynamic": "^14.2.6",
         "@angular/router": "^14.2.6",
+        "ngx-build-plus": "^14.0.0",
         "rxjs": "^7.5.5",
         "tslib": "^2.4.0",
         "web-ext": "^7.3.0",
