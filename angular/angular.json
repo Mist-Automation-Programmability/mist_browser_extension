@@ -90,7 +90,6 @@
             }
         }
     },
-    "defaultProject": "angular-chrome-extension",
     "cli": {
         "analytics": false
     }
