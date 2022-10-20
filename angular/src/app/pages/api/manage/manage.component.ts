@@ -1,6 +1,5 @@
-import { Component, Inject, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { TAB_URL } from '../../../providers/tab-url.provider';
-
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { BrowserService } from "../../../services/browser.service";
 export interface linkElement {
   url: string,
   name: string
@@ -9,8 +8,7 @@ export interface linkElement {
 @Component({
   selector: 'app-api-manage',
   templateUrl: 'manage.component.html',
-  styleUrls: ['../api.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['../api.component.scss']
 })
 export class ApiManageComponent implements OnInit {
   message: string;
@@ -18,16 +16,17 @@ export class ApiManageComponent implements OnInit {
 
   quick_links: linkElement[] = []
 
-  org_id: string = "";
-  site_id: string = "";
-  obj_id: string = "";
+  org_id: string | undefined = "";
+  site_id: string | undefined = "";
+  obj_id: string | undefined = "";
   obj_name: string = "";
-  focused: string = "";
-
+  focused: string | undefined = "";
+  tabUrl:string;
   constructor(
-    @Inject(TAB_URL) readonly tabUrl: string,
-    private _cd: ChangeDetectorRef
+    private _cd: ChangeDetectorRef,
+    private _browser: BrowserService
   ) { }
+
 
 
   hosts = [
@@ -39,14 +38,17 @@ export class ApiManageComponent implements OnInit {
     "manage.ac2.mist.com",
   ]
 
-  external_links = {
+  external_links: { [index: string]: string } = {
     doc: "https://doc.mist-lab.fr",
     postman: "https://documenter.getpostman.com/view/224925/SzYgQufe",
     mist: "https://api.mist.com/api/v1/docs"
   }
 
   ngOnInit() {
-    this.generateApiUrl()
+    this._browser.getUrl.then(tabUrl=>{
+      this.tabUrl = tabUrl;
+      this.generateApiUrl()
+    })
   }
 
   ////////////////////////////////////////////////////////////////////////////////////
@@ -123,7 +125,7 @@ export class ApiManageComponent implements OnInit {
     return splitted_uuid[splitted_uuid.length - 1];
   }
 
-  setName(obj_name: string, detail: string) {
+  setName(obj_name: string ="" , detail: string | undefined) {
     obj_name = obj_name.toLowerCase();
     if (detail && detail != "new") {
       this.obj_name = obj_name
@@ -140,7 +142,7 @@ export class ApiManageComponent implements OnInit {
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// COMMON ORG FUNCTIONS
-  forgeOrgObject(obj_name: string, host: string, detail: string, extra_param: string = null): void {
+  forgeOrgObject(obj_name: string, host: string, detail: string | undefined, extra_param: string | undefined = undefined): void {
     let url = "";
     if (detail && detail != "new") {
       // set QUICK LINK
@@ -148,14 +150,14 @@ export class ApiManageComponent implements OnInit {
       this.quick_links.push({ url: url, name: this.obj_name });
     } else {
       // set QUICK LINK
-      this.obj_id = null;
+      this.obj_id = undefined;
       url = "https://api." + host + "/api/v1/orgs/" + this.org_id + "/" + obj_name;
       if (extra_param) url += "?" + extra_param;
       this.quick_links.push({ url: url, name: this.obj_name });
     }
   }
 
-  forgeOrgObjectStats(obj_name: string, host: string, detail: string, extra_param: string = null): void {
+  forgeOrgObjectStats(obj_name: string, host: string, detail: string, extra_param: string |undefined= undefined): void {
     let url = "";
     if (detail && detail != "new") {
       // set QUICK LINK
@@ -166,9 +168,9 @@ export class ApiManageComponent implements OnInit {
   }
 
 
-  forgeOrgObjectEvents(obj_name: string, host: string, detail: string, extra_param: string = null): void {
+  forgeOrgObjectEvents(obj_name: string, host: string, detail: string, extra_param: string|undefined = undefined): void {
     let url = "";
-    if (detail && detail != "new") {
+    if (detail && detail != "new" && this.obj_id) {
       // MAC
       const mac = this.getMac(this.obj_id);
       // set QUICK LINK
@@ -207,7 +209,7 @@ export class ApiManageComponent implements OnInit {
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// COMMON SITE FUNCTIONS
-  forgeSiteObject(obj_name: string, host: string, detail: string, extra_param: string = null): void {
+  forgeSiteObject(obj_name: string, host: string | undefined, detail: string | undefined, extra_param: string|undefined = undefined): void {
     let url = "";
     if (detail && detail != "new") {
       // set QUICK LINK
@@ -224,7 +226,7 @@ export class ApiManageComponent implements OnInit {
     }
   }
 
-  forgeSiteObjectSearch(obj_name: string, host: string, detail: string, extra_param: string = null): void {
+  forgeSiteObjectSearch(obj_name: string, host: string, detail: string, extra_param: string|undefined = undefined): void {
     let url = "";
     if (detail && detail != "new") {
       // set QUICK LINK
@@ -238,7 +240,7 @@ export class ApiManageComponent implements OnInit {
     }
   }
 
-  forgeSiteObjectStats(obj_name: string, host: string, detail: string, extra_param: string = null): void {
+  forgeSiteObjectStats(obj_name: string, host: string, detail: string, extra_param: string |undefined = undefined): void {
     let url = "";
     if (detail && detail != "new") {
       // set QUICK LINK
@@ -253,9 +255,9 @@ export class ApiManageComponent implements OnInit {
     }
   }
 
-  forgeSiteObjectEvents(obj_name: string, device_type: string, host: string, detail: string, extra_param: string = null): void {
+  forgeSiteObjectEvents(obj_name: string, device_type: string | undefined, host: string, detail: string, extra_param: string|undefined = undefined): void {
     let url = "";
-    if (detail && detail != "new") {
+    if (detail && detail != "new" && this.obj_id) {
       // MAC
       const mac = this.getMac(this.obj_id);
       // set QUICK LINK
@@ -318,8 +320,8 @@ export class ApiManageComponent implements OnInit {
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// SITE DEVICE LAST CONFIG FUNCTION
-  forgeSiteApLastConfig(detail, host: string, device_type: string): void {
-    if (detail) {
+  forgeSiteApLastConfig(detail: string|undefined, host: string, device_type: string): void {
+    if (detail && this.obj_id) {
       const mac = this.getMac(this.obj_id)
       if (device_type == "ap" && mac) {
         this.quick_links.push({
@@ -350,14 +352,14 @@ export class ApiManageComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// SITE ASSETS FUNCTION
 
-  forgeAsset(host: string, mac: string): void {
-    this.quick_links.push({
+  forgeAsset(host: string, mac: string | undefined): void {
+    if (mac) this.quick_links.push({
       url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/zones/visits/search?duration=1d&interval=3600&user_type=asset&scope=zone&user=" + mac,
       name: "asset zones visits"
     })
   }
 
-  forgeSiteAssetStats(obj_name: string, host: string, detail: string, extra_param: string = null): void {
+  forgeSiteAssetStats(obj_name: string, host: string, detail: string, extra_param: string|undefined = undefined): void {
     let url = "";
     if (detail && detail != "new") {
       // set QUICK LINK
@@ -377,7 +379,7 @@ export class ApiManageComponent implements OnInit {
   }
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// SITE OBJ FUNCTION
-  forgeSite(host: string, detail: string, extra_params: string = null): void {
+  forgeSite(host: string, detail: string, extra_params: string | undefined = undefined): void {
     if (extra_params) {
       extra_params = "?" + extra_params;
     } else {
@@ -385,7 +387,7 @@ export class ApiManageComponent implements OnInit {
     }
     if (detail == "site") {
       this.site_id = this.obj_id
-      this.obj_id = null
+      this.obj_id = undefined
       this.quick_links.push({
         url: "https://api." + host + "/api/v1/sites/" + this.site_id,
         name: "site info"
@@ -403,7 +405,7 @@ export class ApiManageComponent implements OnInit {
         name: "site devices events"
       })
     } else {
-      this.obj_id = null;
+      this.obj_id = undefined;
       this.quick_links.push({
         url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/sites",
         name: "sites"
@@ -455,7 +457,7 @@ export class ApiManageComponent implements OnInit {
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// DISCOVERED SWITCHES FUNCTION
-  forgeSiteDiscoveredSwitchUrl(host: string, mac: string = null): void {
+  forgeSiteDiscoveredSwitchUrl(host: string, mac: string|undefined = undefined): void {
     if (mac) {
       this.quick_links.push({
         url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/stats/discovered_switches/search?system_name=" + mac,
@@ -471,7 +473,7 @@ export class ApiManageComponent implements OnInit {
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// ORG SLE FUNCTION
-  forgeOrgSlehUrl(host: string, scope: string, sle: string, worstsle: string = null, extra_params: string = null): void {
+  forgeOrgSlehUrl(host: string, scope: string, sle: string, worstsle: string|undefined = undefined, extra_params: string|undefined = undefined): void {
     /*
     host: mist.com, eu.mist.com, gc1.mist.com
     scope: wifi, wire, wan
@@ -488,7 +490,7 @@ export class ApiManageComponent implements OnInit {
 
   ////////////////////////////////////////////////////////////////////////////////////
   //////////////////////  SLE FUNCTION
-  forgeSlehUrl(host: string, scope: string, site_id: string, scope_id: string, sles: string[], extra_params: string = null): void {
+  forgeSlehUrl(host: string, scope: string | undefined, site_id: string, scope_id: string, sles: string[], extra_params: string | null = null): void {
     /*
     host: mist.com, eu.mist.com, gc1.mist.com
     scope: wifi, wire, wan
@@ -505,23 +507,23 @@ export class ApiManageComponent implements OnInit {
   ////////////////////// BASE URL FUNCTION DISPATCHER
 
   baseUrl(res: RegExpExecArray): void {
-    this.org_id = res.groups.org_id;
+    this.org_id = res?.groups?.org_id;
   }
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// ORG WLANS FUNCTION DISPATCHER FOR SITE URLS
   siteWlanTemplateUrl(res: RegExpExecArray): void {
-    this.org_id = res.groups.org_id;
-    this.site_id = res.groups.site_id;
-    this.obj_id = res.groups.wlan_id;
+    this.org_id = res?.groups?.org_id;
+    this.site_id = res?.groups?.site_id;
+    this.obj_id = res?.groups?.wlan_id;
 
     this.quick_links.push(
       {
-        url: "https://api." + res.groups.host + "/api/v1/orgs/" + this.org_id + "/wlans/" + res.groups.wlan_id,
+        url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/wlans/" + res?.groups?.wlan_id,
         name: "Org Wlan in use"
       }, {
-      url: "https://api." + res.groups.host + "/api/v1/orgs/" + this.org_id + "/templates/" + res.groups.template_id,
+      url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/templates/" + res?.groups?.template_id,
       name: "Org Config Template in use"
     });
   }
@@ -530,96 +532,97 @@ export class ApiManageComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// COMMON URL FUNCTION DISPATCHER FOR SITE URLS
   commonSiteUrl(res: RegExpExecArray): void {
-    this.org_id = res.groups.org_id;
-    let extra_params = null
+    this.org_id = res?.groups?.org_id;
+    let extra_params: string|undefined = undefined;
     const uuid_re = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/
-    if (res.groups.host && res.groups.org_id && res.groups.obj) {
-      this.obj_id = res.groups.obj_id;
-      this.site_id = res.groups.site_id;
-      switch (res.groups.obj.toLowerCase()) {
+    if (res?.groups?.host && res?.groups?.org_id && res?.groups?.obj) {
+      this.obj_id = res?.groups?.obj_id;
+      this.site_id = res?.groups?.site_id;
+      switch (res?.groups?.obj.toLowerCase()) {
         // SITE
         case "ap":
         case "gateway":
-          this.setName(res.groups.obj, res.groups.detail);
-          if (!res.groups.details) extra_params = "type=" + res.groups.obj;
-          this.forgeSiteObject("devices", res.groups.host, res.groups.detail, extra_params);
-          this.forgeSiteObjectStats("devices", res.groups.host, res.groups.detail, extra_params);
-          this.forgeSiteObjectEvents("devices", res.groups.obj, res.groups.host, res.groups.detail);
-          this.forgeSiteApLastConfig(res.groups.detail, res.groups.host, res.groups.obj);
+          this.setName(res?.groups?.obj, res?.groups?.detail);
+          if (!res?.groups?.details) extra_params = "type=" + res?.groups?.obj;
+          this.forgeSiteObject("devices", res?.groups?.host, res?.groups?.detail, extra_params);
+          this.forgeSiteObjectStats("devices", res?.groups?.host, res?.groups?.detail, extra_params);
+          this.forgeSiteObjectEvents("devices", res?.groups?.obj, res?.groups?.host, res?.groups?.detail);
+          this.forgeSiteApLastConfig(res?.groups?.detail, res?.groups?.host, res?.groups?.obj);
           break;
         case "switch":
-          if (["list", "topology", "location"].includes(this.obj_id)) this.obj_id = null;
-          const is_uuid = uuid_re.test(this.obj_id);
+          if (["list", "topology", "location"].includes(this.obj_id)) this.obj_id = undefined;
+          var is_uuid = false;
+          if (this.obj_id) is_uuid = uuid_re.test(this.obj_id);
           if (this.obj_id && !is_uuid) {
             this.obj_name = "discoveredswitch";
             this.setName("discoveredswitch", "detail");
-            this.forgeSiteDiscoveredSwitchUrl(res.groups.host, this.obj_id);
+            this.forgeSiteDiscoveredSwitchUrl(res?.groups?.host, this.obj_id);
           } else {
-            this.setName(res.groups.obj, res.groups.detail);
-            if (!res.groups.details) extra_params = "type=" + res.groups.obj;
-            this.forgeSiteObject("devices", res.groups.host, res.groups.detail, extra_params);
-            this.forgeSiteObjectStats("devices", res.groups.host, res.groups.detail, extra_params);
-            this.forgeSiteObjectEvents("devices", res.groups.obj, res.groups.host, res.groups.detail);
-            this.forgeSiteDiscoveredSwitchUrl(res.groups.host);
+            this.setName(res?.groups?.obj, res?.groups?.detail);
+            if (!res?.groups?.details) extra_params = "type=" + res?.groups?.obj;
+            this.forgeSiteObject("devices", res?.groups?.host, res?.groups?.detail, extra_params);
+            this.forgeSiteObjectStats("devices", res?.groups?.host, res?.groups?.detail, extra_params);
+            this.forgeSiteObjectEvents("devices", res?.groups?.obj, res?.groups?.host, res?.groups?.detail);
+            this.forgeSiteDiscoveredSwitchUrl(res?.groups?.host);
           }
           break;
         case "assets":
           // need to retrieve the asset ID to generate the detail request
-          if (!res.groups.detail) {
-            this.setName(res.groups.obj.substr(0, res.groups.obj.length - 1), res.groups.detail);
-            this.forgeSiteObject(res.groups.obj, res.groups.host, res.groups.detail);
-            this.forgeSiteAssetStats(res.groups.obj, res.groups.host, res.groups.detail);
+          if (!res?.groups?.detail) {
+            this.setName(res?.groups?.obj.substr(0, res?.groups?.obj.length - 1), res?.groups?.detail);
+            this.forgeSiteObject(res?.groups?.obj, res?.groups?.host, res?.groups?.detail);
+            this.forgeSiteAssetStats(res?.groups?.obj, res?.groups?.host, res?.groups?.detail);
           } else {
-            this.forgeAsset(res.groups.host, this.org_id)
+            this.forgeAsset(res?.groups?.host, this.obj_id)
           }
           break;
         case "wlan":
-          this.setName(res.groups.obj, res.groups.detail);
-          this.forgeSiteObject("wlans", res.groups.host, res.groups.detail);
+          this.setName(res?.groups?.obj, res?.groups?.detail);
+          this.forgeSiteObject("wlans", res?.groups?.host, res?.groups?.detail);
           break;
         case "tags":
-          this.setName("wxtag", res.groups.detail);
-          this.forgeSiteObject("wxtags", res.groups.host, res.groups.detail);
+          this.setName("wxtag", res?.groups?.detail);
+          this.forgeSiteObject("wxtags", res?.groups?.host, res?.groups?.detail);
           break;
         case "psk":
-          this.setName(res.groups.obj, res.groups.detail);
-          this.forgeSiteObject("psks", res.groups.host, res.groups.detail);
+          this.setName(res?.groups?.obj, res?.groups?.detail);
+          this.forgeSiteObject("psks", res?.groups?.host, res?.groups?.detail);
           break;
         // case "siteedge":
         //   // NOT ABLE TO GET SITE ID FROM URL
-        //   this.forgeSiteObject("mxedges", res.groups.host, res.groups.detail);
-        //   this.forgeSiteObjectStats("mxedges", res.groups.host, res.groups.detail);
+        //   this.forgeSiteObject("mxedges", res?.groups?.host, res?.groups?.detail);
+        //   this.forgeSiteObjectStats("mxedges", res?.groups?.host, res?.groups?.detail);
         //   break;
         case "tunnels":
-          this.setName("wxtunnel", res.groups.detail);
-          this.forgeSiteObject("wxtunnels", res.groups.host, res.groups.detail);
-          this.forgeSiteObjectStats("wxtunnels", res.groups.host, res.groups.detail);
+          this.setName("wxtunnel", res?.groups?.detail);
+          this.forgeSiteObject("wxtunnels", res?.groups?.host, res?.groups?.detail);
+          this.forgeSiteObjectStats("wxtunnels", res?.groups?.host, res?.groups?.detail);
           break;
         case "clients":
         case "sdkclients":
-          this.setName(res.groups.obj.substr(0, res.groups.obj.length - 1), res.groups.detail);
-          this.forgeSiteObjectSearch(res.groups.obj, res.groups.host, res.groups.detail);
-          this.forgeSiteObjectStats(res.groups.obj, res.groups.host, res.groups.detail);
+          this.setName(res?.groups?.obj.substr(0, res?.groups?.obj.length - 1), res?.groups?.detail);
+          this.forgeSiteObjectSearch(res?.groups?.obj, res?.groups?.host, res?.groups?.detail);
+          this.forgeSiteObjectStats(res?.groups?.obj, res?.groups?.host, res?.groups?.detail);
           break;
         case "wiredclients":
-          this.setName(res.groups.obj.substr(0, res.groups.obj.length - 1), res.groups.detail);
-          this.forgeSiteObjectSearch("wired_clients", res.groups.host, res.groups.detail);
+          this.setName(res?.groups?.obj.substr(0, res?.groups?.obj.length - 1), res?.groups?.detail);
+          this.forgeSiteObjectSearch("wired_clients", res?.groups?.host, res?.groups?.detail);
           break;
         case "wxlan":
-          this.setName("wxrule", res.groups.detail);
-          this.forgeSiteObject("wxrules", res.groups.host, res.groups.detail);
-          this.forgeSiteObjectStats("wxrules", res.groups.host, res.groups.detail,);
+          this.setName("wxrule", res?.groups?.detail);
+          this.forgeSiteObject("wxrules", res?.groups?.host, res?.groups?.detail);
+          this.forgeSiteObjectStats("wxrules", res?.groups?.host, res?.groups?.detail,);
           break;
         case "security":
-          this.forgeSiteSecurity(res.groups.host)
+          this.forgeSiteSecurity(res?.groups?.host)
           break;
         case "switchconfig":
-          this.setName("switchconfig", res.groups.detail);
-          this.forgeSiteSwitchConfig(res.groups.host);
+          this.setName("switchconfig", res?.groups?.detail);
+          this.forgeSiteSwitchConfig(res?.groups?.host);
           break;
         case "pcap":
-          this.setName(res.groups.obj, res.groups.detail);
-          this.forgeSiteObject("pcaps", res.groups.host, res.groups.detail);
+          this.setName(res?.groups?.obj, res?.groups?.detail);
+          this.forgeSiteObject("pcaps", res?.groups?.host, res?.groups?.detail);
           break;
       }
     }
@@ -628,72 +631,72 @@ export class ApiManageComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// COMMON URL FUNCTION DISPATCHER FOR ORG URLS
   commonOrgUrl(res: RegExpExecArray): void {
-    this.org_id = res.groups.org_id;
-    let extra_params = null
+    this.org_id = res?.groups?.org_id;
+    let extra_params = undefined;
     const uuid_re = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/
-    if (res.groups.host && res.groups.org_id && res.groups.obj) {
-      this.obj_id = res.groups.obj_id;
-      switch (res.groups.obj.toLowerCase()) {
+    if (res?.groups?.host && res?.groups?.org_id && res?.groups?.obj) {
+      this.obj_id = res?.groups?.obj_id;
+      switch (res?.groups?.obj.toLowerCase()) {
         // ORG
         case "org":
-          this.obj_id = null;
-          this.setName("org", res.groups.detail);
-          this.forgeOrg(res.groups.host);
+          this.obj_id = undefined;
+          this.setName("org", res?.groups?.detail);
+          this.forgeOrg(res?.groups?.host);
           break;
         case "configuration":
-          this.setName("site", res.groups.detail);
-          this.forgeSite(res.groups.host, res.groups.detail);
+          this.setName("site", res?.groups?.detail);
+          this.forgeSite(res?.groups?.host, res?.groups?.detail);
           break;
         case "orgtags":
-          this.setName("wxtag", res.groups.detail);
-          this.forgeOrgObject("wxtags", res.groups.host, res.groups.detail);
+          this.setName("wxtag", res?.groups?.detail);
+          this.forgeOrgObject("wxtags", res?.groups?.host, res?.groups?.detail);
           break;
         case "orgpsk":
-          this.setName("org psk", res.groups.detail);
-          this.forgeOrgObject("psks", res.groups.host, res.groups.detail);
+          this.setName("org psk", res?.groups?.detail);
+          this.forgeOrgObject("psks", res?.groups?.host, res?.groups?.detail);
           break;
         case "misttunnels":
-          this.setName("mxtunnel", res.groups.detail);
-          this.forgeOrgObject("mxtunnels", res.groups.host, res.groups.detail);
+          this.setName("mxtunnel", res?.groups?.detail);
+          this.forgeOrgObject("mxtunnels", res?.groups?.host, res?.groups?.detail);
           break;
         case "switchtemplate":
-          this.setName(res.groups.obj, res.groups.detail);
-          this.forgeOrgObject("networktemplates", res.groups.host, res.groups.detail);
+          this.setName(res?.groups?.obj, res?.groups?.detail);
+          this.forgeOrgObject("networktemplates", res?.groups?.host, res?.groups?.detail);
           break;
         case "templates":
-          this.setName(res.groups.obj.substr(0, res.groups.obj.length - 1), res.groups.detail);
-          this.forgeOrgObject(res.groups.obj, res.groups.host, res.groups.detail);
+          this.setName(res?.groups?.obj.substr(0, res?.groups?.obj.length - 1), res?.groups?.detail);
+          this.forgeOrgObject(res?.groups?.obj, res?.groups?.host, res?.groups?.detail);
           this.obj_name = "org wlans";
-          this.forgeOrgObject("wlans", res.groups.host, undefined);
+          this.forgeOrgObject("wlans", res?.groups?.host, undefined);
           break;
         case "auditlogs":
-          this.setName(res.groups.obj.substr(0, res.groups.obj.length - 1), res.groups.detail);
-          this.forgeOrgObject("logs", res.groups.host, res.groups.detail);
+          this.setName(res?.groups?.obj.substr(0, res?.groups?.obj.length - 1), res?.groups?.detail);
+          this.forgeOrgObject("logs", res?.groups?.host, res?.groups?.detail);
           break;
         case "apinventory":
           this.obj_name = "APs inventory";
-          this.forgeOrgObject("inventory", res.groups.host, res.groups.detail, "type=ap");
+          this.forgeOrgObject("inventory", res?.groups?.host, res?.groups?.detail, "type=ap");
           this.obj_name = "Switches inventory";
-          this.forgeOrgObject("inventory", res.groups.host, res.groups.detail, "type=switch");
+          this.forgeOrgObject("inventory", res?.groups?.host, res?.groups?.detail, "type=switch");
           this.obj_name = "Gateways inventory";
-          this.forgeOrgObject("inventory", res.groups.host, res.groups.detail, "type=gateway");
+          this.forgeOrgObject("inventory", res?.groups?.host, res?.groups?.detail, "type=gateway");
           break;
         case "adminconfig":
-          this.setName("admin", res.groups.detail);
-          this.forgeOrgObject("admins", res.groups.host, res.groups.detail);
+          this.setName("admin", res?.groups?.detail);
+          this.forgeOrgObject("admins", res?.groups?.host, res?.groups?.detail);
           break;
 
         case "subscription":
-          this.setName(res.groups.obj, res.groups.detail);
-          this.forgeOrgObject("licenses", res.groups.host, res.groups.detail);
+          this.setName(res?.groups?.obj, res?.groups?.detail);
+          this.forgeOrgObject("licenses", res?.groups?.host, res?.groups?.detail);
           break;
         case "edge":
-          this.setName("mxedge", res.groups.detail);
-          this.forgeEdge(res.groups.host, res.groups.detail)
+          this.setName("mxedge", res?.groups?.detail);
+          this.forgeEdge(res?.groups?.host, res?.groups?.detail)
           break;
         case "hubs":
-          this.setName("hubprofile", res.groups.detail);
-          this.forgeHubProfile(res.groups.host, res.groups.detail)
+          this.setName("hubprofile", res?.groups?.detail);
+          this.forgeHubProfile(res?.groups?.host, res?.groups?.detail)
           break;
         case "services":
         case "rftemplates":
@@ -701,37 +704,37 @@ export class ApiManageComponent implements OnInit {
         case "deviceprofiles":
         case "gatewaytemplates":
         case "networks":
-          this.setName(res.groups.obj.substr(0, res.groups.obj.length - 1), res.groups.detail);
-          this.forgeOrgObject(res.groups.obj.toLowerCase(), res.groups.host, res.groups.detail);
+          this.setName(res?.groups?.obj.substr(0, res?.groups?.obj.length - 1), res?.groups?.detail);
+          this.forgeOrgObject(res?.groups?.obj.toLowerCase(), res?.groups?.host, res?.groups?.detail);
           break;
         case "applicationpolicy":
-          this.setName("servicepolicy", res.groups.details);
-          this.forgeOrgObject("servicepolicies", res.groups.host, res.groups.detail);
+          this.setName("servicepolicy", res?.groups?.details);
+          this.forgeOrgObject("servicepolicies", res?.groups?.host, res?.groups?.detail);
           break;
         case "nactags":
-          this.setName("NAC Tag", res.groups.detail);
-          this.forgeOrgObject(res.groups.obj.toLowerCase(), res.groups.host, res.groups.detail);
+          this.setName("NAC Tag", res?.groups?.detail);
+          this.forgeOrgObject(res?.groups?.obj.toLowerCase(), res?.groups?.host, res?.groups?.detail);
           break;
         case "naccertificates":
-          this.setName("NAC Certificates", res.groups.detail);
+          this.setName("NAC Certificates", res?.groups?.detail);
           this.quick_links.push({
-            url: "https://api." + res.groups.host + "/api/v1/orgs/" + this.org_id + "/setting",
+            url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/setting",
             name: "org setting"
           }
           )
           break;
         case "nacpolicy":
-          this.setName("NAC Policy", res.groups.detail);
-          this.forgeOrgObject("nacrules", res.groups.host, res.groups.detail);
+          this.setName("NAC Policy", res?.groups?.detail);
+          this.forgeOrgObject("nacrules", res?.groups?.host, res?.groups?.detail);
           break;
         case "nacidentityproviders":
           console.log(res.groups)
-          this.setName("NAC IDP", res.groups.detail);
-          this.forgeOrgNacIdp(res.groups.host);
+          this.setName("NAC IDP", res?.groups?.detail);
+          this.forgeOrgNacIdp(res?.groups?.host);
           break;
         case "onboardingworkflow":
-          this.setName("Psk Portal", res.groups.detail);
-          this.forgeOrgObject("pskportals", res.groups.host, res.groups.detail);
+          this.setName("Psk Portal", res?.groups?.detail);
+          this.forgeOrgObject("pskportals", res?.groups?.host, res?.groups?.detail);
           break;
 
       }
@@ -742,47 +745,47 @@ export class ApiManageComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// ALARM URL FUNCTION DISPATCHER
   alarmUrl(res: RegExpExecArray): void {
-    this.org_id = res.groups.org_id;
+    this.org_id = res?.groups?.org_id;
     let extra_params = "";
     let severity_array = [];
     let scope = "";
-    let scope_id = "";
-    if (res.groups.scope == "org") {
+    let scope_id: string | undefined = undefined;
+    if (res?.groups?.scope == "org") {
       scope = "orgs";
-      scope_id = res.groups.org_id;
+      scope_id = res?.groups?.org_id;
     } else {
-      if (res.groups.site_id) {
-        this.site_id = res.groups.site_id;
+      if (res?.groups?.site_id) {
+        this.site_id = res?.groups?.site_id;
       } else {
-        this.site_id = res.groups.uuid;
+        this.site_id = res?.groups?.uuid;
       }
       scope = "sites";
       scope_id = this.site_id;
     }
-    if (res.groups.start && res.groups.stop) {
-      extra_params = "start=" + res.groups.start + "&end=" + res.groups.stop;
+    if (res?.groups?.start && res?.groups?.stop) {
+      extra_params = "start=" + res?.groups?.start + "&end=" + res?.groups?.stop;
     }
-    if (res.groups.show_crit && res.groups.show_crit == "true") severity_array.push("critical")
-    if (res.groups.show_warn && res.groups.show_warn == "true") severity_array.push("warn")
-    if (res.groups.show_info && res.groups.show_info == "true") severity_array.push("info")
+    if (res?.groups?.show_crit && res?.groups?.show_crit == "true") severity_array.push("critical")
+    if (res?.groups?.show_warn && res?.groups?.show_warn == "true") severity_array.push("warn")
+    if (res?.groups?.show_info && res?.groups?.show_info == "true") severity_array.push("info")
     if (severity_array.length > 0) extra_params += "&severity=" + severity_array.join(",")
     else extra_params += "&severity=none"
 
-    if (res.groups.group && res.groups.group != "any%20type") extra_params += "&group=" + res.groups.group;
+    if (res?.groups?.group && res?.groups?.group != "any%20type") extra_params += "&group=" + res?.groups?.group;
 
-    if (res.groups.show_ack && res.groups.show_ack == "false") extra_params += "&acked=false";
+    if (res?.groups?.show_ack && res?.groups?.show_ack == "false") extra_params += "&acked=false";
 
     this.quick_links.push({
-      url: "https://api." + res.groups.host + "/api/v1/" + scope + "/" + scope_id + "/alarms/search?" + extra_params,
+      url: "https://api." + res?.groups?.host + "/api/v1/" + scope + "/" + scope_id + "/alarms/search?" + extra_params,
       name: scope + " Alarms"
     }, {
-      url: "https://api." + res.groups.host + "/api/v1/" + scope + "/" + scope_id + "/alarms/count?" + extra_params,
+      url: "https://api." + res?.groups?.host + "/api/v1/" + scope + "/" + scope_id + "/alarms/count?" + extra_params,
       name: scope + " Alarms count"
     }, {
-      url: "https://api." + res.groups.host + "/api/v1/orgs/" + this.org_id + "/alarmtemplates",
+      url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/alarmtemplates",
       name: " Alarms Templates"
     }, {
-      url: "https://api." + res.groups.host + "/api/v1/const/alarm_defs",
+      url: "https://api." + res?.groups?.host + "/api/v1/const/alarm_defs",
       name: " Alarms Definitions"
     });
   }
@@ -790,18 +793,18 @@ export class ApiManageComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// EVPN URL FUNCTION DISPATCHER
   evpnUrl(res: RegExpExecArray): void {
-    this.org_id = res.groups.org_id;
-    this.site_id = res.groups.site_id;
+    this.org_id = res?.groups?.org_id;
+    this.site_id = res?.groups?.site_id;
     let extra_params = "";
-    if (res.groups.topology_id) {
-      this.obj_id = res.groups.topology_id;
+    if (res?.groups?.topology_id) {
+      this.obj_id = res?.groups?.topology_id;
       this.quick_links.push({
-        url: "https://api." + res.groups.host + "/api/v1/sites/" + this.site_id + "/evpn_topologies/" + this.obj_id,
+        url: "https://api." + res?.groups?.host + "/api/v1/sites/" + this.site_id + "/evpn_topologies/" + this.obj_id,
         name: "EVPN Topology"
       })
     } else {
       this.quick_links.push({
-        url: "https://api." + res.groups.host + "/api/v1/sites/" + this.site_id + "/evpn_topologies",
+        url: "https://api." + res?.groups?.host + "/api/v1/sites/" + this.site_id + "/evpn_topologies",
         name: "Site EVPN Topologies"
       })
     }
@@ -811,20 +814,20 @@ export class ApiManageComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// EVENTS URL FUNCTION DISPATCHER
   eventsUrl(res: RegExpExecArray): void {
-    this.org_id = res.groups.org_id;
+    this.org_id = res?.groups?.org_id;
     let extra_params = "";
-    if (res.groups.site_id) {
-      this.site_id = res.groups.site_id;
+    if (res?.groups?.site_id) {
+      this.site_id = res?.groups?.site_id;
     } else {
-      this.site_id = res.groups.uuid;
+      this.site_id = res?.groups?.uuid;
     }
 
-    if (res.groups.start && res.groups.stop) {
-      extra_params = "start=" + res.groups.start + "&end=" + res.groups.stop;
+    if (res?.groups?.start && res?.groups?.stop) {
+      extra_params = "start=" + res?.groups?.start + "&end=" + res?.groups?.stop;
     }
 
     this.quick_links.push({
-      url: "https://api." + res.groups.host + "/api/v1/sites/" + this.site_id + "/insights/marvis?" + extra_params,
+      url: "https://api." + res?.groups?.host + "/api/v1/sites/" + this.site_id + "/insights/marvis?" + extra_params,
       name: "Site Events"
     })
   }
@@ -833,71 +836,71 @@ export class ApiManageComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// EVENTS URL FUNCTION DISPATCHER
   floorplansUrl(res: RegExpExecArray): void {
-    this.org_id = res.groups.org_id;
-    if (res.groups.site_id) {
-      this.site_id = res.groups.site_id;
-      this.obj_id = res.groups.uuid;
+    this.org_id = res?.groups?.org_id;
+    if (res?.groups?.site_id) {
+      this.site_id = res?.groups?.site_id;
+      this.obj_id = res?.groups?.uuid;
     } else {
-      this.site_id = res.groups.uuid;
+      this.site_id = res?.groups?.uuid;
     }
 
-    this.setName("floor plan", res.groups.detail);
-    this.forgeSiteObject("maps", res.groups.host, res.groups.detail);
+    this.setName("floor plan", res?.groups?.detail);
+    this.forgeSiteObject("maps", res?.groups?.host, res?.groups?.detail);
   }
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// INSIGHTS URL FUNCTION DISPATCHER
   insightsUrl(res: RegExpExecArray): void {
-    this.org_id = res.groups.org_id;
-    this.site_id = res.groups.site_id;
-    this.obj_id = res.groups.obj_id;
-    let extra_params = null;
-    if (res.groups.start && res.groups.stop) {
-      extra_params = "start=" + res.groups.start + "&end=" + res.groups.stop;
+    this.org_id = res?.groups?.org_id;
+    this.site_id = res?.groups?.site_id;
+    this.obj_id = res?.groups?.obj_id;
+    let extra_params: string | undefined = undefined;
+    if (res?.groups?.start && res?.groups?.stop) {
+      extra_params = "start=" + res?.groups?.start + "&end=" + res?.groups?.stop;
     }
-    if (res.groups.host && res.groups.org_id) {
-      switch (res.groups.obj) {
+    if (res?.groups?.host && res?.groups?.org_id) {
+      switch (res?.groups?.obj) {
         case "device":
           this.setName("ap", "insights");
-          this.forgeSiteObject("devices", res.groups.host, "detail");
-          this.forgeSiteObjectStats("devices", res.groups.host, "detail", extra_params);
-          this.forgeSiteObjectEvents("devices", "ap", res.groups.host, "detail", extra_params);
-          this.forgeSiteApLastConfig(res.groups.detail, res.groups.host, 'ap');
+          this.forgeSiteObject("devices", res?.groups?.host, "detail");
+          this.forgeSiteObjectStats("devices", res?.groups?.host, "detail", extra_params);
+          this.forgeSiteObjectEvents("devices", "ap", res?.groups?.host, "detail", extra_params);
+          this.forgeSiteApLastConfig(res?.groups?.detail, res?.groups?.host, 'ap');
           break;
         case "client":
           this.setName("client", "insights");
-          this.forgeSiteObjectSearch("clients", res.groups.host, "detail");
-          this.forgeSiteObjectStats("clients", res.groups.host, "detail", extra_params);
-          this.forgeSiteObjectEvents("clients", null, res.groups.host, "detail", extra_params);
+          this.forgeSiteObjectSearch("clients", res?.groups?.host, "detail");
+          this.forgeSiteObjectStats("clients", res?.groups?.host, "detail", extra_params);
+          this.forgeSiteObjectEvents("clients", undefined, res?.groups?.host, "detail", extra_params);
           break;
         case "juniperSwitch":
           this.setName("switch", "insights");
-          this.forgeSiteObject("devices", res.groups.host, "detail");
-          this.forgeSiteObjectStats("devices", res.groups.host, "detail", extra_params);
-          this.forgeSiteObjectEvents("devices", "switch", res.groups.host, "detail", extra_params);
+          this.forgeSiteObject("devices", res?.groups?.host, "detail");
+          this.forgeSiteObjectStats("devices", res?.groups?.host, "detail", extra_params);
+          this.forgeSiteObjectEvents("devices", "switch", res?.groups?.host, "detail", extra_params);
           break;
         case "juniperGateway":
           this.setName("gateway", "insights");
-          this.forgeSiteObject("devices", res.groups.host, "detail");
-          this.forgeSiteObjectStats("devices", res.groups.host, "detail", extra_params);
-          this.forgeSiteObjectEvents("devices", "gateway", res.groups.host, "detail", extra_params);
+          this.forgeSiteObject("devices", res?.groups?.host, "detail");
+          this.forgeSiteObjectStats("devices", res?.groups?.host, "detail", extra_params);
+          this.forgeSiteObjectEvents("devices", "gateway", res?.groups?.host, "detail", extra_params);
           break;
         case "wiredClient":
           this.setName("wired client", "insights");
-          this.forgeSiteObjectSearch("wired_clients", res.groups.host, "detail", extra_params);
-          this.forgeSiteObjectEvents("wired_clients", null, res.groups.host, "detail", extra_params);
+          this.forgeSiteObjectSearch("wired_clients", res?.groups?.host, "detail", extra_params);
+          this.forgeSiteObjectEvents("wired_clients", undefined, res?.groups?.host, "detail", extra_params);
           break;
         case "edge":
           this.setName("mxedge", "insights");
-          this.forgeOrgObject("mxedges", res.groups.host, "detail");
-          this.forgeOrgObjectStats("mxedges", res.groups.host, "detail", extra_params);
-          this.forgeOrgObjectEvents("mxedges", res.groups.host, "detail", extra_params);
+          this.forgeOrgObject("mxedges", res?.groups?.host, "detail");
+          this.forgeOrgObjectStats("mxedges", res?.groups?.host, "detail", extra_params);
+          this.forgeOrgObjectEvents("mxedges", res?.groups?.host, "detail", extra_params);
           break;
         case "site":
         case undefined:
           this.setName("site", "insights");
-          this.forgeSite(res.groups.host, "site", extra_params);
+          this.forgeSite(res?.groups?.host, "site", extra_params);
           break;
       }
     }
@@ -909,21 +912,21 @@ export class ApiManageComponent implements OnInit {
   ////////////////////// ORG SLE URL FUNCTION DISPATCHER
 
   orgSleUrl(res: RegExpExecArray): void {
-    this.org_id = res.groups.org_id;
-    let extra_params = null;
-    if (res.groups.start && res.groups.stop) {
-      extra_params = "start=" + res.groups.start + "&end=" + res.groups.stop;
+    this.org_id = res?.groups?.org_id;
+    let extra_params: string | undefined = undefined;
+    if (res?.groups?.start && res?.groups?.stop) {
+      extra_params = "start=" + res?.groups?.start + "&end=" + res?.groups?.stop;
     }
-    if (res.groups.host && res.groups.org_id) {
-      switch (res.groups.scope) {
+    if (res?.groups?.host && res?.groups?.org_id) {
+      switch (res?.groups?.scope) {
         case "siteComparison":
-          this.forgeOrgSlehUrl(res.groups.host, "wifi", res.groups.sle, res.groups.worstsle, extra_params);
+          this.forgeOrgSlehUrl(res?.groups?.host, "wifi", res?.groups?.sle, res?.groups?.worstsle, extra_params);
           break;
         case "wiredSiteComparison":
-          this.forgeOrgSlehUrl(res.groups.host, "wired", res.groups.sle, res.groups.worstsle, extra_params);
+          this.forgeOrgSlehUrl(res?.groups?.host, "wired", res?.groups?.sle, res?.groups?.worstsle, extra_params);
           break;
         case "wanSiteComparison":
-          this.forgeOrgSlehUrl(res.groups.host, "wan", res.groups.sle, res.groups.worstsle, extra_params);
+          this.forgeOrgSlehUrl(res?.groups?.host, "wan", res?.groups?.sle, res?.groups?.worstsle, extra_params);
           break;
       }
     }
@@ -933,29 +936,29 @@ export class ApiManageComponent implements OnInit {
   ////////////////////// SLE URL FUNCTION DISPATCHER
 
   sleUrl(res: RegExpExecArray): void {
-    this.org_id = res.groups.org_id;
-    this.site_id = res.groups.site_id;
-    let extra_params = null;
-    let scope = "";
-    if (res.groups.scope != "site") {
-      this.setName(res.groups.scope, "sle");
-      this.obj_id = res.groups.scope_id;
+    this.org_id = res?.groups?.org_id;
+    this.site_id = res?.groups?.site_id;
+    let extra_params: string | null = null;
+    let scope: string | undefined = "";
+    if (res?.groups?.scope != "site") {
+      this.setName(res?.groups?.scope, "sle");
+      this.obj_id = res?.groups?.scope_id;
     }
-    if (res.groups.scope == "juniperSwitch") {
+    if (res?.groups?.scope == "juniperSwitch") {
       scope = "switch";
-    } else if (res.groups.scope == "juniperGateway") {
+    } else if (res?.groups?.scope == "juniperGateway") {
       scope = "gateway";
-    } else if (res.groups.scope == "device") {
+    } else if (res?.groups?.scope == "device") {
       scope = "ap";
     } else {
-      scope = res.groups.scope;
+      scope = res?.groups?.scope;
     }
-    if (res.groups.start && res.groups.stop) {
-      extra_params = "start=" + res.groups.start + "&end=" + res.groups.stop;
+    if (res?.groups?.start && res?.groups?.stop) {
+      extra_params = "start=" + res?.groups?.start + "&end=" + res?.groups?.stop;
     }
-    if (res.groups.host && res.groups.org_id) {
+    if (res?.groups?.host && res?.groups?.org_id) {
       let sles: string[] = []
-      switch (res.groups.detail) {
+      switch (res?.groups?.detail) {
         case "serviceLevels":
           sles = [
             "time-to-connect",
@@ -982,7 +985,7 @@ export class ApiManageComponent implements OnInit {
           ]
           break;
       }
-      this.forgeSlehUrl(res.groups.host, scope, res.groups.site_id, res.groups.scope_id, sles, extra_params)
+      this.forgeSlehUrl(res?.groups?.host, scope, res?.groups?.site_id, res?.groups?.scope_id, sles, extra_params)
     }
   }
 
@@ -995,13 +998,13 @@ export class ApiManageComponent implements OnInit {
 
   // open a new tab with the url passed in parameter
   openApiTab(url: string) {
-    chrome.tabs.create({ url: url });
+    this._browser.tabOpen(url);
   }
 
   // open a new tab 
   openTab(target: string) {
     if (target in this.external_links) {
-      chrome.tabs.create({ url: this.external_links[target] });
+      this._browser.tabOpen(this.external_links[target]);
     }
   }
 

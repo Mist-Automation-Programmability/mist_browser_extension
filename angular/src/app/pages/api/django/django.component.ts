@@ -1,18 +1,22 @@
-import { group } from '@angular/animations';
-import { Component, Inject, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { TAB_URL } from '../../../providers/tab-url.provider';
-import api_structure from './../../../../assets/api.json';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { BrowserService } from "../../../services/browser.service";
+const api_structure = require('../../../../assets/api.json');
 
 export interface linkElement {
   url: string,
   name: string
 }
+interface QueryparamsInterface {
+  name: string,
+  value: string,
+  description: string,
+  schema: any
+}
 
 @Component({
   selector: 'app-api-django',
   templateUrl: 'django.component.html',
-  styleUrls: ['api.django.component.scss', '../api.component.scss', '../../../app.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['api.django.component.scss', '../api.component.scss', '../../../app.component.scss']
 })
 export class ApiDjangoComponent implements OnInit {
   message: string;
@@ -23,35 +27,31 @@ export class ApiDjangoComponent implements OnInit {
   scope: string;
   scope_id: string;
   path_params = [];
-  query_params = [];
+  query_params: QueryparamsInterface[] = [];
   docs = {
-    "get": null,
-    "post": null,
-    "put": null,
-    "delete": null,
+    "get": undefined,
+    "post": undefined,
+    "put": undefined,
+    "delete": undefined,
   }
   constructor(
-    @Inject(TAB_URL) readonly tabUrl: string,
-    private _cd: ChangeDetectorRef
+    private _cd: ChangeDetectorRef,
+    private _browser: BrowserService
   ) { }
 
 
-  hosts = [
-    "api.mist.com",
-    "api.eu.mist.com",
-    "api.gc1.mist.com",
-    "api.gc2.mist.com",
-    "api.ac2.mist.com"
-  ]
-
-  doc_link = "https://doc.mist-lab.fr";
+  hosts:string[]
+  tabUrl:string;
 
   ngOnInit() {
-    const url = this.tabUrl.split("?");
-    const path = url[0].split("/");
-    const query = url[1];
-    let path_part = path.splice(3, path.length)
-    this.processPath(path_part, query);
+    this.hosts = this._browser.getHostApi()
+    this._browser.getUrl.then(tabUrl => {
+      this.tabUrl = tabUrl.split("?");
+      const path = this.tabUrl[0].split("/");
+      const query = this.tabUrl[1];
+      let path_part = path.splice(3, path.length)
+      this.processPath(path_part, query);
+    })
   }
 
   ////////////////////////////////////////////////////////////////////////////////////
@@ -101,8 +101,8 @@ export class ApiDjangoComponent implements OnInit {
   // QUERY FUNCTIONS
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
-  processQuery(query: string, specs) {
-    let query_key_value = {}
+  processQuery(query: string, specs: any) {
+    let query_key_value: any = {}
     if (query) {
       const query_parts = query.split("&")
       query_parts.forEach(part => {
@@ -111,8 +111,8 @@ export class ApiDjangoComponent implements OnInit {
       })
     }
     if (specs) {
-      specs.forEach(spec => {
-        let data = {}
+      specs.forEach((spec: any) => {
+        let data: QueryparamsInterface = { name: "", value: "", description: "", schema: undefined };
         if ("in" in spec && spec["in"] == "query") data = spec
         else if ("$ref" in spec && spec["$ref"]) {
           const ref_parts = spec["$ref"].split("/")
@@ -133,22 +133,22 @@ export class ApiDjangoComponent implements OnInit {
 
   updateUrl() {
     let url = this.tabUrl.split("?")[0]
-    let query = []
+    let query: string[] = []
     this.query_params.forEach(param => {
       if (param.value != undefined) query.push(param.name + "=" + param.value)
     })
     if (query.length > 0) url = url + "?" + query.join("&")
-    chrome.tabs.update(undefined, { url: url });
+    this._browser.tabUpdate(url);
   }
 
   // open a new tab with the url passed in parameter
   openApiTab(url: string) {
-    chrome.tabs.create({ url: url });
+    this._browser.tabOpen(url);
   }
 
 
   openDoc(operation: string) {
-    chrome.tabs.create({ url: this.doc_link + "/#operation/" + operation })
+    this._browser.tabOpenDoc(operation)
   }
 
 }

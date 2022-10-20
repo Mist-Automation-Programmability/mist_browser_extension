@@ -24,8 +24,8 @@ var AccountCreateComponent = /** @class */ (function () {
             _this.session = session;
             _this.token_name = "";
             _this.token = {
-                id: null,
-                last_used: null,
+                id: undefined,
+                last_used: undefined,
                 created_time: 0,
                 key: "",
                 name: ""

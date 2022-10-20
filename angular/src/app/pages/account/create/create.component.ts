@@ -3,9 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface TokenElement {
-  id: string,
+  id: string | undefined,
   name: string,
-  last_used: number | null,
+  last_used: number | undefined,
   created_time: number,
   key: string,
 }
@@ -45,8 +45,8 @@ export class AccountCreateComponent implements OnInit {
       this.session = session;
       this.token_name = "";
       this.token = {
-        id: null,
-        last_used: null,
+        id: undefined,
+        last_used: undefined,
         created_time: 0,
         key: "", 
         name: ""
@@ -72,7 +72,7 @@ export class AccountCreateComponent implements OnInit {
   }
 
   //
-  copyToken(inputElement: HTMLInputElement): void {
+  copyToken(inputElement: HTMLTextAreaElement): void {
     this.focused = inputElement.id;
     this._cd.detectChanges()
     inputElement.select();

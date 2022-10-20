@@ -29,8 +29,8 @@ var AccountCreateOrgComponent = /** @class */ (function () {
             _this.role = "admin";
             _this.scope = "org";
             _this.token = {
-                id: null,
-                last_used: null,
+                id: undefined,
+                last_used: undefined,
                 created_time: 0,
                 key: "",
                 name: ""
@@ -46,7 +46,9 @@ var AccountCreateOrgComponent = /** @class */ (function () {
             name: this.token_name,
             privileges: [{
                     role: this.role,
-                    scope: this.scope
+                    scope: this.scope,
+                    site_id: undefined,
+                    sitegroup_id: undefined
                 }]
         };
         if (this.scope == "site" && this.site_id) {

@@ -11,15 +11,17 @@ import { AccountComponent } from './pages/account/account.component';
 import { AccountManageComponent } from './pages/account/manage/manage.component';
 import { AccountCreateComponent } from './pages/account/create/create.component'
 import { AccountManageOrgComponent } from './pages/account/manage_org/manage_org.component';
-import { AccountCreateOrgComponent } from './pages/account/create_org/create_org.component'
-import { AboutComponent } from './pages/about/about.component'
+import { AccountCreateOrgComponent } from './pages/account/create_org/create_org.component';
+import { AboutComponent } from './pages/about/about.component';
+
 
 @NgModule({
   declarations: [
-    AppComponent, 
+    AppComponent,
     ApiComponent, ApiManageComponent, ApiDjangoComponent,
-    AccountComponent, AccountManageComponent, AccountCreateComponent, AccountManageOrgComponent, AccountCreateOrgComponent, 
-    AboutComponent],
+    AccountComponent, AccountManageComponent, AccountCreateComponent, AccountManageOrgComponent, AccountCreateOrgComponent,
+    AboutComponent
+  ],
   imports: [BrowserModule, AppRoutingModule, FormsModule, HttpClientModule],
   bootstrap: [AppComponent]
 })

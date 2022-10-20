@@ -3,8 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface TokenElement {
-  id: string;
-  last_used: number | null;
+  id: string | undefined;
+  last_used: number | undefined;
   created_time: number;
   key: string;
   name: string;
@@ -64,8 +64,8 @@ export class AccountCreateOrgComponent implements OnInit {
       this.role="admin";
       this.scope = "org";
       this.token = {
-        id: null,
-        last_used: null,
+        id: undefined,
+        last_used: undefined,
         created_time: 0,
         key: "", 
         name: ""
@@ -81,7 +81,9 @@ export class AccountCreateOrgComponent implements OnInit {
       name: this.token_name,
       privileges: [{
         role: this.role,
-        scope: this.scope
+        scope: this.scope,
+        site_id: undefined,
+        sitegroup_id:undefined,
       }]
     }
     if (this.scope == "site" && this.site_id) {
@@ -103,7 +105,7 @@ export class AccountCreateOrgComponent implements OnInit {
   }
 
   //
-  copyToken(inputElement: HTMLInputElement): void {
+  copyToken(inputElement: HTMLTextAreaElement): void {
     this.focused = inputElement.id;
     this._cd.detectChanges()
     inputElement.select();

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { BrowserService } from "../../services/browser.service";
 
 export interface linkElement {
   url: string,
@@ -13,19 +14,19 @@ export interface linkElement {
 })
 export class AboutComponent implements OnInit {
 
-  private github_release_url: string = "https://api.github.com/repos/tmunzer/mist_chrome_extension/releases/latest";
-  github_repo_url: string = "https://github.com/tmunzer/mist_chrome_extension";
+  private github_release_url: string = "https://api.github.com/repos/tmunzer/mist_browser_extension/releases/latest";
+  github_repo_url: string = "https://github.com/tmunzer/mist_browser_extension";
   current_version: string;
   last_version: string;
-  up_to_date: boolean;
-  error_happened: boolean;
-  error_message: string;
-  download_url: string;
+  up_to_date: boolean | undefined;
+  error_happened: boolean| undefined;
+  error_message: string| undefined;
+  download_url: string| undefined;
   html_url: string;
-  constructor(private _http: HttpClient) { }
+  constructor(private _http: HttpClient, private _browser: BrowserService) { }
 
   ngOnInit(){
-    this.current_version = chrome.runtime.getManifest().version;
+    this.current_version = this._browser.getVersion();
   }
 
 
@@ -42,7 +43,7 @@ export class AboutComponent implements OnInit {
       if (this.current_version < this.last_version) {
         this.up_to_date = false;
         this.html_url = data.html_url;
-        data.assets.forEach(element => {
+        data.assets.forEach((element:any) => {
           if (element.name == "extension-build.zip") {
             this.download_url = element.browser_download_url;
           }
@@ -59,7 +60,7 @@ export class AboutComponent implements OnInit {
   }
 
   openTab(target: string) {
-    let dest_url = ""
+    let dest_url: string|undefined = undefined
     switch (target) {
       case "openapi":
         dest_url = "https://doc.mist-lab.fr";
@@ -81,7 +82,7 @@ export class AboutComponent implements OnInit {
         break;
     }
     if (dest_url) {
-      chrome.tabs.create({ url: dest_url });
+      this._browser.tabOpen(dest_url);
     }
   }
 }

@@ -9,13 +9,14 @@ exports.__esModule = true;
 exports.AboutComponent = void 0;
 var core_1 = require("@angular/core");
 var AboutComponent = /** @class */ (function () {
-    function AboutComponent(_http) {
+    function AboutComponent(_http, _browser) {
         this._http = _http;
-        this.github_release_url = "https://api.github.com/repos/tmunzer/mist_chrome_extension/releases/latest";
-        this.github_repo_url = "https://github.com/tmunzer/mist_chrome_extension";
+        this._browser = _browser;
+        this.github_release_url = "https://api.github.com/repos/tmunzer/mist_browser_extension/releases/latest";
+        this.github_repo_url = "https://github.com/tmunzer/mist_browser_extension";
     }
     AboutComponent.prototype.ngOnInit = function () {
-        this.current_version = chrome.runtime.getManifest().version;
+        this.current_version = this._browser.getVersion();
     };
     AboutComponent.prototype.checkNewRelease = function () {
         var _this = this;
@@ -46,7 +47,7 @@ var AboutComponent = /** @class */ (function () {
         });
     };
     AboutComponent.prototype.openTab = function (target) {
-        var dest_url = "";
+        var dest_url = undefined;
         switch (target) {
             case "openapi":
                 dest_url = "https://doc.mist-lab.fr";
@@ -68,7 +69,7 @@ var AboutComponent = /** @class */ (function () {
                 break;
         }
         if (dest_url) {
-            chrome.tabs.create({ url: dest_url });
+            this._browser.tabOpen(dest_url);
         }
     };
     AboutComponent = __decorate([

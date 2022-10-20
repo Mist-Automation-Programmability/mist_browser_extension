@@ -5,43 +5,35 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 exports.__esModule = true;
 exports.ApiDjangoComponent = void 0;
 var core_1 = require("@angular/core");
-var tab_url_provider_1 = require("../../../providers/tab-url.provider");
-var api_json_1 = require("./../../../../assets/api.json");
+var api_structure = require('../../../../assets/api.json');
 var ApiDjangoComponent = /** @class */ (function () {
-    function ApiDjangoComponent(tabUrl, _cd) {
-        this.tabUrl = tabUrl;
+    function ApiDjangoComponent(_cd, _browser) {
         this._cd = _cd;
+        this._browser = _browser;
         this.mist_url = "";
         this.quick_links = [];
         this.path_params = [];
         this.query_params = [];
         this.docs = {
-            "get": null,
-            "post": null,
-            "put": null,
-            "delete": null
+            "get": undefined,
+            "post": undefined,
+            "put": undefined,
+            "delete": undefined
         };
-        this.hosts = [
-            "api.mist.com",
-            "api.eu.mist.com",
-            "api.gc1.mist.com",
-            "api.gc2.mist.com",
-            "api.ac2.mist.com"
-        ];
-        this.doc_link = "https://doc.mist-lab.fr";
     }
     ApiDjangoComponent.prototype.ngOnInit = function () {
-        var url = this.tabUrl.split("?");
-        var path = url[0].split("/");
-        var query = url[1];
-        var path_part = path.splice(3, path.length);
-        this.processPath(path_part, query);
+        var _this = this;
+        this.hosts = this._browser.getHostApi();
+        this._browser.getUrl.then(function (tabUrl) {
+            _this.tabUrl = tabUrl.split("?");
+            var path = _this.tabUrl[0].split("/");
+            var query = _this.tabUrl[1];
+            var path_part = path.splice(3, path.length);
+            _this.processPath(path_part, query);
+        });
     };
     ////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////
@@ -50,7 +42,7 @@ var ApiDjangoComponent = /** @class */ (function () {
     ////////////////////////////////////////////////////////////////////////////////////
     ApiDjangoComponent.prototype.processPath = function (path_part, query) {
         var _this = this;
-        var tmp = api_json_1["default"];
+        var tmp = api_structure;
         path_part.forEach(function (next_path) {
             if ("paths" in tmp && next_path in tmp.paths) {
                 tmp = tmp.paths[next_path];
@@ -102,12 +94,12 @@ var ApiDjangoComponent = /** @class */ (function () {
         }
         if (specs) {
             specs.forEach(function (spec) {
-                var data = {};
+                var data = { name: "", value: "", description: "", schema: undefined };
                 if ("in" in spec && spec["in"] == "query")
                     data = spec;
                 else if ("$ref" in spec && spec["$ref"]) {
                     var ref_parts = spec["$ref"].split("/");
-                    data = api_json_1["default"][ref_parts[1]][ref_parts[2]][ref_parts[3]];
+                    data = api_structure[ref_parts[1]][ref_parts[2]][ref_parts[3]];
                 }
                 data["value"] = query_key_value[data["name"]];
                 _this.query_params.push(data);
@@ -128,23 +120,21 @@ var ApiDjangoComponent = /** @class */ (function () {
         });
         if (query.length > 0)
             url = url + "?" + query.join("&");
-        chrome.tabs.update(undefined, { url: url });
+        this._browser.tabUpdate(url);
     };
     // open a new tab with the url passed in parameter
     ApiDjangoComponent.prototype.openApiTab = function (url) {
-        chrome.tabs.create({ url: url });
+        this._browser.tabOpen(url);
     };
     ApiDjangoComponent.prototype.openDoc = function (operation) {
-        chrome.tabs.create({ url: this.doc_link + "/#operation/" + operation });
+        this._browser.tabOpenDoc(operation);
     };
     ApiDjangoComponent = __decorate([
         core_1.Component({
             selector: 'app-api-django',
             templateUrl: 'django.component.html',
-            styleUrls: ['api.django.component.scss', '../api.component.scss', '../../../app.component.scss'],
-            changeDetection: core_1.ChangeDetectionStrategy.OnPush
-        }),
-        __param(0, core_1.Inject(tab_url_provider_1.TAB_URL))
+            styleUrls: ['api.django.component.scss', '../api.component.scss', '../../../app.component.scss']
+        })
     ], ApiDjangoComponent);
     return ApiDjangoComponent;
 }());

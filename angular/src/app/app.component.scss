@@ -1,8 +1,16 @@
-.banner {
-    max-height: 50px;
+.top {
+    height: 50px;
     width: 100%;
     object-fit: cover;
+    background: rgb(13, 76, 125);
+    background: linear-gradient(0deg, rgba(13, 76, 125, 1) 0%, rgba(52, 153, 244, 1) 100%);
     box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+}
+
+.top .banner {
+    height: 50px;
+    width: 100%;
+    object-fit: cover;
 }
 
 .logo {
@@ -15,6 +23,7 @@
     object-fit: contain;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
     z-index: 100;
+    background-color: white;
 }
 
 app-api {

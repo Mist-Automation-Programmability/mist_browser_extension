@@ -1,0 +1,205 @@
+/*!*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[6].rules[0].oneOf[0].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[6].rules[0].oneOf[0].use[2]!./node_modules/resolve-url-loader/index.js??ruleSet[1].rules[6].rules[1].use[0]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[6].rules[1].use[1]!./src/styles.scss ***!
+  \*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/* You can add global styles to this file, and also import other style files */
+@font-face {
+  font-family: "SF Pro Display";
+  src: url('SFProDisplay-Medium.eot');
+  src: local("SF Pro Display Medium"), local("assets/font/SFPro/SFProDisplay-Medium"), url('SFProDisplay-Medium.eot?#iefix') format("embedded-opentype"), url('SFProDisplay-Medium.woff2') format("woff2"), url('SFProDisplay-Medium.woff') format("woff"), url('SFProDisplay-Medium.ttf') format("truetype");
+  font-weight: 500;
+  font-style: normal;
+}
+@font-face {
+  font-family: "SF Pro Display";
+  src: url('SFProDisplay-Heavy.eot');
+  src: local("SF Pro Display Heavy"), local("assets/font/SFPro/SFProDisplay-Heavy"), url('SFProDisplay-Heavy.eot?#iefix') format("embedded-opentype"), url('SFProDisplay-Heavy.woff2') format("woff2"), url('SFProDisplay-Heavy.woff') format("woff"), url('SFProDisplay-Heavy.ttf') format("truetype");
+  font-weight: 900;
+  font-style: normal;
+}
+@font-face {
+  font-family: "SF Pro Display";
+  src: url('SFProDisplay-UltralightItalic.eot');
+  src: local("SF Pro Display UltralightItalic"), local("assets/font/SFPro/SFProDisplay-UltralightItalic"), url('SFProDisplay-UltralightItalic.eot?#iefix') format("embedded-opentype"), url('SFProDisplay-UltralightItalic.woff2') format("woff2"), url('SFProDisplay-UltralightItalic.woff') format("woff"), url('SFProDisplay-UltralightItalic.ttf') format("truetype");
+  font-weight: 200;
+  font-style: italic;
+}
+@font-face {
+  font-family: "SF Pro Display";
+  src: url('SFProDisplay-RegularItalic.eot');
+  src: local("SF Pro Display Regular Italic"), local("assets/font/SFPro/SFProDisplay-RegularItalic"), url('SFProDisplay-RegularItalic.eot?#iefix') format("embedded-opentype"), url('SFProDisplay-RegularItalic.woff2') format("woff2"), url('SFProDisplay-RegularItalic.woff') format("woff"), url('SFProDisplay-RegularItalic.ttf') format("truetype");
+  font-weight: normal;
+  font-style: italic;
+}
+@font-face {
+  font-family: "SF Pro Display";
+  src: url('SFProDisplay-Thin.eot');
+  src: local("SF Pro Display Thin"), local("assets/font/SFPro/SFProDisplay-Thin"), url('SFProDisplay-Thin.eot?#iefix') format("embedded-opentype"), url('SFProDisplay-Thin.woff2') format("woff2"), url('SFProDisplay-Thin.woff') format("woff"), url('SFProDisplay-Thin.ttf') format("truetype");
+  font-weight: 100;
+  font-style: normal;
+}
+@font-face {
+  font-family: "SF Pro Display";
+  src: url('SFProDisplay-Light.eot');
+  src: local("SF Pro Display Light"), local("assets/font/SFPro/SFProDisplay-Light"), url('SFProDisplay-Light.eot?#iefix') format("embedded-opentype"), url('SFProDisplay-Light.woff2') format("woff2"), url('SFProDisplay-Light.woff') format("woff"), url('SFProDisplay-Light.ttf') format("truetype");
+  font-weight: 200;
+  font-style: normal;
+}
+@font-face {
+  font-family: "SF Pro Display";
+  src: url('SFProDisplay-BlackItalic.eot');
+  src: local("SF Pro Display Black Italic"), local("assets/font/SFPro/SFProDisplay-BlackItalic"), url('SFProDisplay-BlackItalic.eot?#iefix') format("embedded-opentype"), url('SFProDisplay-BlackItalic.woff2') format("woff2"), url('SFProDisplay-BlackItalic.woff') format("woff"), url('SFProDisplay-BlackItalic.ttf') format("truetype");
+  font-weight: 900;
+  font-style: italic;
+}
+@font-face {
+  font-family: "SF Pro Display";
+  src: url('SFProDisplay-Bold.eot');
+  src: local("SF Pro Display Bold"), local("assets/font/SFPro/SFProDisplay-Bold"), url('SFProDisplay-Bold.eot?#iefix') format("embedded-opentype"), url('SFProDisplay-Bold.woff2') format("woff2"), url('SFProDisplay-Bold.woff') format("woff"), url('SFProDisplay-Bold.ttf') format("truetype");
+  font-weight: bold;
+  font-style: normal;
+}
+@font-face {
+  font-family: "SF Pro Display";
+  src: url('SFProDisplay-Black.eot');
+  src: local("SF Pro Display Black"), local("assets/font/SFPro/SFProDisplay-Black"), url('SFProDisplay-Black.eot?#iefix') format("embedded-opentype"), url('SFProDisplay-Black.woff2') format("woff2"), url('SFProDisplay-Black.woff') format("woff"), url('SFProDisplay-Black.ttf') format("truetype");
+  font-weight: 900;
+  font-style: normal;
+}
+@font-face {
+  font-family: "SF Pro Display";
+  src: url('SFProDisplay-SemiboldItalic.eot');
+  src: local("SF Pro Display SemiboldItalic"), local("assets/font/SFPro/SFProDisplay-SemiboldItalic"), url('SFProDisplay-SemiboldItalic.eot?#iefix') format("embedded-opentype"), url('SFProDisplay-SemiboldItalic.woff2') format("woff2"), url('SFProDisplay-SemiboldItalic.woff') format("woff"), url('SFProDisplay-SemiboldItalic.ttf') format("truetype");
+  font-weight: 600;
+  font-style: italic;
+}
+@font-face {
+  font-family: "SF Pro Display";
+  src: url('SFProDisplay-Ultralight.eot');
+  src: local("SF Pro Display Ultralight"), local("assets/font/SFPro/SFProDisplay-Ultralight"), url('SFProDisplay-Ultralight.eot?#iefix') format("embedded-opentype"), url('SFProDisplay-Ultralight.woff2') format("woff2"), url('SFProDisplay-Ultralight.woff') format("woff"), url('SFProDisplay-Ultralight.ttf') format("truetype");
+  font-weight: 200;
+  font-style: normal;
+}
+@font-face {
+  font-family: "SF Pro Display";
+  src: url('SFProDisplay-LightItalic.eot');
+  src: local("SF Pro Display LightItalic"), local("assets/font/SFPro/SFProDisplay-LightItalic"), url('SFProDisplay-LightItalic.eot?#iefix') format("embedded-opentype"), url('SFProDisplay-LightItalic.woff2') format("woff2"), url('SFProDisplay-LightItalic.woff') format("woff"), url('SFProDisplay-LightItalic.ttf') format("truetype");
+  font-weight: 200;
+  font-style: italic;
+}
+@font-face {
+  font-family: "SF Pro Display";
+  src: url('SFProDisplay-ThinItalic.eot');
+  src: local("SF Pro Display ThinItalic"), local("assets/font/SFPro/SFProDisplay-ThinItalic"), url('SFProDisplay-ThinItalic.eot?#iefix') format("embedded-opentype"), url('SFProDisplay-ThinItalic.woff2') format("woff2"), url('SFProDisplay-ThinItalic.woff') format("woff"), url('SFProDisplay-ThinItalic.ttf') format("truetype");
+  font-weight: 100;
+  font-style: italic;
+}
+@font-face {
+  font-family: "SF Pro Display";
+  src: url('SFProDisplay-MediumItalic.eot');
+  src: local("SF Pro Display MediumItalic"), local("assets/font/SFPro/SFProDisplay-MediumItalic"), url('SFProDisplay-MediumItalic.eot?#iefix') format("embedded-opentype"), url('SFProDisplay-MediumItalic.woff2') format("woff2"), url('SFProDisplay-MediumItalic.woff') format("woff"), url('SFProDisplay-MediumItalic.ttf') format("truetype");
+  font-weight: 500;
+  font-style: italic;
+}
+@font-face {
+  font-family: "SF Pro Display";
+  src: url('SFProDisplay-Semibold.eot');
+  src: local("SF Pro Display Semibold"), local("assets/font/SFPro/SFProDisplay-Semibold"), url('SFProDisplay-Semibold.eot?#iefix') format("embedded-opentype"), url('SFProDisplay-Semibold.woff2') format("woff2"), url('SFProDisplay-Semibold.woff') format("woff"), url('SFProDisplay-Semibold.ttf') format("truetype");
+  font-weight: 600;
+  font-style: normal;
+}
+@font-face {
+  font-family: "SF Pro Display";
+  src: url('SFProDisplay-HeavyItalic.eot');
+  src: local("SF Pro Display HeavyItalic"), local("assets/font/SFPro/SFProDisplay-HeavyItalic"), url('SFProDisplay-HeavyItalic.eot?#iefix') format("embedded-opentype"), url('SFProDisplay-HeavyItalic.woff2') format("woff2"), url('SFProDisplay-HeavyItalic.woff') format("woff"), url('SFProDisplay-HeavyItalic.ttf') format("truetype");
+  font-weight: 900;
+  font-style: italic;
+}
+@font-face {
+  font-family: "SF Pro Display";
+  src: url('SFProDisplay-Regular.eot');
+  src: local("SF Pro Display Regular"), local("assets/font/SFPro/SFProDisplay-Regular"), url('SFProDisplay-Regular.eot?#iefix') format("embedded-opentype"), url('SFProDisplay-Regular.woff2') format("woff2"), url('SFProDisplay-Regular.woff') format("woff"), url('SFProDisplay-Regular.ttf') format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "SF Pro Display";
+  src: url('SFProDisplay-BoldItalic.eot');
+  src: local("SF Pro Display BoldItalic"), local("assets/font/SFPro/SFProDisplay-BoldItalic"), url('SFProDisplay-BoldItalic.eot?#iefix') format("embedded-opentype"), url('SFProDisplay-BoldItalic.woff2') format("woff2"), url('SFProDisplay-BoldItalic.woff') format("woff"), url('SFProDisplay-BoldItalic.ttf') format("truetype");
+  font-weight: bold;
+  font-style: italic;
+}
+body {
+  width: 350px !important;
+  margin: 0 !important;
+  font-size: 12px;
+  font-family: "SF Pro Display";
+}
+html {
+  font-style: normal;
+  font-weight: 400;
+}
+button:hover {
+  transition: all 0.2s ease-in-out;
+  box-shadow: inset rgba(0, 0, 0, 0.15) 0px 2px 8px !important;
+}
+button:active {
+  transition: all 0.2s ease-in-out;
+  box-shadow: inset rgba(0, 0, 0, 0.18) 0px 2px 4px !important;
+}
+img.icon-open {
+  height: 1.2em;
+  filter: invert(1);
+  margin-left: 1em;
+}
+h2 {
+  cursor: default;
+}
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+}
+.notice-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 1em;
+  text-align: center;
+  font-weight: 200;
+  height: 100%;
+}
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 80px;
+  background-color: rgba(0, 0, 0, 0.59);
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 4px;
+  position: absolute;
+  z-index: 1;
+  margin-left: -30px;
+  font-size: smaller;
+  font-weight: 300;
+}
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent rgba(0, 0, 0, 0.3803921569) transparent;
+}
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  transition: visibility 0.2s ease-in-out, opacity 0.2s ease-in-out;
+}
+
+/*# sourceMappingURL=styles.css.map*/

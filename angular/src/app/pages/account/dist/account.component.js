@@ -11,9 +11,10 @@ var core_1 = require("@angular/core");
 var manage_component_1 = require("./manage/manage.component");
 var rxjs_1 = require("rxjs");
 var AccountComponent = /** @class */ (function () {
-    function AccountComponent(_cd, _http) {
+    function AccountComponent(_cd, _http, _browser) {
         this._cd = _cd;
         this._http = _http;
+        this._browser = _browser;
         this.enventSession = new rxjs_1.Subject();
         this.enventCreateToken = new rxjs_1.Subject();
         this.enventManageTokens = new rxjs_1.Subject();
@@ -23,62 +24,14 @@ var AccountComponent = /** @class */ (function () {
         this.manageTokens = "";
         this.createToken = "";
         this.scope = "";
-        this.domains = [
-            ".mistsys.com",
-            ".mist.com",
-            ".eu.mist.com",
-            ".gc1.mist.com",
-            ".gc2.mist.com",
-            ".ac2.mist.com"
-        ];
         this.sessions = [];
         this.is_working = true;
     }
     AccountComponent.prototype.ngOnInit = function () {
         var _this = this;
+        this._browser.sessions.subscribe(function (s) { return _this.sessions = s; });
         this.is_working = true;
-        this.sessions = [];
-        chrome.cookies.getAll({}, function (cookies) {
-            cookies.forEach(function (cookie) {
-                _this.processCookie(cookie);
-            });
-            _this.getSelf();
-        });
-    };
-    ////////////
-    // SESSIONS
-    ////////////
-    AccountComponent.prototype.processCookie = function (cookie) {
-        // check if it's part of our domains
-        if (this.domains.indexOf(cookie.domain) > -1) {
-            // check if the cookie is still valid
-            if (cookie.expirationDate > (Date.now() / 1000)) {
-                var i_1 = -1;
-                // try to find this domain in the list of sessions
-                this.sessions.forEach(function (session, index) {
-                    if (session.domain == cookie.domain) {
-                        i_1 = index;
-                    }
-                });
-                // if the session already exists in the list, update it with the current cookie
-                if (i_1 > -1) {
-                    if (cookie.name.startsWith("csrftoken"))
-                        this.sessions[i_1].csrftoken = cookie.value;
-                    else if (cookie.name.startsWith("sessionid"))
-                        this.sessions[i_1].has_sessionid = true;
-                    // if the current cookie has a shorter lifetime than the previous one, use its expirationDate instead
-                    if (this.sessions[i_1].expires_at > cookie.expirationDate)
-                        this.sessions[i_1].expires_at = cookie.expirationDate;
-                    // otherwise, add a new entry in the list
-                }
-                else {
-                    if (cookie.name.startsWith("csrftoken"))
-                        this.sessions.push({ domain: cookie.domain, email: null, csrftoken: cookie.value, has_sessionid: false, expires_at: cookie.expirationDate, orgs: [] });
-                    else if (cookie.name.startsWith("sessionid"))
-                        this.sessions.push({ domain: cookie.domain, email: null, csrftoken: null, has_sessionid: true, expires_at: cookie.expirationDate, orgs: [] });
-                }
-            }
-        }
+        this._browser.getCookies(function () { return _this.getSelf(); });
     };
     AccountComponent.prototype.getSelf = function () {
         var _this = this;
@@ -116,7 +69,7 @@ var AccountComponent = /** @class */ (function () {
     };
     AccountComponent.prototype.openTab = function (domain) {
         var dest_url = "https://manage" + domain + "/cloud.html";
-        chrome.tabs.create({ url: dest_url });
+        this._browser.tabOpen(dest_url);
     };
     ////////////
     // MANAGE TOKENS

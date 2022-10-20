@@ -1,46 +1,39 @@
-import { Component, Inject, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { TAB_URL } from '../../providers/tab-url.provider';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { BrowserService } from "../../services/browser.service";
 
 
 @Component({
   selector: 'app-api',
   templateUrl: 'api.component.html',
   styleUrls: ['api.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  //changeDetection: ChangeDetectionStrategy.OnPush
 })
+
 export class ApiComponent implements OnInit {
 
   constructor(
-    @Inject(TAB_URL) readonly tabUrl: string,
-    private _cd: ChangeDetectorRef,
+    private _broswer: BrowserService
   ) { }
 
   display: string;
 
-  hosts_manage = [
-    "integration.mistsys.com",
-    "manage.mist.com",
-    "integration.mist.com",
-    "manage.eu.mist.com",
-    "manage.gc1.mist.com",
-    "manage.gc2.mist.com",
-    "manage.ac2.mist.com"
-  ]
-  hosts_api = [
-    "api.mist.com",
-    "api.eu.mist.com",
-    "api.gc1.mist.com",
-    "api.gc2.mist.com",
-    "api.ac2.mist.com"
-  ]
+  hosts_manage:string[];
+  hosts_api:string[];
+  tabUrl:string;
 
   ngOnInit() {
-    let host = this.tabUrl.split("/")[2]
-    if (this.hosts_manage.indexOf(host) > -1) this.display = "manage"
-    else if (this.hosts_api.indexOf(host) > -1 && this.tabUrl.indexOf("/api/v1/docs") < 0) this.display = "django"
+    this.hosts_manage = this._broswer.getHostManage();
+    this.hosts_api = this._broswer.getHostApi();
+    this._broswer.getUrl.then(tabUrl => {
+      this.tabUrl=tabUrl;
+      let host = tabUrl.split("/")[2];    
+      if (this.hosts_manage.includes(host)) this.display = "manage";
+      else if (this.hosts_api.includes(host) && tabUrl.indexOf("/api/v1/docs") < 0) this.display = "django";
+    })
   }
 
-  openTab() {
-    chrome.tabs.create({ url: "https://github.com/tmunzer/mist_chrome_extension/issues/new" })
+  openTab():void {
+    this._broswer.issueOpen();
   }
+
 }

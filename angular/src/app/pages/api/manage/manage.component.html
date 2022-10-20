@@ -9,7 +9,7 @@
             <div style="flex-direction: column;display: flex;align-items: center;justify-content: center;flex-grow: 1;">
                 <label class="ids" for="org_id">ORG ID</label>
                 <div class=box-ids-input>
-                    <input class="ids" type="text" readonly [(value)]="org_id" [ngClass]="focused == 'org_id'? 'focused' : ''" id="org_id" #org_id_input>
+                    <input class="ids" type="text" readonly [value]="org_id" [ngClass]="focused == 'org_id'? 'focused' : ''" id="org_id" #org_id_input>
                 </div>
             </div>
             <button class="copy-ids" name="copy" (click)="copyId(org_id_input)">
@@ -20,7 +20,7 @@
             <div style="flex-direction: column;display: flex;align-items: center;justify-content: center;flex-grow: 1;">
                 <label class="ids" for="site_id">SITE ID</label>
                 <div class=box-ids-input>
-                    <input class="ids" type="text" readonly [(value)]="site_id" [ngClass]="focused == 'site_id'? 'focused' : ''" id="site_id" #site_id_input>
+                    <input class="ids" type="text" readonly [value]="site_id" [ngClass]="focused == 'site_id'? 'focused' : ''" id="site_id" #site_id_input>
                 </div>
             </div>
             <button class="copy-ids" name="copy" (click)="copyId(site_id_input)">
@@ -31,7 +31,7 @@
             <div style="flex-direction: column;display: flex;align-items: center;justify-content: center;flex-grow: 1;">
                 <label class="ids" for="obj_id">{{obj_name | uppercase}} ID</label>
                 <div class=box-ids-input>
-                    <input class="ids" type="text" readonly [(value)]="obj_id" [ngClass]="focused == 'obj_id'? 'focused': ''" id="obj_id" #obj_id_input>
+                    <input class="ids" type="text" readonly [value]="obj_id" [ngClass]="focused == 'obj_id'? 'focused': ''" id="obj_id" #obj_id_input>
                 </div>
             </div>
             <button class="copy-ids" name="copy" (click)="copyId(obj_id_input)">

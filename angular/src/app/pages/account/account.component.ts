@@ -2,20 +2,11 @@ import { Component, OnInit, ViewChild, ChangeDetectionStrategy, ChangeDetectorRe
 import { HttpClient } from '@angular/common/http';
 import { AccountManageComponent } from './manage/manage.component';
 import { Subject } from 'rxjs';
+import { BrowserService, SessionElement, OrgElement } from "../../services/browser.service"
 
-export interface OrgElement {
-  org_id: string;
-  name: string;
-}
 
-export interface SessionElement {
-  domain: string;
-  csrftoken: string;
-  email: string;
-  has_sessionid: boolean;
-  expires_at: number;
-  orgs: OrgElement[];
-}
+
+
 
 @Component({
   selector: 'app-account',
@@ -23,6 +14,7 @@ export interface SessionElement {
   styleUrls: ['account.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
+
 export class AccountComponent implements OnInit {
 
   @ViewChild(AccountManageComponent) accountManage;
@@ -39,61 +31,21 @@ export class AccountComponent implements OnInit {
   scope: string = "";
   constructor(
     private _cd: ChangeDetectorRef,
-    private _http: HttpClient
+    private _http: HttpClient,
+    private _browser: BrowserService
   ) { }
 
-  domains = [
-    ".mistsys.com",
-    ".mist.com",
-    ".eu.mist.com",
-    ".gc1.mist.com",
-    ".gc2.mist.com",
-    ".ac2.mist.com"
-  ]
 
   sessions: SessionElement[] = [];
   is_working = true;
 
   ngOnInit() {
+    this._browser.sessions.subscribe(s => this.sessions = s);
     this.is_working = true;
-    this.sessions = [];
-    chrome.cookies.getAll({}, (cookies) => {
-      cookies.forEach((cookie) => {
-        this.processCookie(cookie);
-      })
-      this.getSelf();
-    })
+    this._browser.getCookies(() => this.getSelf())
   }
 
-  ////////////
-  // SESSIONS
-  ////////////
-  processCookie(cookie: chrome.cookies.Cookie): void {
-    // check if it's part of our domains
-    if (this.domains.indexOf(cookie.domain) > -1) {
-      // check if the cookie is still valid
-      if (cookie.expirationDate > (Date.now() / 1000)) {
-        let i: number = -1;
-        // try to find this domain in the list of sessions
-        this.sessions.forEach((session, index) => {
-          if (session.domain == cookie.domain) {
-            i = index;
-          }
-        })
-        // if the session already exists in the list, update it with the current cookie
-        if (i > -1) {
-          if (cookie.name.startsWith("csrftoken")) this.sessions[i].csrftoken = cookie.value;
-          else if (cookie.name.startsWith("sessionid")) this.sessions[i].has_sessionid = true;
-          // if the current cookie has a shorter lifetime than the previous one, use its expirationDate instead
-          if (this.sessions[i].expires_at > cookie.expirationDate) this.sessions[i].expires_at = cookie.expirationDate
-          // otherwise, add a new entry in the list
-        } else {
-          if (cookie.name.startsWith("csrftoken")) this.sessions.push({ domain: cookie.domain, email: null, csrftoken: cookie.value, has_sessionid: false, expires_at: cookie.expirationDate, orgs: [] });
-          else if (cookie.name.startsWith("sessionid")) this.sessions.push({ domain: cookie.domain, email: null, csrftoken: null, has_sessionid: true, expires_at: cookie.expirationDate, orgs: [] });
-        }
-      }
-    }
-  }
+
 
   getSelf() {
     this.sessions.forEach(session => {
@@ -131,7 +83,7 @@ export class AccountComponent implements OnInit {
 
   openTab(domain: string) {
     let dest_url = "https://manage" + domain + "/cloud.html";
-    chrome.tabs.create({ url: dest_url });
+    this._browser.tabOpen(dest_url);
   }
 
 

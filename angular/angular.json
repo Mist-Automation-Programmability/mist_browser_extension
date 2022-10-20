@@ -3,19 +3,22 @@
     "version": 1,
     "newProjectRoot": "projects",
     "projects": {
-        "angular-chrome-extension": {
-            "root": "angular",
+        "angular-mist-extension": {
+            "root": "",
             "sourceRoot": "src",
             "projectType": "application",
             "prefix": "app",
             "schematics": {
                 "@schematics/angular:component": {
                     "style": "sass"
+                },
+                "@schematics/angular:application": {
+                    "strict": true
                 }
             },
             "architect": {
                 "build": {
-                    "builder": "ngx-build-plus:browser",
+                    "builder": "@angular-builders/custom-webpack:browser",
                     "options": {
                         "aot": true,
                         "outputPath": "dist",
@@ -30,7 +33,13 @@
                         "styles": [
                             "src/styles.scss"
                         ],
-                        "scripts": []
+                        "scripts": [],
+                        "vendorChunk": true,
+                        "extractLicenses": false,
+                        "buildOptimizer": false,
+                        "sourceMap": true,
+                        "optimization": false,
+                        "namedChunks": true
                     },
                     "configurations": {
                         "production": {
@@ -38,14 +47,6 @@
                                 "replace": "src/environments/environment.ts",
                                 "with": "src/environments/environment.prod.ts"
                             }],
-                            "optimization": true,
-                            "outputHashing": "all",
-                            "sourceMap": false,
-                            "namedChunks": false,
-                            "aot": true,
-                            "extractLicenses": true,
-                            "vendorChunk": false,
-                            "buildOptimizer": true,
                             "budgets": [{
                                     "type": "initial",
                                     "maximumWarning": "2mb",
@@ -55,25 +56,39 @@
                                     "type": "anyComponentStyle",
                                     "maximumWarning": "6kb"
                                 }
-                            ]
+                            ],
+                            "optimization": {
+                                "scripts": true,
+                                "styles": {
+                                    "minify": true,
+                                    "inlineCritical": false
+                                },
+                                "fonts": true
+                            },
+                            "outputHashing": "all",
+                            "sourceMap": false,
+                            "namedChunks": false,
+                            "extractLicenses": true,
+                            "vendorChunk": false,
+                            "buildOptimizer": true
                         }
                     }
                 },
                 "serve": {
-                    "builder": "ngx-build-plus:dev-server",
+                    "builder": "@angular-devkit/build-angular:dev-server",
                     "options": {
-                        "browserTarget": "angular-chrome-extension:build"
+                        "browserTarget": "angular-mist-extension:build"
                     },
                     "configurations": {
                         "production": {
-                            "browserTarget": "angular-chrome-extension:build:production"
+                            "browserTarget": "angular-mist-extension:build:production"
                         }
                     }
                 },
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n",
                     "options": {
-                        "browserTarget": "angular-chrome-extension:build"
+                        "browserTarget": "angular-mist-extension:build"
                     }
                 },
                 "lint": {
@@ -82,9 +97,7 @@
                         "tsConfig": [
                             "src/tsconfig.app.json"
                         ],
-                        "exclude": [
-                            "**/node_modules/**"
-                        ]
+                        "exclude": []
                     }
                 }
             }
