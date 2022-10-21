@@ -33,6 +33,7 @@ bower_components
 build/Release
 angular/src/web-ext-artifacts/
 dist/
+
 # Dependency directories
 node_modules/
 jspm_packages/
