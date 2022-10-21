@@ -57,6 +57,7 @@ button.close:hover {
     height: 100%;
     background-color: white;
     transition: background-color 0.2s ease-in-out;
+    cursor: pointer;
 }
 
 .delete button:hover {
@@ -74,4 +75,11 @@ button.close:hover {
 th {
     font-weight: 200;
     text-align: left;
+}
+
+div.token table tr td div.name {
+    max-width: 13em;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }

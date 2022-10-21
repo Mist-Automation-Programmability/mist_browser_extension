@@ -27,6 +27,7 @@
     flex-direction: row;
     width: 100%;
     justify-content: space-around;
+    align-items: center;
 }
 
 textarea.token:read-only {
@@ -60,42 +61,8 @@ label.token {
     letter-spacing: 0.1em;
 }
 
-button.copy-token {
-    background-color: white;
-    transition: all 0.2s ease-in-out;
-    margin: 1em 0;
-}
-
-button.copy-token:hover img.copy-token {
-    filter: invert(42%) sepia(93%) saturate(1352%) hue-rotate(40deg) brightness(90%) contrast(119%);
-    transition: filter 0.2s ease-in-out;
-}
-
-img.copy-token {
-    height: 20px;
-}
-
 .token_opt {
     display: flex;
     flex-direction: column;
     width: 100%;
-}
-
-// BUTTONS
-button {
-    border: none;
-    padding: 0.5em;
-}
-
-button.close {
-    width: 100%;
-    border-radius: 0 0 2px 2px;
-    background-color: #0096a3;
-    color: white;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
-    transition: background-color 0.2s ease-in-out;
-}
-
-button.close:hover {
-    background-color: #007683;
 }

@@ -11,10 +11,12 @@ import { BrowserService, SessionElement, OrgElement } from "../../services/brows
 @Component({
   selector: 'app-account',
   templateUrl: 'account.component.html',
-  styleUrls: ['account.component.scss'],
+  styleUrls: [
+    'account.component.scss',
+    '../../scss/notice.component.scss'
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-
 export class AccountComponent implements OnInit {
 
   @ViewChild(AccountManageComponent) accountManage;
@@ -59,6 +61,7 @@ export class AccountComponent implements OnInit {
       }
     })
     this.is_working = false;
+    this._cd.detectChanges();
   }
 
   processOrgs(privileges: any[]): OrgElement[] {

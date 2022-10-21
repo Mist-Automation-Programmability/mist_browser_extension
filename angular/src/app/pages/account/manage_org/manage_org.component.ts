@@ -25,7 +25,7 @@ export interface SessionElement {
 @Component({
   selector: 'app-account-manage-org',
   templateUrl: 'manage_org.component.html',
-  styleUrls: ['../manage/manage.component.scss','manage_org.component.scss'],
+  styleUrls: ['../manage/manage.component.scss','manage_org.component.scss', '../../../scss/button.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AccountManageOrgComponent implements OnInit {

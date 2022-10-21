@@ -14,86 +14,11 @@
     align-items: stretch;
     font-weight: 100;
     margin: .2em .5em;
-    width: 150px;
+    width: 120px;
 }
 
-// LINKS
-.doc-link {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-    font-size: smaller;
-    background-color: white;
-    border: 1px solid #eee;
-    box-shadow: rgb(0 0 0 / 10%) 0px 1px 3px 0px, rgb(0 0 0 / 6%) 0px 1px 2px 0px;
-    cursor: pointer;
-    margin: 1em 0;
-    transition: all 0.2s ease-in-out;
-}
-
-.doc-link:hover {
-    transition: all 0.2s ease-in-out;
-}
-
-.doc-link .operation {
-    color: black;
-    font-weight: 200;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    font-size: small;
-    padding: 0 0.5em;
-}
-
-.doc-link .operation img {
-    color: gray;
-    height: 1.5em;
-    margin: 0.5em;
-    filter: invert(100%) sepia(0) saturate(1352%) hue-rotate(0deg) brightness(10%) contrast(0);
-}
-
-.operationId {
-    width: 14em;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    color: gray;
-    text-align: start;
-}
-
-.method {
-    margin: 0.5em;
-    padding: 0.5em;
-    width: 6em;
-    font-weight: 500;
-    border-radius: 0.5em;
-    text-align: center;
-}
-
-.get {
-    color: green;
-    border: 1px solid green;
-}
-
-.post {
-    color: blue;
-    border: 1px solid blue;
-}
-
-.put {
-    color: orange;
-    border: 1px solid orange;
-}
-
-.delete {
-    color: red;
-    border: 1px solid red;
+.grid-item div input {
+    max-width: 100%;
 }
 
 ////// INPUT
@@ -123,22 +48,6 @@ select {
     padding: 4px;
     border: 1px solid lightgray;
     margin: 2px 0;
-}
-
-// BUTTON
-button.update {
-    background-color: #1964a3;
-    color: white;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
-    transition: background-color 0.2s ease-in-out;
-    cursor: pointer;
-    width: 100%;
-    margin: 1em 0;
-}
-
-button.update:enabled:hover {
-    // background-color: #649015;
-    box-shadow: #32325d40 0 30px 60px -12px inset, #0000004d 0 18px 36px -18px inset;
 }
 
 // tooltip

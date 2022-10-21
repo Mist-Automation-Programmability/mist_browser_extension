@@ -57,17 +57,15 @@ export class BrowserService {
 
     constructor() { }
 
-
-
     tabUpdate(url: string): void {
-        browser.tabs.update(undefined, { url: url });
+        browser.tabs.update({ url: url });
     }
 
     tabOpen(url: string): void {
         browser.tabs.create({ url: url });
     }
-    tabOpenDoc(operation:string):void{
-        browser.tabs.create({url: this.doc_url + "/#operation/" + operation})
+    tabOpenDoc(operation: string): void {
+        browser.tabs.create({ url: this.doc_url + "/#operation/" + operation })
     }
 
     issueOpen(): void {
@@ -97,9 +95,9 @@ export class BrowserService {
         this.sessionsSource.next([]);
         browser.cookies.getAll({})
             .then((cookies: browser.cookies.Cookie[]) => {
-                cookies.forEach((cookie) => {
-                    this._processCookie(cookie);
-                })
+                    cookies.forEach((cookie) => {
+                        this._processCookie(cookie);
+                    })
                 cb();
             })
             .catch(err => console.log(err));

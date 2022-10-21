@@ -1,0 +1,232 @@
+// MAIN
+button {
+    user-select: none;
+    border: none;
+    padding: .5em;
+    margin: 0.5em auto;
+    height: 2.5em;
+    font-size: small;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:disabled,
+button:disabled:hover {
+    background-color: #eee;
+    color: #aaa;
+    box-shadow: rgb(0 0 0 / 5%) 0px 0px 0px 1px !important;
+    cursor: default;
+}
+
+button:enabled {
+    background-color: #1964a3;
+    color: white;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px !important;
+    transition: all 0.2s ease-in-out;
+}
+
+button:enabled:hover {
+    background-color: #0096a3;
+    box-shadow: rgb(50 50 93 / 25%) 0 3px 6px -1px inset, rgb(0 0 0 / 30%) 0 1px 3px -1px inset !important;
+}
+
+button.stroked:disabled,
+button:disabled:hover {
+    background-color: unset;
+    color: #aaa;
+    border: 1px solid #aaa;
+    box-shadow: rgb(0 0 0 / 5%) 0px 0px 0px 1px !important;
+    cursor: default;
+}
+
+button.stroked:enabled {
+    background-color: unset;
+    color: #1964a3;
+    border: 1px solid #1964a3;
+}
+
+button.stroked:enabled:hover {
+    background-color: unset;
+    box-shadow: rgb(50 50 93 / 60%) 0 4px 6px -12px inset, rgb(0 0 0 / 60%) 0 3px 6px -4px inset !important;
+}
+
+// LARGE 
+button.large {
+    width: 80%;
+}
+
+// XLARGE 
+button.xlarge {
+    width: 100%;
+}
+
+// COPY IDS
+button.copy {
+    background-color: white;
+    transition: all 0.2s ease-in-out;
+    border-radius: 5px;
+    display: flex;
+    margin-left: 1em;
+    border: 1px solid #1964a3;
+}
+
+button.copy:enabled:hover {
+    background-color: unset !important;
+    border: 1px solid #0096a3;
+}
+
+button.copy:enabled:hover img.copy {
+    filter: invert(42%) sepia(93%) saturate(1352%) hue-rotate(145deg) brightness(72%) contrast(119%);
+    transition: all 0.2s ease-in-out;
+}
+
+button.copy img.copy {
+    height: 20px;
+    filter: invert(42%) sepia(93%) saturate(1352%) hue-rotate(196deg) brightness(73%) contrast(100%);
+}
+
+button.copy:disabled,
+button.copy:disabled {
+    background-color: unset;
+    border: 1px solid gray;
+}
+
+button.copy:disabled img.copy {
+    filter: none;
+}
+
+// OPEN EXTERNAL
+button img.icon-open {
+    height: 15px;
+    padding: 0 5px;
+    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%);
+}
+
+// REQUEST
+button.request {
+    margin: 2em;
+    background-color: unset;
+    border: 1px solid #777;
+    color: #777;
+}
+
+button.request:hover {
+    background-color: lightgray;
+}
+
+// CLOSE
+button.close {
+    background-color: #0096a3;
+    color: white;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+    transition: background-color 0.2s ease-in-out;
+    margin: 0;
+    border-radius: 0;
+}
+
+button.close:hover {
+    background-color: #007683;
+}
+
+// LINKS TO DOC
+button.doc-link {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    font-size: smaller;
+    background-color: white;
+    border: 1px solid #eee;
+    box-shadow: rgb(0 0 0 / 10%) 0px 1px 3px 0px, rgb(0 0 0 / 6%) 0px 1px 2px 0px;
+    cursor: pointer;
+    margin: 1em auto;
+    transition: all 0.2s ease-in-out;
+    padding: 0;
+}
+
+button.doc-link:hover {
+    background-color: unset;
+    transition: all 0.2s ease-in-out;
+}
+
+button.doc-link .operation {
+    color: black;
+    font-weight: 200;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    font-size: small;
+    padding: 0 0.5em;
+}
+
+button.doc-link .operation img {
+    color: gray;
+    height: 1.5em;
+    margin: 0.5em;
+    filter: invert(100%) sepia(0) saturate(1352%) hue-rotate(0deg) brightness(10%) contrast(0);
+}
+
+button.doc-link .operation .operationId {
+    width: 14em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: gray;
+    text-align: start;
+}
+
+button.doc-link .method {
+    color: white;
+    border-radius: 4px 0 0;
+    margin: 0;
+    padding: 0.5em;
+    width: 6em;
+    font-weight: 500;
+    text-align: center;
+    box-shadow: inherit;
+}
+
+button.doc-link .method.get {
+    background-color: green;
+}
+
+button.doc-link .method.post {
+    background-color: blue;
+}
+
+button.doc-link .method.put {
+    background-color: orange;
+}
+
+button.doc-link .method.delete {
+    background-color: red;
+}
+
+button.doc-link.get,
+button.doc-link .method.get {
+    border: 1px solid green;
+}
+
+button.doc-link.post,
+button.doc-link .method.post {
+    border: 1px solid blue;
+}
+
+button.doc-link.put,
+button.doc-link .method.put {
+    border: 1px solid orange;
+}
+
+button.doc-link.delete,
+button.doc-link .method.delete {
+    border: 1px solid red;
+}

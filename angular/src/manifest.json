@@ -6,7 +6,7 @@
     "description": "Web Browser Extension for Mist Developpers to provide easier access to Mist APIs",
     "background": {
         "scripts": [
-            "assets/browser/browser-polyfill.js",
+            "assets/browser/browser-polyfill.min.js",
             "assets/js/serviceWorker.js"
         ]
     },
@@ -16,7 +16,7 @@
     },
     "content_scripts": [{
         "js": [
-            "/assets/browser/browser-polyfill.js",
+            "/assets/browser/browser-polyfill.min.js",
             "/assets/js/content.js"
         ],
         "matches": [

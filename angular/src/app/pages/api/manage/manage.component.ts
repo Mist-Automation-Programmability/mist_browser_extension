@@ -8,7 +8,7 @@ export interface linkElement {
 @Component({
   selector: 'app-api-manage',
   templateUrl: 'manage.component.html',
-  styleUrls: ['../api.component.scss']
+  styleUrls: ['../api.component.scss', '../../../scss/button.component.scss']
 })
 export class ApiManageComponent implements OnInit {
   message: string;

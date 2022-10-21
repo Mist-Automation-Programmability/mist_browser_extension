@@ -1,15 +1,15 @@
 <div class="content no-grow">
     <h2>Mist API Documentation</h2>
     <div class="box-links">
-        <button class="links" (click)="openTab('postman')">
+        <button class="links large" (click)="openTab('postman')">
             Postman
             <img class="icon-open" src="assets/open.svg" alt="open">
         </button>
-        <button class="links" (click)="openTab('openapi')">
+        <button class="links large" (click)="openTab('openapi')">
             OpenAPI
             <img class="icon-open" src="assets/open.svg" alt="open">
         </button>
-        <button class="links" (click)="openTab('mist')">
+        <button class="links large" (click)="openTab('mist')">
             MistAPI
             <img class="icon-open" src="assets/open.svg" alt="open">
         </button>
@@ -43,10 +43,10 @@
                 <div>{{error_message}}</div>
             </div>
         </div>
-        <button class="check-version" (click)="checkNewRelease()">Check For New Version</button>
+        <button class="stroked" style="margin:0;border-radius: 0;" (click)="checkNewRelease()">Check For New Version</button>
     </div>
     <div class="box-links">
-        <button class="links"  (click)="openTab('github')">
+        <button class="links large" (click)="openTab('github')">
             Extension Page
             <img class="icon-open" src="assets/open.svg" alt="open">
         </button>

@@ -2,7 +2,7 @@
     <div>
         <h2>Query Parameters</h2>
         <div *ngIf="query_params.length > 0">
-            <button class="update" (click)="updateUrl()">
+            <button class="xlarge" (click)="updateUrl()">
                 <span>Update URL</span>
             </button>
             <div class="grid-wrapper">
@@ -57,7 +57,7 @@
     </div>
     <div>
         <h2>Documentation</h2>
-        <button *ngIf="docs.get" class="doc-link" (click)="openDoc(docs.get.operationId)">
+        <button *ngIf="docs.get" class="doc-link get" (click)="openDoc(docs.get.operationId)">
             <div class="method get">GET</div>
             <div class="operation">
                 <span class="operationId">
@@ -68,7 +68,7 @@
                 </div>
             </div>
         </button>
-        <button *ngIf="docs.post" class="doc-link" (click)="openDoc(docs.post.operationId)">
+        <button *ngIf="docs.post" class="doc-link post" (click)="openDoc(docs.post.operationId)">
             <div class="method post">POST</div>
             <div class="operation">
                 <span class="operationId">
@@ -79,7 +79,7 @@
                 </div>
             </div>
         </button>
-        <button *ngIf="docs.put" class="doc-link" (click)="openDoc(docs.put.operationId)">
+        <button *ngIf="docs.put" class="doc-link put" (click)="openDoc(docs.put.operationId)">
             <div class="method put">PUT</div>
             <div class="operation">
                 <span class="operationId">
@@ -90,7 +90,7 @@
                 </div>
             </div>
         </button>
-        <button *ngIf="docs.delete" class="doc-link" (click)="openDoc(docs.delete.operationId)">
+        <button *ngIf="docs.delete" class="doc-link delete" (click)="openDoc(docs.delete.operationId)">
             <div class="method delete">DELETE</div>
             <div class="operation">
                 <span class="operationId">

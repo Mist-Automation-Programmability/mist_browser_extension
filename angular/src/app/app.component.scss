@@ -66,6 +66,7 @@ div.bottom {
     border-top: solid 1px #ddd;
 }
 
+// MENU BUTTONS
 button.bottom {
     background-color: #fff;
     transition: all .2s ease-in-out;
@@ -78,6 +79,13 @@ button.bottom {
     cursor: pointer;
 }
 
+button.bottom.selected {
+    color: #eee;
+    background-color: #999;
+    transition: all 0.2s ease-in-out;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+}
+
 button.bottom:not(.selected):hover {
     transition: all 0.2s ease-in-out;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
@@ -88,6 +96,16 @@ button.bottom:active {
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
     transition: all 0.2s ease-in-out;
     background-color: #aaa;
+}
+
+button.bottom:not(.selected) img {
+    filter: invert(100%) sepia(0%) saturate(1352%) hue-rotate(0deg) brightness(10%) contrast(0%);
+    transition: all 0.2s ease-in-out;
+}
+
+button.bottom.selected img {
+    filter: invert(100%) sepia(0%) saturate(1352%) hue-rotate(0deg) brightness(90%) contrast(100%);
+    transition: all 0.2s ease-in-out;
 }
 
 img.bottom {
@@ -107,21 +125,4 @@ div.xxs {
 
 img.icon {
     margin: 0.2em;
-}
-
-button.selected {
-    color: #eee;
-    background-color: #999;
-    transition: all 0.2s ease-in-out;
-    box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
-}
-
-button:not(.selected) img {
-    filter: invert(100%) sepia(0%) saturate(1352%) hue-rotate(0deg) brightness(10%) contrast(0%);
-    transition: all 0.2s ease-in-out;
-}
-
-button.selected img {
-    filter: invert(100%) sepia(0%) saturate(1352%) hue-rotate(0deg) brightness(90%) contrast(100%);
-    transition: all 0.2s ease-in-out;
 }

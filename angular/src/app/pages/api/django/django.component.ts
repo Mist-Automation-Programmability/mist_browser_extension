@@ -16,7 +16,12 @@ interface QueryparamsInterface {
 @Component({
   selector: 'app-api-django',
   templateUrl: 'django.component.html',
-  styleUrls: ['api.django.component.scss', '../api.component.scss', '../../../app.component.scss']
+  styleUrls: [
+    'api.django.component.scss',
+    '../api.component.scss',
+    '../../../scss/button.component.scss',
+    '../../../scss/notice.component.scss'
+  ]
 })
 export class ApiDjangoComponent implements OnInit {
   message: string;
@@ -40,15 +45,16 @@ export class ApiDjangoComponent implements OnInit {
   ) { }
 
 
-  hosts:string[]
-  tabUrl:string;
+  hosts: string[]
+  tabUrl: string;
 
   ngOnInit() {
     this.hosts = this._browser.getHostApi()
     this._browser.getUrl.then(tabUrl => {
-      this.tabUrl = tabUrl.split("?");
-      const path = this.tabUrl[0].split("/");
-      const query = this.tabUrl[1];
+      this.tabUrl = tabUrl;
+      const url = this.tabUrl.split("?");
+      const path = url[0].split("/");
+      const query = url[1];
       let path_part = path.splice(3, path.length)
       this.processPath(path_part, query);
     })
@@ -132,6 +138,7 @@ export class ApiDjangoComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////
 
   updateUrl() {
+    console.log(this.tabUrl)
     let url = this.tabUrl.split("?")[0]
     let query: string[] = []
     this.query_params.forEach(param => {

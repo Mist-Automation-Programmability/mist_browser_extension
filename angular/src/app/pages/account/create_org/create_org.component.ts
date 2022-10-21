@@ -25,7 +25,7 @@ export interface SessionElement {
 @Component({
   selector: 'app-account-create-org',
   templateUrl: 'create_org.component.html',
-  styleUrls: ['../create/create.component.scss', 'create_org.component.scss'],
+  styleUrls: ['../create/create.component.scss', 'create_org.component.scss', '../../../scss/button.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AccountCreateOrgComponent implements OnInit {

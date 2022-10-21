@@ -1,8 +1,16 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "outDir": "../out-tsc/app"
-    // "types": ["chrome"]
+    "outDir": "../out-tsc/app",
+    // "types": ["chrome"],
+    "paths": {
+      "@app/*": [
+        "app/*"
+      ],
+      "@env/*": [
+        "environments/*"
+      ]
+    }
   },
   "files": [
     "main.ts",
@@ -10,13 +18,5 @@
   ],
   "include": [
     "angular/src/**/*.d.ts"
-  ],
-  "paths": {
-    "@app/*": [
-      "app/*"
-    ],
-    "@env/*": [
-      "environments/*"
-    ]
-  }
+  ]
 }
