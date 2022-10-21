@@ -1,0 +1,68 @@
+// CONTENAIRS
+.content {
+    padding: 1em;
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+    background-color: white;
+    margin: 1em;
+    padding: 0;
+    border: 1px solid #bbb;
+    border-radius: 2px;
+}
+
+.cloud {
+    font-weight: 100;
+}
+
+.box-token {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 1em;
+}
+
+.token-input {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-around;
+    align-items: center;
+}
+
+textarea.token:read-only {
+    resize: none;
+    width: 100%;
+    text-align: center;
+    font: inherit;
+    font-weight: 200;
+    border: none;
+    padding: 1em 1em;
+    margin: 1em 0;
+    border-radius: 6px;
+    background-color: transparent;
+    transition: all 1s ease-in-out;
+}
+
+textarea.token:focus-visible {
+    outline: none;
+}
+
+textarea.token.focused {
+    background-color: #555;
+    transition: all 0.2s ease-in-out;
+}
+
+label.token {
+    margin: .2em .5em .2em 1em;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    letter-spacing: 0.1em;
+}
+
+.token_opt {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}

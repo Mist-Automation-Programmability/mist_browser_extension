@@ -4,7 +4,7 @@ logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
+.angular/
 # Runtime data
 pids
 *.pid
@@ -34,6 +34,8 @@ bower_components
 
 # Compiled binary addons (https://nodejs.org/api/addons.html)
 build/Release
+angular/src/web-ext-artifacts/
+dist/
 
 # Dependency directories
 node_modules/

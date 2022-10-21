@@ -1,0 +1,109 @@
+// CONTENAIRS
+.content {
+    margin: 0.5em 1em;
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+}
+
+.content.no-grow {
+    flex-grow: 0;
+}
+
+.content.grow {
+    flex-grow: 1;
+}
+
+// TITLES
+h2 {
+    font-weight: 200;
+    margin-left: 0.8em;
+}
+
+// links
+.box-links {
+    align-items: center;
+    flex-direction: column;
+    display: flex;
+    justify-content: flex-start;
+    margin: 0 2em;
+}
+
+// VERSION
+.box-version {
+    margin: 1em 1em;
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+    border: 1px solid #ddd;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    border-radius: 2px;
+}
+
+.version-info {
+    display: flex;
+    flex-direction: row;
+    margin: 0.5em 1em;
+}
+
+.version-text {
+    font-weight: 200;
+    margin-right: 1em;
+}
+
+.version-unknown,
+.version-uptodate {
+    display: flex;
+    flex-direction: row;
+}
+
+.version-newversion {
+    display: flex;
+    flex-direction: column;
+}
+
+.version-unknown img {
+    height: 1.4em;
+    margin-left: 1em;
+    filter: invert(42%) sepia(93%) saturate(1352%) hue-rotate(7deg) brightness(90%) contrast(119%);
+}
+
+.version-uptodata img {
+    height: 1.4em;
+    margin-left: 1em;
+    filter: invert(42%) sepia(93%) saturate(1352%) hue-rotate(45deg) brightness(90%) contrast(119%);
+}
+
+.version-newversion img {
+    height: 1.4em;
+    margin-left: 1em;
+    filter: invert(42%) sepia(93%) saturate(1352%) hue-rotate(330deg) brightness(90%) contrast(119%);
+}
+
+.download {
+    margin: 0.5em 0;
+    transition: background-color 0.2s ease-in-out;
+    background-color: #ddd;
+}
+
+.download:hover {
+    background-color: #bbb;
+}
+
+.check-version {
+    width: 100%;
+    margin: 0;
+    transition: background-color 0.2s ease-in-out;
+    background-color: #ddd;
+    cursor: pointer;
+}
+
+.check-version:hover {
+    background-color: #bbb;
+}
+
+img.icon-open {
+    height: 15px;
+    padding: 0 5px;
+    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%);
+}

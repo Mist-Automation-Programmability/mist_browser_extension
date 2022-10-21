@@ -1,0 +1,55 @@
+<div class="content no-grow">
+    <h2>Mist API Documentation</h2>
+    <div class="box-links">
+        <button class="links large" (click)="openTab('postman')">
+            Postman
+            <img class="icon-open" src="assets/open.svg" alt="open">
+        </button>
+        <button class="links large" (click)="openTab('openapi')">
+            OpenAPI
+            <img class="icon-open" src="assets/open.svg" alt="open">
+        </button>
+        <button class="links large" (click)="openTab('mist')">
+            MistAPI
+            <img class="icon-open" src="assets/open.svg" alt="open">
+        </button>
+    </div>
+</div>
+
+<div class="content no-grow">
+    <h2>Extension information</h2>
+    <div class="box-version">
+        <div class="version-info">
+            <div class="version-text">Current Version:</div>
+            <div class="version-value">{{current_version}}</div>
+        </div>
+        <div class="version-info">
+            <div class="version-text">Lastest Version:</div>
+            <div class="version-unknown" *ngIf="!last_version && !error_happened">
+                <div>Unknown</div>
+                <img src="assets/question.svg" alt="unknow version">
+            </div>
+            <div class="version-uptodate" *ngIf="last_version && up_to_date">
+                <div>You have the lastest Version</div>
+            </div>
+            <div class="version-newversion" *ngIf="last_version && !up_to_date">
+                <div>New version available ({{last_version}})</div>
+                <button class="download" (click)="openTab('download_url')">
+                    <div>Downlaod</div>
+                    <img src="assets/download.svg" alt="download">
+                </button>
+            </div>
+            <div class="version-error" *ngIf="error_happened">
+                <div>{{error_message}}</div>
+            </div>
+        </div>
+        <button class="stroked" style="margin:0;border-radius: 0;" (click)="checkNewRelease()">Check For New Version</button>
+    </div>
+    <div class="box-links">
+        <button class="links large" (click)="openTab('github')">
+            Extension Page
+            <img class="icon-open" src="assets/open.svg" alt="open">
+        </button>
+    </div>
+
+</div>

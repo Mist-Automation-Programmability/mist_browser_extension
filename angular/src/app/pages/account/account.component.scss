@@ -1,0 +1,153 @@
+// CONTENAIRS
+.content {
+    margin: 1em;
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+}
+
+.popup {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    height: 453px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    visibility: visible;
+    opacity: 1;
+    transition: visibility 0.2s ease-in-out, opacity 0.2s ease-in-out;
+}
+
+.popup.white {
+    background: #fff;
+}
+
+.popup.transparent {
+    backdrop-filter: blur(2px);
+    background: rgb(185 185 185 / 70%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.popup.hidden {
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0.2s ease-in-out, opacity 0.2s ease-in-out;
+}
+
+// clouds
+.box-cloud {
+    margin: 2em 1em 0;
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+    border: 1px solid #ddd;
+    box-shadow: 0 3px 6px 0 rgb(99 99 99 / 10%);
+    border-radius: 2px;
+}
+
+.title-cloud-box {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    background-color: white;
+    border-radius: 2px;
+    margin-top: 0em;
+    transition: background-color 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.title-cloud-box:hover {
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+    background-color: #ddd;
+}
+
+.title-cloud {
+    color: black;
+    font-weight: 200;
+    margin: 0.2em;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    cursor: pointer;
+}
+
+.title-cloud img {
+    margin-left: 0.5em;
+    opacity: 0.5;
+    height: 1em;
+}
+
+.text-cloud {
+    margin: 0.2em auto;
+    font-weight: 200;
+    user-select: none;
+}
+
+.text-cloud.first {
+    margin-top: 1.5em;
+}
+
+.text-cloud.last {
+    margin-bottom: 0.2em;
+}
+
+.cloud {
+    width: 50%;
+    transition: background-color 0.2s ease-in-out;
+    background-color: #ddd;
+}
+
+.cloud:hover {
+    background-color: #bbb;
+}
+
+.cloud.token.left {
+    border-radius: 0 0 0 2px;
+}
+
+.cloud.token.right {
+    border-radius: 0 0 2px 0;
+}
+
+.cloud.token img {
+    height: 20px;
+}
+
+// BUTTONS
+button {
+    border: none;
+    padding: 0.5em;
+}
+
+button:disabled {
+    background-color: #eee;
+    color: #aaa;
+    box-shadow: rgb(0 0 0 / 5%) 0px 0px 0px 1px;
+}
+
+button.token {
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+    padding: 0.1em;
+    cursor: pointer;
+}
+
+// tooltip
+.tooltip .tooltiptext {
+    top: 130%;
+    left: 30%;
+    font-size: smaller;
+    font-weight: 100;
+}
+
+b {
+    font-weight: 400;
+}

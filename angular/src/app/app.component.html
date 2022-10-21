@@ -1,0 +1,28 @@
+<div style="text-align:center">
+    <div class="top">
+        <img class="banner" src="assets/banner2.jpeg" alt="banner">
+        <img class="logo" src="assets/mist.png" alt="logo">
+    </div>
+
+</div>
+
+<div class="app-container">
+    <app-api *ngIf="display=='api'"></app-api>
+    <app-account *ngIf="display=='account'"></app-account>
+    <app-about *ngIf="display=='about'"></app-about>
+</div>
+
+<div class="bottom">
+    <button class="bottom" (click)="show('api')" [ngClass]="display == 'api'? 'selected' : ''">
+        <img class="bottom icon" src="assets/api.svg" alt="api">
+        <div class="bottom xxs">API</div>
+    </button>
+    <button class="bottom" (click)="show('account')" [ngClass]="display == 'account'? 'selected' : ''">
+        <img class="bottom icon" src="assets/account.svg" alt="account">
+        <div class="bottom xxs">Accounts</div>
+    </button>
+    <button class="bottom" (click)="show('about')" [ngClass]="display == 'about'? 'selected' : ''">
+        <img class="bottom icon" src="assets/help.svg" alt="help">
+        <div class="bottom xxs">about</div>
+    </button>
+</div>
