@@ -1,5 +1,52 @@
 <div class="content no-grow">
     <div>
+        <h2>Documentation</h2>
+        <button *ngIf="docs.get" class="doc-link get" (click)="openDoc(docs.get.operationId)">
+            <div class="method get">GET</div>
+            <div class="operation">
+                <span class="operationId">
+                    {{docs.get.operationId}}
+                </span>
+                <div class="tooltip">
+                    <img src="assets/manual.svg" alt="question">
+                </div>
+            </div>
+        </button>
+        <button *ngIf="docs.post" class="doc-link post" (click)="openDoc(docs.post.operationId)">
+            <div class="method post">POST</div>
+            <div class="operation">
+                <span class="operationId">
+                    {{docs.post.operationId}}
+                </span>
+                <div class="tooltip">
+                    <img src="assets/manual.svg" alt="question">
+                </div>
+            </div>
+        </button>
+        <button *ngIf="docs.put" class="doc-link put" (click)="openDoc(docs.put.operationId)">
+            <div class="method put">PUT</div>
+            <div class="operation">
+                <span class="operationId">
+                    {{docs.put.operationId}}
+                </span>
+                <div class="tooltip">
+                    <img src="assets/manual.svg" alt="question">
+                </div>
+            </div>
+        </button>
+        <button *ngIf="docs.delete" class="doc-link delete" (click)="openDoc(docs.delete.operationId)">
+            <div class="method delete">DELETE</div>
+            <div class="operation">
+                <span class="operationId">
+                    {{docs.delete.operationId}}
+                </span>
+                <div class="tooltip">
+                    <img src="assets/manual.svg" alt="question">
+                </div>
+            </div>
+        </button>
+    </div>
+    <div>
         <h2>Query Parameters</h2>
         <div *ngIf="query_params.length > 0">
             <button class="xlarge" (click)="updateUrl()">
@@ -54,53 +101,6 @@
         <div *ngIf="query_params.length == 0" class="notice-text">
             This API call hasn't any query parameters.
         </div>
-    </div>
-    <div>
-        <h2>Documentation</h2>
-        <button *ngIf="docs.get" class="doc-link get" (click)="openDoc(docs.get.operationId)">
-            <div class="method get">GET</div>
-            <div class="operation">
-                <span class="operationId">
-                    {{docs.get.operationId}}
-                </span>
-                <div class="tooltip">
-                    <img src="assets/manual.svg" alt="question">
-                </div>
-            </div>
-        </button>
-        <button *ngIf="docs.post" class="doc-link post" (click)="openDoc(docs.post.operationId)">
-            <div class="method post">POST</div>
-            <div class="operation">
-                <span class="operationId">
-                    {{docs.post.operationId}}
-                </span>
-                <div class="tooltip">
-                    <img src="assets/manual.svg" alt="question">
-                </div>
-            </div>
-        </button>
-        <button *ngIf="docs.put" class="doc-link put" (click)="openDoc(docs.put.operationId)">
-            <div class="method put">PUT</div>
-            <div class="operation">
-                <span class="operationId">
-                    {{docs.put.operationId}}
-                </span>
-                <div class="tooltip">
-                    <img src="assets/manual.svg" alt="question">
-                </div>
-            </div>
-        </button>
-        <button *ngIf="docs.delete" class="doc-link delete" (click)="openDoc(docs.delete.operationId)">
-            <div class="method delete">DELETE</div>
-            <div class="operation">
-                <span class="operationId">
-                    {{docs.delete.operationId}}
-                </span>
-                <div class="tooltip">
-                    <img src="assets/manual.svg" alt="question">
-                </div>
-            </div>
-        </button>
     </div>
 
 </div>

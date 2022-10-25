@@ -14,7 +14,7 @@
     align-items: stretch;
     font-weight: 100;
     margin: .2em .5em;
-    width: 120px;
+    width: 100%;
 }
 
 .grid-item div input {
@@ -44,10 +44,10 @@ input:focus {
 }
 
 select {
-    width: 100%;
+    max-width: 100%;
     padding: 4px;
     border: 1px solid lightgray;
-    margin: 2px 0;
+    margin: 2px 0.9em 2px 0;
 }
 
 // tooltip

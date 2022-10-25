@@ -1,136 +1,18 @@
 /* You can add global styles to this file, and also import other style files */
 
 @font-face {
-    font-family: 'SF Pro Display';
-    src: local('SF Pro Display Medium'), local('assets/font/SFPro/SFProDisplay-Medium'), url('assets/font/SFPro/SFProDisplay-Medium.woff2') format('woff2');
-    font-weight: 500;
+    font-family: "OpenSans";
+    src: url("assets/font/Open_Sans/OpenSans-VariableFont_wdth,wght.ttf") format("truetype-variations");
+    font-weight: 125 950;
+    font-stretch: 75% 125%;
     font-style: normal;
-}
-
-@font-face {
-    font-family: 'SF Pro Display';
-    src: local('SF Pro Display Heavy'), local('assets/font/SFPro/SFProDisplay-Heavy'), url('assets/font/SFPro/SFProDisplay-Heavy.woff2') format('woff2');
-    font-weight: 900;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'SF Pro Display';
-    src: local('SF Pro Display UltralightItalic'), local('assets/font/SFPro/SFProDisplay-UltralightItalic'), url('assets/font/SFPro/SFProDisplay-UltralightItalic.woff2') format('woff2');
-    font-weight: 200;
-    font-style: italic;
-}
-
-@font-face {
-    font-family: 'SF Pro Display';
-    src: local('SF Pro Display Regular Italic'), local('assets/font/SFPro/SFProDisplay-RegularItalic'), url('assets/font/SFPro/SFProDisplay-RegularItalic.woff2') format('woff2');
-    font-weight: normal;
-    font-style: italic;
-}
-
-@font-face {
-    font-family: 'SF Pro Display';
-    src: local('SF Pro Display Thin'), local('assets/font/SFPro/SFProDisplay-Thin'), url('assets/font/SFPro/SFProDisplay-Thin.woff2') format('woff2');
-    font-weight: 100;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'SF Pro Display';
-    src: local('SF Pro Display Light'), local('assets/font/SFPro/SFProDisplay-Light'), url('assets/font/SFPro/SFProDisplay-Light.woff2') format('woff2');
-    font-weight: 200;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'SF Pro Display';
-    src: local('SF Pro Display Black Italic'), local('assets/font/SFPro/SFProDisplay-BlackItalic'), url('assets/font/SFPro/SFProDisplay-BlackItalic.woff2') format('woff2');
-    font-weight: 900;
-    font-style: italic;
-}
-
-@font-face {
-    font-family: 'SF Pro Display';
-    src: local('SF Pro Display Bold'), local('assets/font/SFPro/SFProDisplay-Bold'), url('assets/font/SFPro/SFProDisplay-Bold.woff2') format('woff2');
-    font-weight: bold;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'SF Pro Display';
-    src: local('SF Pro Display Black'), local('assets/font/SFPro/SFProDisplay-Black'), url('assets/font/SFPro/SFProDisplay-Black.woff2') format('woff2');
-    font-weight: 900;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'SF Pro Display';
-    src: local('SF Pro Display SemiboldItalic'), local('assets/font/SFPro/SFProDisplay-SemiboldItalic'), url('assets/font/SFPro/SFProDisplay-SemiboldItalic.woff2') format('woff2');
-    font-weight: 600;
-    font-style: italic;
-}
-
-@font-face {
-    font-family: 'SF Pro Display';
-    src: local('SF Pro Display Ultralight'), local('assets/font/SFPro/SFProDisplay-Ultralight'), url('assets/font/SFPro/SFProDisplay-Ultralight.woff2') format('woff2');
-    font-weight: 200;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'SF Pro Display';
-    src: local('SF Pro Display LightItalic'), local('assets/font/SFPro/SFProDisplay-LightItalic'), url('assets/font/SFPro/SFProDisplay-LightItalic.woff2') format('woff2');
-    font-weight: 200;
-    font-style: italic;
-}
-
-@font-face {
-    font-family: 'SF Pro Display';
-    src: local('SF Pro Display ThinItalic'), local('assets/font/SFPro/SFProDisplay-ThinItalic'), url('assets/font/SFPro/SFProDisplay-ThinItalic.woff2') format('woff2');
-    font-weight: 100;
-    font-style: italic;
-}
-
-@font-face {
-    font-family: 'SF Pro Display';
-    src: local('SF Pro Display MediumItalic'), local('assets/font/SFPro/SFProDisplay-MediumItalic'), url('assets/font/SFPro/SFProDisplay-MediumItalic.woff2') format('woff2');
-    font-weight: 500;
-    font-style: italic;
-}
-
-@font-face {
-    font-family: 'SF Pro Display';
-    src: local('SF Pro Display Semibold'), local('assets/font/SFPro/SFProDisplay-Semibold'), url('assets/font/SFPro/SFProDisplay-Semibold.woff2') format('woff2');
-    font-weight: 600;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'SF Pro Display';
-    src: local('SF Pro Display HeavyItalic'), local('assets/font/SFPro/SFProDisplay-HeavyItalic'), url('assets/font/SFPro/SFProDisplay-HeavyItalic.woff2') format('woff2');
-    font-weight: 900;
-    font-style: italic;
-}
-
-@font-face {
-    font-family: 'SF Pro Display';
-    src: local('SF Pro Display Regular'), local('assets/font/SFPro/SFProDisplay-Regular'), url('assets/font/SFPro/SFProDisplay-Regular.woff2') format('woff2');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'SF Pro Display';
-    src: local('SF Pro Display BoldItalic'), local('assets/font/SFPro/SFProDisplay-BoldItalic'), url('assets/font/SFPro/SFProDisplay-BoldItalic.woff2') format('woff2');
-    font-weight: bold;
-    font-style: italic;
 }
 
 body {
     width: 350px !important;
     margin: 0 !important;
     font-size: 12px;
-    font-family: "SF Pro Display";
+    font-family: "OpenSans";
 }
 
 html {

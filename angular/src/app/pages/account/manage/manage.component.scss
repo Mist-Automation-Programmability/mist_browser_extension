@@ -56,6 +56,9 @@ button.close:hover {
 .delete button {
     height: 100%;
     background-color: white;
+    margin: 0;
+    box-shadow: unset !important;
+    border-radius: 2px;
     transition: background-color 0.2s ease-in-out;
     cursor: pointer;
 }
