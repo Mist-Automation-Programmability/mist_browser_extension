@@ -19,9 +19,10 @@ export class ApiManageComponent implements OnInit {
   org_id: string | undefined = "";
   site_id: string | undefined = "";
   obj_id: string | undefined = "";
+  missing_fields: string[] = [];
   obj_name: string = "";
   focused: string | undefined = "";
-  tabUrl:string;
+  tabUrl: string;
   constructor(
     private _cd: ChangeDetectorRef,
     private _browser: BrowserService
@@ -45,7 +46,7 @@ export class ApiManageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this._browser.getUrl.then(tabUrl=>{
+    this._browser.getUrl.then(tabUrl => {
       this.tabUrl = tabUrl;
       this.generateApiUrl()
     })
@@ -125,7 +126,7 @@ export class ApiManageComponent implements OnInit {
     return splitted_uuid[splitted_uuid.length - 1];
   }
 
-  setName(obj_name: string ="" , detail: string | undefined) {
+  setName(obj_name: string = "", detail: string | undefined) {
     obj_name = obj_name.toLowerCase();
     if (detail && detail != "new") {
       this.obj_name = obj_name
@@ -157,7 +158,7 @@ export class ApiManageComponent implements OnInit {
     }
   }
 
-  forgeOrgObjectStats(obj_name: string, host: string, detail: string, extra_param: string |undefined= undefined): void {
+  forgeOrgObjectStats(obj_name: string, host: string, detail: string, extra_param: string | undefined = undefined): void {
     let url = "";
     if (detail && detail != "new") {
       // set QUICK LINK
@@ -168,7 +169,7 @@ export class ApiManageComponent implements OnInit {
   }
 
 
-  forgeOrgObjectEvents(obj_name: string, host: string, detail: string, extra_param: string|undefined = undefined): void {
+  forgeOrgObjectEvents(obj_name: string, host: string, detail: string, extra_param: string | undefined = undefined): void {
     let url = "";
     if (detail && detail != "new" && this.obj_id) {
       // MAC
@@ -209,7 +210,7 @@ export class ApiManageComponent implements OnInit {
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// COMMON SITE FUNCTIONS
-  forgeSiteObject(obj_name: string, host: string | undefined, detail: string | undefined, extra_param: string|undefined = undefined): void {
+  forgeSiteObject(obj_name: string, host: string | undefined, detail: string | undefined, extra_param: string | undefined = undefined): void {
     let url = "";
     if (detail && detail != "new") {
       // set QUICK LINK
@@ -226,7 +227,7 @@ export class ApiManageComponent implements OnInit {
     }
   }
 
-  forgeSiteObjectSearch(obj_name: string, host: string, detail: string, extra_param: string|undefined = undefined): void {
+  forgeSiteObjectSearch(obj_name: string, host: string, detail: string, extra_param: string | undefined = undefined): void {
     let url = "";
     if (detail && detail != "new") {
       // set QUICK LINK
@@ -240,7 +241,7 @@ export class ApiManageComponent implements OnInit {
     }
   }
 
-  forgeSiteObjectStats(obj_name: string, host: string, detail: string, extra_param: string |undefined = undefined): void {
+  forgeSiteObjectStats(obj_name: string, host: string, detail: string, extra_param: string | undefined = undefined): void {
     let url = "";
     if (detail && detail != "new") {
       // set QUICK LINK
@@ -255,7 +256,7 @@ export class ApiManageComponent implements OnInit {
     }
   }
 
-  forgeSiteObjectEvents(obj_name: string, device_type: string | undefined, host: string, detail: string, extra_param: string|undefined = undefined): void {
+  forgeSiteObjectEvents(obj_name: string, device_type: string | undefined, host: string, detail: string, extra_param: string | undefined = undefined): void {
     let url = "";
     if (detail && detail != "new" && this.obj_id) {
       // MAC
@@ -320,7 +321,7 @@ export class ApiManageComponent implements OnInit {
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// SITE DEVICE LAST CONFIG FUNCTION
-  forgeSiteApLastConfig(detail: string|undefined, host: string, device_type: string): void {
+  forgeSiteApLastConfig(detail: string | undefined, host: string, device_type: string): void {
     if (detail && this.obj_id) {
       const mac = this.getMac(this.obj_id)
       if (device_type == "ap" && mac) {
@@ -359,7 +360,7 @@ export class ApiManageComponent implements OnInit {
     })
   }
 
-  forgeSiteAssetStats(obj_name: string, host: string, detail: string, extra_param: string|undefined = undefined): void {
+  forgeSiteAssetStats(obj_name: string, host: string, detail: string, extra_param: string | undefined = undefined): void {
     let url = "";
     if (detail && detail != "new") {
       // set QUICK LINK
@@ -386,8 +387,6 @@ export class ApiManageComponent implements OnInit {
       extra_params = "";
     }
     if (detail == "site") {
-      this.site_id = this.obj_id
-      this.obj_id = undefined
       this.quick_links.push({
         url: "https://api." + host + "/api/v1/sites/" + this.site_id,
         name: "site info"
@@ -457,7 +456,7 @@ export class ApiManageComponent implements OnInit {
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// DISCOVERED SWITCHES FUNCTION
-  forgeSiteDiscoveredSwitchUrl(host: string, mac: string|undefined = undefined): void {
+  forgeSiteDiscoveredSwitchUrl(host: string, mac: string | undefined = undefined): void {
     if (mac) {
       this.quick_links.push({
         url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/stats/discovered_switches/search?system_name=" + mac,
@@ -473,7 +472,7 @@ export class ApiManageComponent implements OnInit {
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// ORG SLE FUNCTION
-  forgeOrgSlehUrl(host: string, scope: string, sle: string, worstsle: string|undefined = undefined, extra_params: string|undefined = undefined): void {
+  forgeOrgSlehUrl(host: string, scope: string, sle: string, worstsle: string | undefined = undefined, extra_params: string | undefined = undefined): void {
     /*
     host: mist.com, eu.mist.com, gc1.mist.com
     scope: wifi, wire, wan
@@ -533,7 +532,7 @@ export class ApiManageComponent implements OnInit {
   ////////////////////// COMMON URL FUNCTION DISPATCHER FOR SITE URLS
   commonSiteUrl(res: RegExpExecArray): void {
     this.org_id = res?.groups?.org_id;
-    let extra_params: string|undefined = undefined;
+    let extra_params: string | undefined = undefined;
     const uuid_re = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/
     if (res?.groups?.host && res?.groups?.org_id && res?.groups?.obj) {
       this.obj_id = res?.groups?.obj_id;
@@ -588,11 +587,19 @@ export class ApiManageComponent implements OnInit {
           this.setName(res?.groups?.obj, res?.groups?.detail);
           this.forgeSiteObject("psks", res?.groups?.host, res?.groups?.detail);
           break;
-        // case "siteedge":
-        //   // NOT ABLE TO GET SITE ID FROM URL
-        //   this.forgeSiteObject("mxedges", res?.groups?.host, res?.groups?.detail);
-        //   this.forgeSiteObjectStats("mxedges", res?.groups?.host, res?.groups?.detail);
-        //   break;
+        case "siteedge":
+          //   // NOT ALWAYS ABLE TO GET SITE ID FROM URL
+          this.setName("mxedge", res?.groups?.detail);
+          if (res?.groups?.detail && ! this.obj_id) {
+            this.obj_id = this.site_id;
+            this.site_id = undefined;
+            this.missing_fields.push("site_id")
+          } else if (!res?.groups?.detail && !this.site_id) this.missing_fields.push("site_id")
+          if (this.missing_fields.length == 0) {
+            this.forgeSiteObject("mxedges", res?.groups?.host, res?.groups?.detail);
+            this.forgeSiteObjectStats("mxedges", res?.groups?.host, res?.groups?.detail);
+          }
+          break;
         case "tunnels":
           this.setName("wxtunnel", res?.groups?.detail);
           this.forgeSiteObject("wxtunnels", res?.groups?.host, res?.groups?.detail);
@@ -728,7 +735,6 @@ export class ApiManageComponent implements OnInit {
           this.forgeOrgObject("nacrules", res?.groups?.host, res?.groups?.detail);
           break;
         case "nacidentityproviders":
-          console.log(res.groups)
           this.setName("NAC IDP", res?.groups?.detail);
           this.forgeOrgNacIdp(res?.groups?.host);
           break;
@@ -855,6 +861,7 @@ export class ApiManageComponent implements OnInit {
     this.org_id = res?.groups?.org_id;
     this.site_id = res?.groups?.site_id;
     this.obj_id = res?.groups?.obj_id;
+    if (this.site_id == this.obj_id) this.obj_id = undefined
     let extra_params: string | undefined = undefined;
     if (res?.groups?.start && res?.groups?.stop) {
       extra_params = "start=" + res?.groups?.start + "&end=" + res?.groups?.stop;

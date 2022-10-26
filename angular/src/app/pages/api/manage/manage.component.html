@@ -47,6 +47,14 @@
             <div>{{quick_link.name | uppercase}}</div>
             <img class="icon-open" src="assets/open.svg" alt="open">
         </button>
-
+    </div>
+</div>
+<div *ngIf="missing_fields.length > 0" class="missing-fields">
+    <div>
+        <div style="margin-right: .2em">
+            Sorry, I cannot generate the API quicklinks because I'm not able to find the
+            <span *ngIf="missing_fields.length == 1">field {{missing_fields[0]}}</span>
+            <span *ngIf="missing_fields.length > 1">fields {{missing_fields.slice(0, missing_fields.length -1).join(', ')}} and {{missing_fields[missing_fields.length -1]}}</span>
+        </div>
     </div>
 </div>
