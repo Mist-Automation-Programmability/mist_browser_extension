@@ -90,7 +90,10 @@ This extension is not yet available on the [Chrome Web Store](https://chrome.goo
 
 
 # Build Instruction
-This extension has been build on Mac OS 12.6.1
+This extension has been build on Mac OS 12.6.1, with 
+* Node 19.0.1
+* NPM 8.19.2
+* Python 3.8.5
 
 ## PREREQUISITES
 From the `angular` folder, install dependencies with `npm install`
