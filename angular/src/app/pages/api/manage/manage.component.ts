@@ -62,7 +62,8 @@ export class ApiManageComponent implements OnInit {
   // API URL ENTRYPOINT
   generateApiUrl() {
     const orgsle_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/(?<scope>siteComparison|wiredSiteComparison|wanSiteComparison)\/(?<sle>[a-z-]*)\/(?<worstsle>[a-z-]*)\/([a-z-_]*)\/(?<period>[0-9a-z-]*)\/(?<start>[0-9]*)\/(?<stop>[0-9]*)/iys;
-    const sle_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/(?<detail>serviceLevels|wiredserviceLevels|wanserviceLevels)\/(?<scope>[a-z-]*)\/(?<scope_id>[a-f0-9-]*)\/(?<period>[0-9a-z-]*)\/(?<start>[0-9]*)\/(?<stop>[0-9]*)\/(?<site_id>[a-f0-9-]*)/iys;
+    const sle_details_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/(?<detail>serviceLevels|wiredserviceLevels|wanServiceLevels|juniperGateway)\/page2\/(stats|timeline)\/[a-zA-Z-]+\/[a-zA-Z-]+\/(?<scope>site|device|client|juniperSwitch|juniperGateway)\/(?<scope_id>[a-f0-9-]*)\/(?<sle_name>[a-z-]*)\/(?<sle_sub_1>[a-zA-Z-]+)\/(?<sle_sub_2>[a-zA-Z-]+)(\/(?<period>[0-9a-z]*))?(\/(?<start>[0-9]*))?(\/(?<stop>[0-9]*))?\/(?<site_id>[a-f0-9-]*)/iys;
+    const sle_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/(?<detail>serviceLevels|wiredserviceLevels|wanServiceLevels|juniperGateway)(\/(?<scope>site|device|client|juniperSwitch|juniperGateway))?(\/(?<scope_id>[a-f0-9-]*))?(\/(?<period>[0-9a-z-]*))?(\/(?<start>[0-9]*))?(\/(?<stop>[0-9]*))?\/(?<site_id>[a-f0-9-]*)/iys;
     const insights_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/insights\/((?<obj>[a-z]+)\/)?((?<obj_id>[a-z0-9-]+)\/)?((?<period>[a-z0-9]+)\/)?((?<start>[0-9]*)\/)?((?<stop>[0-9]*)\/)?(?<site_id>[0-9a-f-]*)?/iys;
     const alarm_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!alerts\/?(?<scope>org|site)?\/?(?<uuid>[0-9a-z-]*)\/?(?<period>[0-9a-z]*)?\/?(?<start>[0-9]*)?\/?(?<stop>[0-9]*)?\/?(?<show_ack>true|false)?\/?(?<group>[a-z%0-9]*)?\/?(?<show_crit>true|false)?\/?(?<show_warn>true|false)?\/?(?<show_info>true|false)?\/?(?<site_id>[0-9a-z-]*)?/iys;
     const events_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!marvis\/?(?<scope>org|site)?\/?(?<period>[0-9a-z]*)?\/?(?<start>[0-9]*)?\/?(?<stop>[0-9]*)?\/?(?<site_id>[0-9a-z-]*)?/iys;
@@ -75,40 +76,33 @@ export class ApiManageComponent implements OnInit {
     const org_common_objs = ["orgtags", "misttunnels", "templates", "switchtemplate", "gatewaytemplates", "hubs", "deviceprofiles", "org", "orgpsk", "configuration", "auditlogs", "apinventory", "adminconfig", "subscription", "edge", "vpns", "template", "rftemplates", "services", "networks", "applicationpolicy", "nactags", "naccertificates", "nacpolicy", "nacidentityproviders", "onboardingworkflow"]
     const base_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!/yis;
 
-    const orgsle = orgsle_re.exec(this.tabUrl);
-    const sle = sle_re.exec(this.tabUrl);
-    const insights = insights_re.exec(this.tabUrl);
-    const alarm = alarm_re.exec(this.tabUrl);
-    const evpn = evpn_re.exec(this.tabUrl);
-    const site_wlan_template = site_wlan_template_re.exec(this.tabUrl);
-    const events = events_re.exec(this.tabUrl);
-    const floorplans = floorplans_re.exec(this.tabUrl);
-    const site_common = site_common_re.exec(this.tabUrl);
-    const org_common = org_common_re.exec(this.tabUrl);
-    const base = base_re.exec(this.tabUrl);
+    var regexp_result;
 
-    if (orgsle) {
-      this.orgSleUrl(orgsle);
-    } else if (sle) {
-      this.sleUrl(sle);
-    } else if (insights) {
-      this.insightsUrl(insights);
-    } else if (alarm) {
-      this.alarmUrl(alarm);
-    } else if (evpn) {
-      this.evpnUrl(evpn);
-    } else if (site_wlan_template) {
-      this.siteWlanTemplateUrl(site_wlan_template);
-    } else if (events) {
-      this.eventsUrl(events);
-    } else if (floorplans) {
-      this.floorplansUrl(floorplans);
-    } else if (site_common && site_common["groups"] && site_common_objs.includes(site_common["groups"]["obj"].toLowerCase())) {
-      this.commonSiteUrl(site_common);
-    } else if (org_common && org_common["groups"] && org_common_objs.includes(org_common["groups"]["obj"].toLowerCase())) {
-      this.commonOrgUrl(org_common);
-    } else if (base) {
-      this.baseUrl(base);
+    if (regexp_result = orgsle_re.exec(this.tabUrl)) {
+      this.orgSleUrl(regexp_result);
+    } else if (regexp_result = sle_details_re.exec(this.tabUrl)) {
+      // TODO
+      this.sleUrl(regexp_result);
+    } else if ((regexp_result = sle_re.exec(this.tabUrl))) {
+      this.sleUrl(regexp_result);
+    } else if (regexp_result = insights_re.exec(this.tabUrl)) {
+      this.insightsUrl(regexp_result);
+    } else if (regexp_result = alarm_re.exec(this.tabUrl)) {
+      this.alarmUrl(regexp_result);
+    } else if (regexp_result = evpn_re.exec(this.tabUrl)) {
+      this.evpnUrl(regexp_result);
+    } else if (regexp_result = site_wlan_template_re.exec(this.tabUrl)) {
+      this.siteWlanTemplateUrl(regexp_result);
+    } else if (regexp_result = events_re.exec(this.tabUrl)) {
+      this.eventsUrl(regexp_result);
+    } else if (regexp_result = floorplans_re.exec(this.tabUrl)) {
+      this.floorplansUrl(regexp_result);
+    } else if ((regexp_result = site_common_re.exec(this.tabUrl)) && regexp_result["groups"] && site_common_objs.includes(regexp_result["groups"]["obj"].toLowerCase())) {
+      this.commonSiteUrl(regexp_result);
+    } else if ((regexp_result = org_common_re.exec(this.tabUrl)) && regexp_result["groups"] && org_common_objs.includes(regexp_result["groups"]["obj"].toLowerCase())) {
+      this.commonOrgUrl(regexp_result);
+    } else if (regexp_result = base_re.exec(this.tabUrl)) {
+      this.baseUrl(regexp_result);
     }
     this._cd.detectChanges()
   }
@@ -590,7 +584,7 @@ export class ApiManageComponent implements OnInit {
         case "siteedge":
           //   // NOT ALWAYS ABLE TO GET SITE ID FROM URL
           this.setName("mxedge", res?.groups?.detail);
-          if (res?.groups?.detail && ! this.obj_id) {
+          if (res?.groups?.detail && !this.obj_id) {
             this.obj_id = this.site_id;
             this.site_id = undefined;
             this.missing_fields.push("site_id")
