@@ -1,0 +1,56 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.25.0
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  'npm:debug:20170905':
+    - npx > npm > pacote > make-fetch-happen > http-proxy-agent > debug:
+        patched: '2022-11-17T19:20:58.834Z'
+    - npx > npm > pacote > make-fetch-happen > https-proxy-agent > debug:
+        patched: '2022-11-17T19:20:58.834Z'
+  'npm:extend:20180424':
+    - npx > npm > request > extend:
+        patched: '2022-11-17T19:20:58.834Z'
+    - npx > npm > node-gyp > request > extend:
+        patched: '2022-11-17T19:20:58.834Z'
+    - npx > npm > npm-registry-client > request > extend:
+        patched: '2022-11-17T19:20:58.834Z'
+  'npm:hoek:20180212':
+    - npx > npm > request > hawk > hoek:
+        patched: '2022-11-17T19:20:58.834Z'
+    - npx > npm > request > hawk > boom > hoek:
+        patched: '2022-11-17T19:20:58.834Z'
+    - npx > npm > request > hawk > sntp > hoek:
+        patched: '2022-11-17T19:20:58.834Z'
+    - npx > npm > node-gyp > request > hawk > hoek:
+        patched: '2022-11-17T19:20:58.834Z'
+    - npx > npm > npm-registry-client > request > hawk > hoek:
+        patched: '2022-11-17T19:20:58.834Z'
+    - npx > npm > request > hawk > cryptiles > boom > hoek:
+        patched: '2022-11-17T19:20:58.834Z'
+    - npx > npm > node-gyp > request > hawk > boom > hoek:
+        patched: '2022-11-17T19:20:58.834Z'
+    - npx > npm > npm-registry-client > request > hawk > boom > hoek:
+        patched: '2022-11-17T19:20:58.834Z'
+    - npx > npm > node-gyp > request > hawk > sntp > hoek:
+        patched: '2022-11-17T19:20:58.834Z'
+    - npx > npm > npm-registry-client > request > hawk > sntp > hoek:
+        patched: '2022-11-17T19:20:58.834Z'
+    - npx > npm > node-gyp > request > hawk > cryptiles > boom > hoek:
+        patched: '2022-11-17T19:20:58.834Z'
+    - npx > npm > npm-registry-client > request > hawk > cryptiles > boom > hoek:
+        patched: '2022-11-17T19:20:58.834Z'
+  'npm:stringstream:20180511':
+    - npx > npm > request > stringstream:
+        patched: '2022-11-17T19:20:58.834Z'
+    - npx > npm > node-gyp > request > stringstream:
+        patched: '2022-11-17T19:20:58.834Z'
+    - npx > npm > npm-registry-client > request > stringstream:
+        patched: '2022-11-17T19:20:58.834Z'
+  'npm:tough-cookie:20170905':
+    - npx > npm > request > tough-cookie:
+        patched: '2022-11-17T19:20:58.834Z'
+    - npx > npm > node-gyp > request > tough-cookie:
+        patched: '2022-11-17T19:20:58.834Z'
+    - npx > npm > npm-registry-client > request > tough-cookie:
+        patched: '2022-11-17T19:20:58.834Z'
