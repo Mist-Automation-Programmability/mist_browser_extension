@@ -3,6 +3,7 @@ Chrome extension to get easier access to Mist APIs and Mist API Tokens.
  
 * [Features](#features)
 * [Installation](#installation)
+* [Build instruction](#buildinstruction)
 
 ## MIT LICENSE
  
@@ -87,4 +88,21 @@ This extension is not yet available on the [Chrome Web Store](https://chrome.goo
 
 6. The extension is ready to use!
 
+
+# Build Instruction
+This extension has been build on Mac OS 12.6.1
+
+## PREREQUISITES
+From the `angular` folder, install dependencies with `npm install`
+
+# RUN/DEBUG
+from thge `/angular` folder:
+* build the angular app in debug mode with `npm start` 
+* start the npx debugger with `npx web-ext run -s ./dist` (Firefox) or `npx web-ext run -t chromium -s ./dist --browser-console` (chromium) 
+
+# BUILD
+from the `/angular/src` folder:
+* build the angular app in production mode with `npm run build:prod`
+* build the extension with npx: `npx web-ext build -s ../dist -o`
+the extension is located in `/angular/src/web-ext-artifacts`
 
