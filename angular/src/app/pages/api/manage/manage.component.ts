@@ -81,8 +81,7 @@ export class ApiManageComponent implements OnInit {
     if (regexp_result = orgsle_re.exec(this.tabUrl)) {
       this.orgSleUrl(regexp_result);
     } else if (regexp_result = sle_details_re.exec(this.tabUrl)) {
-      // TODO
-      this.sleUrl(regexp_result);
+      this.sleDetailsUrl(regexp_result);
     } else if ((regexp_result = sle_re.exec(this.tabUrl))) {
       this.sleUrl(regexp_result);
     } else if (regexp_result = insights_re.exec(this.tabUrl)) {
@@ -481,6 +480,39 @@ export class ApiManageComponent implements OnInit {
     });
   }
 
+  ////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////  SLE DETAILS FUNCTION
+  forgeSleDetailshUrl(host: string, scope: string | undefined, site_id: string, scope_id: string, sle: string, impacted_entities: string[] = [], extra_params: string | null = null): void {
+    /*
+    host: mist.com, eu.mist.com, gc1.mist.com
+    scope: wifi, wire, wan
+    */
+    this.quick_links.push(
+      {
+        url: "https://api." + host + "/api/v1/sites/" + site_id + "/sle/" + scope + "/" + scope_id + "/metric/" + sle + "/threshold",
+        name: sle + " threshold"
+      },
+      {
+        url: "https://api." + host + "/api/v1/sites/" + site_id + "/sle/" + scope + "/" + scope_id + "/metric/" + sle + "/summary?" + extra_params,
+        name: sle + " summary"
+      },
+      {
+        url: "https://api." + host + "/api/v1/sites/" + site_id + "/sle/" + scope + "/" + scope_id + "/metric/" + sle + "/histogram?" + extra_params,
+        name: sle + " histogram"
+      },
+      {
+        url: "https://api." + host + "/api/v1/sites/" + site_id + "/sle/" + scope + "/" + scope_id + "/metric/" + sle + "/impact-summary?" + extra_params,
+        name: sle + " impact summary"
+      },
+    );
+    impacted_entities.forEach(entity => {
+      this.quick_links.push({
+        url: "https://api." + host + "/api/v1/sites/" + site_id + "/sle/" + scope + "/" + scope_id + "/metric/" + sle + "/impacted-" + entity + "?" + extra_params,
+        name: "impacted " + entity
+      });
+    })
+
+  }
   ////////////////////////////////////////////////////////////////////////////////////
   //////////////////////  SLE FUNCTION
   forgeSlehUrl(host: string, scope: string | undefined, site_id: string, scope_id: string, sles: string[], extra_params: string | null = null): void {
@@ -932,11 +964,13 @@ export class ApiManageComponent implements OnInit {
       }
     }
   }
+
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// SLE URL FUNCTION DISPATCHER
 
   sleUrl(res: RegExpExecArray): void {
+    console.log(res.groups)
     this.org_id = res?.groups?.org_id;
     this.site_id = res?.groups?.site_id;
     let extra_params: string | null = null;
@@ -945,15 +979,15 @@ export class ApiManageComponent implements OnInit {
       this.setName(res?.groups?.scope, "sle");
       this.obj_id = res?.groups?.scope_id;
     }
-    if (res?.groups?.scope == "juniperSwitch") {
-      scope = "switch";
-    } else if (res?.groups?.scope == "juniperGateway") {
-      scope = "gateway";
-    } else if (res?.groups?.scope == "device") {
-      scope = "ap";
-    } else {
-      scope = res?.groups?.scope;
+    if (res?.groups?.scope == "juniperSwitch") scope = "switch";
+    else if (res?.groups?.scope == "juniperGateway") scope = "gateway";
+    else if (res?.groups?.scope == "device") scope = "ap";
+    else if (res?.groups?.scope) scope = res?.groups?.scope;
+    else {
+      scope = "site";
+      res.groups.scope_id = this.site_id;
     }
+
     if (res?.groups?.start && res?.groups?.stop) {
       extra_params = "start=" + res?.groups?.start + "&end=" + res?.groups?.stop;
     }
@@ -987,6 +1021,84 @@ export class ApiManageComponent implements OnInit {
           break;
       }
       this.forgeSlehUrl(res?.groups?.host, scope, res?.groups?.site_id, res?.groups?.scope_id, sles, extra_params)
+    }
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////// SLE DETAILS URL FUNCTION DISPATCHER
+  // <host>[a-z0-9.]*(mist|mistsys)\.com)
+  // <org_id>[0-9a-f-]*
+  // <detail>serviceLevels|wiredserviceLevels|wanServiceLevels|juniperGateway
+  // <scope>site|device|client|juniperSwitch|juniperGateway
+  // <scope_id>[a-f0-9-]*
+  // <sle_name>[a-z-]*
+  // <sle_sub_1>[a-zA-Z-]+
+  // <sle_sub_2>[a-zA-Z-]+
+  // <period>[0-9a-z]*
+  // <start>[0-9]*
+  // <stop>[0-9]*
+  // <site_id>[a-f0-9-]*
+
+
+  sleDetailsUrl(res: RegExpExecArray): void {
+    this.org_id = res?.groups?.org_id;
+    this.site_id = res?.groups?.site_id;
+    let extra_params: string | null = null;
+    let scope: string | undefined = "";
+    if (res?.groups?.scope != "site") {
+      this.setName(res?.groups?.scope, "sle");
+      this.obj_id = res?.groups?.scope_id;
+    }
+    if (res?.groups?.scope == "juniperSwitch") {
+      scope = "switch";
+    } else if (res?.groups?.scope == "juniperGateway") {
+      scope = "gateway";
+    } else if (res?.groups?.scope == "device") {
+      scope = "ap";
+    } else {
+      scope = res?.groups?.scope;
+    }
+    if (res?.groups?.start && res?.groups?.stop) {
+      extra_params = "start=" + res?.groups?.start + "&end=" + res?.groups?.stop;
+    }
+    if (res?.groups?.host && res?.groups?.org_id) {
+      let impacted_entities: string[] = []
+      switch (res?.groups?.sle_name) {
+        // wireless
+        case "time-to-connect":
+        case "failed-to-connect":
+        case "roaming":
+        case "throughput":
+        case "coverage":
+        case "capacity":
+          impacted_entities = ["users", "aps"];
+          break;
+        case "ap-availability":
+          impacted_entities = ["aps"];
+          break;
+        // wired
+        case "switch-throughput":
+          impacted_entities = ["clients", "switches", "interfaces"];
+          break;
+        case "switch-stc":
+          impacted_entities = ["clients", "vlan", "switches", "interfaces"];
+          break;
+        case "switch-health":
+          impacted_entities = ["switches", "chassis"];
+          break;
+        // wan
+        case "gateway-health":
+          impacted_entities = ["gateways", "chassis"];
+          break;
+        case "wan-link-health":
+          impacted_entities = ["clients", "peer-paths", "gateways", "interfaces"];
+          break;
+        case "application-health":
+          impacted_entities = ["clients", "applications", "gateways", "interfaces"];
+          break;
+      }
+      this.forgeSleDetailshUrl(res?.groups?.host, scope, res?.groups?.site_id, res?.groups?.scope_id, res?.groups?.sle_name, impacted_entities, extra_params)
     }
   }
 
