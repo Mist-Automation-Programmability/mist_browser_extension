@@ -94,10 +94,10 @@ This extension is not yet available on the [Chrome Web Store](https://chrome.goo
 ### Firefox
 1. Download the file `mist_extension-X.Y.Z.xpi` from the [latest release](https://github.com/tmunzer/mist_chrome_extension/releases)
 2. Go to `about:addons` url from Firefox
-<img src="https://github.com/tmunzer/mist_chrome_extension/raw/main/._readme/img/firefix_1.png" width="30%">
+<img src="https://github.com/tmunzer/mist_chrome_extension/raw/main/._readme/img/firefox_1.png" width="30%">
 
 3. Click on the "Settings" button, then "Install Add-on From Files..."
-<img src="https://github.com/tmunzer/mist_chrome_extension/raw/main/._readme/img/firefix_2.png" width="50%">
+<img src="https://github.com/tmunzer/mist_chrome_extension/raw/main/._readme/img/firefox_2.png" width="50%">
 
 4. Select the `mist_extension-X.Y.Z.xpi`file
 
