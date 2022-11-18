@@ -107,5 +107,5 @@ from thge `/angular/` folder:
 from the `/angular/` folder:
 * build the angular app in production mode with `npm run build:prod`
 * build the extension with npx: `npx web-ext build -s ./dist -o`
-the extension is located in `/angular/src/web-ext-artifacts`
+the extension is located in `/angular/web-ext-artifacts`
 
