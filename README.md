@@ -1,5 +1,6 @@
-# Mist Chrome Extension
-Chrome extension to get easier access to Mist APIs and Mist API Tokens.
+# Mist Browser Extension
+Browser extension to get easier access to Mist APIs and Mist API Tokens. 
+Supported on Firefox, Chrome / Chromium-based Web browsers.
  
 * [Features](#features)
 * [Installation](#installation)
@@ -74,8 +75,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 
 # Installation
-This extension is not yet available on the [Chrome Web Store](https://chrome.google.com/), but it is possible to install it in Chrome / Chromium (Edge, Brave, Sidekick, ...) web browsers. To do so:
-1. Download the file `extension-build.zip` from the [latest release](https://github.com/tmunzer/mist_chrome_extension/releases)
+This extension is not yet available on the [Chrome Web Store](https://chrome.google.com/) or the [Firefox Extension Store](https://addons.mozilla.org/en-US/firefox/extensions/), but it is possible to install it in Chrome / Chromium (Edge, Brave, Sidekick, ...) and Firefox web browsers.
+
+### Chrome / Chromium
+1. Download the file `mist_extension-X.Y.Z.zip` from the [latest release](https://github.com/tmunzer/mist_chrome_extension/releases)
 2. Unzip the downloaded archive
 3. Go to the web browser Extensions Page: <a href="chrome://extensions" target="_blank">chrome://extensions</a> 
 4. Enable the **Developper Mode**
@@ -88,6 +91,15 @@ This extension is not yet available on the [Chrome Web Store](https://chrome.goo
 
 6. The extension is ready to use!
 
+### Firefox
+1. Download the file `mist_extension-X.Y.Z.xpi` from the [latest release](https://github.com/tmunzer/mist_chrome_extension/releases)
+2. Go to `about:addons` url from Firefox
+<img src="https://github.com/tmunzer/mist_chrome_extension/raw/main/._readme/img/firefix_1.png" width="30%">
+
+3. Click on the "Settings" button, then "Install Add-on From Files..."
+<img src="https://github.com/tmunzer/mist_chrome_extension/raw/main/._readme/img/firefix_2.png" width="50%">
+
+4. Select the `mist_extension-X.Y.Z.xpi`file
 
 # Build Instruction
 This extension has been build on Mac OS 12.6.1, with 
