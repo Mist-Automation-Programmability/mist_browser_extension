@@ -20,7 +20,8 @@
             "/assets/js/content.js"
         ],
         "matches": [
-            "https://*.mist.com/*"
+            "https://*.mist.com/*",
+            "https://*.mistsys.com/*"
         ]
     }],
     "icons": {
@@ -32,6 +33,7 @@
     "permissions": [
         "cookies",
         "tabs",
-        "https://*.mist.com/*"
+        "https://*.mist.com/*",
+        "https://*.mistsys.com/*"
     ]
 }

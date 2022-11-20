@@ -33,6 +33,7 @@
         "tabs"
     ],
     "host_permissions": [
-        "https://*.mist.com/*"
+        "https://*.mist.com/*",
+        "https://*.mistsys.com/*"
     ]
 }

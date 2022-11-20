@@ -381,19 +381,19 @@ export class ApiManageComponent implements OnInit {
     }
     if (detail == "site") {
       this.quick_links.push({
-        url: "https://api." + host + "/api/v1/sites/" + this.obj_id,
+        url: "https://api." + host + "/api/v1/sites/" + this.site_id,
         name: "site info"
       }, {
-        url: "https://api." + host + "/api/v1/sites/" + this.obj_id + "/setting",
+        url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/setting",
         name: "site setting"
       }, {
-        url: "https://api." + host + "/api/v1/sites/" + this.obj_id + "/webhooks",
+        url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/webhooks",
         name: "site webhooks"
       }, {
-        url: "https://api." + host + "/api/v1/sites/" + this.obj_id + "/stats" + extra_params,
+        url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/stats" + extra_params,
         name: "site stats"
       }, {
-        url: "https://api." + host + "/api/v1/sites/" + this.obj_id + "/devices/events/search" + extra_params,
+        url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/devices/events/search" + extra_params,
         name: "site devices events"
       })
     } else {
