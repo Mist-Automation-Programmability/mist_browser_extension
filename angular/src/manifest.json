@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "Mist Extension",
     "short_name": "mist-extension",
-    "version": "3.0.4",
+    "version": "3.0.5",
     "description": "Web Browser Extension for Mist Developpers to provide easier access to Mist APIs",
     "background": {
         "scripts": [
@@ -13,6 +13,11 @@
     "browser_action": {
         "default_popup": "index.html",
         "default_title": "Mist Extension"
+    },
+    "browser_specific_settings": {
+        "gecko": {
+            "update_url": "https://raw.githubusercontent.com/tmunzer/mist_browser_extension/main/firefox_updates.json"
+        }
     },
     "content_scripts": [{
         "js": [

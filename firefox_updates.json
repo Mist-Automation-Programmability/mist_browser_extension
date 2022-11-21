@@ -1,0 +1,17 @@
+{
+    "addons": {
+        "{b6c18986-2bba-403b-9675-48234b47ebbc}": {
+            "updates": [{
+                    "version": "3.0.4",
+                    "update_link": "https://github.com/tmunzer/mist_browser_extension/releases/download/3.0.4/mist_extension-3.0.4.xpi",
+                    "update_info_url": "https://github.com/tmunzer/mist_browser_extension/releases/tag/3.0.4"
+                },
+                {
+                    "version": "3.0.5",
+                    "update_link": "https://github.com/tmunzer/mist_browser_extension/releases/download/3.0.5/mist_extension-3.0.5.xpi",
+                    "update_info_url": "https://github.com/tmunzer/mist_browser_extension/releases/tag/3.0.5"
+                }
+            ]
+        }
+    }
+}
