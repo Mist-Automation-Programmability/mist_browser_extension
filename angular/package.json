@@ -40,7 +40,7 @@
         "npx": "^10.0.1",
         "rxjs": "^7.8.0",
         "tslib": "^2.4.0",
-        "web-ext": "^7.4.0",
+        "web-ext": "^7.5.0",
         "web-ext-types": "^3.2.1",
         "webext-base-css": "^1.4.1",
         "webext-options-sync": "^3.1.0",
