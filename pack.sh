@@ -15,6 +15,10 @@ echo "Chrome packing..."
 echo "##########################################"
 echo "Updating Firefox source"
 cd mist_browser_extension
+rm build.sh
+rm chrome_ext_convert.py
+rm gep_api_struct.sh
+rm pack.sh
 git pull
 cd ..
 rm mist_browser_extension.tar.gz
