@@ -4,8 +4,10 @@ cd ./angular
 ###### UPDATE VERSION NUMBER
 if [ "$1" ]
 then
-    jq ".version = \"$1\"" ./package.json > ./package.json
-    jq ".version = \"$1\"" ./src/manifest.json > ./src/manifest.json
+    jq ".version = \"$1\"" ./package.json > ./package.json.new
+    mv ./package.json.new ./package.json
+    jq ".version = \"$1\"" ./src/manifest.json > ./src/manifest.json.new
+    mv ./src/manifest.json.new ./src/manifest.json
 fi
 
 
