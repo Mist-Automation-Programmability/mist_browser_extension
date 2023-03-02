@@ -24,7 +24,7 @@
       "node_modules/@types",
       "node_modules/web-ext-types"
     ],
-    "target": "es2017",
+    "target": "ES2022",
     "module": "es2020",
     "lib": [
       "es2020",
@@ -40,7 +40,8 @@
       "@environment": [
         "src/environments/environment.ts"
       ]
-    }
+    },
+    "useDefineForClassFields": false
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
