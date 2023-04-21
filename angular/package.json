@@ -37,7 +37,7 @@
     "@angular/router": "^15.2.1",
     "@types/webextension-polyfill": "^0.10.0",
     "ngx-build-plus": "^15.0.0",
-    "npx": "^3.0.0",
+    "npx": "^10.2.2",
     "rxjs": "^7.8.0",
     "tslib": "^2.5.0",
     "web-ext": "^7.5.0",
