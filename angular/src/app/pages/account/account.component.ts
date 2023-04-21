@@ -13,16 +13,17 @@ import { BrowserService, SessionElement, OrgElement } from "../../services/brows
   templateUrl: 'account.component.html',
   styleUrls: [
     'account.component.scss',
-    '../../scss/notice.component.scss'
+    '../../scss/notice.component.scss',
+    '../../scss/popup.component.scss'
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AccountComponent implements OnInit {
 
   @ViewChild(AccountManageComponent) accountManage;
-  enventSession: Subject<SessionElement> = new Subject<SessionElement>()
-  enventCreateToken: Subject<boolean> = new Subject<boolean>()
-  enventManageTokens: Subject<boolean> = new Subject<boolean>()
+  eventSession: Subject<SessionElement> = new Subject<SessionElement>()
+  eventCreateToken: Subject<boolean> = new Subject<boolean>()
+  eventManageTokens: Subject<boolean> = new Subject<boolean>()
 
   mistcom: string = "";
   eumistcom: string = "";
@@ -96,10 +97,10 @@ export class AccountComponent implements OnInit {
   openManageTokens(domain: string, scope: string): void {
     this.manageTokens = domain;
     this.scope = scope;
-    this.enventManageTokens.next(true)
+    this.eventManageTokens.next(true)
     this.sessions.forEach(session => {
       if (session.domain == domain) {
-        this.enventSession.next(session);
+        this.eventSession.next(session);
       }
     })
     this._cd.detectChanges();
@@ -108,7 +109,7 @@ export class AccountComponent implements OnInit {
   closeManageTokens(): void {
     this.manageTokens = "";
     this.scope = "";
-    this.enventManageTokens.next(false)
+    this.eventManageTokens.next(false)
     this._cd.detectChanges();
   }
 
@@ -118,10 +119,10 @@ export class AccountComponent implements OnInit {
   openCreateToken(domain: string, scope: string): void {
     this.createToken = domain;
     this.scope = scope;
-    this.enventCreateToken.next(true)
+    this.eventCreateToken.next(true)
     this.sessions.forEach(session => {
       if (session.domain == domain) {
-        this.enventSession.next(session);
+        this.eventSession.next(session);
       }
     })
     this._cd.detectChanges();
@@ -130,7 +131,7 @@ export class AccountComponent implements OnInit {
   closeCreateToken(): void {
     this.createToken = "";
     this.scope = "";
-    this.enventCreateToken.next(false)
+    this.eventCreateToken.next(false)
     this._cd.detectChanges();
   }
 }

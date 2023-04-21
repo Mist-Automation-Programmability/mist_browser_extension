@@ -2,6 +2,9 @@
 
 console.log('serviceWorker script loaded');
 
+if (typeof browser === "undefined") {
+    var browser = chrome;
+}
 
 browser.tabs.onActivated.addListener(info => {
     getUrl(info.tabId);
@@ -28,7 +31,7 @@ function getUrl(tabId) {
 
 function checkUrl(tabUrl) {
 
-    const base_re = /https:\/\/(manage|integration)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!/yis;
+    const base_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!/yis;
     const base = base_re.exec(tabUrl);
     const api_re = /https:\/\/api\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/api\/v1\/(?<scope>const|installer|invite|login|logout|mobile|msps|orgs|recover|register|self|sites|utils)/yis;
     const api = api_re.exec(tabUrl);

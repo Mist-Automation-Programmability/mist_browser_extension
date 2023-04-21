@@ -230,3 +230,18 @@ button.doc-link.delete,
 button.doc-link .method.delete {
     border: 1px solid red;
 }
+
+select:focus,
+input:focus {
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 10%), 0 1px 2px 0 rgb(0 0 0 / 6%);
+}
+
+
+textarea.token:focus-visible {
+    outline: none;
+}
+
+textarea.token.focused {
+    background-color: #555;
+    transition: all 0.2s ease-in-out;
+}

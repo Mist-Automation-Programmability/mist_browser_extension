@@ -32,7 +32,7 @@ export class AccountCreateOrgComponent implements OnInit {
 
   //@Input() domain: string;
   @Input() sessionEvent: Observable<SessionElement>;
-  @Input() enventCreateToken: Observable<boolean>;
+  @Input() eventCreateToken: Observable<boolean>;
   @Output() closeCreateToken = new EventEmitter<string>();
   session: SessionElement;
   focused: string = "";
@@ -55,7 +55,7 @@ export class AccountCreateOrgComponent implements OnInit {
   do_create: boolean = false;
 
   ngOnInit() {
-    this.enventCreateToken.subscribe(status => this.do_create = status)
+    this.eventCreateToken.subscribe(status => this.do_create = status)
     this.sessionEvent.subscribe(session => {
       this.session = session;
       this.token_name = "";

@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "Mist Extension",
     "short_name": "mist-extension",
-    "version": "2.4.2",
+    "version": "3.0.11",
     "description": "Web Browser Extension for Mist Developpers to provide easier access to Mist APIs",
     "icons": {
         "16": "assets/favicon-16x16.png",
@@ -14,16 +14,16 @@
         "default_title": "Mist Extension"
     },
     "content_scripts": [{
+        "matches": [
+            "https://*.mist.com/*",
+            "https://*.mistsys.com/*"
+        ],
         "js": [
-            "browser-polyfill.min.js",
-            "contentPage.js"
+            "/assets/js/content.js"
         ]
     }],
     "background": {
-        "scripts": [
-            "browser-polyfill.min.js",
-            "background.js"
-        ]
+        "service_worker": "assets/js/serviceWorker.js"
     },
     "content_security_policy": {
         "extension_pages": "script-src 'self'; object-src 'self'"

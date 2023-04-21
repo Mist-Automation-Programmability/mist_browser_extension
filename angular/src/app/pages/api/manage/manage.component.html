@@ -47,6 +47,9 @@
             <div style="width: 100%;">{{quick_link.name | uppercase}}</div>
             <img class="icon-open" src="assets/open.svg" alt="open">
         </button>
+        <button *ngFor="let quick_action of quick_actions" (click)="openActionTab(quick_action.action)" class="large stroked">
+            <div style="width: 100%;">{{quick_action.name | uppercase}}</div>            
+        </button>
     </div>
 </div>
 <div *ngIf="missing_fields.length > 0" class="missing-fields">
@@ -58,3 +61,5 @@
         </div>
     </div>
 </div>
+
+<app-ztp-password [ngClass]="{hidden: action != 'ztp_password'}" class="popup transparent" (closeActionTab)="closeActionTab()" [site_id]="site_id" [device_id]="obj_id" [device_type]="obj_name" [eventZtpPassword]="eventZtpPassword.asObservable()"></app-ztp-password>

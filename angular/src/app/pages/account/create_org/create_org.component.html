@@ -39,7 +39,7 @@
             <button (click)="createToken()" class="xlarge">Create</button>
         </div>
         <div class=token-input>
-            <textarea class="token" type="text" readonly rows="3" [ngClass]="focused == 'token '? 'focused ' : ' '" id="token" #org_token_input>{{token.key}}</textarea>
+            <textarea class="token" type="text" readonly rows="3" [ngClass]="focused == 'token'? 'focused' : ''" id="token" #org_token_input>{{token.key}}</textarea>
             <button class="copy" name="copy" (click)="copyToken(org_token_input)">
                 <img class="copy" src="assets/copy.svg" alt="copy">
             </button>

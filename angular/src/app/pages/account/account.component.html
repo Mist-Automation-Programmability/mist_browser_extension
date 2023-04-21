@@ -59,7 +59,7 @@
     <div>Please wait a bit more... Thanks!</div>
 </div>
 
-<app-account-manage [ngClass]="{hidden: manageTokens == '' || scope !='user'}" class="popup white" [sessionEvent]="enventSession.asObservable()" (closeManageTokens)="closeManageTokens()" [enventManageTokens]="enventManageTokens.asObservable()"></app-account-manage>
-<app-account-create [ngClass]="{hidden: createToken == '' || scope != 'user'}" class="popup transparent" [sessionEvent]="enventSession.asObservable()" (closeCreateToken)="closeCreateToken()" [enventCreateToken]="enventCreateToken.asObservable()"></app-account-create>
-<app-account-manage-org [ngClass]="{hidden: manageTokens == '' || scope != 'org'}" class="popup white" [sessionEvent]="enventSession.asObservable()" (closeManageTokens)="closeManageTokens()" [enventManageTokens]="enventManageTokens.asObservable()"></app-account-manage-org>
-<app-account-create-org [ngClass]="{hidden: createToken == '' || scope != 'org'}" class="popup transparent" [sessionEvent]="enventSession.asObservable()" (closeCreateToken)="closeCreateToken()" [enventCreateToken]="enventCreateToken.asObservable()"></app-account-create-org>
+<app-account-manage [ngClass]="{hidden: manageTokens == '' || scope !='user'}" class="popup white" [sessionEvent]="eventSession.asObservable()" (closeManageTokens)="closeManageTokens()" [eventManageTokens]="eventManageTokens.asObservable()"></app-account-manage>
+<app-account-create [ngClass]="{hidden: createToken == '' || scope != 'user'}" class="popup transparent" [sessionEvent]="eventSession.asObservable()" (closeCreateToken)="closeCreateToken()" [eventCreateToken]="eventCreateToken.asObservable()"></app-account-create>
+<app-account-manage-org [ngClass]="{hidden: manageTokens == '' || scope != 'org'}" class="popup white" [sessionEvent]="eventSession.asObservable()" (closeManageTokens)="closeManageTokens()" [eventManageTokens]="eventManageTokens.asObservable()"></app-account-manage-org>
+<app-account-create-org [ngClass]="{hidden: createToken == '' || scope != 'org'}" class="popup transparent" [sessionEvent]="eventSession.asObservable()" (closeCreateToken)="closeCreateToken()" [eventCreateToken]="eventCreateToken.asObservable()"></app-account-create-org>

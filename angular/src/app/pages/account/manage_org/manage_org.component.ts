@@ -32,7 +32,7 @@ export class AccountManageOrgComponent implements OnInit {
 
   //@Input() domain: string;
   @Input() sessionEvent: Observable<SessionElement>;
-  @Input() enventManageTokens: Observable<boolean>;
+  @Input() eventManageTokens: Observable<boolean>;
   @Output() closeManageTokens = new EventEmitter<string>();
   session: SessionElement;
   constructor(
@@ -48,7 +48,7 @@ export class AccountManageOrgComponent implements OnInit {
 
   ngOnInit() {
     this.now = new Date().getTime();
-    this.enventManageTokens.subscribe(status => this.do_manage = status)
+    this.eventManageTokens.subscribe(status => this.do_manage = status)
     this.sessionEvent.subscribe(session => {
       this.tokens = [];
       this.session = session;

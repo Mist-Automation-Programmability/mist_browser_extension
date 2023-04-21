@@ -34,6 +34,7 @@ export class BrowserService {
     ]
 
     private host_manage: string[] = [
+        "manage-staging.mistsys.com",
         "integration.mistsys.com",
         "manage.mist.com",
         "integration.mist.com",
