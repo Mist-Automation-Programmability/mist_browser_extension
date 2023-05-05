@@ -87,11 +87,11 @@ export class ApiManageComponent implements OnInit {
     const site_common_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*)\/)?(?<site_id>[0-9a-f-]*)?/yis;
     const site_common_objs = ["ap", "gateway", "switch", "assets", "wlan", "tags", "psk", "tunnels", "clients", "guestclients", "sdkclients", "wiredclients", "wxlan", "security", "switchconfig", "pcap", "siteedge"]
     const org_common_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view|template|rfTemplate)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*))/yis;
-    const org_common_objs = ["orgtags", "misttunnels", "templates", "switchtemplate", "gatewaytemplates", "hubs", "deviceprofiles", "org", "orgpsk", "configuration", "auditlogs", "apinventory", "adminconfig", "subscription", "edge", "vpns", "template", "rftemplates", "services", "networks", "applicationpolicy", "nactags", "naccertificates", "nacpolicy", "nacidentityproviders", "onboardingworkflow"]
+    const org_common_objs = ["orgtags", "misttunnels", "templates", "switchtemplate", "gatewaytemplates", "hubs", "deviceprofiles", "org", "orgpsk", "configuration", "auditlogs", "apinventory", "adminconfig", "subscription", "edge", "vpns", "template", "rftemplates", "services", "networks", "applicationpolicy", "authpolicylabels", "naccertificates", "nacpolicy", "nacidentityproviders", "onboardingworkflow"]
     const base_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!/yis;
 
     var regexp_result;
-
+    
     if (regexp_result = orgsle_re.exec(this.tabUrl)) {
       this.orgSleUrl(regexp_result);
     } else if (regexp_result = sle_details_re.exec(this.tabUrl)) {
@@ -444,6 +444,9 @@ export class ApiManageComponent implements OnInit {
       }, {
         url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/mxclusters",
         name: "mxclusters"
+      }, {
+        url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/mxtunnels",
+        name: "mxtunnels"
       })
     }
   }
@@ -714,10 +717,6 @@ export class ApiManageComponent implements OnInit {
           this.setName("org psk", res?.groups?.detail);
           this.forgeOrgObject("psks", res?.groups?.host, res?.groups?.detail);
           break;
-        case "misttunnels":
-          this.setName("mxtunnel", res?.groups?.detail);
-          this.forgeOrgObject("mxtunnels", res?.groups?.host, res?.groups?.detail);
-          break;
         case "switchtemplate":
           this.setName(res?.groups?.obj, res?.groups?.detail);
           this.forgeOrgObject("networktemplates", res?.groups?.host, res?.groups?.detail);
@@ -770,9 +769,9 @@ export class ApiManageComponent implements OnInit {
           this.setName("servicepolicy", res?.groups?.details);
           this.forgeOrgObject("servicepolicies", res?.groups?.host, res?.groups?.detail);
           break;
-        case "nactags":
+        case "authpolicylabels":
           this.setName("NAC Tag", res?.groups?.detail);
-          this.forgeOrgObject(res?.groups?.obj.toLowerCase(), res?.groups?.host, res?.groups?.detail);
+          this.forgeOrgObject("nactags", res?.groups?.host, res?.groups?.detail);
           break;
         case "naccertificates":
           this.setName("NAC Certificates", res?.groups?.detail);
