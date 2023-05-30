@@ -409,7 +409,10 @@ export class ApiManageComponent implements OnInit {
         name: "site stats"
       }, {
         url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/devices/events/search" + extra_params,
-        name: "site devices events"
+        name: "site device events"
+      }, {
+        url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/clients/events/search" + extra_params,
+        name: "site client events"
       })
     } else {
       this.obj_id = undefined;
@@ -689,6 +692,7 @@ export class ApiManageComponent implements OnInit {
     this.org_id = res?.groups?.org_id;
     let extra_params = undefined;
     const uuid_re = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/
+    console.log(res)
     if (res?.groups?.host && res?.groups?.org_id && res?.groups?.obj) {
       this.obj_id = res?.groups?.obj_id;
       switch (res?.groups?.obj.toLowerCase()) {
