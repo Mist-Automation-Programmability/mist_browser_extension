@@ -138,7 +138,6 @@ export class ApiDjangoComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////
 
   updateUrl() {
-    console.log(this.tabUrl)
     let url = this.tabUrl.split("?")[0]
     let query: string[] = []
     this.query_params.forEach(param => {
