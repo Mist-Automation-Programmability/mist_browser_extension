@@ -25,10 +25,6 @@ export class AccountComponent implements OnInit {
   eventCreateToken: Subject<boolean> = new Subject<boolean>()
   eventManageTokens: Subject<boolean> = new Subject<boolean>()
 
-  mistcom: string = "";
-  eumistcom: string = "";
-  gc1mistcom: string = "";
-
   manageTokens: string = "";
   createToken: string = "";
   scope: string = "";
@@ -40,6 +36,7 @@ export class AccountComponent implements OnInit {
 
 
   sessions: SessionElement[] = [];
+  has_active_sessions: boolean = false;
   is_working = true;
 
   ngOnInit() {
@@ -56,11 +53,12 @@ export class AccountComponent implements OnInit {
         this._http.get(url).subscribe((data) => {
           session.email = data["email"];
           session.privileges = data["privileges"];
+          this.has_active_sessions = true;
+          this.is_working = false;
           this._cd.detectChanges()
         })
       }
     })
-    this.is_working = false;
     this._cd.detectChanges();
   }
 
