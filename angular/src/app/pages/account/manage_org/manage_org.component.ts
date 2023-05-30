@@ -1,6 +1,8 @@
 import { Component, Input, Output, ChangeDetectionStrategy, ChangeDetectorRef, EventEmitter, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { SessionElement} from '../../../services/browser.service';
+import { PrivilegeService, OrgElement, MspElement } from "../../../services/privileges.service"
 
 
 export interface TokenElement {
@@ -9,17 +11,6 @@ export interface TokenElement {
   last_used: number | null,
   created_time: number,
   key: string
-}
-export interface OrgElement {
-  org_id: string;
-  name: string;
-}
-export interface SessionElement {
-  domain: string;
-  csrftoken: string;
-  email: string;
-  has_sessionid: boolean;
-  orgs: OrgElement[];
 }
 
 @Component({
@@ -37,12 +28,15 @@ export class AccountManageOrgComponent implements OnInit {
   session: SessionElement;
   constructor(
     private _cd: ChangeDetectorRef,
-    private _http: HttpClient
+    private _http: HttpClient,
+    private _privilege: PrivilegeService
   ) { }
 
   tokens = [];
   now: number;
-  orgs: OrgElement[] = [];
+  displayed_msps: MspElement[] = [];
+  displayed_orgs: OrgElement[] = [];
+  msp_id: string|undefined = undefined;
   org_id: string;
   do_manage: boolean = false;
 
@@ -52,9 +46,16 @@ export class AccountManageOrgComponent implements OnInit {
     this.sessionEvent.subscribe(session => {
       this.tokens = [];
       this.session = session;
-      this.orgs = session.orgs;
+      this.msp_id = "none";
       this.org_id = "none";
+      this._privilege.setPrivileges(session.privileges);
+      this.displayed_msps = this._privilege.getMspsPrivileges("admin");
+      this.mspSelected();
     })
+  }
+
+  mspSelected(): void {
+    this._privilege.getOrgsPrivileges(this.session, this.msp_id, "admin", (orgs) => {this.displayed_orgs =  orgs});
   }
 
   ////////////

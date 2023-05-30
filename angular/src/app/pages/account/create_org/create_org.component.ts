@@ -1,6 +1,8 @@
 import { Component, Input, Output, ChangeDetectionStrategy, ChangeDetectorRef, EventEmitter, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { SessionElement } from '../../../services/browser.service';
+import { PrivilegeService, OrgElement, MspElement } from "../../../services/privileges.service"
 
 export interface TokenElement {
   id: string | undefined;
@@ -8,18 +10,6 @@ export interface TokenElement {
   created_time: number;
   key: string;
   name: string;
-}
-
-export interface OrgElement {
-  org_id: string,
-  name: string,
-}
-
-export interface SessionElement {
-  domain: string,
-  csrftoken: string,
-  email: string,
-  orgs: OrgElement[],
 }
 
 @Component({
@@ -38,12 +28,15 @@ export class AccountCreateOrgComponent implements OnInit {
   focused: string = "";
   constructor(
     private _cd: ChangeDetectorRef,
-    private _http: HttpClient
+    private _http: HttpClient,
+    private _privilege: PrivilegeService
   ) { }
 
   token: TokenElement;
-  orgs: OrgElement[] = [];
+  msp_id: string | undefined = undefined;
   org_id: string;
+  displayed_msps: MspElement[] = [];
+  displayed_orgs: OrgElement[] = [];
   // Token parameters
   token_name: string;
   role: string;
@@ -59,22 +52,28 @@ export class AccountCreateOrgComponent implements OnInit {
     this.sessionEvent.subscribe(session => {
       this.session = session;
       this.token_name = "";
-      this.orgs = session.orgs;
       this.org_id = "none";
-      this.role="admin";
+      this.msp_id = "none";
+      this.role = "admin";
       this.scope = "org";
       this.token = {
         id: undefined,
         last_used: undefined,
         created_time: 0,
-        key: "", 
+        key: "",
         name: ""
-      }
+      };
+      this._privilege.setPrivileges(session.privileges);
+      this.displayed_msps = this._privilege.getMspsPrivileges("admin");
+      this.mspSelected();
     })
   }
 
+  mspSelected(): void {
+    this._privilege.getOrgsPrivileges(this.session, this.msp_id, "admin", (orgs) => {this.displayed_orgs =  orgs});
+  }
   ////////////
-  // SESSIONS
+  // TOKEN
   ////////////
   createToken(): void {
     let body = {
@@ -83,11 +82,11 @@ export class AccountCreateOrgComponent implements OnInit {
         role: this.role,
         scope: this.scope,
         site_id: undefined,
-        sitegroup_id:undefined,
+        sitegroup_id: undefined,
       }]
     }
     if (this.scope == "site" && this.site_id) {
-      body.privileges[0]["site_id"] = this.site_id; 
+      body.privileges[0]["site_id"] = this.site_id;
     } else if (this.scope == "sitegroupo" && this.sitegroup_id) {
       body.privileges[0]["sitegroup_id"] = this.sitegroup_id;
     }

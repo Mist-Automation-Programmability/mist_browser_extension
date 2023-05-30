@@ -692,7 +692,6 @@ export class ApiManageComponent implements OnInit {
     this.org_id = res?.groups?.org_id;
     let extra_params = undefined;
     const uuid_re = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/
-    console.log(res)
     if (res?.groups?.host && res?.groups?.org_id && res?.groups?.obj) {
       this.obj_id = res?.groups?.obj_id;
       switch (res?.groups?.obj.toLowerCase()) {
@@ -999,7 +998,6 @@ export class ApiManageComponent implements OnInit {
   ////////////////////// SLE URL FUNCTION DISPATCHER
 
   sleUrl(res: RegExpExecArray): void {
-    console.log(res.groups)
     this.org_id = res?.groups?.org_id;
     this.site_id = res?.groups?.site_id;
     let extra_params: string | null = null;

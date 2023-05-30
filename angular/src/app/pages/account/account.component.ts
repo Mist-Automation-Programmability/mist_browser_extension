@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ChangeDetectionStrategy, ChangeDetectorRe
 import { HttpClient } from '@angular/common/http';
 import { AccountManageComponent } from './manage/manage.component';
 import { Subject } from 'rxjs';
-import { BrowserService, SessionElement, OrgElement } from "../../services/browser.service"
+import { BrowserService, SessionElement } from "../../services/browser.service"
 
 
 
@@ -49,39 +49,19 @@ export class AccountComponent implements OnInit {
   }
 
 
-
   getSelf() {
     this.sessions.forEach(session => {
       if (session.has_sessionid && session.csrftoken) {
         let url = "https://api" + session.domain + "/api/v1/self"
         this._http.get(url).subscribe((data) => {
           session.email = data["email"];
-          session.orgs = this.processOrgs(data["privileges"]);
+          session.privileges = data["privileges"];
           this._cd.detectChanges()
         })
       }
     })
     this.is_working = false;
     this._cd.detectChanges();
-  }
-
-  processOrgs(privileges: any[]): OrgElement[] {
-    let orgs: OrgElement[] = [];
-    privileges.forEach(privilege => {
-      if (["admin", "write"].indexOf(privilege["role"]) > -1) {
-        if (privilege["scope"] == "org") {
-          orgs.push({ org_id: privilege["org_id"], name: privilege["name"] });
-        }
-      }
-    })
-
-    orgs.sort((a, b) => {
-      if (a.name.toLowerCase() > b.name.toLowerCase()) return 1
-      else if (a.name.toLowerCase() < b.name.toLowerCase()) return -1
-      else return 0
-    });;
-
-    return orgs;
   }
 
 

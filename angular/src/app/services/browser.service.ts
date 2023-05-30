@@ -3,18 +3,14 @@ import { BehaviorSubject } from 'rxjs';
 //import browser from "../browser/webextension-polyfill";
 var browser = require("webextension-polyfill");
 
-export interface OrgElement {
-    org_id: string;
-    name: string;
-}
 
 export interface SessionElement {
-    domain: string;
-    csrftoken: string | null;
-    email: string | null;
-    has_sessionid: boolean;
-    expires_at: number;
-    orgs: OrgElement[];
+    domain: string,
+    csrftoken: string | null,
+    email: string | null,
+    has_sessionid: boolean,
+    expires_at: number,
+    privileges: []
 }
 
 @Injectable({
@@ -129,8 +125,8 @@ export class BrowserService {
                     // otherwise, add a new entry in the list
                 } else {
                     var tmp = this.sessionsSource.getValue();
-                    if (cookie.name.startsWith("csrftoken")) tmp.push({ domain: cookie.domain, email: null, csrftoken: cookie.value, has_sessionid: false, expires_at: cookie.expirationDate, orgs: [] });
-                    else if (cookie.name.startsWith("sessionid")) tmp.push({ domain: cookie.domain, email: null, csrftoken: null, has_sessionid: true, expires_at: cookie.expirationDate, orgs: [] });
+                    if (cookie.name.startsWith("csrftoken")) tmp.push({ domain: cookie.domain, email: null, csrftoken: cookie.value, has_sessionid: false, expires_at: cookie.expirationDate, privileges: []});
+                    else if (cookie.name.startsWith("sessionid")) tmp.push({ domain: cookie.domain, email: null, csrftoken: null, has_sessionid: true, expires_at: cookie.expirationDate, privileges: []});
                     this.sessionsSource.next(tmp);
                 }
             }
