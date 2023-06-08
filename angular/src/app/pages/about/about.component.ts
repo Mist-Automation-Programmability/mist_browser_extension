@@ -42,7 +42,7 @@ export class AboutComponent implements OnInit {
         this.up_to_date = false;
         this.html_url = data.html_url;
         data.assets.forEach((element:any) => {
-          if (element.name == "extension-build.zip") {
+          if (element.name == "mist_extension-"+data.name+".zip") {
             this.download_url = element.browser_download_url;
           }
         })
