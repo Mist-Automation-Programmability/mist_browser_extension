@@ -15,10 +15,10 @@ export interface actionElement {
   templateUrl: 'manage.component.html',
   styleUrls: [
     '../api.component.scss',
-     '../../../scss/button.component.scss',
-     '../../../scss/popup.component.scss', 
-     '../../../scss/notice.component.scss'
-    ]
+    '../../../scss/button.component.scss',
+    '../../../scss/popup.component.scss',
+    '../../../scss/notice.component.scss'
+  ]
 })
 export class ApiManageComponent implements OnInit {
 
@@ -92,7 +92,7 @@ export class ApiManageComponent implements OnInit {
     const base_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!/yis;
 
     var regexp_result;
-    
+
     if (regexp_result = orgsle_re.exec(this.tabUrl)) {
       this.orgSleUrl(regexp_result);
     } else if (regexp_result = sle_details_re.exec(this.tabUrl)) {
@@ -236,7 +236,7 @@ export class ApiManageComponent implements OnInit {
     }
   }
 
-  forgeSiteObjectSearch(obj_name: string, host: string, detail: string|null, extra_param: string | undefined = undefined): void {
+  forgeSiteObjectSearch(obj_name: string, host: string, detail: string | null, extra_param: string | undefined = undefined): void {
     let url = "";
     if (detail && detail != "new") {
       // set QUICK LINK
@@ -703,15 +703,17 @@ export class ApiManageComponent implements OnInit {
           this.forgeOrg(res?.groups?.host);
           break;
         case "configuration":
-          if (!res?.groups?.detail) {
-            this.site_id = undefined;
-            this.obj_id = undefined;
-          } else {
+          var detail: string | undefined;
+          if (res.groups?.obj_id) {
             this.site_id = this.obj_id;
             this.obj_id = undefined;
+            detail = "site";
+          } else {
+            this.site_id = undefined;
+            this.obj_id = undefined;
           }
-          this.setName("site", res?.groups?.detail);
-          this.forgeSite(res?.groups?.host, res?.groups?.detail);
+          this.setName("site", detail);
+          this.forgeSite(res?.groups?.host, detail);
           break;
         case "orgtags":
           this.setName("wxtag", res?.groups?.detail);
@@ -808,7 +810,7 @@ export class ApiManageComponent implements OnInit {
   alarmUrl(res: RegExpExecArray): void {
     this.org_id = res?.groups?.org_id;
     let extra_params = "";
-    let severity_array:string[] = [];
+    let severity_array: string[] = [];
     let scope = "";
     let scope_id: string | undefined = undefined;
     if (res?.groups?.scope == "org") {
@@ -1149,7 +1151,7 @@ export class ApiManageComponent implements OnInit {
   }
   closeActionTab(): void {
     this.action = "";
-    this.eventZtpPassword.next(false);    
+    this.eventZtpPassword.next(false);
     this._cd.detectChanges();
   }
 
