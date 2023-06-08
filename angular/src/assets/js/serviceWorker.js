@@ -1,11 +1,10 @@
 //import browser from "../browser/webextension-polyfill";
 
-console.log('serviceWorker script loaded');
 
 if (typeof browser === "undefined") {
     var browser = chrome;
 }
-
+console.log(browser)
 browser.tabs.onActivated.addListener(info => {
     getUrl(info.tabId);
 })
@@ -46,13 +45,17 @@ function checkUrl(tabUrl) {
 }
 
 function apiBadge(showManage, showDjango) {
-    if (showManage) {
-        browser.browserAction.setBadgeBackgroundColor({ color: "#4caf50" })
-        browser.browserAction.setBadgeText({ "text": "\u2713" });
-    } else if (showDjango) {
-        browser.browserAction.setBadgeBackgroundColor({ color: "#f38019" })
-        browser.browserAction.setBadgeText({ "text": "\u2713" });
-    } else {
-        browser.browserAction.setBadgeText({ "text": "" });
-    }
+    console.log(browser)
+    // if (showManage) {
+    //     browser.browserAction.setBadgeBackgroundColor({ color: "#4caf50" })
+    //     browser.browserAction.setBadgeText({ "text": "\u2713" });
+    // } else if (showDjango) {
+    //     browser.browserAction.setBadgeBackgroundColor({ color: "#f38019" })
+    //     browser.browserAction.setBadgeText({ "text": "\u2713" });
+    // } else {
+    //     browser.browserAction.setBadgeText({ "text": "" });
+    // }
 }
+
+
+console.log('serviceWorker script loaded');
