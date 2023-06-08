@@ -40,6 +40,11 @@
                     "version": "3.1.0",
                     "update_link": "https://github.com/tmunzer/mist_browser_extension/releases/download/3.1.0/mist_extension-3.1.0.xpi",
                     "update_info_url": "https://github.com/tmunzer/mist_browser_extension/releases/tag/3.1.0"
+                },
+                {
+                    "version": "3.1.0",
+                    "update_link": "https://github.com/tmunzer/mist_browser_extension/releases/download/3.1.1/mist_extension-3.1.1.xpi",
+                    "update_info_url": "https://github.com/tmunzer/mist_browser_extension/releases/tag/3.1.1"
                 }
             ]
         }
