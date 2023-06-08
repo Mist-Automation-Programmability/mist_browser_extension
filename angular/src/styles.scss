@@ -93,3 +93,32 @@ select:focus {
     color: white !important;
     border: 1px solid black !important;
 }
+
+
+app-api {
+    height: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    overflow: auto;
+}
+
+app-api-django {
+    max-width: 99%;
+}
+
+app-account {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+app-about {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+}
