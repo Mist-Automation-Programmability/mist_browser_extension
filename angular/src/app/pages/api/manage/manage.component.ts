@@ -31,9 +31,10 @@ export class ApiManageComponent implements OnInit {
   quick_links: linkElement[] = []
   quick_actions: actionElement[] = []
 
-  org_id: string | undefined = "";
-  site_id: string | undefined = "";
-  obj_id: string | undefined = "";
+  msp_id: string | undefined = undefined;
+  org_id: string | undefined = undefined;
+  site_id: string | undefined = undefined;
+  obj_id: string | undefined = undefined;
   missing_fields: string[] = [];
   obj_name: string = "";
   focused: string | undefined = "";
@@ -90,6 +91,7 @@ export class ApiManageComponent implements OnInit {
     const org_common_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view|template|rfTemplate)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*))/yis;
     const org_common_objs = ["orgtags", "misttunnels", "templates", "switchtemplate", "gatewaytemplates", "hubs", "deviceprofiles", "org", "orgpsk", "configuration", "auditlogs", "apinventory", "adminconfig", "subscription", "edge", "vpns", "template", "rftemplates", "services", "networks", "applicationpolicy", "authpolicylabels", "naccertificates", "nacpolicy", "nacidentityproviders", "onboardingworkflow"]
     const base_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!/yis;
+    const msp_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/msp\/\?msp_id=(?<msp_id>[0-9a-f-]*)#!(?<obj>orgs|admins|auditLogs|mspInfo|labels)\/?(?<detail>aiops|details|detail|invite)?\/?(?<obj_id>[0-9a-z_-]*)/yis;;
 
     var regexp_result;
 
@@ -117,6 +119,8 @@ export class ApiManageComponent implements OnInit {
       this.commonOrgUrl(regexp_result);
     } else if (regexp_result = base_re.exec(this.tabUrl)) {
       this.baseUrl(regexp_result);
+    } else if (regexp_result = msp_re.exec(this.tabUrl)) {
+      this.commonMspUrl(regexp_result);
     }
     this._cd.detectChanges()
   }
@@ -1132,6 +1136,132 @@ export class ApiManageComponent implements OnInit {
     }
   }
 
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////// COMMON URL FUNCTION DISPATCHER FOR SITE URLS
+  commonMspUrl(res: RegExpExecArray): void {
+    this.msp_id = res?.groups?.msp_id;
+    if (res?.groups?.host && res?.groups?.msp_id && res?.groups?.obj) {
+      this.obj_id = res?.groups?.obj_id;
+      switch (res?.groups?.obj.toLowerCase()) {
+        case "orgs":
+          if (res?.groups?.detail == "aiops") {
+            this.quick_links.push(
+              {
+                url: "https://api." + res?.groups?.host + "/api/v1/msps/" + this.msp_id + "/insights/orgs-sle?sle=wifi&duration=1w&limit=100",
+                name: "Wi-FI SLEs"
+              },
+              {
+                url: "https://api." + res?.groups?.host + "/api/v1/msps/" + this.msp_id + "/insights/orgs-sle?sle=wired&duration=1w&limit=100",
+                name: "Wired SLEs"
+              },
+              {
+                url: "https://api." + res?.groups?.host + "/api/v1/msps/" + this.msp_id + "/insights/orgs-sle?sle=wan&duration=1w&limit=100",
+                name: "WAN SLEs"
+              },
+              {
+                url: "https://api." + res?.groups?.host + "/api/v1/msps/" + this.msp_id + "/suggestion/count",
+                name: "MSP MARVIS ACTIONS"
+              },
+              //   {
+              //   url: "https://api." + res?.groups?.host + "/api/v1/msps/" + this.msp_id + "/tickets/count?status=open&distinct=org_id&duration=1w",
+              //   name: "Orgs Tickets Count"
+              // }
+            )
+
+          } else {
+            this.quick_links.push({
+              url: "https://api." + res?.groups?.host + "/api/v1/msps/" + this.msp_id,
+              name: "MSP INFO"
+            },
+              {
+                url: "https://api." + res?.groups?.host + "/api/v1/msps/" + this.msp_id + "/licenses",
+                name: "MSP LICENSES"
+              },
+              {
+                url: "https://api." + res?.groups?.host + "/api/v1/msps/" + this.msp_id + "/orggroups",
+                name: "MSP Orgs Groups"
+              },
+              {
+                url: "https://api." + res?.groups?.host + "/api/v1/msps/" + this.msp_id + "/orgs",
+                name: "MSP Orgs List"
+              },
+              {
+                url: "https://api." + res?.groups?.host + "/api/v1/msps/" + this.msp_id + "/orgs/search?limit=1000",
+                name: "MSP Orgs Details"
+              }
+            )
+          }
+          break;
+        case "admins":
+          if (res?.groups?.obj_id) {
+            this.obj_name = "admin";
+            this.obj_id = res?.groups?.obj_id;
+          }
+          this.quick_links.push(
+            {
+              url: "https://api." + res?.groups?.host + "/api/v1/msps/" + this.msp_id + "/admins",
+              name: "MSP Admins"
+            }
+          )
+          break;
+        case "auditlogs":
+          this.quick_links.push(
+            {
+              url: "https://api." + res?.groups?.host + "/api/v1/msps/" + this.msp_id + "/logs?duration=1d&limit=100",
+              name: "MSP Audit Logs"
+            }
+          )
+          break;
+        case "mspinfo":
+          this.quick_links.push(
+            {
+              url: "https://api." + res?.groups?.host + "/api/v1/msps/" + this.msp_id,
+              name: "MSP INFO"
+            },
+            {
+              url: "https://api." + res?.groups?.host + "/api/v1/msps/" + this.msp_id + "/licenses",
+              name: "MSP LICENSES"
+            },
+            {
+              url: "https://api." + res?.groups?.host + "/api/v1/msps/" + this.msp_id + "/ssos",
+              name: "MSP SSOS"
+            },
+            {
+              url: "https://api." + res?.groups?.host + "/api/v1/msps/" + this.msp_id + "/ssoroles",
+              name: "MSP SSO ROLES"
+            }, {
+            url: "https://api." + res?.groups?.host + "/api/v1/msps/" + this.msp_id + "/orggroups",
+            name: "MSP Orgs Groups"
+          },
+            {
+              url: "https://api." + res?.groups?.host + "/api/v1/msps/" + this.msp_id + "/orgs",
+              name: "MSP Orgs List"
+            },
+          )
+          break;
+        case "labels":
+          if (res?.groups?.obj_id) {
+            this.obj_name = "msp ORGGROUP";
+            this.obj_id = res?.groups?.obj_id;
+            this.quick_links.push(
+              {
+                url: "https://api." + res?.groups?.host + "/api/v1/msps/" + this.msp_id + "/orggroups/" + this.obj_id,
+                name: "MSP ORGGROUP"
+              }
+            )
+          } else {
+            this.quick_links.push(
+              {
+                url: "https://api." + res?.groups?.host + "/api/v1/msps/" + this.msp_id + "/orggroups",
+                name: "MSP ORGGROUPS"
+              }
+            )
+          }
+
+      }
+    }
+  }
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////

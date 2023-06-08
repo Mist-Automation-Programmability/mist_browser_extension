@@ -1,8 +1,32 @@
 <div class="content no-grow">
     <h2>Page Info</h2>
-    <div *ngIf="!org_id" class="notice-text">
+    <div *ngIf="!org_id && !msp_id" class="notice-text">
         <div>Sorry, this website does not look like a Mist Dashboard...</div>
         <div>If you think I'm wrong, please send me an email with the current URL.</div>
+    </div>
+    <div *ngIf="msp_id">
+        <div class="box-ids" *ngIf="msp_id" style="display: flex;flex-direction: row;align-items: center;justify-content: center;">
+            <div style="flex-direction: column;display: flex;align-items: center;justify-content: center;flex-grow: 1;">
+                <label class="ids" for="org_id">MSP ID</label>
+                <div class=box-ids-input>
+                    <input class="ids" type="text" readonly [value]="msp_id" [ngClass]="focused == 'msp_id'? 'focused' : ''" id="msp_id" #msp_id_input>
+                </div>
+            </div>
+            <button class="copy" name="copy" (click)="copyId(msp_id_input)">
+                <img class="copy" src="assets/copy.svg" alt="copy">
+            </button>
+        </div>
+        <div class="box-ids" *ngIf="obj_id" style="display: flex;flex-direction: row;align-items: center;justify-content: center;">
+            <div style="flex-direction: column;display: flex;align-items: center;justify-content: center;flex-grow: 1;">
+                <label class="ids" for="obj_id">{{obj_name | uppercase}} ID</label>
+                <div class=box-ids-input>
+                    <input class="ids" type="text" readonly [value]="obj_id" [ngClass]="focused == 'obj_id'? 'focused': ''" id="obj_id" #obj_id_input>
+                </div>
+            </div>
+            <button class="copy" name="copy" (click)="copyId(obj_id_input)">
+                <img class="copy" src="assets/copy.svg" alt="copy">
+            </button>
+        </div>
     </div>
     <div *ngIf="org_id">
         <div class="box-ids" *ngIf="org_id" style="display: flex;flex-direction: row;align-items: center;justify-content: center;">
