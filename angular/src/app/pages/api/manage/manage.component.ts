@@ -703,15 +703,17 @@ export class ApiManageComponent implements OnInit {
           this.forgeOrg(res?.groups?.host);
           break;
         case "configuration":
-          if (!res?.groups?.detail) {
-            this.site_id = undefined;
-            this.obj_id = undefined;
-          } else {
+          var detail: string|undefined;
+          if (res.groups?.obj_id) {
             this.site_id = this.obj_id;
             this.obj_id = undefined;
+            detail = "site";
+          } else {
+            this.site_id = undefined;
+            this.obj_id = undefined;
           }
-          this.setName("site", res?.groups?.detail);
-          this.forgeSite(res?.groups?.host, res?.groups?.detail);
+          this.setName("site", detail);
+          this.forgeSite(res?.groups?.host, detail);
           break;
         case "orgtags":
           this.setName("wxtag", res?.groups?.detail);
