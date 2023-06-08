@@ -236,7 +236,7 @@ export class ApiManageComponent implements OnInit {
     }
   }
 
-  forgeSiteObjectSearch(obj_name: string, host: string, detail: string, extra_param: string | undefined = undefined): void {
+  forgeSiteObjectSearch(obj_name: string, host: string, detail: string|null, extra_param: string | undefined = undefined): void {
     let url = "";
     if (detail && detail != "new") {
       // set QUICK LINK
@@ -808,7 +808,7 @@ export class ApiManageComponent implements OnInit {
   alarmUrl(res: RegExpExecArray): void {
     this.org_id = res?.groups?.org_id;
     let extra_params = "";
-    let severity_array = [];
+    let severity_array:string[] = [];
     let scope = "";
     let scope_id: string | undefined = undefined;
     if (res?.groups?.scope == "org") {
@@ -1011,7 +1011,7 @@ export class ApiManageComponent implements OnInit {
     else if (res?.groups?.scope == "juniperGateway") scope = "gateway";
     else if (res?.groups?.scope == "device") scope = "ap";
     else if (res?.groups?.scope) scope = res?.groups?.scope;
-    else {
+    else if (res.groups && this.site_id) {
       scope = "site";
       res.groups.scope_id = this.site_id;
     }
