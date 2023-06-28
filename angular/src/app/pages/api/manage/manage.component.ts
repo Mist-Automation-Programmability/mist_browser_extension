@@ -915,7 +915,13 @@ export class ApiManageComponent implements OnInit {
     }
 
     this.setName("floor plan", res?.groups?.detail);
-    this.forgeSiteObject("maps", res?.groups?.host, res?.groups?.detail);
+    this.forgeSiteObject("maps", res?.groups?.host, res?.groups?.detail); 
+    if (this.obj_id){
+    this.quick_links.push({
+      url: "https://api." + res?.groups?.host + "/api/v1/sites/" + this.site_id + "/maps/" + this.obj_id +"/auto_placement",
+      name: "Auto Placement Status"
+    })   
+  }
   }
 
   ////////////////////////////////////////////////////////////////////////////////////
