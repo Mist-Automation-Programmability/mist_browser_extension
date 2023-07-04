@@ -21,10 +21,10 @@
   },
   "dependencies": {
     "@angular-builders/custom-webpack": "^15.0.0",
-    "@angular-devkit/build-angular": "^15.2.1",
+    "@angular-devkit/build-angular": "^15.2.9",
     "@angular/animations": "^15.2.1",
     "@angular/cdk": "^15.2.1",
-    "@angular/cli": "^15.2.1",
+    "@angular/cli": "^15.2.9",
     "@angular/common": "^15.2.1",
     "@angular/compiler": "^15.2.1",
     "@angular/compiler-cli": "^15.2.1",
@@ -41,7 +41,7 @@
     "tslib": "^2.5.0",
     "web-ext-types": "^3.2.1",
     "webext-base-css": ">=1.4.3",
-    "webext-options-sync": ">=4.0.1",
+    "webext-options-sync": ">=4.2.0",
     "zone.js": "^0.13.0"
   },
   "devDependencies": {
