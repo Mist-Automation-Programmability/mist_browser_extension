@@ -87,9 +87,9 @@ export class ApiManageComponent implements OnInit {
     const evpn_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!evpn\/site\/?([0-9]\/)?(?<site_id>[0-9a-z_-]*)?(\/(?<topology_id>[0-9a-f-]*))?/yis;
     const site_wlan_template_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!wlan\/orgWlanDetail\/(?<template_id>[0-9a-z_-]*)\/(?<wlan_id>[0-9a-f-]*)\/(?<site_id>[0-9a-f-]*)/is;
     const site_common_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*)\/)?(?<site_id>[0-9a-f-]*)?/yis;
-    const site_common_objs = ["ap", "gateway", "switch", "assets", "wlan", "tags", "psk", "tunnels", "clients", "guestclients", "sdkclients", "wiredclients", "wxlan", "security", "switchconfig", "pcap", "siteedge"]
-    const org_common_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view|template|rfTemplate)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*))/yis;
-    const org_common_objs = ["orgtags", "misttunnels", "templates", "switchtemplate", "gatewaytemplates", "hubs", "deviceprofiles", "org", "orgpsk", "configuration", "auditlogs", "apinventory", "adminconfig", "subscription", "edge", "vpns", "template", "rftemplates", "services", "networks", "applicationpolicy", "authpolicylabels", "naccertificates", "nacpolicy", "nacidentityproviders", "onboardingworkflow", "sdk"]
+    const site_common_objs = ["ap", "gateway", "switch", "assets", "wlan", "tags", "psk", "tunnels", "clients", "guestclients", "sdkclients", "wiredclients", "wxlan", "security", "switchconfig", "pcap", "siteedge", "cellularedges"]
+    const org_common_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-zA-Z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view|template|rfTemplate)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*))/yis;
+    const org_common_objs = ["orgtags", "misttunnels", "templates", "switchtemplate", "gatewaytemplates", "hubs", "deviceprofiles", "org", "orgpsk", "configuration", "auditlogs", "apinventory", "adminconfig", "subscription", "edge", "vpns", "template", "rftemplates", "services", "networks", "applicationpolicy", "authpolicylabels", "naccertificates", "nacpolicy", "nacidentityproviders", "onboardingworkflow", "sdk", "premiumanalytics"]
     const base_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!/yis;
     const msp_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/msp\/\?msp_id=(?<msp_id>[0-9a-f-]*)#!(?<obj>orgs|admins|auditLogs|mspInfo|labels)\/?(?<detail>aiops|details|detail|invite)?\/?(?<obj_id>[0-9a-z_-]*)/yis;;
 
@@ -237,6 +237,28 @@ export class ApiManageComponent implements OnInit {
       url = "https://api." + host + "/api/v1/sites/" + this.site_id + "/" + obj_name;
       if (extra_param) url += "?" + extra_param;
       this.quick_links.push({ url: url, name: this.obj_name });
+    }
+  }
+
+  forgeSiteOtherDevices(host: string | undefined, detail: string | undefined, extra_param: string | undefined = undefined): void {
+    let url = "";
+    if (detail) {
+      this.quick_links.push({ 
+        url: "https://api."+host+"/api/v1/sites/"+this.site_id+"/otherdevices/"+this.obj_id,
+        name: "Other Device" });
+      this.quick_links.push({ 
+        url: "https://api."+host+"/api/v1/sites/"+this.site_id+"/stats/otherdevices/"+this.obj_id,
+        name: "Other Device Stats" });
+      this.quick_links.push({ 
+        url: "https://api."+host+"/api/v1/sites/"+this.site_id+"/otherdevices/events/search?mac="+this.obj_id,
+        name: "Other Device Events" });
+    } else {      
+      this.quick_links.push({ 
+      url: "https://api."+host+"/api/v1/sites/"+this.site_id+"/otherdevices",
+      name: "Other Devices" });
+      this.quick_links.push({ 
+        url: "https://api."+host+"/api/v1/sites/"+this.site_id+"/otherdevices/events/search",
+        name: "Other Devices Events" });
     }
   }
 
@@ -687,6 +709,11 @@ export class ApiManageComponent implements OnInit {
           this.setName(res?.groups?.obj, res?.groups?.detail);
           this.forgeSiteObject("pcaps", res?.groups?.host, res?.groups?.detail);
           break;
+        case "cellularedges":
+          this.setName("other device", res?.groups?.detail);
+          this.forgeSiteOtherDevices(res?.groups?.host, res?.groups?.detail);
+          break;
+
       }
     }
   }
@@ -788,8 +815,7 @@ export class ApiManageComponent implements OnInit {
           this.quick_links.push({
             url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/setting",
             name: "org setting"
-          }
-          )
+          })
           break;
         case "nacpolicy":
           this.setName("NAC Policy", res?.groups?.detail);
@@ -807,6 +833,12 @@ export class ApiManageComponent implements OnInit {
           this.setName("sdk client", res?.groups?.detail);
           this.forgeOrgObject("sdkinvites", res?.groups?.host, res?.groups?.detail);
           break;
+        case "premiumanalytics":
+          this.setName("Premium Analytics Dashboards", res?.groups?.detail)
+          this.quick_links.push({
+            url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/pma/dashboards",
+            name: "PMA Dashboards"
+          })
       }
     }
   }

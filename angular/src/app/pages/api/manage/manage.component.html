@@ -53,7 +53,8 @@
         </div>
         <div class="box-ids" *ngIf="obj_id" style="display: flex;flex-direction: row;align-items: center;justify-content: center;">
             <div style="flex-direction: column;display: flex;align-items: center;justify-content: center;flex-grow: 1;">
-                <label class="ids" for="obj_id">{{obj_name | uppercase}} ID</label>
+                <label class="ids" for="obj_id" *ngIf="obj_name != 'other device'">{{obj_name | uppercase}} ID</label>
+                <label class="ids" for="obj_id" *ngIf="obj_name == 'other device'">{{obj_name | uppercase}} MAC</label>
                 <div class=box-ids-input>
                     <input class="ids" type="text" readonly [value]="obj_id" [ngClass]="focused == 'obj_id'? 'focused': ''" id="obj_id" #obj_id_input>
                 </div>
