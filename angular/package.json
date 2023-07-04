@@ -38,7 +38,7 @@
     "@types/webextension-polyfill": "^0.10.0",
     "ngx-build-plus": "^15.0.0",
     "rxjs": "^7.8.0",
-    "tslib": "^2.5.0",
+    "tslib": "^2.5.3",
     "web-ext-types": "^3.2.1",
     "webext-base-css": ">=1.4.3",
     "webext-options-sync": ">=4.2.0",
