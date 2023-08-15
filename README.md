@@ -31,7 +31,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 * Direct access to the Mist API Pages (Django) from the current Mist dashboard page
 
 <div>
-<img src="https://github.com/tmunzer/mist_chrome_extension/raw/main/._readme/img/api.png" width="50%">
+<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/api.png" width="50%">
 </div>
 
 ### When on a Django Page
@@ -40,37 +40,37 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 * Direct access to the Online API Documentation for the current API Call (GET/POST/PUT/DELETE)
 
 <div>
-<img src="https://github.com/tmunzer/mist_chrome_extension/raw/main/._readme/img/django.png" width="50%">
+<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/django.png" width="50%">
 </div>
 
 ## Account Tab
 
 * List all the current valid Mist session in the web browser for manage.mist.com, manage.eu.mist.com, manage.gc1.mist.com
 <div>
-<img src="https://github.com/tmunzer/mist_chrome_extension/raw/main/._readme/img/accounts_list.png" width="40%">
+<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/accounts_list.png" width="40%">
 </div>
 
 
 * Manage User API Token (list / delete / create)
 
 <div>
-<img src="https://github.com/tmunzer/mist_chrome_extension/raw/main/._readme/img/accounts_create.png" width="40%">
-<img src="https://github.com/tmunzer/mist_chrome_extension/raw/main/._readme/img/accounts_manage.png" width="40%">
+<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/accounts_create.png" width="40%">
+<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/accounts_manage.png" width="40%">
 </div>
 
 
 * Manage Org API Token (list / delete / create)
 
 <div>
-<img src="https://github.com/tmunzer/mist_chrome_extension/raw/main/._readme/img/accounts_org_create.png" width="40%">
-<img src="https://github.com/tmunzer/mist_chrome_extension/raw/main/._readme/img/accounts_org_manage.png" width="40%">
+<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/accounts_org_create.png" width="40%">
+<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/accounts_org_manage.png" width="40%">
 </div>
 
 ## About Tab
 * Quick access to the Mist API documentation (Mist official documentation, Postman documentation, OpenAPI documentation)
 * Version check from the extension to know if a new version is available, and download new versions directly from the extension
 <div>
-<img src="https://github.com/tmunzer/mist_chrome_extension/raw/main/._readme/img/about.png" width="40%">
+<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/about.png" width="40%">
 </div>
 
 
@@ -78,26 +78,26 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 This extension is not yet available on the [Chrome Web Store](https://chrome.google.com/) or the [Firefox Extension Store](https://addons.mozilla.org/en-US/firefox/extensions/), but it is possible to install it in Chrome / Chromium (Edge, Brave, Sidekick, ...) and Firefox web browsers.
 
 ### Chrome / Chromium
-1. Download the file `mist_extension-X.Y.Z.zip` from the [latest release](https://github.com/tmunzer/mist_chrome_extension/releases)
+1. Download the file `mist_extension-X.Y.Z.zip` from the [latest release](https://github.com/Mist-Automation-Programmability/mist_browser_extension/releases)
 2. Unzip the downloaded archive
 3. Go to the web browser Extensions Page: <a href="chrome://extensions" target="_blank">chrome://extensions</a> 
 4. Enable the **Developer Mode**
 
-<img src="https://github.com/tmunzer/mist_chrome_extension/raw/main/._readme/img/dev_mode.png" width="80%">
+<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/dev_mode.png" width="80%">
 
 5. Click **Load Unpacked** and select the unzipped folder
 
-<img src="https://github.com/tmunzer/mist_chrome_extension/raw/main/._readme/img/load_unpacked.png" width="40%">
+<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/load_unpacked.png" width="40%">
 
 6. The extension is ready to use!
 
 ### Firefox
-1. Download the file `mist_extension-X.Y.Z.xpi` from the [latest release](https://github.com/tmunzer/mist_chrome_extension/releases)
+1. Download the file `mist_extension-X.Y.Z.xpi` from the [latest release](https://github.com/Mist-Automation-Programmability/mist_browser_extension/releases)
 2. Go to `about:addons` url from Firefox
-<img src="https://github.com/tmunzer/mist_chrome_extension/raw/main/._readme/img/firefox_1.png" width="30%">
+<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/firefox_1.png" width="30%">
 
 3. Click on the "Settings" button, then "Install Add-on From Files..."
-<img src="https://github.com/tmunzer/mist_chrome_extension/raw/main/._readme/img/firefox_2.png" width="50%">
+<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/firefox_2.png" width="50%">
 
 4. Select the `mist_extension-X.Y.Z.xpi`file
 
