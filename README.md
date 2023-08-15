@@ -81,7 +81,7 @@ This extension is not yet available on the [Chrome Web Store](https://chrome.goo
 1. Download the file `mist_extension-X.Y.Z.zip` from the [latest release](https://github.com/tmunzer/mist_chrome_extension/releases)
 2. Unzip the downloaded archive
 3. Go to the web browser Extensions Page: <a href="chrome://extensions" target="_blank">chrome://extensions</a> 
-4. Enable the **Developper Mode**
+4. Enable the **Developer Mode**
 
 <img src="https://github.com/tmunzer/mist_chrome_extension/raw/main/._readme/img/dev_mode.png" width="80%">
 
