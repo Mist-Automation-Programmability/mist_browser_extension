@@ -905,11 +905,14 @@ export class ApiManageComponent implements OnInit {
       this.obj_id = res?.groups?.topology_id;
       this.quick_links.push({
         url: "https://api." + res?.groups?.host + "/api/v1/sites/" + this.site_id + "/evpn_topologies/" + this.obj_id,
-        name: "Org EVPN Topology"
+        name: "Site EVPN Topology"
       })
     } else {
       this.quick_links.push({
         url: "https://api." + res?.groups?.host + "/api/v1/sites/" + this.site_id + "/evpn_topologies",
+        name: "Site EVPN Topologies"
+      },{
+        url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/evpn_topologies",
         name: "Org EVPN Topologies"
       })
     }
@@ -922,12 +925,12 @@ export class ApiManageComponent implements OnInit {
       this.obj_id = res?.groups?.topology_id;
       this.quick_links.push({
         url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/evpn_topologies/" + this.obj_id,
-        name: "Site EVPN Topology"
+        name: "Org EVPN Topology"
       })
     } else {
       this.quick_links.push({
         url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/evpn_topologies",
-        name: "Site EVPN Topologies"
+        name: "Org EVPN Topologies"
       })
     }
 
