@@ -84,12 +84,13 @@ export class ApiManageComponent implements OnInit {
     const alarm_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!alerts\/?(?<scope>org|site)?\/?(?<uuid>[0-9a-z-]*)\/?(?<period>[0-9a-z]*)?\/?(?<start>[0-9]*)?\/?(?<stop>[0-9]*)?\/?(?<show_ack>true|false)?\/?(?<group>[a-z%0-9]*)?\/?(?<show_crit>true|false)?\/?(?<show_warn>true|false)?\/?(?<show_info>true|false)?\/?(?<site_id>[0-9a-z-]*)?/iys;
     const events_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!marvis\/?(?<scope>org|site)?\/?(?<period>[0-9a-z]*)?\/?(?<start>[0-9]*)?\/?(?<stop>[0-9]*)?\/?(?<site_id>[0-9a-z-]*)?/iys;
     const floorplans_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!cliLocation\/(?<detail>view|config|validationPath|wayfinding)?\/?(?<uuid>[0-9a-f-]*)\/?(floorplan|beaconsAndZones)?\/?(?<site_id>[0-9a-f-]*)?/iys;
-    const evpn_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!evpn\/site\/?([0-9]\/)?(?<site_id>[0-9a-z_-]*)?(\/(?<topology_id>[0-9a-f-]*))?/yis;
+    const site_evpn_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!evpn\/site\/?([0-9]\/)?(?<site_id>[0-9a-z_-]*)?(\/(?<topology_id>[0-9a-f-]*))?/yis;
     const site_wlan_template_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!wlan\/orgWlanDetail\/(?<template_id>[0-9a-z_-]*)\/(?<wlan_id>[0-9a-f-]*)\/(?<site_id>[0-9a-f-]*)/is;
     const site_common_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*)\/)?(?<site_id>[0-9a-f-]*)?/yis;
     const site_common_objs = ["ap", "gateway", "switch", "assets", "wlan", "tags", "psk", "tunnels", "clients", "guestclients", "sdkclients", "wiredclients", "wxlan", "security", "switchconfig", "pcap", "siteedge", "cellularedges"]
+    const org_evpn_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!evpn\/org(\/(?<topology_id>[0-9a-f-]*))?/yis;
     const org_common_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-zA-Z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view|template|rfTemplate)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*))/yis;
-    const org_common_objs = ["orgtags", "misttunnels", "templates", "switchtemplate", "gatewaytemplates", "hubs", "deviceprofiles", "org", "orgpsk", "configuration", "auditlogs", "apinventory", "adminconfig", "subscription", "edge", "vpns", "template", "rftemplates", "services", "networks", "applicationpolicy", "authpolicylabels", "naccertificates", "nacpolicy", "nacidentityproviders", "onboardingworkflow", "sdk", "premiumanalytics"]
+    const org_common_objs = ["orgtags", "misttunnels", "templates", "switchtemplate", "gatewaytemplates", "hubs", "deviceprofiles", "org", "orgpsk", "configuration", "auditlogs", "apinventory", "adminconfig", "subscription", "edge", "vpns", "template", "rftemplates", "services", "networks", "applicationpolicy", "authpolicylabels", "naccertificates", "nacpolicy", "nacidentityproviders", "onboardingworkflow", "sdk", "premiumanalytics", "private5g"]
     const base_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!/yis;
     const msp_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/msp\/\?msp_id=(?<msp_id>[0-9a-f-]*)#!(?<obj>orgs|admins|auditLogs|mspInfo|labels)\/?(?<detail>aiops|details|detail|invite)?\/?(?<obj_id>[0-9a-z_-]*)/yis;;
 
@@ -105,8 +106,10 @@ export class ApiManageComponent implements OnInit {
       this.insightsUrl(regexp_result);
     } else if (regexp_result = alarm_re.exec(this.tabUrl)) {
       this.alarmUrl(regexp_result);
-    } else if (regexp_result = evpn_re.exec(this.tabUrl)) {
-      this.evpnUrl(regexp_result);
+    } else if (regexp_result = site_evpn_re.exec(this.tabUrl)) {
+      this.siteEvpnUrl(regexp_result);
+    } else if (regexp_result = org_evpn_re.exec(this.tabUrl)) {
+      this.orgEvpnUrl(regexp_result);
     } else if (regexp_result = site_wlan_template_re.exec(this.tabUrl)) {
       this.siteWlanTemplateUrl(regexp_result);
     } else if (regexp_result = events_re.exec(this.tabUrl)) {
@@ -894,7 +897,7 @@ export class ApiManageComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// EVPN URL FUNCTION DISPATCHER
-  evpnUrl(res: RegExpExecArray): void {
+  siteEvpnUrl(res: RegExpExecArray): void {
     this.org_id = res?.groups?.org_id;
     this.site_id = res?.groups?.site_id;
     let extra_params = "";
@@ -902,11 +905,28 @@ export class ApiManageComponent implements OnInit {
       this.obj_id = res?.groups?.topology_id;
       this.quick_links.push({
         url: "https://api." + res?.groups?.host + "/api/v1/sites/" + this.site_id + "/evpn_topologies/" + this.obj_id,
-        name: "EVPN Topology"
+        name: "Org EVPN Topology"
       })
     } else {
       this.quick_links.push({
         url: "https://api." + res?.groups?.host + "/api/v1/sites/" + this.site_id + "/evpn_topologies",
+        name: "Org EVPN Topologies"
+      })
+    }
+
+  }
+  orgEvpnUrl(res: RegExpExecArray): void {
+    this.org_id = res?.groups?.org_id;
+    let extra_params = "";
+    if (res?.groups?.topology_id) {
+      this.obj_id = res?.groups?.topology_id;
+      this.quick_links.push({
+        url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/evpn_topologies/" + this.obj_id,
+        name: "Site EVPN Topology"
+      })
+    } else {
+      this.quick_links.push({
+        url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/evpn_topologies",
         name: "Site EVPN Topologies"
       })
     }

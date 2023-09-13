@@ -3,53 +3,53 @@
         "{b6c18986-2bba-403b-9675-48234b47ebbc}": {
             "updates": [{
                     "version": "3.0.4",
-                    "update_link": "https://github.com/tmunzer/mist_browser_extension/releases/download/3.0.4/mist_extension-3.0.4.xpi",
-                    "update_info_url": "https://github.com/tmunzer/mist_browser_extension/releases/tag/3.0.4"
+                    "update_link": "https://github.com/Mist-Automation-Programmability/mist_browser_extension/releases/download/3.0.4/mist_extension-3.0.4.xpi",
+                    "update_info_url": "https://github.com/Mist-Automation-Programmability/mist_browser_extension/releases/tag/3.0.4"
                 },
                 {
                     "version": "3.0.6",
-                    "update_link": "https://github.com/tmunzer/mist_browser_extension/releases/download/3.0.6/mist_extension-3.0.6.xpi",
-                    "update_info_url": "https://github.com/tmunzer/mist_browser_extension/releases/tag/3.0.6"
+                    "update_link": "https://github.com/Mist-Automation-Programmability/mist_browser_extension/releases/download/3.0.6/mist_extension-3.0.6.xpi",
+                    "update_info_url": "https://github.com/Mist-Automation-Programmability/mist_browser_extension/releases/tag/3.0.6"
                 },
                 {
                     "version": "3.0.7",
-                    "update_link": "https://github.com/tmunzer/mist_browser_extension/releases/download/3.0.7/mist_extension-3.0.7.xpi",
-                    "update_info_url": "https://github.com/tmunzer/mist_browser_extension/releases/tag/3.0.7"
+                    "update_link": "https://github.com/Mist-Automation-Programmability/mist_browser_extension/releases/download/3.0.7/mist_extension-3.0.7.xpi",
+                    "update_info_url": "https://github.com/Mist-Automation-Programmability/mist_browser_extension/releases/tag/3.0.7"
                 },
                 {
                     "version": "3.0.8",
-                    "update_link": "https://github.com/tmunzer/mist_browser_extension/releases/download/3.0.8/mist_extension-3.0.8.xpi",
-                    "update_info_url": "https://github.com/tmunzer/mist_browser_extension/releases/tag/3.0.8"
+                    "update_link": "https://github.com/Mist-Automation-Programmability/mist_browser_extension/releases/download/3.0.8/mist_extension-3.0.8.xpi",
+                    "update_info_url": "https://github.com/Mist-Automation-Programmability/mist_browser_extension/releases/tag/3.0.8"
                 },
                 {
                     "version": "3.0.10",
-                    "update_link": "https://github.com/tmunzer/mist_browser_extension/releases/download/3.0.10/mist_extension-3.0.10.xpi",
-                    "update_info_url": "https://github.com/tmunzer/mist_browser_extension/releases/tag/3.0.10"
+                    "update_link": "https://github.com/Mist-Automation-Programmability/mist_browser_extension/releases/download/3.0.10/mist_extension-3.0.10.xpi",
+                    "update_info_url": "https://github.com/Mist-Automation-Programmability/mist_browser_extension/releases/tag/3.0.10"
                 },
                 {
                     "version": "3.0.12",
-                    "update_link": "https://github.com/tmunzer/mist_browser_extension/releases/download/3.0.12/mist_extension-3.0.12.xpi",
-                    "update_info_url": "https://github.com/tmunzer/mist_browser_extension/releases/tag/3.0.12"
+                    "update_link": "https://github.com/Mist-Automation-Programmability/mist_browser_extension/releases/download/3.0.12/mist_extension-3.0.12.xpi",
+                    "update_info_url": "https://github.com/Mist-Automation-Programmability/mist_browser_extension/releases/tag/3.0.12"
                 },
                 {
                     "version": "3.0.14",
-                    "update_link": "https://github.com/tmunzer/mist_browser_extension/releases/download/3.0.14/mist_extension-3.0.14.xpi",
-                    "update_info_url": "https://github.com/tmunzer/mist_browser_extension/releases/tag/3.0.14"
+                    "update_link": "https://github.com/Mist-Automation-Programmability/mist_browser_extension/releases/download/3.0.14/mist_extension-3.0.14.xpi",
+                    "update_info_url": "https://github.com/Mist-Automation-Programmability/mist_browser_extension/releases/tag/3.0.14"
                 },
                 {
                     "version": "3.1.0",
-                    "update_link": "https://github.com/tmunzer/mist_browser_extension/releases/download/3.1.0/mist_extension-3.1.0.xpi",
-                    "update_info_url": "https://github.com/tmunzer/mist_browser_extension/releases/tag/3.1.0"
+                    "update_link": "https://github.com/Mist-Automation-Programmability/mist_browser_extension/releases/download/3.1.0/mist_extension-3.1.0.xpi",
+                    "update_info_url": "https://github.com/Mist-Automation-Programmability/mist_browser_extension/releases/tag/3.1.0"
                 },
                 {
                     "version": "3.1.1",
-                    "update_link": "https://github.com/tmunzer/mist_browser_extension/releases/download/3.1.1/mist_extension-3.1.1.xpi",
-                    "update_info_url": "https://github.com/tmunzer/mist_browser_extension/releases/tag/3.1.1"
+                    "update_link": "https://github.com/Mist-Automation-Programmability/mist_browser_extension/releases/download/3.1.1/mist_extension-3.1.1.xpi",
+                    "update_info_url": "https://github.com/Mist-Automation-Programmability/mist_browser_extension/releases/tag/3.1.1"
                 },
                 {
                     "version": "3.2.0",
-                    "update_link": "https://github.com/tmunzer/mist_browser_extension/releases/download/3.2.0/mist_extension-3.2.0.xpi",
-                    "update_info_url": "https://github.com/tmunzer/mist_browser_extension/releases/tag/3.2.0"
+                    "update_link": "https://github.com/Mist-Automation-Programmability/mist_browser_extension/releases/download/3.2.0/mist_extension-3.2.0.xpi",
+                    "update_info_url": "https://github.com/Mist-Automation-Programmability/mist_browser_extension/releases/tag/3.2.0"
                 }
             ]
         }
