@@ -385,6 +385,9 @@ export class ApiManageComponent implements OnInit {
     }, {
       url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/webhooks",
       name: "org webhooks"
+    }, {
+      url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/apitokens",
+      name: "org apitokens"
     })
   }
 
