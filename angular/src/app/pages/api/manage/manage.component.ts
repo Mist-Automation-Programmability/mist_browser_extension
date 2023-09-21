@@ -247,20 +247,14 @@ export class ApiManageComponent implements OnInit {
     let url = "";
     if (detail) {
       this.quick_links.push({ 
-        url: "https://api."+host+"/api/v1/sites/"+this.site_id+"/otherdevices/"+this.obj_id,
-        name: "Other Device" });
-      this.quick_links.push({ 
-        url: "https://api."+host+"/api/v1/sites/"+this.site_id+"/stats/otherdevices/"+this.obj_id,
+        url: "https://api."+host+"/api/v1/orgs/"+this.org_id+"/stats/otherdevices/"+this.obj_id,
         name: "Other Device Stats" });
       this.quick_links.push({ 
-        url: "https://api."+host+"/api/v1/sites/"+this.site_id+"/otherdevices/events/search?mac="+this.obj_id,
+        url: "https://api."+host+"/api/v1/orgs/"+this.org_id+"/otherdevices/events/search?mac="+this.obj_id,
         name: "Other Device Events" });
     } else {      
       this.quick_links.push({ 
-      url: "https://api."+host+"/api/v1/sites/"+this.site_id+"/otherdevices",
-      name: "Other Devices" });
-      this.quick_links.push({ 
-        url: "https://api."+host+"/api/v1/sites/"+this.site_id+"/otherdevices/events/search",
+        url: "https://api."+host+"/api/v1/orgs/"+this.org_id+"/otherdevices/events/search",
         name: "Other Devices Events" });
     }
   }
