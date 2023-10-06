@@ -26,7 +26,8 @@ export class BrowserService {
         ".eu.mist.com",
         ".gc1.mist.com",
         ".gc2.mist.com",
-        ".ac2.mist.com"
+        ".ac2.mist.com",
+        ".ac5.mist.com",
     ]
 
     private host_manage: string[] = [
@@ -37,7 +38,8 @@ export class BrowserService {
         "manage.eu.mist.com",
         "manage.gc1.mist.com",
         "manage.gc2.mist.com",
-        "manage.ac2.mist.com"
+        "manage.ac2.mist.com",
+        "manage.ac5.mist.com"
     ]
 
     private host_api: string[] = [
@@ -45,7 +47,8 @@ export class BrowserService {
         "api.eu.mist.com",
         "api.gc1.mist.com",
         "api.gc2.mist.com",
-        "api.ac2.mist.com"
+        "api.ac2.mist.com",
+        "api.ac5.mist.com",
     ]
 
     private doc_url: string = "https://doc.mist-lab.fr";

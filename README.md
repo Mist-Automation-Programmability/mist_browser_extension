@@ -24,6 +24,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 * Global 03 (manage.ac2.mist.com)
 * Global 04 (manage.gc2.mist.com)
 * Europe 01 (manage.eu.mist.com)
+* APAC 01 (manage.ac5.mist.com)
 
 ## API Tab
 ### When on the Mist Dashboard

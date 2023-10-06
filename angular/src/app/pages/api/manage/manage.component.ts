@@ -53,6 +53,7 @@ export class ApiManageComponent implements OnInit {
     "manage.gc1.mist.com",
     "manage.gc2.mist.com",
     "manage.ac2.mist.com",
+    "manage.ac5.mist.com",
   ]
 
   external_links: { [index: string]: string } = {
