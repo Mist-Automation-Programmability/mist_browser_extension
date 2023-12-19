@@ -1,5 +1,3 @@
-var browser = require("webextension-polyfill");
-
 browser.runtime.onMessage.addListener((request, sender, respond) => {
     const handler = new Promise((resolve, reject) => {
         if (request) {

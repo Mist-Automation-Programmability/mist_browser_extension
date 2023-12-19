@@ -1,0 +1,46 @@
+{
+  "manifest_version": 2,
+  "name": "Mist Extension",
+  "short_name": "mist-extension",
+  "version": "3.5.0",
+  "description": "Web Browser Extension for Mist Developpers to provide easier access to Mist APIs",
+  "background": {
+    "scripts": [
+      "assets/browser/browser-polyfill.min.js",
+      "assets/js/serviceWorker.js"
+    ]
+  },
+  "browser_action": {
+    "default_popup": "index.html",
+    "default_title": "Mist Extension"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "update_url": "https://raw.githubusercontent.com/Mist-Automation-Programmability/mist_browser_extension/main/firefox_updates.json"
+    }
+  },
+  "content_scripts": [
+    {
+      "js": [
+        "/assets/browser/browser-polyfill.min.js",
+        "/assets/js/content.js"
+      ],
+      "matches": [
+        "https://*.mist.com/*",
+        "https://*.mistsys.com/*"
+      ]
+    }
+  ],
+  "icons": {
+    "16": "/assets/favicon-16x16.png",
+    "48": "/assets/favicon-48x48.png",
+    "128": "/assets/favicon-128x128.png"
+  },
+  "content_security_policy": "script-src 'self'; object-src 'self'",
+  "permissions": [
+    "cookies",
+    "tabs",
+    "https://*.mist.com/*",
+    "https://*.mistsys.com/*"
+  ]
+}

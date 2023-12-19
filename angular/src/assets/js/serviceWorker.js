@@ -1,9 +1,7 @@
-//import browser from "../browser/webextension-polyfill";
-
-console.log('serviceWorker script loaded');
-
+var browser_name = "ffx";
 if (typeof browser === "undefined") {
     var browser = chrome;
+    browser_name = "chrome";
 }
 
 browser.tabs.onActivated.addListener(info => {
@@ -49,12 +47,14 @@ function checkUrl(tabUrl) {
 
 function apiBadge(showManage, showDjango) {
     if (showManage) {
-        browser.browserAction.setBadgeBackgroundColor({ color: "#4caf50" })
-        browser.browserAction.setBadgeText({ "text": "\u2713" });
+        browser.action.setBadgeBackgroundColor({ color: "#4caf50" })
+        browser.action.setBadgeText({ "text": "\u2713" });
     } else if (showDjango) {
-        browser.browserAction.setBadgeBackgroundColor({ color: "#f38019" })
-        browser.browserAction.setBadgeText({ "text": "\u2713" });
+        browser.action.setBadgeBackgroundColor({ color: "#f38019" })
+        browser.action.setBadgeText({ "text": "\u2713" });
     } else {
-        browser.browserAction.setBadgeText({ "text": "" });
+        browser.action.setBadgeText({ "text": "" });
     }
 }
+
+console.log('serviceWorker script loaded, browser is ' + browser_name);

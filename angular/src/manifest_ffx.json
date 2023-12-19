@@ -9,6 +9,12 @@
     "48": "assets/favicon-48x48.png",
     "128": "assets/favicon-128x128.png"
   },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{b6c18986-2bba-403b-9675-48234b47ebbc}",
+      "update_url": "https://raw.githubusercontent.com/Mist-Automation-Programmability/mist_browser_extension/main/firefox_updates.json"
+    }
+  },
   "action": {
     "default_popup": "index.html?#/popup",
     "default_title": "Mist Extension"
@@ -25,7 +31,9 @@
     }
   ],
   "background": {
-    "service_worker": "assets/js/serviceWorker.js"
+    "scripts": [
+      "assets/js/serviceWorker.js"
+    ]
   },
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'"
