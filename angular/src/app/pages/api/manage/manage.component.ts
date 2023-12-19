@@ -344,6 +344,18 @@ export class ApiManageComponent implements OnInit {
   }
 
   ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////// NAC POLICIES FUNCTION
+  forgeNacPolicies(host: string): void {
+    this.quick_links.push({
+      url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/nac_clients/search",
+      name: "NAC Events"
+    },{
+      url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/nac_clients/count",
+      name: "NAC Events Count"
+    })
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// SITE SWITCH CONF FUNCTION
   forgeSiteSwitchConfig(host: string): void {
     this.quick_links.push({
@@ -821,6 +833,7 @@ export class ApiManageComponent implements OnInit {
         case "nacpolicy":
           this.setName("NAC Policy", res?.groups?.detail);
           this.forgeOrgObject("nacrules", res?.groups?.host, res?.groups?.detail);
+          this.forgeNacPolicies(res?.groups?.host);
           break;
         case "nacidentityproviders":
           this.setName("NAC IDP", res?.groups?.detail);
