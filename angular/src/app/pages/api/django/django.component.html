@@ -78,11 +78,11 @@
                     </label>
 
 
-                    <select *ngIf="query.schema.enum" [(ngModel)]="query.value" [name]="query.value">
+                    <select *ngIf="query.schema.hasOwnProperty('enum')" [(ngModel)]="query.value" [name]="query.value">
                         <option *ngFor="let enum of query.schema.enum" [value]="enum">{{enum}}</option>
                     </select>
 
-                    <div *ngIf="!query.schema.enum">
+                    <div *ngIf="!query.schema.hasOwnProperty('enum')">
                         <select *ngIf="query.schema.type=='boolean'" [(ngModel)]="query.value" [name]="query.value">
                             <option value="true">True</option>
                             <option value="false">False</option>
@@ -91,19 +91,19 @@
                         <input *ngIf="query.schema.type=='string'" type="string" [(ngModel)]="query.value" />
 
                         <div *ngIf="query.schema.type=='integer'">
-                            <div *ngIf="'minimum' in query.schema">
+                            <div *ngIf="query.schema.hasOwnProperty('minimum')">
                                 <input type="number" [min]="query.schema.minimum" [(ngModel)]="query.value" />
                             </div>
-                            <div *ngIf="!'minimum' in query.schema">
+                            <div *ngIf="!query.schema.hasOwnProperty('minimum')">
                                 <input type="number" [(ngModel)]="query.value" />
                             </div>
                         </div>
 
                         <div *ngIf="query.schema.type=='number'">
-                            <div *ngIf="'minimum' in query.schema">
+                            <div *ngIf="query.schema.hasOwnProperty('minimum')">
                                 <input type="number" [min]="query.schema.minimum" step="0.01" [(ngModel)]="query.value" />
                             </div>
-                            <div *ngIf="!'minimum' in query.schema">
+                            <div *ngIf="!query.schema.hasOwnProperty('minimum')">
                                 <input type="number" step="0.01" [(ngModel)]="query.value" />
                             </div>
                         </div>

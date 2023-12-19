@@ -1,10 +1,10 @@
 // GRID
 .grid-wrapper {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    justify-items: stretch;
-    align-items: stretch;
-    justify-content: center;
+    grid-template-columns: 49% 49%;
+    justify-content: space-between;
+    min-width: 0;
+    max-width: 100%;
 }
 
 .grid-item {
@@ -18,7 +18,7 @@
 }
 
 .grid-item div input {
-    max-width: 100%;
+    max-width: 95%;
 }
 
 ////// INPUT
