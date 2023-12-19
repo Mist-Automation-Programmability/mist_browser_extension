@@ -143,9 +143,10 @@ button.doc-link {
     border: 1px solid #eee;
     box-shadow: rgb(0 0 0 / 10%) 0px 1px 3px 0px, rgb(0 0 0 / 6%) 0px 1px 2px 0px;
     cursor: pointer;
-    margin: 1em auto;
     transition: all 0.2s ease-in-out;
-    padding: 0;
+    padding: 1.5em 0;
+    border-radius: 2px;
+    width: 100%;
 }
 
 button.doc-link:hover {
@@ -186,9 +187,9 @@ button.doc-link .operation .operationId {
 
 button.doc-link .method {
     color: white;
-    border-radius: 4px 0 0;
+    border-radius: 2px 0 0;
     margin: 0;
-    padding: 0.5em;
+    padding: 0.8em;
     width: 6em;
     font-weight: 500;
     text-align: center;

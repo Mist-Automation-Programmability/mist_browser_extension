@@ -43,12 +43,14 @@ img.icon-open {
 
 h2 {
     cursor: default;
+    user-select: none;
 }
 
 input:focus,
 textarea:focus,
 select:focus {
     outline: none;
+    box-shadow: none !important;
 }
 
 ///////////////////////
@@ -121,4 +123,8 @@ app-about {
     display: flex;
     flex-direction: column;
     overflow: auto;
+}
+
+label {
+    user-select: none;
 }

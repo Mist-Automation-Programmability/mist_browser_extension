@@ -18,6 +18,7 @@
 h2 {
     font-weight: 200;
     margin-left: 0.8em;
+    user-select: none;
 }
 
 .not_mist {
@@ -34,11 +35,12 @@ h2 {
     justify-content: flex-start;
 }
 
-// DISABLED INPUTES
+// DISABLED INPUTS
 .ids {
     display: flex;
     flex-direction: column;
     margin: 0.5em;
+    user-select: none;
 }
 
 .box-ids {
