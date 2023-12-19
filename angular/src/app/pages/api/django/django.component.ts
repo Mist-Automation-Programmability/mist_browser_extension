@@ -31,6 +31,8 @@ export class ApiDjangoComponent implements OnInit {
 
   scope: string;
   scope_id: string;
+  objects = [];
+  focused: string | undefined = "";
   path_params = [];
   query_params: QueryparamsInterface[] = [];
   docs = {
@@ -100,6 +102,40 @@ export class ApiDjangoComponent implements OnInit {
         this.processQuery(query, tmp["specs"]["get"]["parameters"])
       }
     }
+
+    this.djangoUrl();
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
+  // REGEXP FUNCTIONS
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////  
+  setName(obj_name) {
+    obj_name = obj_name.toUpperCase();
+      if (obj_name == "evpn_topologies") {
+        return "evpn_topology"
+      } else if (obj_name.substr(obj_name.length-3, obj_name.length) == "IES") {
+        return obj_name.substr(obj_name.length-3, obj_name.length) + "Y";
+      } else if (obj_name.substr(obj_name.length-1, obj_name.length) == "S") {
+        return obj_name.slice(0, obj_name.length-1);
+      }
+  }
+
+  djangoUrl(): void {
+    const default_re = /(?<obj_type>[^/]*)\/(?<obj_id>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/gm;
+    this.objects = [];
+    for (var res_re; res_re = default_re.exec(this.tabUrl); null){
+      var obj_name = res_re?.groups?.obj_type;
+      var obj_id = res_re?.groups?.obj_id;
+      if (obj_name && obj_id){
+      this.objects.push({
+        name: this.setName(obj_name),
+        id: obj_id
+      })
+    }
+    
+    }
   }
 
   ////////////////////////////////////////////////////////////////////////////////////
@@ -157,4 +193,15 @@ export class ApiDjangoComponent implements OnInit {
     this._browser.tabOpenDoc(operation)
   }
 
+  // copy the id (org_id, site_id, ...) into the clipboard
+  copyId(inputElement: HTMLInputElement): void {
+    this.focused = inputElement.id;
+    inputElement.select();
+    document.execCommand('copy');
+    setTimeout(() => {
+      this.focused = "";
+      this._cd.detectChanges()
+    }, 100);
+    inputElement.setSelectionRange(0, 0);
+  }
 }

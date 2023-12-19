@@ -1,5 +1,21 @@
 <div class="content no-grow">
     <div>
+        <div *ngIf="objects.length > 0">
+            <h2>Page Info</h2>
+            <div *ngFor="let object of objects">
+                <div class="box-ids" *ngIf="object.id" style="display: flex;flex-direction: row;align-items: center;justify-content: center;">
+                <div style="flex-direction: column;display: flex;align-items: center;justify-content: center;flex-grow: 1;">
+                    <label class="ids" for={{object.name}}>{{object.name}} ID</label>
+                    <div class=box-ids-input>
+                        <input class="ids" type="text" readonly [value]="object.id" [ngClass]="focused == object.name? 'focused' : ''" id={{object.name}} #object_int>
+                    </div>
+                </div>
+                <button class="copy" name="copy" (click)="copyId(object_int)">
+                    <img class="copy" src="assets/copy.svg" alt="copy">
+                </button>
+            </div>
+            </div>
+        </div>
         <h2>Documentation</h2>
         <button *ngIf="docs.get" class="doc-link get" (click)="openDoc(docs.get.operationId)">
             <div class="method get">GET</div>
@@ -55,10 +71,10 @@
             <div class="grid-wrapper">
                 <div *ngFor="let query of query_params" class="grid-item">
                     <label>{{query.name}}
-                        <div *ngIf="query.description" class="tooltip">
+                        <!-- <div *ngIf="query.description" class="tooltip">
                             <img class="help icon" src="assets/question.svg">
                             <span class="tooltiptext">{{query.description}}</span>
-                        </div>
+                        </div> -->
                     </label>
 
 
