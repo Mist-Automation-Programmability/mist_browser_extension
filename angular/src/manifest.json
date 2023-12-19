@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Mist Extension",
   "short_name": "mist-extension",
-  "version": "3.4.0",
+  "version": "3.5.0",
   "description": "Web Browser Extension for Mist Developpers to provide easier access to Mist APIs",
   "background": {
     "scripts": [
