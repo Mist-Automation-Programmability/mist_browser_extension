@@ -14,8 +14,8 @@ export interface linkElement {
 })
 export class AboutComponent implements OnInit {
 
-  private github_release_url: string = "https://api.github.com/repos/tmunzer/mist_browser_extension/releases/latest";
-  github_repo_url: string = "https://github.com/tmunzer/mist_browser_extension";
+  private github_release_url: string = "https://api.github.com/repos/Mist-Automation-Programmability/mist_browser_extension/releases/latest";
+  github_repo_url: string = "https://github.com/Mist-Automation-Programmability/mist_browser_extension";
   current_version: string;
   last_version: string;
   up_to_date: boolean | undefined;
