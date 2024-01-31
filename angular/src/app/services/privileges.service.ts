@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
 import { SessionElement } from './browser.service';
-//import browser from "../browser/webextension-polyfill";
-var browser = require("webextension-polyfill");
 
 export interface OrgElement {
     org_id: string,

@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-//import browser from "../browser/webextension-polyfill";
 var browser = require("webextension-polyfill");
 
 

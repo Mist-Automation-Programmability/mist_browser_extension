@@ -1,3 +1,4 @@
+
 var browser_name = "ffx";
 if (typeof browser === "undefined") {
     var browser = chrome;

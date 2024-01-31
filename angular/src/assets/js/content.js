@@ -1,3 +1,9 @@
+var browser_name = "ffx";
+if (typeof browser === "undefined") {
+    var browser = chrome;
+    browser_name = "chrome";
+}
+console.log(typeof browser)
 browser.runtime.onMessage.addListener((request, sender, respond) => {
     const handler = new Promise((resolve, reject) => {
         if (request) {
