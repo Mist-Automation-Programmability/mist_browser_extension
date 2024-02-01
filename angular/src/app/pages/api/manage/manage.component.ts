@@ -91,7 +91,7 @@ export class ApiManageComponent implements OnInit {
     const site_common_objs = ["ap", "gateway", "switch", "assets", "wlan", "tags", "psk", "tunnels", "clients", "guestclients", "sdkclients", "wiredclients", "wxlan", "security", "switchconfig", "pcap", "siteedge", "cellularedges"]
     const org_evpn_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!evpn\/org(\/(?<topology_id>[0-9a-f-]*))?/yis;
     const org_common_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-zA-Z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view|template|rfTemplate)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*))/yis;
-    const org_common_objs = ["orgtags", "misttunnels", "templates", "switchtemplate", "gatewaytemplates", "hubs", "deviceprofiles", "org", "orgpsk", "configuration", "auditlogs", "apinventory", "adminconfig", "subscription", "edge", "vpns", "template", "rftemplates", "services", "networks", "applicationpolicy", "authpolicylabels", "naccertificates", "nacpolicy", "nacidentityproviders", "onboardingworkflow", "sdk", "premiumanalytics", "private5g"]
+    const org_common_objs = ["orgtags", "misttunnels", "templates", "switchtemplate", "gatewaytemplates", "hubs", "deviceprofiles", "org", "orgpsk", "configuration", "auditlogs", "apinventory", "adminconfig", "subscription", "edge", "vpns", "template", "rftemplates", "services", "networks", "applicationpolicy", "authpolicylabels", "naccertificates", "nacpolicy", "nacidentityproviders", "onboardingworkflow", "sdk", "premiumanalytics", "private5g", "securityevents"]
     const base_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!/yis;
     const msp_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/msp\/\?msp_id=(?<msp_id>[0-9a-f-]*)#!(?<obj>orgs|admins|auditLogs|mspInfo|labels)\/?(?<detail>aiops|details|detail|invite)?\/?(?<obj_id>[0-9a-z_-]*)/yis;;
 
@@ -851,11 +851,23 @@ export class ApiManageComponent implements OnInit {
           this.forgeOrgObject("sdkinvites", res?.groups?.host, res?.groups?.detail);
           break;
         case "premiumanalytics":
-          this.setName("Premium Analytics Dashboards", res?.groups?.detail)
+          this.setName("Premium Analytics Dashboards", res?.groups?.detail);
           this.quick_links.push({
             url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/pma/dashboards",
             name: "PMA Dashboards"
           })
+          break;
+        case "securityevents":
+          this.setName("Secutiry Events", res?.groups?.detail);
+          this.quick_links.push({
+            url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/security/events/search?type=idp_attack_event",
+            name: "IDP Events"
+          },
+          {
+            url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/security/events/search?type=ewf_event",
+            name: "URL Filtering Events"
+          })
+          break;
       }
     }
   }
