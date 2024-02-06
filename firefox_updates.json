@@ -80,6 +80,11 @@
                     "version": "3.5.2",
                     "update_link": "https://github.com/Mist-Automation-Programmability/mist_browser_extension/releases/download/3.5.2/mist_extension-3.5.2.xpi",
                     "update_info_url": "https://github.com/Mist-Automation-Programmability/mist_browser_extension/releases/tag/3.5.2"
+                },
+                {
+                    "version": "3.5.3",
+                    "update_link": "https://github.com/Mist-Automation-Programmability/mist_browser_extension/releases/download/3.5.3/mist_extension-3.5.3.xpi",
+                    "update_info_url": "https://github.com/Mist-Automation-Programmability/mist_browser_extension/releases/tag/3.5.3"
                 }
             ]
         }
