@@ -507,6 +507,10 @@ export class ApiManageComponent implements OnInit {
       this.quick_links.push({
         url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/deviceprofiles?type=gateway",
         name: "hubprofiles"
+      }),
+      this.quick_links.push({
+        url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/vpns",
+        name: "Org VPNs"
       })
     }
   }
