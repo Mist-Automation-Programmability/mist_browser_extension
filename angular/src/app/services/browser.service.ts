@@ -25,8 +25,10 @@ export class BrowserService {
         ".eu.mist.com",
         ".gc1.mist.com",
         ".gc2.mist.com",
+        ".gc3.mist.com",
         ".ac2.mist.com",
         ".ac5.mist.com",
+        ".ac99.mist.com",
     ]
 
     private host_manage: string[] = [
@@ -37,6 +39,7 @@ export class BrowserService {
         "manage.eu.mist.com",
         "manage.gc1.mist.com",
         "manage.gc2.mist.com",
+        "manage.gc3.mist.com",
         "manage.ac2.mist.com",
         "manage.ac5.mist.com",
         "manage.ac99.mist.com",
@@ -47,6 +50,7 @@ export class BrowserService {
         "api.eu.mist.com",
         "api.gc1.mist.com",
         "api.gc2.mist.com",
+        "api.gc3.mist.com",
         "api.ac2.mist.com",
         "api.ac5.mist.com",
         "api.ac99.mist.com",
