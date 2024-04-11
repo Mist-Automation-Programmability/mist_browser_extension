@@ -61,7 +61,7 @@
     "qs": "^6.11.2",
     "stylelint": "^14.16.1",
     "stylelint-config-xo": "^0.21.1",
-    "tar": "^6.2.0",
+    "tar": "^6.2.1",
     "uuid": "^9.0.1",
     "webextension-polyfill": "^0.10.0",
     "xo": "^0.53.1"
