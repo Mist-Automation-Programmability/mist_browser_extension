@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@angular-builders/custom-webpack": "^16.0.1",
-    "@angular-devkit/build-angular": "^16.2.12",
+    "@angular-devkit/build-angular": "^16.2.14",
     "@angular/animations": "^16.2.12",
     "@angular/cdk": "^16.2.12",
     "@angular/cli": "^16.2.10",
@@ -61,7 +61,7 @@
     "qs": "^6.11.2",
     "stylelint": "^14.16.1",
     "stylelint-config-xo": "^0.21.1",
-    "tar": "^6.2.0",
+    "tar": "^6.2.1",
     "uuid": "^9.0.1",
     "webextension-polyfill": "^0.10.0",
     "xo": "^0.53.1"
