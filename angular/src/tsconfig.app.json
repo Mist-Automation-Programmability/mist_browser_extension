@@ -14,8 +14,7 @@
     }
   },
   "files": [
-    "main.ts",
-    "polyfills.ts"
+    "main.ts"
   ],
   "include": [
     "angular/src/**/*.d.ts"
