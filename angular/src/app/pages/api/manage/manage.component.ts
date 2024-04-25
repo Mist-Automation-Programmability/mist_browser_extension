@@ -92,8 +92,8 @@ export class ApiManageComponent implements OnInit {
     const site_common_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*)\/)?(?<site_id>[0-9a-f-]*)?/yis;
     const site_common_objs = ["ap", "gateway", "switch", "assets", "wlan", "tags", "psk", "tunnels", "clients", "guestclients", "sdkclients", "wiredclients", "wxlan", "security", "switchconfig", "pcap", "siteedge", "cellularedges"]
     const org_evpn_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!evpn\/org(\/(?<topology_id>[0-9a-f-]*))?/yis;
-    const org_common_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-zA-Z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view|template|rfTemplate)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*))/yis;
-    const org_common_objs = ["orgtags", "misttunnels", "templates", "switchtemplate", "gatewaytemplates", "hubs", "deviceprofiles", "org", "orgpsk", "configuration", "auditlogs", "apinventory", "adminconfig", "subscription", "edge", "vpns", "template", "rftemplates", "services", "networks", "applicationpolicy", "authpolicylabels", "naccertificates", "nacpolicy", "nacidentityproviders", "onboardingworkflow", "sdk", "premiumanalytics", "private5g", "securityevents"]
+    const org_common_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-zA-Z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view|template|rfTemplate)\/)?([0-9]\/)?(?<obj_id>[0-9a-z_-]*)\??(?<query_params>[0-9a-z_=&-]*)?/yis;
+    const org_common_objs = ["orgtags", "misttunnels", "templates", "switchtemplate", "gatewaytemplates", "hubs", "deviceprofiles", "org", "orgpsk", "configuration", "auditlogs", "apinventory", "adminconfig", "subscription", "edge", "vpns", "template", "rftemplates", "services", "networks", "applicationpolicy", "authpolicylabels", "naccertificates", "nacpolicy", "nacidentityproviders", "onboardingworkflow", "sdk", "premiumanalytics", "private5g", "securityevents", "nacclients"];
     const base_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!/yis;
     const msp_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/msp\/\?msp_id=(?<msp_id>[0-9a-f-]*)#!(?<obj>orgs|admins|auditLogs|mspInfo|labels)\/?(?<detail>aiops|details|detail|invite)?\/?(?<obj_id>[0-9a-z_-]*)/yis;;
 
@@ -249,16 +249,19 @@ export class ApiManageComponent implements OnInit {
   forgeSiteOtherDevices(host: string | undefined, detail: string | undefined, extra_param: string | undefined = undefined): void {
     let url = "";
     if (detail) {
-      this.quick_links.push({ 
-        url: "https://api."+host+"/api/v1/orgs/"+this.org_id+"/stats/otherdevices/"+this.obj_id,
-        name: "Other Device Stats" });
-      this.quick_links.push({ 
-        url: "https://api."+host+"/api/v1/orgs/"+this.org_id+"/otherdevices/events/search?mac="+this.obj_id,
-        name: "Other Device Events" });
-    } else {      
-      this.quick_links.push({ 
-        url: "https://api."+host+"/api/v1/orgs/"+this.org_id+"/otherdevices/events/search",
-        name: "Other Devices Events" });
+      this.quick_links.push({
+        url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/stats/otherdevices/" + this.obj_id,
+        name: "Other Device Stats"
+      });
+      this.quick_links.push({
+        url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/otherdevices/events/search?mac=" + this.obj_id,
+        name: "Other Device Events"
+      });
+    } else {
+      this.quick_links.push({
+        url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/otherdevices/events/search",
+        name: "Other Devices Events"
+      });
     }
   }
 
@@ -351,7 +354,7 @@ export class ApiManageComponent implements OnInit {
     this.quick_links.push({
       url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/nac_clients/search",
       name: "NAC Events"
-    },{
+    }, {
       url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/nac_clients/count",
       name: "NAC Events Count"
     })
@@ -510,10 +513,10 @@ export class ApiManageComponent implements OnInit {
         url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/deviceprofiles?type=gateway",
         name: "hubprofiles"
       }),
-      this.quick_links.push({
-        url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/vpns",
-        name: "Org VPNs"
-      })
+        this.quick_links.push({
+          url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/vpns",
+          name: "Org VPNs"
+        })
     }
   }
 
@@ -702,7 +705,7 @@ export class ApiManageComponent implements OnInit {
           this.forgeSiteObjectStats("wxtunnels", res?.groups?.host, res?.groups?.detail);
           break;
         case "clients":
-        case "sdkclients": 
+        case "sdkclients":
           this.setName(res?.groups?.obj.substr(0, res?.groups?.obj.length - 1), res?.groups?.detail);
           this.forgeSiteObjectSearch(res?.groups?.obj, res?.groups?.host, res?.groups?.detail);
           this.forgeSiteObjectStats(res?.groups?.obj, res?.groups?.host, res?.groups?.detail);
@@ -742,14 +745,72 @@ export class ApiManageComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// COMMON URL FUNCTION DISPATCHER FOR ORG URLS
+  process_time_interval(end: number | null, timeInterval: string): string | null {
+    switch (timeInterval) {
+      case "today":
+      case "thisWeek":
+      case "60m":
+      case "24h":
+      case "7d":
+        end = Math.round(Date.now() / 1000);
+        break;
+      case "yesterday":
+        let d = new Date();
+        d.setHours(0);
+        d.setMinutes(0)
+        d.setSeconds(0);
+        d.setMilliseconds(0);
+        end = d.getTime() / 1000;
+        break;
+    }
+    if (end) return end.toString();
+    else return null;
+  }
+
+  process_query_params(res: RegExpExecArray): RegExpExecArray {
+    let query_params = res?.groups?.query_params;
+    let end, timeInterval;
+    if (query_params) {
+      query_params.split("&").forEach(param => {
+        let key = param.split("=")[0];
+        let value = param.split("=")[1];
+        switch (key) {
+          case "site":
+            res.groups["site_id"] = value;
+            break;
+          case "start":
+            res.groups["start"] = value;
+            break;
+          case "end":
+            end = value;
+            break;
+          case "timeInterval":
+            timeInterval = value;
+            break;
+          default:
+            res.groups[key] = value;
+            break;
+        }
+        res.groups[key] = value;
+      })
+      if (timeInterval) 
+        res.groups["end"] = this.process_time_interval(end, timeInterval);
+    }
+
+    return res;
+  }
+
   commonOrgUrl(res: RegExpExecArray): void {
+    res = this.process_query_params(res);
     this.org_id = res?.groups?.org_id;
-    let extra_params = undefined;
     const uuid_re = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/
     if (res?.groups?.host && res?.groups?.org_id && res?.groups?.obj) {
       this.obj_id = res?.groups?.obj_id;
       switch (res?.groups?.obj.toLowerCase()) {
         // ORG
+        case "nacclients":
+          this.orgNacUrl(res);
+          break;
         case "org":
           this.obj_id = undefined;
           this.setName("org", res?.groups?.detail);
@@ -869,10 +930,10 @@ export class ApiManageComponent implements OnInit {
             url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/security/events/search?type=idp_attack_event",
             name: "IDP Events"
           },
-          {
-            url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/security/events/search?type=ewf_event",
-            name: "URL Filtering Events"
-          })
+            {
+              url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/security/events/search?type=ewf_event",
+              name: "URL Filtering Events"
+            })
           break;
       }
     }
@@ -943,12 +1004,40 @@ export class ApiManageComponent implements OnInit {
       this.quick_links.push({
         url: "https://api." + res?.groups?.host + "/api/v1/sites/" + this.site_id + "/evpn_topologies",
         name: "Site EVPN Topologies"
-      },{
+      }, {
         url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/evpn_topologies",
         name: "Org EVPN Topologies"
       })
     }
+  }
 
+  orgNacUrl(res: RegExpExecArray): void {
+    this.org_id = res?.groups?.org_id;
+    this.site_id = res?.groups?.site_id;
+    let query_params = [];
+    let query_params_string = "";
+    if (res?.groups?.start) query_params.push("start="+ res?.groups?.start);
+    if (res?.groups?.end) query_params.push("end=" + res?.groups?.end);
+    if (query_params) query_params_string = "?" + query_params.join("&");
+    if (this.site_id) {
+      this.quick_links.push({
+        url: "https://api." + res?.groups?.host + "/api/v1/sites/" + this.site_id + "/nac_clients/search" + query_params_string,
+        name: "Site NAC Clients"
+      })
+      this.quick_links.push({
+        url: "https://api." + res?.groups?.host + "/api/v1/sites/" + this.site_id + "/nac_clients/events/search" + query_params_string,
+        name: "Site NAC Clients Events"
+      })
+    } else {
+      this.quick_links.push({
+        url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/nac_clients/search" + query_params_string,
+        name: "Org NAC Clients"
+      })
+      this.quick_links.push({
+        url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/nac_clients/events/search" + query_params_string,
+        name: "Org NAC Clients Events"
+      })
+    }
   }
   orgEvpnUrl(res: RegExpExecArray): void {
     this.org_id = res?.groups?.org_id;
@@ -965,7 +1054,6 @@ export class ApiManageComponent implements OnInit {
         name: "Org EVPN Topologies"
       })
     }
-
   }
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
@@ -1002,13 +1090,13 @@ export class ApiManageComponent implements OnInit {
     }
 
     this.setName("floor plan", res?.groups?.detail);
-    this.forgeSiteObject("maps", res?.groups?.host, res?.groups?.detail); 
-    if (this.obj_id){
-    this.quick_links.push({
-      url: "https://api." + res?.groups?.host + "/api/v1/sites/" + this.site_id + "/maps/" + this.obj_id +"/auto_placement",
-      name: "Auto Placement Status"
-    })   
-  }
+    this.forgeSiteObject("maps", res?.groups?.host, res?.groups?.detail);
+    if (this.obj_id) {
+      this.quick_links.push({
+        url: "https://api." + res?.groups?.host + "/api/v1/sites/" + this.site_id + "/maps/" + this.obj_id + "/auto_placement",
+        name: "Auto Placement Status"
+      })
+    }
   }
 
   ////////////////////////////////////////////////////////////////////////////////////
