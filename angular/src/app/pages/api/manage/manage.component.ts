@@ -66,10 +66,13 @@ export class ApiManageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this._browser.getUrl.then(tabUrl => {
+    this._browser.getUrl
+    .then(tabUrl => {
       this.tabUrl = tabUrl;
       this.generateApiUrl()
     })
+    .error(error => { console.log(error) })
+    .catch(error => { console.log(error) })
   }
 
   ////////////////////////////////////////////////////////////////////////////////////

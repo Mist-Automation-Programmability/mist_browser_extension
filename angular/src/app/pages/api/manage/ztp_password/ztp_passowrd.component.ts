@@ -34,24 +34,27 @@ export class ZtpPassowrdComponent implements OnInit {
   is_working: boolean = false;
 
   ngOnInit() {
-    this._browser.getUrl.then(tabUrl => {
-      let domain: string = "." + tabUrl.replace("https://", "").split("/")[0].split(".").slice(1).join(".");
-      this.eventZtpPassword.subscribe(do_retrieve => {
-        if (do_retrieve && !this.ztp_password_retrieved) {
-          this.is_working = true;
-          this._browser.getCookies(() => {
-            this._browser.sessions.subscribe(sessions => {
-              sessions.forEach(s => {
-                if (s.domain == domain) {
-                  this.session = s;
-                  this.retrieve_ztp_pasword();
-                }
-              })
-            });
-          })
-        }
-      });
-    })
+    this._browser.getUrl
+      .then(tabUrl => {
+        let domain: string = "." + tabUrl.replace("https://", "").split("/")[0].split(".").slice(1).join(".");
+        this.eventZtpPassword.subscribe(do_retrieve => {
+          if (do_retrieve && !this.ztp_password_retrieved) {
+            this.is_working = true;
+            this._browser.getCookies(() => {
+              this._browser.sessions.subscribe(sessions => {
+                sessions.forEach(s => {
+                  if (s.domain == domain) {
+                    this.session = s;
+                    this.retrieve_ztp_pasword();
+                  }
+                })
+              });
+            })
+          }
+        });
+      })
+      .error(error => { console.log(error) })
+      .catch(error => { console.log(error) })
 
   }
 

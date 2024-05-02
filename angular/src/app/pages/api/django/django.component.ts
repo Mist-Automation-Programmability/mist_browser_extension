@@ -52,14 +52,17 @@ export class ApiDjangoComponent implements OnInit {
 
   ngOnInit() {
     this.hosts = this._browser.getHostApi()
-    this._browser.getUrl.then(tabUrl => {
-      this.tabUrl = tabUrl;
-      const url = this.tabUrl.split("?");
-      const path = url[0].split("/");
-      const query = url[1];
-      let path_part = path.splice(3, path.length)
-      this.processPath(path_part, query);
-    })
+    this._browser.getUrl
+      .then(tabUrl => {
+        this.tabUrl = tabUrl;
+        const url = this.tabUrl.split("?");
+        const path = url[0].split("/");
+        const query = url[1];
+        let path_part = path.splice(3, path.length)
+        this.processPath(path_part, query);
+      })
+      .error(error => { console.log(error) })
+      .catch(error => { console.log(error) })
   }
 
   ////////////////////////////////////////////////////////////////////////////////////
@@ -113,28 +116,28 @@ export class ApiDjangoComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////  
   setName(obj_name) {
     obj_name = obj_name.toUpperCase();
-      if (obj_name == "evpn_topologies") {
-        return "evpn_topology"
-      } else if (obj_name.substr(obj_name.length-3, obj_name.length) == "IES") {
-        return obj_name.substr(obj_name.length-3, obj_name.length) + "Y";
-      } else if (obj_name.substr(obj_name.length-1, obj_name.length) == "S") {
-        return obj_name.slice(0, obj_name.length-1);
-      }
+    if (obj_name == "evpn_topologies") {
+      return "evpn_topology"
+    } else if (obj_name.substr(obj_name.length - 3, obj_name.length) == "IES") {
+      return obj_name.substr(obj_name.length - 3, obj_name.length) + "Y";
+    } else if (obj_name.substr(obj_name.length - 1, obj_name.length) == "S") {
+      return obj_name.slice(0, obj_name.length - 1);
+    }
   }
 
   djangoUrl(): void {
     const default_re = /(?<obj_type>[^/]*)\/(?<obj_id>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/gm;
     this.objects = [];
-    for (var res_re; res_re = default_re.exec(this.tabUrl); null){
+    for (var res_re; res_re = default_re.exec(this.tabUrl); null) {
       var obj_name = res_re?.groups?.obj_type;
       var obj_id = res_re?.groups?.obj_id;
-      if (obj_name && obj_id){
-      this.objects.push({
-        name: this.setName(obj_name),
-        id: obj_id
-      })
-    }
-    
+      if (obj_name && obj_id) {
+        this.objects.push({
+          name: this.setName(obj_name),
+          id: obj_id
+        })
+      }
+
     }
   }
 

@@ -110,14 +110,14 @@ export class PrivilegeService {
             if (a.name.toLowerCase() > b.name.toLowerCase()) return 1
             else if (a.name.toLowerCase() < b.name.toLowerCase()) return -1
             else return 0
-        });;
+        });
     }
     private sort_orgs(orgs: OrgElement[]): OrgElement[] {
         return orgs.sort((a, b) => {
             if (a.name.toLowerCase() > b.name.toLowerCase()) return 1
             else if (a.name.toLowerCase() < b.name.toLowerCase()) return -1
             else return 0
-        });;
+        });
     }
 
 }
