@@ -90,6 +90,11 @@
                     "version": "3.6.0",
                     "update_link": "https://github.com/Mist-Automation-Programmability/mist_browser_extension/releases/download/3.6.0/mist_extension-3.6.0.xpi",
                     "update_info_url": "https://github.com/Mist-Automation-Programmability/mist_browser_extension/releases/tag/3.6.0"
+                },
+                {
+                    "version": "3.7.0",
+                    "update_link": "https://github.com/Mist-Automation-Programmability/mist_browser_extension/releases/download/3.7.0/mist_extension-3.7.0.xpi",
+                    "update_info_url": "https://github.com/Mist-Automation-Programmability/mist_browser_extension/releases/tag/3.7.0"
                 }
             ]
         }
