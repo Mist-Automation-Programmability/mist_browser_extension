@@ -27,7 +27,8 @@
       ],
       "matches": [
         "https://*.mist.com/*",
-        "https://*.mistsys.com/*"
+        "https://*.mistsys.com/*",
+        "https://*.mist-federal.com/*"
       ]
     }
   ],
@@ -41,6 +42,7 @@
     "cookies",
     "tabs",
     "https://*.mist.com/*",
-    "https://*.mistsys.com/*"
+    "https://*.mistsys.com/*",
+    "https://*.mist-federal.com/*"
   ]
 }

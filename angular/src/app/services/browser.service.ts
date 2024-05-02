@@ -29,6 +29,8 @@ export class BrowserService {
         ".ac2.mist.com",
         ".ac5.mist.com",
         ".ac99.mist.com",
+        ".us.mist-federal.com",
+        ".staging.mist-federal.com"
     ]
 
     private host_manage: string[] = [
@@ -43,6 +45,8 @@ export class BrowserService {
         "manage.ac2.mist.com",
         "manage.ac5.mist.com",
         "manage.ac99.mist.com",
+        "manage.us.mist-federal.com",
+        "manage.staging.mist-federal.com"
     ]
 
     private host_api: string[] = [
@@ -54,6 +58,8 @@ export class BrowserService {
         "api.ac2.mist.com",
         "api.ac5.mist.com",
         "api.ac99.mist.com",
+        "api.us.mist-federal.com",
+        "api.staging.mist-federal.com"
     ]
 
     private doc_url: string = "https://doc.mist-lab.fr";

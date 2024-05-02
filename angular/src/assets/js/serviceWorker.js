@@ -11,7 +11,6 @@ browser.tabs.onActivated.addListener(info => {
 
 browser.tabs.onUpdated.addListener((tab) => {
     getUrl(tab);
-
 })
 
 function getUrl(tabId) {
@@ -29,12 +28,11 @@ function getUrl(tabId) {
 }
 
 function checkUrl(tabUrl) {
-
-    const org_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!/yis;
+    const org_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!/yis;
     const org = org_re.exec(tabUrl);
-    const msp_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/msp\/\?msp=(?<msp_id>[0-9a-f-]*)#!/yis;
+    const msp_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/msp\/\?msp=(?<msp_id>[0-9a-f-]*)#!/yis;
     const msp = msp_re.exec(tabUrl);
-    const api_re = /https:\/\/api\.(?<host>[a-z0-9.]*(mist|mistsys)\.com)\/api\/v1\/(?<scope>const|installer|invite|login|logout|mobile|msps|orgs|recover|register|self|sites|utils)/yis;
+    const api_re = /https:\/\/api\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/api\/v1\/(?<scope>const|installer|invite|login|logout|mobile|msps|orgs|recover|register|self|sites|utils)/yis;
     const api = api_re.exec(tabUrl);
 
     if (org || msp) {

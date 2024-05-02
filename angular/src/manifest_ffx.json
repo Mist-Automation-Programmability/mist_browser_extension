@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Mist Extension",
   "short_name": "mist-extension",
-  "version": "3.6.0",
+  "version": "3.7.0",
   "description": "Web Browser Extension for Mist Developpers to provide easier access to Mist APIs",
   "icons": {
     "16": "assets/favicon-16x16.png",
@@ -23,7 +23,8 @@
     {
       "matches": [
         "https://*.mist.com/*",
-        "https://*.mistsys.com/*"
+        "https://*.mistsys.com/*",
+        "https://*.mist-federal.com/*"
       ],
       "js": [
         "/assets/js/content.js"
@@ -44,6 +45,7 @@
   ],
   "host_permissions": [
     "https://*.mist.com/*",
-    "https://*.mistsys.com/*"
+    "https://*.mistsys.com/*",
+    "https://*.mist-federal.com/*"
   ]
 }

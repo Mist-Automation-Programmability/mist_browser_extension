@@ -26,6 +26,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 * EMEA 01 (manage.eu.mist.com)
 * EMEA 02 (manage.gc3.mist.com)
 * APAC 01 (manage.ac5.mist.com)
+* US GOV Cloud (manage.us.mist-federal.com)
 
 ## API Tab
 ### When on the Mist Dashboard
@@ -47,7 +48,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ## Account Tab
 
-* List all the current valid Mist session in the web browser for manage.mist.com, manage.eu.mist.com, manage.gc1.mist.com
+* List all the current valid Mist session in the web browser for manage.mist.com, manage.eu.mist.com, manage.gc1.mist.com, ...
 <div>
 <img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/accounts_list.png" width="40%">
 </div>
