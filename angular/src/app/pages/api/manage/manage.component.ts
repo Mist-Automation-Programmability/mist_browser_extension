@@ -386,6 +386,17 @@ export class ApiManageComponent implements OnInit {
       }
     }
   }
+  forgeSiteDeviceSyntheticTest(detail: string | undefined, host: string, device_type:string): void {
+    if (detail && this.obj_id) {
+    const mac = this.getMac(this.obj_id)
+    if (mac) {
+      this.quick_links.push({
+        url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/synthetic_test/search?mac=" + mac,
+        name: "Marvis Minis Test Results"
+      })
+    }
+  }
+  }
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// ORG OBJ FUNCTION
   forgeOrg(host: string) {
@@ -650,6 +661,7 @@ export class ApiManageComponent implements OnInit {
           this.forgeSiteObjectStats("devices", res?.groups?.host, res?.groups?.detail, extra_params);
           this.forgeSiteObjectEvents("devices", res?.groups?.obj, res?.groups?.host, res?.groups?.detail);
           this.forgeSiteApLastConfig(res?.groups?.detail, res?.groups?.host, res?.groups?.obj);
+          this.forgeSiteDeviceSyntheticTest(res?.groups?.detail, res?.groups?.host, res?.groups?.obj);
           break;
         case "switch":
           if (["list", "topology", "location"].includes(this.obj_id)) this.obj_id = undefined;
@@ -666,6 +678,7 @@ export class ApiManageComponent implements OnInit {
             this.forgeSiteObjectStats("devices", res?.groups?.host, res?.groups?.detail, extra_params);
             this.forgeSiteObjectEvents("devices", res?.groups?.obj, res?.groups?.host, res?.groups?.detail);
             this.forgeSiteDiscoveredSwitchUrl(res?.groups?.host);
+            this.forgeSiteDeviceSyntheticTest(res?.groups?.detail, res?.groups?.host, res?.groups?.obj);
           }
           break;
         case "assets":
