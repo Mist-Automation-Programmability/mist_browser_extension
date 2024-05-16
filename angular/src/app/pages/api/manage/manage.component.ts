@@ -875,6 +875,8 @@ export class ApiManageComponent implements OnInit {
           this.forgeOrgObject("inventory", res?.groups?.host, res?.groups?.detail, "type=switch");
           this.obj_name = "Gateways inventory";
           this.forgeOrgObject("inventory", res?.groups?.host, res?.groups?.detail, "type=gateway");
+          this.obj_name = "Other Device inventory";
+          this.forgeOrgObject("otherdevices", res?.groups?.host, res?.groups?.detail);
           break;
         case "adminconfig":
           this.setName("admin", res?.groups?.detail);
