@@ -76,7 +76,9 @@ export class PrivilegeService {
     }
 
     private checkIfOrgOverride(org_id: string): string | undefined {
-        return this.privilegeSource.value.find(p => p.org_id == org_id).role;
+        var privilege = this.privilegeSource.value.find(p => p.org_id == org_id);
+        if (privilege) return privilege.role;
+        return null;
     }
 
     private getOrgsInMsp(session: SessionElement, msp_id: string, min_role: string, cb:CallableFunction): void {
