@@ -35,7 +35,6 @@ export class ApiComponent implements OnInit {
         if (this.hosts_manage.includes(host)) this.display = "manage";
         else if (this.hosts_api.includes(host) && tabUrl.indexOf("/api/v1/docs") < 0) this.display = "django";
       })
-      .error(error => { console.log(error) })
       .catch(error => { console.log(error) })
   }
 
