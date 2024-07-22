@@ -67,12 +67,12 @@ export class ApiManageComponent implements OnInit {
 
   ngOnInit() {
     this._browser.getUrl
-    .then(tabUrl => {
-      this.tabUrl = tabUrl;
-      this.generateApiUrl()
-    })
-    .error(error => { console.log(error) })
-    .catch(error => { console.log(error) })
+      .then(tabUrl => {
+        this.tabUrl = tabUrl;
+        this.generateApiUrl()
+      })
+      .error(error => { console.log(error) })
+      .catch(error => { console.log(error) })
   }
 
   ////////////////////////////////////////////////////////////////////////////////////
@@ -274,13 +274,20 @@ export class ApiManageComponent implements OnInit {
     if (detail && detail != "new") {
       // set QUICK LINK
       url = "https://api." + host + "/api/v1/sites/" + this.site_id + "/" + obj_name + "/search?mac=" + this.obj_id;
-      this.quick_links.push({ url: url, name: this.obj_name });
+      this.quick_links.push({ url: url, name: obj_name.replace(/_/g, " ") });
     } else {
       // set QUICK LINK
       url = "https://api." + host + "/api/v1/sites/" + this.site_id + "/" + obj_name + "/search";
       if (extra_param) url += "?" + extra_param;
-      this.quick_links.push({ url: url, name: this.obj_name });
+      this.quick_links.push({ url: url, name: obj_name.replace(/_/g, " ") });
     }
+  }
+
+  forgeSiteObjectStatsSearch(obj_name: string, host: string, extra_param: string | undefined = undefined): void {
+    let url = "";
+    url = "https://api." + host + "/api/v1/sites/" + this.site_id + "/stats/" + obj_name + "/search" ;
+    if (extra_param) url += "?" + extra_param;
+    this.quick_links.push({ url: url, name: obj_name.replace(/_/g, " ") + " STATS" });
   }
 
   forgeSiteObjectStats(obj_name: string, host: string, detail: string, extra_param: string | undefined = undefined): void {
@@ -386,16 +393,16 @@ export class ApiManageComponent implements OnInit {
       }
     }
   }
-  forgeSiteDeviceSyntheticTest(detail: string | undefined, host: string, device_type:string): void {
+  forgeSiteDeviceSyntheticTest(detail: string | undefined, host: string, device_type: string): void {
     if (detail && this.obj_id) {
-    const mac = this.getMac(this.obj_id)
-    if (mac) {
-      this.quick_links.push({
-        url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/synthetic_test/search?mac=" + mac,
-        name: "Marvis Minis Test Results"
-      })
+      const mac = this.getMac(this.obj_id)
+      if (mac) {
+        this.quick_links.push({
+          url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/synthetic_test/search?mac=" + mac,
+          name: "Marvis Minis Test Results"
+        })
+      }
     }
-  }
   }
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// ORG OBJ FUNCTION
@@ -409,6 +416,9 @@ export class ApiManageComponent implements OnInit {
     }, {
       url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/ssos",
       name: "org ssos"
+    }, {
+      url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/ssoroles",
+      name: "org sso roles"
     }, {
       url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/webhooks",
       name: "org webhooks"
@@ -679,6 +689,8 @@ export class ApiManageComponent implements OnInit {
             this.forgeSiteObjectEvents("devices", res?.groups?.obj, res?.groups?.host, res?.groups?.detail);
             this.forgeSiteDiscoveredSwitchUrl(res?.groups?.host);
             this.forgeSiteDeviceSyntheticTest(res?.groups?.detail, res?.groups?.host, res?.groups?.obj);
+            this.forgeSiteObjectSearch("wired_clients", res?.groups?.host, null, "last_device_mac=" + this.obj_id.split("-")[4]);
+            this.forgeSiteObjectStatsSearch("switch_ports", res?.groups?.host, "mac=" + this.obj_id.split("-")[4]);
           }
           break;
         case "assets":
@@ -810,7 +822,7 @@ export class ApiManageComponent implements OnInit {
         }
         res.groups[key] = value;
       })
-      if (timeInterval) 
+      if (timeInterval)
         res.groups["end"] = this.process_time_interval(end, timeInterval);
     }
 
@@ -1035,7 +1047,7 @@ export class ApiManageComponent implements OnInit {
     this.site_id = res?.groups?.site_id;
     let query_params = [];
     let query_params_string = "";
-    if (res?.groups?.start) query_params.push("start="+ res?.groups?.start);
+    if (res?.groups?.start) query_params.push("start=" + res?.groups?.start);
     if (res?.groups?.end) query_params.push("end=" + res?.groups?.end);
     if (query_params) query_params_string = "?" + query_params.join("&");
     if (this.site_id) {
