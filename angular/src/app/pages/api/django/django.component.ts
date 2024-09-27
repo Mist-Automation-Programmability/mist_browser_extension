@@ -97,7 +97,8 @@ export class ApiDjangoComponent implements OnInit {
       ["get", "post", "put", "delete"].forEach(method => {
         if (tmp["specs"][method]) {
           this.docs[method] = {
-            operationId: tmp["specs"][method]["operationId"]
+            operationId: tmp["specs"][method]["operationId"],
+            doc_url: tmp["specs"][method]["doc_url"]
           }
         }
       })
@@ -192,8 +193,9 @@ export class ApiDjangoComponent implements OnInit {
   }
 
 
-  openDoc(operation: string) {
-    this._browser.tabOpenDoc(operation)
+  openDoc(url: string) {
+    console.log(url)
+    this._browser.tabOpenDoc(url)
   }
 
   // copy the id (org_id, site_id, ...) into the clipboard

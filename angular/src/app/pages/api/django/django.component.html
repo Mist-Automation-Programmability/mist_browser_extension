@@ -17,7 +17,7 @@
             </div>
         </div>
         <h2>Documentation</h2>
-        <button *ngIf="docs.get" class="doc-link get" (click)="openDoc(docs.get.operationId)">
+        <button *ngIf="docs.get" class="doc-link get" (click)="openDoc(docs.get.doc_url)">
             <div class="method get">GET</div>
             <div class="operation">
                 <span class="operationId">
@@ -28,7 +28,7 @@
                 </div>
             </div>
         </button>
-        <button *ngIf="docs.post" class="doc-link post" (click)="openDoc(docs.post.operationId)">
+        <button *ngIf="docs.post" class="doc-link post" (click)="openDoc(docs.post.doc_url)">
             <div class="method post">POST</div>
             <div class="operation">
                 <span class="operationId">
@@ -39,7 +39,7 @@
                 </div>
             </div>
         </button>
-        <button *ngIf="docs.put" class="doc-link put" (click)="openDoc(docs.put.operationId)">
+        <button *ngIf="docs.put" class="doc-link put" (click)="openDoc(docs.put.doc_url)">
             <div class="method put">PUT</div>
             <div class="operation">
                 <span class="operationId">
@@ -50,7 +50,7 @@
                 </div>
             </div>
         </button>
-        <button *ngIf="docs.delete" class="doc-link delete" (click)="openDoc(docs.delete.operationId)">
+        <button *ngIf="docs.delete" class="doc-link delete" (click)="openDoc(docs.delete.doc_url)">
             <div class="method delete">DELETE</div>
             <div class="operation">
                 <span class="operationId">

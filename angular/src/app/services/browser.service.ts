@@ -62,7 +62,6 @@ export class BrowserService {
         "api.staging.mist-federal.com"
     ]
 
-    private doc_url: string = "https://doc.mist-lab.fr";
 
     private issue_url: string = "https://github.com/tmunzer/mist_browser_extension/issues/new";
 
@@ -75,8 +74,8 @@ export class BrowserService {
     tabOpen(url: string): void {
         browser.tabs.create({ url: url });
     }
-    tabOpenDoc(operation: string): void {
-        browser.tabs.create({ url: this.doc_url + "/#operation/" + operation })
+    tabOpenDoc(url: string): void {
+        browser.tabs.create({ url: url })
     }
 
     issueOpen(): void {
