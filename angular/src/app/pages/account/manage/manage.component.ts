@@ -1,6 +1,7 @@
 import { Component, Input, Output, ChangeDetectionStrategy, ChangeDetectorRef, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { SessionElement } from "../../../services/browser.service"
 
 export interface TokenElement {
   name: string | null,
@@ -8,13 +9,6 @@ export interface TokenElement {
   last_used: number | null,
   created_time: number,
   key: string
-}
-
-export interface SessionElement {
-  domain: string;
-  csrftoken: string;
-  email: string;
-  has_sessionid: boolean;
 }
 
 @Component({
@@ -56,7 +50,7 @@ export class AccountManageComponent {
 
   getTokens(): void {
     if (this.do_manage) {
-      let url = "https://api" + this.session.domain + "/api/v1/self/apitokens"
+      let url = "https://" + this.session.api_host + "/api/v1/self/apitokens"
       this._http.get(url, { headers: { "X-CSRFTOKEN": this.session.csrftoken } }).subscribe((data: [TokenElement]) => {
         this.tokens = data;
         this.tokens.sort((a, b) => {
@@ -68,7 +62,7 @@ export class AccountManageComponent {
   }
 
   deleteToken(token_id: string): void {
-    let url = "https://api" + this.session.domain + "/api/v1/self/apitokens/" + token_id
+    let url = "https://" + this.session.api_host + "/api/v1/self/apitokens/" + token_id
     this._http.delete(url, { headers: { "X-CSRFTOKEN": this.session.csrftoken } }).subscribe(() => {
       this.getTokens();
     })

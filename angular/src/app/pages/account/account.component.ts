@@ -49,8 +49,7 @@ export class AccountComponent implements OnInit {
   getSelf() {
     this.sessions.forEach(session => {
       if (session.has_sessionid && session.csrftoken) {
-        let url = "https://api" + session.domain + "/api/v1/self"
-        this._http.get(url).subscribe((data) => {
+        this._http.get("https://" + session.api_host + "/api/v1/self").subscribe((data) => {
           session.email = data["email"];
           session.privileges = data["privileges"];
           this.has_active_sessions = true;
@@ -59,12 +58,17 @@ export class AccountComponent implements OnInit {
         })
       }
     })
+    this.sessions.sort((a, b) => {
+      if (a.cloud_host.toLowerCase() > b.cloud_host.toLowerCase()) return 1
+      else if (a.cloud_host.toLowerCase() < b.cloud_host.toLowerCase()) return -1
+      else return 0
+    })
     this._cd.detectChanges();
   }
 
 
-  openTab(domain: string) {
-    let dest_url = "https://manage" + domain + "/cloud.html";
+  openTab(cloud_host: string) {
+    let dest_url = "https://" + cloud_host + "/cloud.html";
     this._browser.tabOpen(dest_url);
   }
 

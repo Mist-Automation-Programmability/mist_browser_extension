@@ -53,7 +53,7 @@ export class ZtpPassowrdComponent implements OnInit {
           }
         });
       })
-      .error(error => { console.log(error) })
+     // .error(error => { console.log(error) })
       .catch(error => { console.log(error) })
 
   }

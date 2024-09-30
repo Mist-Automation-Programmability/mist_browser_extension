@@ -91,7 +91,7 @@ export class AccountCreateOrgComponent implements OnInit {
       body.privileges[0]["sitegroup_id"] = this.sitegroup_id;
     }
     if (this.do_create && this.org_id != "none") {
-      let url = "https://api" + this.session.domain + "/api/v1/orgs/" + this.org_id + "/apitokens"
+      let url = "https://" + this.session.api_host + "/api/v1/orgs/" + this.org_id + "/apitokens"
       this._http.post(url, body, { headers: { "X-CSRFTOKEN": this.session.csrftoken } }).subscribe((token: TokenElement) => {
         this.token = token;
         this._cd.detectChanges();

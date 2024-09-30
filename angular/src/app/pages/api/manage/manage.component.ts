@@ -71,7 +71,7 @@ export class ApiManageComponent implements OnInit {
         this.tabUrl = tabUrl;
         this.generateApiUrl()
       })
-      .error(error => { console.log(error) })
+   //   .error(error => { console.log(error) })
       .catch(error => { console.log(error) })
   }
 

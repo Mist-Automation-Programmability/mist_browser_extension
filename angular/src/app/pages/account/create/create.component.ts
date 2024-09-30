@@ -1,6 +1,7 @@
 import { Component, Input, Output, ChangeDetectionStrategy, ChangeDetectorRef, EventEmitter, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { SessionElement } from "../../../services/browser.service"
 
 export interface TokenElement {
   id: string | undefined,
@@ -10,11 +11,11 @@ export interface TokenElement {
   key: string,
 }
 
-export interface SessionElement {
-  domain: string,
-  csrftoken: string,
-  email: string,
-}
+// export interface SessionElement {
+//   domain: string,
+//   csrftoken: string,
+//   email: string,
+// }
 
 @Component({
   selector: 'app-account-create',
@@ -59,7 +60,7 @@ export class AccountCreateComponent implements OnInit {
   ////////////
   createToken(): void {
     if (this.do_create) {
-      let url = "https://api" + this.session.domain + "/api/v1/self/apitokens";
+      let url = "https://" + this.session.api_host + "/api/v1/self/apitokens";
       this._http.post(url, {name: this.token_name}, { headers: { "X-CSRFTOKEN": this.session.csrftoken } }).subscribe((token: TokenElement) => {
         this.token = token;
         this._cd.detectChanges();

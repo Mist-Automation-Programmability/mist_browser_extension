@@ -24,7 +24,8 @@
       "matches": [
         "https://*.mist.com/*",
         "https://*.mistsys.com/*",
-        "https://*.mist-federal.com/*"
+        "https://*.mist-federal.com/*",
+        "https://*.ai.juniper.net/*"
       ],
       "js": [
         "/assets/js/content.js"
@@ -46,6 +47,7 @@
   "host_permissions": [
     "https://*.mist.com/*",
     "https://*.mistsys.com/*",
-    "https://*.mist-federal.com/*"
+    "https://*.mist-federal.com/*",
+    "https://*.ai.juniper.net/*"
   ]
 }

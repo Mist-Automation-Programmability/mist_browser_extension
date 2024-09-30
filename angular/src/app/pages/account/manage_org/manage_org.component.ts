@@ -65,7 +65,7 @@ export class AccountManageOrgComponent implements OnInit {
 
   getTokens(): void {
     if (this.do_manage && this.org_id != 'none') {
-      let url = "https://api" + this.session.domain + "/api/v1/orgs/" + this.org_id + "/apitokens"
+      let url = "https://" + this.session.api_host + "/api/v1/orgs/" + this.org_id + "/apitokens"
       this._http.get(url, { headers: { "X-CSRFTOKEN": this.session.csrftoken } }).subscribe((data: [TokenElement]) => {
         this.tokens = data;
         this.tokens.sort((a, b) => {
@@ -80,7 +80,7 @@ export class AccountManageOrgComponent implements OnInit {
   }
 
   deleteToken(token_id: string): void {
-    let url = "https://api" + this.session.domain + "/api/v1/orgs/" + this.org_id + "/apitokens/" + token_id
+    let url = "https://" + this.session.api_host + "/api/v1/orgs/" + this.org_id + "/apitokens/" + token_id
     this._http.delete(url, { headers: { "X-CSRFTOKEN": this.session.csrftoken } }).subscribe(() => {
       this.getTokens();
     })
