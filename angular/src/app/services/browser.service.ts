@@ -34,7 +34,7 @@ export class BrowserService {
         ".us.mist-federal.com",
         ".staging.mist-federal.com",
         ".ai.juniper.net",
-        "stage.ai.juniper.net",
+        ".stage.ai.juniper.net",
     ]
 
     private host_manage: string[] = [
