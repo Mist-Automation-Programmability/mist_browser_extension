@@ -1,6 +1,6 @@
 {
   "name": "mist-extension",
-  "version": "3.9.0",
+  "version": "4.0.0",
   "description": "Generated with @larscom/ng-mist-extension",
   "scripts": {
     "start": "npm run watch",
