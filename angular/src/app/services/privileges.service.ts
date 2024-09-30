@@ -84,7 +84,7 @@ export class PrivilegeService {
     private getOrgsInMsp(session: SessionElement, msp_id: string, min_role: string, cb:CallableFunction): void {
         var orgs: OrgElement[] = [];
         const msp_role = this.privilegeSource.value.find(p => p.msp_id == msp_id && p.scope == "msp").role;
-        let url = "https://api" + session.domain + "/api/v1/msps/" + msp_id + "/orgs"
+        let url = "https://" + session.api_host + "/api/v1/msps/" + msp_id + "/orgs"
         this._http.get(url, { headers: { "X-CSRFTOKEN": session.csrftoken } }).subscribe((orgs_from_mist: any[]) => {
             orgs_from_mist.forEach(org => {
                 var org_role = this.checkIfOrgOverride(org.id);

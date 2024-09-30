@@ -59,9 +59,9 @@ export class AccountComponent implements OnInit {
       }
     })
     this.sessions.sort((a, b) => {
-      if (a.cloud_host.toLowerCase() > b.cloud_host.toLowerCase()) return 1
-      else if (a.cloud_host.toLowerCase() < b.cloud_host.toLowerCase()) return -1
-      else return 0
+      if (a.cloud_host.toLowerCase() > b.cloud_host.toLowerCase()) return 1;
+      else if (a.cloud_host.toLowerCase() < b.cloud_host.toLowerCase()) return -1;
+      else return 0;
     })
     this._cd.detectChanges();
   }

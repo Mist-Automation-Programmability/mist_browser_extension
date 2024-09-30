@@ -59,19 +59,13 @@ export class ApiManageComponent implements OnInit {
     "manage.us.mist-federal.com"
   ]
 
-  external_links: { [index: string]: string } = {
-    doc: "https://doc.mist-lab.fr",
-    postman: "https://documenter.getpostman.com/view/224925/SzYgQufe",
-    mist: "https://api.mist.com/api/v1/docs"
-  }
-
   ngOnInit() {
     this._browser.getUrl
       .then(tabUrl => {
         this.tabUrl = tabUrl;
         this.generateApiUrl()
       })
-   //   .error(error => { console.log(error) })
+      //   .error(error => { console.log(error) })
       .catch(error => { console.log(error) })
   }
 
@@ -285,7 +279,7 @@ export class ApiManageComponent implements OnInit {
 
   forgeSiteObjectStatsSearch(obj_name: string, host: string, extra_param: string | undefined = undefined): void {
     let url = "";
-    url = "https://api." + host + "/api/v1/sites/" + this.site_id + "/stats/" + obj_name + "/search" ;
+    url = "https://api." + host + "/api/v1/sites/" + this.site_id + "/stats/" + obj_name + "/search";
     if (extra_param) url += "?" + extra_param;
     this.quick_links.push({ url: url, name: obj_name.replace(/_/g, " ") + " STATS" });
   }
@@ -1505,13 +1499,6 @@ export class ApiManageComponent implements OnInit {
     this.action = "";
     this.eventZtpPassword.next(false);
     this._cd.detectChanges();
-  }
-
-  // open a new tab 
-  openTab(target: string) {
-    if (target in this.external_links) {
-      this._browser.tabOpen(this.external_links[target]);
-    }
   }
 
   // copy the id (org_id, site_id, ...) into the clipboard
