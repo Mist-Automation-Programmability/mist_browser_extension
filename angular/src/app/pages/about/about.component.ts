@@ -27,6 +27,7 @@ export class AboutComponent implements OnInit {
 
   ngOnInit(){
     this.current_version = this._browser.getVersion();
+    this.checkNewRelease();
   }
 
 
@@ -61,13 +62,10 @@ export class AboutComponent implements OnInit {
     let dest_url: string|undefined = undefined
     switch (target) {
       case "openapi":
-        dest_url = "https://doc.mist-lab.fr";
+        dest_url = "https://www.juniper.net/documentation/us/en/software/mist/api/http/getting-started/how-to-get-started";
         break;
       case "postman":
         dest_url = "https://documenter.getpostman.com/view/224925/SzYgQufe";
-        break;
-      case "mist":
-        dest_url = "https://api.mist.com/api/v1/docs";
         break;
       case "html_url":
         dest_url = this.html_url;

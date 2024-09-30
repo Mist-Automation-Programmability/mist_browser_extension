@@ -1,16 +1,12 @@
 <div class="content no-grow">
     <h2>Mist API Documentation</h2>
     <div class="box-links">
-        <button class="links large" (click)="openTab('postman')">
-            Postman
-            <img class="icon-open" src="assets/open.svg" alt="open">
-        </button>
         <button class="links large" (click)="openTab('openapi')">
-            OpenAPI
+            <div>Documentation</div>
             <img class="icon-open" src="assets/open.svg" alt="open">
         </button>
-        <button class="links large" (click)="openTab('mist')">
-            MistAPI
+        <button class="links large" (click)="openTab('postman')">
+            <div>Postman</div>
             <img class="icon-open" src="assets/open.svg" alt="open">
         </button>
     </div>
@@ -26,11 +22,12 @@
         <div class="version-info">
             <div class="version-text">Lastest Version:</div>
             <div class="version-unknown" *ngIf="!last_version && !error_happened">
-                <div>Unknown</div>
+                <div>Searching for now version...</div>
                 <img src="assets/question.svg" alt="unknow version">
             </div>
             <div class="version-uptodate" *ngIf="last_version && up_to_date">
                 <div>You have the lastest Version</div>
+                <img src="assets/check_circle.svg" alt="unknow version">
             </div>
             <div class="version-newversion" *ngIf="last_version && !up_to_date">
                 <div>New version available ({{last_version}})</div>
@@ -43,11 +40,10 @@
                 <div>{{error_message}}</div>
             </div>
         </div>
-        <button class="stroked" style="margin:0;border-radius: 0;" (click)="checkNewRelease()">Check For New Version</button>
     </div>
     <div class="box-links">
         <button class="links large" (click)="openTab('github')">
-            Extension Page
+            <div>Extension Page</div>
             <img class="icon-open" src="assets/open.svg" alt="open">
         </button>
     </div>
