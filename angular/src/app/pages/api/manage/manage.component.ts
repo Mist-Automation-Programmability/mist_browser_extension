@@ -80,8 +80,8 @@ export class ApiManageComponent implements OnInit {
   generateApiUrl() {
     const orgsle_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/(?<scope>siteComparison|wiredSiteComparison|wanSiteComparison)\/(?<sle>[a-z-]*)\/(?<worstsle>[a-z-]*)\/([a-z-_]*)\/(?<period>[0-9a-z-]*)\/(?<start>[0-9]*)\/(?<stop>[0-9]*)/iys;
     const sle_details_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/(?<detail>serviceLevels|wiredserviceLevels|wanServiceLevels|juniperGateway)\/page2\/(stats|timeline)\/[a-zA-Z-]+\/[a-zA-Z-]+\/(?<scope>site|device|client|juniperSwitch|juniperGateway)\/(?<scope_id>[a-f0-9-]*)\/(?<sle_name>[a-z-]*)\/(?<sle_sub_1>[a-zA-Z-]+)\/(?<sle_sub_2>[a-zA-Z-]+)(\/(?<period>[0-9a-z]*))?(\/(?<start>[0-9]*))?(\/(?<stop>[0-9]*))?\/(?<site_id>[a-f0-9-]*)/iys;
-    const sle_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/(?<detail>serviceLevels|wiredserviceLevels|wanServiceLevels|juniperGateway)(\/(?<scope>site|device|client|juniperSwitch|juniperGateway))?(\/(?<scope_id>[a-f0-9-]*))?(\/(?<period>[0-9a-z-]*))?(\/(?<start>[0-9]*))?(\/(?<stop>[0-9]*))?\/(?<site_id>[a-f0-9-]*)/iys;
-    const insights_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/insights\/((?<obj>[a-z]+)\/)?((?<obj_id>[a-z0-9-]+)\/)?((?<period>[a-z0-9]+)\/)?((?<start>[0-9]*)\/)?((?<stop>[0-9]*)\/)?(?<site_id>[0-9a-f-]*)?/iys;
+    const sle_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/(?<detail>serviceLevels|wiredserviceLevels|wanServiceLevels|juniperGateway|applicationServiceLevels)(\/(?<scope>org|site|device|client|juniperSwitch|juniperGateway))?(\/(?<scope_id>[a-f0-9-]*))?(\/(?<period>[0-9a-z-]*))?(\/(?<start>[0-9]*))?(\/(?<stop>[0-9]*))?\/(?<site_id>[a-f0-9-]*)(\?app=(?<app>[a-zA-Z]*))?/iys;
+    const insights_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/(?<detail>insights|insights-full-stack)\/((?<obj>[a-z]+)\/)?((?<obj_id>[a-z0-9-]+)\/)?((?<period>[a-z0-9]+)\/)?((?<start>[0-9]*)\/)?((?<stop>[0-9]*)\/)?(?<site_id>[0-9a-f-]*)?/iys;
     const alarm_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!alerts\/?(?<scope>org|site)?\/?(?<uuid>[0-9a-z-]*)\/?(?<period>[0-9a-z]*)?\/?(?<start>[0-9]*)?\/?(?<stop>[0-9]*)?\/?(?<show_ack>true|false)?\/?(?<group>[a-z%0-9]*)?\/?(?<show_crit>true|false)?\/?(?<show_warn>true|false)?\/?(?<show_info>true|false)?\/?(?<site_id>[0-9a-z-]*)?/iys;
     const events_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!marvis\/?(?<scope>org|site)?\/?(?<period>[0-9a-z]*)?\/?(?<start>[0-9]*)?\/?(?<stop>[0-9]*)?\/?(?<site_id>[0-9a-z-]*)?/iys;
     const floorplans_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!cliLocation\/(?<detail>view|config|validationPath|wayfinding)?\/?(?<uuid>[0-9a-f-]*)\/?(floorplan|beaconsAndZones)?\/?(?<site_id>[0-9a-f-]*)?/iys;
@@ -619,6 +619,57 @@ export class ApiManageComponent implements OnInit {
       });
     })
   }
+  forgeApplicationSlehUrl(host: string, scope: string | undefined, site_id: string, scope_id: string, app: string | null = "Apps", extra_params: string | null = null): void {
+    /*
+    host: mist.com, eu.mist.com, gc1.mist.com
+    scope: wifi, wire, wan
+    */
+    var ep = [extra_params]
+    if (app == "all") {
+      app = "Apps";
+    }
+    else if (app) {
+      ep.push("app=" + app)
+    }
+
+    if (scope != "site" && scope != "org") {
+      ep.push(scope+"="+scope_id.slice(-12))
+    }
+
+    var extra_app_params = ep.join("&")
+
+    if (scope == "org"){
+      this.quick_links.push(
+        {
+          url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/insights/worst-sites-by-calls?" + extra_app_params,
+          name: "Worst "+app+" Sites"
+        }
+      )
+    } else {
+    this.quick_links.push(
+      {
+        url: "https://api." + host + "/api/v1/sites/" + site_id + "/insights/call-metrics?" + extra_app_params,
+        name: app + " User Histogramm"
+      },
+      {
+        url: "https://api." + host + "/api/v1/sites/" + site_id + "/stats/calls/count?bad=true&topk=site_id|bad_minutes&" + extra_app_params,
+        name: "bad " + app + " user minutes"
+      },
+      {
+        url: "https://api." + host + "/api/v1/sites/" + site_id + "/sle/site/978c48e6-6ef6-11e6-8bbf-02e208b2d34f/metric/call-wireless-capacity/summary-trend?" + extra_app_params,
+        name: app + " SLE Metrics"
+      },
+      {
+        url: "https://api." + host + "/api/v1/sites/" + site_id + "/stats/calls/troubleshoot?" + extra_app_params,
+        name: "Troubleshoot " + app
+      },
+      {
+        url: "https://api." + host + "/api/v1/sites/" + site_id + "/stats/calls/search?" + extra_app_params,
+        name: "List of " + app + " Calls"
+      }
+    );
+  }
+  }
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// BASE URL FUNCTION DISPATCHER
@@ -1139,7 +1190,9 @@ export class ApiManageComponent implements OnInit {
   insightsUrl(res: RegExpExecArray): void {
     this.org_id = res?.groups?.org_id;
     this.site_id = res?.groups?.site_id;
-    this.obj_id = res?.groups?.obj_id;
+    if (res?.groups?.obj_id != this.org_id && res?.groups?.site_id != this.site_id) {
+      this.obj_id = res?.groups?.obj_id;
+    }
     if (this.site_id == this.obj_id) this.obj_id = undefined
     let extra_params: string | undefined = undefined;
     if (res?.groups?.start && res?.groups?.stop) {
@@ -1218,9 +1271,14 @@ export class ApiManageComponent implements OnInit {
     }
   }
 
+
+
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// SLE URL FUNCTION DISPATCHER
+  applicationSleUrl(): void {
+
+  }
 
   sleUrl(res: RegExpExecArray): void {
     this.org_id = res?.groups?.org_id;
@@ -1234,6 +1292,11 @@ export class ApiManageComponent implements OnInit {
     if (res?.groups?.scope == "juniperSwitch") scope = "switch";
     else if (res?.groups?.scope == "juniperGateway") scope = "gateway";
     else if (res?.groups?.scope == "device") scope = "ap";
+    else if (res?.groups?.scope == "org") {
+      scope = "org";
+      this.obj_id = null;
+      this.site_id = null;
+    }
     else if (res?.groups?.scope) scope = res?.groups?.scope;
     else if (res.groups && this.site_id) {
       scope = "site";
@@ -1256,6 +1319,7 @@ export class ApiManageComponent implements OnInit {
             "capacity",
             "ap-availability"
           ]
+          this.forgeSlehUrl(res?.groups?.host, scope, res?.groups?.site_id, res?.groups?.scope_id, sles, extra_params)
           break;
         case "wiredServiceLevels":
           sles = [
@@ -1263,6 +1327,7 @@ export class ApiManageComponent implements OnInit {
             "switch-health",
             "switch-throughput"
           ]
+          this.forgeSlehUrl(res?.groups?.host, scope, res?.groups?.site_id, res?.groups?.scope_id, sles, extra_params)
           break;
         case "wanServiceLevels":
           sles = [
@@ -1270,9 +1335,13 @@ export class ApiManageComponent implements OnInit {
             "wan-link-health",
             "application-health"
           ]
+          this.forgeSlehUrl(res?.groups?.host, scope, res?.groups?.site_id, res?.groups?.scope_id, sles, extra_params)
+          break;
+        case "applicationServiceLevels":
+          console.log(res?.groups)
+          this.forgeApplicationSlehUrl(res?.groups?.host, scope, res?.groups?.site_id, res?.groups?.scope_id, res?.groups?.app, extra_params)
           break;
       }
-      this.forgeSlehUrl(res?.groups?.host, scope, res?.groups?.site_id, res?.groups?.scope_id, sles, extra_params)
     }
   }
 
