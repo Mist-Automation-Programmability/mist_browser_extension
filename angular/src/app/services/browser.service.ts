@@ -44,6 +44,7 @@ export class BrowserService {
         "integration.mist.com",
         "manage.eu.mist.com",
         "manage.gc1.mist.com",
+        "integration.gc1.mist.com",
         "manage.gc2.mist.com",
         "manage.gc3.mist.com",
         "manage.ac2.mist.com",

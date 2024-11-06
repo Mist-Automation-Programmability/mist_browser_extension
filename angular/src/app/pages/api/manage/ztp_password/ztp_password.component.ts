@@ -9,11 +9,11 @@ export interface ZtpResponseElement {
 
 @Component({
   selector: 'app-ztp-password',
-  templateUrl: 'ztp_passowrd.component.html',
+  templateUrl: 'ztp_password.component.html',
   styleUrls: ['ztp_password.component.scss', '../../../../scss/button.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ZtpPassowrdComponent implements OnInit {
+export class ZtpPasswordComponent implements OnInit {
 
   //@Input() domain: string;
   @Output() closeActionTab = new EventEmitter<string>();
