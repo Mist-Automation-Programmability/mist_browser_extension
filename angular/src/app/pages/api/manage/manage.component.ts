@@ -326,6 +326,17 @@ export class ApiManageComponent implements OnInit {
     }
   }
 
+  forgeClientCalls(obj_name: string, device_type: string | undefined, host: string, detail: string, extra_param: string | undefined = undefined): void {
+    this.quick_links.push({
+      url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/stats/calls/search?interval=3600&mac=" + this.obj_id + "&" + extra_param, //&app=teams&wired=false",
+      name: obj_name + " Calls List"
+    }, {
+      url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/stats/calls/client/" + this.obj_id + "/troubleshoot?" + extra_param,
+      name: "Tshoot " + obj_name + " Calls"
+    }
+    )
+  }
+
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// SITE SECURITY FUNCTION
   forgeSiteSecurity(host: string): void {
@@ -633,42 +644,42 @@ export class ApiManageComponent implements OnInit {
     }
 
     if (scope != "site" && scope != "org") {
-      ep.push(scope+"="+scope_id.slice(-12))
+      ep.push(scope + "=" + scope_id.slice(-12))
     }
 
     var extra_app_params = ep.join("&")
 
-    if (scope == "org"){
+    if (scope == "org") {
       this.quick_links.push(
         {
           url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/insights/worst-sites-by-calls?" + extra_app_params,
-          name: "Worst "+app+" Sites"
+          name: "Worst " + app + " Sites"
         }
       )
     } else {
-    this.quick_links.push(
-      {
-        url: "https://api." + host + "/api/v1/sites/" + site_id + "/insights/call-metrics?" + extra_app_params,
-        name: app + " User Histogramm"
-      },
-      {
-        url: "https://api." + host + "/api/v1/sites/" + site_id + "/stats/calls/count?bad=true&topk=site_id|bad_minutes&" + extra_app_params,
-        name: "bad " + app + " user minutes"
-      },
-      {
-        url: "https://api." + host + "/api/v1/sites/" + site_id + "/sle/site/978c48e6-6ef6-11e6-8bbf-02e208b2d34f/metric/call-wireless-capacity/summary-trend?" + extra_app_params,
-        name: app + " SLE Metrics"
-      },
-      {
-        url: "https://api." + host + "/api/v1/sites/" + site_id + "/stats/calls/troubleshoot?" + extra_app_params,
-        name: "Troubleshoot " + app
-      },
-      {
-        url: "https://api." + host + "/api/v1/sites/" + site_id + "/stats/calls/search?" + extra_app_params,
-        name: "List of " + app + " Calls"
-      }
-    );
-  }
+      this.quick_links.push(
+        {
+          url: "https://api." + host + "/api/v1/sites/" + site_id + "/insights/call-metrics?" + extra_app_params,
+          name: app + " User Histogramm"
+        },
+        {
+          url: "https://api." + host + "/api/v1/sites/" + site_id + "/stats/calls/count?bad=true&topk=site_id|bad_minutes&" + extra_app_params,
+          name: "bad " + app + " user minutes"
+        },
+        {
+          url: "https://api." + host + "/api/v1/sites/" + site_id + "/sle/site/978c48e6-6ef6-11e6-8bbf-02e208b2d34f/metric/call-wireless-capacity/summary-trend?" + extra_app_params,
+          name: app + " SLE Metrics"
+        },
+        {
+          url: "https://api." + host + "/api/v1/sites/" + site_id + "/stats/calls/troubleshoot?" + extra_app_params,
+          name: "Troubleshoot " + app
+        },
+        {
+          url: "https://api." + host + "/api/v1/sites/" + site_id + "/stats/calls/search?" + extra_app_params,
+          name: "List of " + app + " Calls"
+        }
+      );
+    }
   }
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
@@ -1190,7 +1201,7 @@ export class ApiManageComponent implements OnInit {
   insightsUrl(res: RegExpExecArray): void {
     this.org_id = res?.groups?.org_id;
     this.site_id = res?.groups?.site_id;
-    if (res?.groups?.obj_id != this.org_id && res?.groups?.site_id != this.site_id) {
+    if (res?.groups?.obj_id != this.org_id && res?.groups?.obj_id != this.site_id) {
       this.obj_id = res?.groups?.obj_id;
     }
     if (this.site_id == this.obj_id) this.obj_id = undefined
@@ -1212,6 +1223,7 @@ export class ApiManageComponent implements OnInit {
           this.forgeSiteObjectSearch("clients", res?.groups?.host, "detail");
           this.forgeSiteObjectStats("clients", res?.groups?.host, "detail", extra_params);
           this.forgeSiteObjectEvents("clients", undefined, res?.groups?.host, "detail", extra_params);
+          this.forgeClientCalls("clients", undefined, res?.groups?.host, "detail", extra_params);
           break;
         case "juniperSwitch":
           this.setName("switch", "insights");
@@ -1229,6 +1241,7 @@ export class ApiManageComponent implements OnInit {
           this.setName("wired client", "insights");
           this.forgeSiteObjectSearch("wired_clients", res?.groups?.host, "detail", extra_params);
           this.forgeSiteObjectEvents("wired_clients", undefined, res?.groups?.host, "detail", extra_params);
+          this.forgeClientCalls("wired client", undefined, res?.groups?.host, "detail", extra_params);
           break;
         case "edge":
           this.setName("mxedge", "insights");
@@ -1338,7 +1351,6 @@ export class ApiManageComponent implements OnInit {
           this.forgeSlehUrl(res?.groups?.host, scope, res?.groups?.site_id, res?.groups?.scope_id, sles, extra_params)
           break;
         case "applicationServiceLevels":
-          console.log(res?.groups)
           this.forgeApplicationSlehUrl(res?.groups?.host, scope, res?.groups?.site_id, res?.groups?.scope_id, res?.groups?.app, extra_params)
           break;
       }
