@@ -875,6 +875,8 @@ export class ApiManageComponent implements OnInit {
           this.forgeOrgObject("logs", res?.groups?.host, res?.groups?.detail);
           break;
         case "apinventory":
+          this.obj_name = "inventory";
+          this.forgeOrgObject("inventory", res?.groups?.host, res?.groups?.detail, null);
           this.obj_name = "APs inventory";
           this.forgeOrgObject("inventory", res?.groups?.host, res?.groups?.detail, "type=ap");
           this.obj_name = "Switches inventory";
