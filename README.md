@@ -44,6 +44,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 <div>
 <img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/api.png" width="50%">
 </div>
+<div>
+<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/api_2.png" width="50%">
+</div>
 
 ### When on a Django Page
 * Lists all the available query parameters
