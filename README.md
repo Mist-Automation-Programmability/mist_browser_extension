@@ -18,15 +18,23 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 
 # Features
-## Supported Mist Clouds:
-* Global 01 (manage.mist.com)
-* Global 02 (manage.gc1.mist.com)
-* Global 03 (manage.ac2.mist.com)
-* Global 04 (manage.gc2.mist.com)
-* EMEA 01 (manage.eu.mist.com)
-* EMEA 02 (manage.gc3.mist.com)
-* APAC 01 (manage.ac5.mist.com)
-* US GOV Cloud (manage.us.mist-federal.com)
+## Supported Juniper Clouds
+### Mist Clouds
+ * Global 01 (manage.mist.com)
+ * Global 02 (manage.gc1.mist.com)
+ * Global 03 (manage.ac2.mist.com)
+ * Global 04 (manage.gc2.mist.com)
+ * EMEA 01 (manage.eu.mist.com)
+ * EMEA 02 (manage.gc3.mist.com)
+ * EMEA 03 (manage.ac6.mist.com)
+ * APAC 01 (manage.ac5.mist.com)
+ * US GOV Cloud (manage.us.mist-federal.com)
+
+
+### Juniper AI Clouds
+ * DC (dc.ai.juniper.net)
+ * JSI (jsi.ai.juniper.net)
+ * Routing (routing.ai.juniper.net)
 
 ## API Tab
 ### When on the Mist Dashboard

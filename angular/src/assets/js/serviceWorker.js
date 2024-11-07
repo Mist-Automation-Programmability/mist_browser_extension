@@ -34,29 +34,23 @@ function checkUrl(tabUrl) {
     const msp = msp_re.exec(tabUrl);
     const api_re = /https:\/\/api\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/api\/v1\/(?<scope>const|installer|invite|login|logout|mobile|msps|orgs|recover|register|self|sites|utils)/yis;
     const api = api_re.exec(tabUrl);
-    const routing_re = /https:\/\/routing(\.stage)?\.ai\.juniper\.net\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!/yis;
-    const routing = routing_re.exec(tabUrl);
+    const juniper_re = /https:\/\/(dc|jsi|routing)(\.stage)?\.ai\.juniper\.net\/+admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!/yis;
+    const juniper = juniper_re.exec(tabUrl);
 
     if (org || msp) {
-        apiBadge(true, false, false);
+        apiBadge("#4caf50");
     } else if (api) {
-        apiBadge(false, true, false);
-    } else if (routing) {
-        apiBadge(false, false, true);
+        apiBadge("#f38019");
+    } else if (juniper) {
+        apiBadge("#0095a9" );
     } else {
-        apiBadge(false, false, false);
+        apiBadge(null);
     }
 }
 
-function apiBadge(showManage, showDjango, showRouting) {
-    if (showManage) {
-        browser.action.setBadgeBackgroundColor({ color: "#4caf50" })
-        browser.action.setBadgeText({ "text": "\u2713" });
-    } else if (showDjango) {
-        browser.action.setBadgeBackgroundColor({ color: "#f38019" })
-        browser.action.setBadgeText({ "text": "\u2713" });
-    } else if (showRouting) {
-        browser.action.setBadgeBackgroundColor({ color: "#0095a9" })
+function apiBadge(color) {
+    if (color) {
+        browser.action.setBadgeBackgroundColor({ color: color })
         browser.action.setBadgeText({ "text": "\u2713" });
     } else {
         browser.action.setBadgeText({ "text": "" });

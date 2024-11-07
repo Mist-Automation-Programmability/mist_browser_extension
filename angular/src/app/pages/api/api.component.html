@@ -1,7 +1,7 @@
-<app-api-routing-manage *ngIf="display=='routing-manage'"></app-api-routing-manage>
+<app-api-juniper-manage *ngIf="display=='juniper-manage'"></app-api-juniper-manage>
 <app-api-manage *ngIf="display=='manage'"></app-api-manage>
 <app-api-django *ngIf="display=='django'"></app-api-django>
-<div *ngIf="display !='routing-manage' && display !='manage' && display!='django'" class="notice-text">
+<div *ngIf="display !='juniper-manage' && display !='manage' && display!='django'" class="notice-text">
     <div>
         This page is not supported by the application yet...
     </div>

@@ -5,7 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ApiComponent } from './pages/api/api.component';
-import { ApiRoutingManageComponent } from './pages/api/routing-manage/routing-manage.component';
+import { ApiJuniperManageComponent } from './pages/api/juniper-manage/juniper-manage.component';
 import { ApiManageComponent } from './pages/api/manage/manage.component';
 import { ZtpPasswordComponent } from './pages/api/manage/ztp_password/ztp_password.component';
 import { ApiDjangoComponent } from './pages/api/django/django.component';
@@ -20,7 +20,7 @@ import { AboutComponent } from './pages/about/about.component';
 @NgModule({
   declarations: [
     AppComponent,
-    ApiRoutingManageComponent,
+    ApiJuniperManageComponent,
     ApiComponent, ApiManageComponent, ApiDjangoComponent, ZtpPasswordComponent,
     AccountComponent, AccountManageComponent, AccountCreateComponent, AccountManageOrgComponent, AccountCreateOrgComponent,
     AboutComponent

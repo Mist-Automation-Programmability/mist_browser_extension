@@ -12,6 +12,7 @@ export interface SessionElement {
     privileges: [],
     cloud_host: string,
     api_host: string,
+    additional_cloud_hosts: string[],
 }
 
 @Injectable({
@@ -30,6 +31,7 @@ export class BrowserService {
         ".gc3.mist.com",
         ".ac2.mist.com",
         ".ac5.mist.com",
+        ".ac6.mist.com",
         ".ac99.mist.com",
         ".us.mist-federal.com",
         ".staging.mist-federal.com",
@@ -49,11 +51,16 @@ export class BrowserService {
         "manage.gc3.mist.com",
         "manage.ac2.mist.com",
         "manage.ac5.mist.com",
+        "manage.ac6.mist.com",
         "manage.ac99.mist.com",
         "manage.us.mist-federal.com",
         "manage.staging.mist-federal.com",
+        "dc.ai.juniper.net",
+        "dc.stage.ai.juniper.net",
+        "jsi.ai.juniper.net",
+        "jsi.stage.ai.juniper.net",
         "routing.ai.juniper.net",
-        "routing.stage.ai.juniper.net"
+        "routing.stage.ai.juniper.net",
     ]
 
     private host_api: string[] = [
@@ -64,11 +71,16 @@ export class BrowserService {
         "api.gc3.mist.com",
         "api.ac2.mist.com",
         "api.ac5.mist.com",
+        "api.ac6.mist.com",
         "api.ac99.mist.com",
         "api.us.mist-federal.com",
         "api.staging.mist-federal.com",
+        "dc.ai.juniper.net",
+        "dc.stage.ai.juniper.net",
+        "jsi.ai.juniper.net",
+        "jsi.stage.ai.juniper.net",
         "routing.ai.juniper.net",
-        "routing.stage.ai.juniper.net"
+        "routing.stage.ai.juniper.net",
     ]
 
 
@@ -138,6 +150,7 @@ export class BrowserService {
                         i = index;
                     }
                 })
+                console.log(cookie);
                 // if the session already exists in the list, update it with the current cookie
                 if (i > -1) {
                     if (cookie.name.startsWith("csrftoken")) sessions[i].csrftoken = cookie.value;
@@ -146,23 +159,42 @@ export class BrowserService {
                     if (sessions[i].expires_at > cookie.expirationDate) sessions[i].expires_at = cookie.expirationDate
                     // otherwise, add a new entry in the list
                 } else {
-                    var tmp = this.sessionsSource.getValue();
                     let domain = cookie.domain;
-                    let cloud_host;
-                    let api_host;
                     if (domain.includes("ai.juniper.net")) {
-                        cloud_host = "routing" + domain;
-                        api_host =  "routing" + domain;
+                        this.addSession(cookie, domain, "jsi", "jsi", ["dc"+domain, "jsi"+domain, "routing"+domain])
                     } else {
-                        cloud_host = "manage" + domain;
-                        api_host = "api" + domain;
+                        this.addSession(cookie, domain, "manage", "api", ["manage"+domain])
                     }
-                    if (cookie.name.startsWith("csrftoken")) tmp.push({ domain: domain, cloud_host: cloud_host, api_host: api_host, email: null, csrftoken: cookie.value, has_sessionid: false, expires_at: cookie.expirationDate, privileges: [] });
-                    else if (cookie.name.startsWith("sessionid")) tmp.push({ domain: domain, cloud_host: cloud_host, api_host: api_host, email: null, csrftoken: null, has_sessionid: true, expires_at: cookie.expirationDate, privileges: [] });
-                    this.sessionsSource.next(tmp);
                 }
             }
         }
     }
 
+    private addSession(cookie: browser.cookies.Cookie, domain: string, cloud: string, api: string, additional_cloud_hosts: string[]): void {
+        var tmp = this.sessionsSource.getValue();
+
+        if (cookie.name.startsWith("csrftoken")) tmp.push({
+            domain: domain,
+            cloud_host: cloud + domain,
+            api_host: api + domain,
+            email: null,
+            csrftoken: cookie.value,
+            has_sessionid: false,
+            expires_at: cookie.expirationDate,
+            privileges: [],
+            additional_cloud_hosts: additional_cloud_hosts,
+        });
+        else if (cookie.name.startsWith("sessionid")) tmp.push({
+            domain: domain,
+            cloud_host: cloud + domain,
+            api_host: api + domain,
+            email: null,
+            csrftoken: null,
+            has_sessionid: true,
+            expires_at: cookie.expirationDate,
+            privileges: [],
+            additional_cloud_hosts: additional_cloud_hosts,
+        });
+        this.sessionsSource.next(tmp);
+    }
 }

@@ -44,21 +44,6 @@ export class ApiManageComponent implements OnInit {
     private _browser: BrowserService
   ) { }
 
-
-
-  hosts = [
-    "manage.mist.com",
-    "integration.mist.com",
-    "manage.eu.mist.com",
-    "manage.gc1.mist.com",
-    "manage.gc2.mist.com",
-    "manage.gc3.mist.com",
-    "manage.ac2.mist.com",
-    "manage.ac5.mist.com",
-    "manage.ac99.mist.com",
-    "manage.us.mist-federal.com"
-  ]
-
   ngOnInit() {
     this._browser.getUrl
       .then(tabUrl => {

@@ -11,8 +11,8 @@ export interface actionElement {
 }
 
 @Component({
-  selector: 'app-api-routing-manage',
-  templateUrl: 'routing-manage.component.html',
+  selector: 'app-api-juniper-manage',
+  templateUrl: 'juniper-manage.component.html',
   styleUrls: [
     '../api.component.scss',
     '../../../scss/button.component.scss',
@@ -20,7 +20,7 @@ export interface actionElement {
     '../../../scss/notice.component.scss'
   ]
 })
-export class ApiRoutingManageComponent implements OnInit {
+export class ApiJuniperManageComponent implements OnInit {
 
   eventZtpPassword: Subject<boolean> = new Subject<boolean>();
   action: string = "";
@@ -47,6 +47,10 @@ export class ApiRoutingManageComponent implements OnInit {
 
 
   hosts = [
+    "dc.ai.juniper.net",
+    "dc.stage.ai.juniper.net",
+    "jsi.ai.juniper.net",
+    "jsi.stage.ai.juniper.net",
     "routing.ai.juniper.net",
     "routing.stage.ai.juniper.net",
   ]
@@ -71,16 +75,16 @@ export class ApiRoutingManageComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////
   // API URL ENTRYPOINT
   generateApiUrl() {
-    const orgsle_re = /https:\/\/(?<host>routing(\.stage)?\.ai\.juniper\.net)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/(?<scope>routingSiteComparison)\/(?<sle>[a-z-]*)\/(?<worstsle>[a-z-]*)\/([a-z-_]*)\/(?<period>[0-9a-z-]*)\/(?<start>[0-9]*)\/(?<stop>[0-9]*)/iys;
-    const sle_details_re = /https:\/\/(?<host>routing(\.stage)?\.ai\.juniper\.net)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/(?<detail>routingServiceLevels)\/page2\/(stats|timeline|dist|affected)\/[a-zA-Z-]+\/[a-zA-Z-]+\/(?<scope>site|juniperRouter)\/(?<scope_id>[a-f0-9-]*)\/(?<sle_name>[a-z-]*)\/(?<sle_sub_1>[a-zA-Z-]+)\/(?<sle_sub_2>[a-zA-Z-]+)(\/(?<period>[0-9a-z]*))?(\/(?<start>[0-9]*))?(\/(?<stop>[0-9]*))?\/(?<site_id>[a-f0-9-]*)/iys;
-    const sle_re = /https:\/\/(?<host>routing(\.stage)?\.ai\.juniper\.net)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/(?<detail>routingServiceLevels)(\/(?<scope>site|juniperRouter))?(\/(?<scope_id>[a-f0-9-]*))?(\/(?<period>[0-9a-z-]*))?(\/(?<start>[0-9]*))?(\/(?<stop>[0-9]*))?\/(?<site_id>[a-f0-9-]*)/iys;
-    const insights_re = /https:\/\/(?<host>routing(\.stage)?\.ai\.juniper\.net)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/insights\/((?<obj>[a-z]+)\/)?((?<obj_id>[a-z0-9-]+)\/)?((?<period>[a-z0-9]+)\/)?((?<start>[0-9]*)\/)?((?<stop>[0-9]*)\/)?(?<site_id>[0-9a-f-]*)?/iys;
-    const alarm_re = /https:\/\/(?<host>routing(\.stage)?\.ai\.juniper\.net)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!alerts\/?(?<scope>org|site)?\/?(?<uuid>[0-9a-z-]*)\/?(?<period>[0-9a-z]*)?\/?(?<start>[0-9]*)?\/?(?<stop>[0-9]*)?\/?(?<show_ack>true|false)?\/?(?<group>[a-z%0-9]*)?\/?(?<show_crit>true|false)?\/?(?<show_warn>true|false)?\/?(?<show_info>true|false)?\/?(?<site_id>[0-9a-z-]*)?/iys;
-    const events_re = /https:\/\/(?<host>routing(\.stage)?\.ai\.juniper\.net)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!marvis\/?(?<scope>org|site)?\/?(?<period>[0-9a-z]*)?\/?(?<start>[0-9]*)?\/?(?<stop>[0-9]*)?\/?(?<site_id>[0-9a-z-]*)?/iys;
-    const common_re = /https:\/\/(?<host>routing(\.stage)?\.ai\.juniper\.net)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-zA-Z]+)\/?((?<detail>detail|site|admin|new|view)\/)?([0-9]\/)?(?<obj_id>[0-9a-z_-]*)?(\/(?<site_id>[0-9a-f-]*))?(\?(?<query_params>[0-9a-z_=&-]*))?/yis;
+    const orgsle_re = /https:\/\/(?<host>(dc|jsi|routing)(\.stage)?\.ai\.juniper\.net)\/+admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/(?<scope>routingSiteComparison)\/(?<sle>[a-z-]*)\/(?<worstsle>[a-z-]*)\/([a-z-_]*)\/(?<period>[0-9a-z-]*)\/(?<start>[0-9]*)\/(?<stop>[0-9]*)/iys;
+    const sle_details_re = /https:\/\/(?<host>(dc|jsi|routing)(\.stage)?\.ai\.juniper\.net)\/+admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/(?<detail>routingServiceLevels)\/page2\/(stats|timeline|dist|affected)\/[a-zA-Z-]+\/[a-zA-Z-]+\/(?<scope>site|juniperRouter)\/(?<scope_id>[a-f0-9-]*)\/(?<sle_name>[a-z-]*)\/(?<sle_sub_1>[a-zA-Z-]+)\/(?<sle_sub_2>[a-zA-Z-]+)(\/(?<period>[0-9a-z]*))?(\/(?<start>[0-9]*))?(\/(?<stop>[0-9]*))?\/(?<site_id>[a-f0-9-]*)/iys;
+    const sle_re = /https:\/\/(?<host>(dc|jsi|routing)(\.stage)?\.ai\.juniper\.net)\/+admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/(?<detail>routingServiceLevels)(\/(?<scope>site|juniperRouter))?(\/(?<scope_id>[a-f0-9-]*))?(\/(?<period>[0-9a-z-]*))?(\/(?<start>[0-9]*))?(\/(?<stop>[0-9]*))?\/(?<site_id>[a-f0-9-]*)/iys;
+    const insights_re = /https:\/\/(?<host>(dc|jsi|routing)(\.stage)?\.ai\.juniper\.net)\/+admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!dashboard\/insights\/((?<obj>[a-z]+)\/)?((?<obj_id>[a-z0-9-]+)\/)?((?<period>[a-z0-9]+)\/)?((?<start>[0-9]*)\/)?((?<stop>[0-9]*)\/)?(?<site_id>[0-9a-f-]*)?/iys;
+    const alarm_re = /https:\/\/(?<host>(dc|jsi|routing)(\.stage)?\.ai\.juniper\.net)\/+admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!alerts\/?(?<scope>org|site)?\/?(?<uuid>[0-9a-z-]*)\/?(?<period>[0-9a-z]*)?\/?(?<start>[0-9]*)?\/?(?<stop>[0-9]*)?\/?(?<show_ack>true|false)?\/?(?<group>[a-z%0-9]*)?\/?(?<show_crit>true|false)?\/?(?<show_warn>true|false)?\/?(?<show_info>true|false)?\/?(?<site_id>[0-9a-z-]*)?/iys;
+    const events_re = /https:\/\/(?<host>(dc|jsi|routing)(\.stage)?\.ai\.juniper\.net)\/+admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!marvis\/?(?<scope>org|site)?\/?(?<period>[0-9a-z]*)?\/?(?<start>[0-9]*)?\/?(?<stop>[0-9]*)?\/?(?<site_id>[0-9a-z-]*)?/iys;
+    const common_re = /https:\/\/(?<host>(dc|jsi|routing)(\.stage)?\.ai\.juniper\.net)\/+admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!(?<obj>[a-zA-Z]+)\/?((?<detail>detail|site|admin|new|view)\/)?([0-9]\/)?(?<obj_id>[0-9a-z_-]*)?(\/(?<site_id>[0-9a-f-]*))?(\?(?<query_params>[0-9a-z_=&-]*))?/yis;
     const site_common_objs = ["routers"]
     const org_common_objs = ["org", "configuration", "auditlogs", "apinventory", "adminconfig", "subscription"];
-    const base_re = /https:\/\/(?<host>routing(\.stage)?\.ai\.juniper\.net)\/admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!/yis;
+    const base_re = /https:\/\/(?<host>(dc|jsi|routing)(\.stage)?\.ai\.juniper\.net)\/+admin\/\?org_id=(?<org_id>[0-9a-f-]*)#!/yis;
 
     var regexp_result: RegExpExecArray;
     
@@ -460,6 +464,26 @@ export class ApiRoutingManageComponent implements OnInit {
     return res;
   }
 
+
+  inventory_dc(res:RegExpExecArray): void {
+    this.obj_id = null
+    this.obj_name = "inventory";
+    this.quick_links.push(
+      {
+      url: "https://" + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/datacenter-edges",
+      name: "Datacenters"
+    },
+      {
+      url: "https://" + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/inventory",
+      name: "Inventory"
+    },
+      {
+      url: "https://" + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/jsi/inventory",
+      name: "JSI Inventory"
+    },
+  )
+  }
+
   commonOrgUrl(res: RegExpExecArray): void {
     res = this.process_query_params(res);
     this.org_id = res?.groups?.org_id;
@@ -491,12 +515,27 @@ export class ApiRoutingManageComponent implements OnInit {
           this.forgeOrgObject("logs", res?.groups?.host, res?.groups?.detail);
           break;
         case "apinventory":
-          this.obj_name = "Routers inventory";
-          this.forgeOrgObject("inventory", res?.groups?.host, res?.groups?.detail, null);
-          this.quick_links.push({
-            url: "https://" + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/ocdevices/outbound_ssh_cmd",
-            name: "Adopt CMDS"
-          });
+          this.obj_id = null;
+          var host = res?.groups?.host;
+          if (host.startsWith("dc")){
+            this.inventory_dc(res);
+          } else {
+            this.obj_name = "inventory";
+            this.quick_links.push(
+              {
+              url: "https://" + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/inventory",
+              name: "Inventory"
+            },
+              {
+              url: "https://" + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/jsi/inventory",
+              name: "JSI Inventory"
+            },
+              {
+              url: "https://" + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/ocdevices/outbound_ssh_cmd",
+              name: "Adopt CMDS"
+            },
+          )
+          }
           break;
         case "adminconfig":
           this.setName("admin", res?.groups?.detail);
@@ -519,18 +558,21 @@ export class ApiRoutingManageComponent implements OnInit {
     let severity_array: string[] = [];
     let scope = "";
     let scope_id: string | undefined = undefined;
-    if (res?.groups?.scope == "org") {
-      scope = "orgs";
-      scope_id = res?.groups?.org_id;
-    } else {
+    
       if (res?.groups?.site_id) {
         this.site_id = res?.groups?.site_id;
       } else {
         this.site_id = res?.groups?.uuid;
       }
+
+    if (this.site_id){
       scope = "sites";
       scope_id = this.site_id;
+    } else {
+      scope = "orgs";
+      scope_id = res?.groups?.org_id;
     }
+
     if (res?.groups?.start && res?.groups?.stop) {
       extra_params = "start=" + res?.groups?.start + "&end=" + res?.groups?.stop;
     }
@@ -543,7 +585,7 @@ export class ApiRoutingManageComponent implements OnInit {
     if (res?.groups?.group && res?.groups?.group != "any%20type") extra_params += "&group=" + res?.groups?.group;
 
     if (res?.groups?.show_ack && res?.groups?.show_ack == "false") extra_params += "&acked=false";
-
+    
     this.quick_links.push({
       url: "https://" + res?.groups?.host + "/api/v1/" + scope + "/" + scope_id + "/alarms/search?" + extra_params,
       name: scope + " Alarms"

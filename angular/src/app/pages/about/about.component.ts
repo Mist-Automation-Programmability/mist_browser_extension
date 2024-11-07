@@ -38,7 +38,7 @@ export class AboutComponent implements OnInit {
     this.error_message = undefined;
     this._http.get<any>(this.github_release_url).subscribe(
       data => {
-      this.last_version = data.name;
+      this.last_version = data.name.replace("v", "");
       if (this.current_version < this.last_version) {
         this.up_to_date = false;
         this.html_url = data.html_url;

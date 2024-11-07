@@ -1,12 +1,17 @@
 <div *ngFor="let session of sessions">
     <div *ngIf="session.email" class="box-cloud">
         <div>
-            <div class="title-cloud-box">
-                <h2 class="title-cloud" (click)="openTab(session.cloud_host)">
+            <div *ngIf="session.additional_cloud_hosts.length <= 1" class="title-cloud-box link">
+                <h2 class="title-cloud link" (click)="openTab(session.cloud_host)">
                     {{session.cloud_host}}
                     <img src="assets/open.svg" alt="open">
                 </h2>
-            </div>
+            </div>            
+            <div *ngIf="session.additional_cloud_hosts.length > 1" class="title-cloud-box">
+                <h2 class="title-cloud" >
+                    {{session.domain.substring(1)}}
+                </h2>
+            </div>            
         </div>
         <div class="text-cloud first">Logged in as <b>{{session.email}}</b></div>
         <div class="text-cloud last">Session expires at <b>{{(session.expires_at * 1000) | date:'yyyy-MM-dd HH:mm:ss'}}</b></div>

@@ -34,7 +34,7 @@ export class ApiComponent implements OnInit {
         let host = tabUrl.split("/")[2];
 
         if (host.includes("ai.juniper.net")) {
-          this.display = "routing-manage";
+          this.display = "juniper-manage";
         } else {
           if (this.hosts_manage.includes(host)) this.display = "manage";
           else if (this.hosts_api.includes(host) && tabUrl.indexOf("/api/v1/docs") < 0) this.display = "django";
