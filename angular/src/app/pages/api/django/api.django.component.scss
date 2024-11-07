@@ -32,6 +32,7 @@ input {
     border: 1px solid lightgray;
     padding: 5px 0 5px 5px;
     margin: 2px 0;
+    border-radius: 5px;
 }
 
 .ng-untouched {
@@ -42,7 +43,9 @@ select {
     max-width: 100%;
     padding: 4px;
     border: 1px solid lightgray;
-    margin: 2px 0.9em 2px 0;
+    margin: 2px 0.9em 2px 0;    
+    width: calc(100% - 5px);
+    border-radius: 5px;
 }
 
 // tooltip

@@ -147,13 +147,13 @@ button.doc-link {
     cursor: pointer;
     transition: all 0.2s ease-in-out;
     padding: 1.5em 0;
-    border-radius: 2px;
+    border-radius: 5px;
     width: 100%;
 }
 
 button.doc-link:hover {
-    background-color: #eee;
-    transition: all 0.2s ease-in-out;
+    background-color: #fbfbfb;
+    transition: all 1s ease-in-out;
 }
 
 button.doc-link .operation {
@@ -199,39 +199,47 @@ button.doc-link .method {
 }
 
 button.doc-link .method.get {
-    color: green;
+    color: #008000;
+    border-radius: 5px;
+    background-color: #00800036;
 }
 
 button.doc-link .method.post {
-    color: blue;
+    color: #0000ff;
+    border-radius: 5px;
+    background-color: #0000ff36;
 }
 
 button.doc-link .method.put {
-    color: orange;
+    color: #ffa500;
+    border-radius: 5px;
+    background-color: #ffa50036;
 }
 
 button.doc-link .method.delete {
-    color: red;
+    color: #ff0000;
+    border-radius: 5px;
+    background-color: #ff000036;
 }
 
 button.doc-link.get,
 button.doc-link .method.get {
-    border: 1px solid green;
+    border: .1px solid #00800036;
 }
 
 button.doc-link.post,
 button.doc-link .method.post {
-    border: 1px solid blue;
+    border: .1px solid #0000ff36;
 }
 
 button.doc-link.put,
 button.doc-link .method.put {
-    border: 1px solid orange;
+    border: .1px solid #ffa50036;
 }
 
 button.doc-link.delete,
 button.doc-link .method.delete {
-    border: 1px solid red;
+    border: .1px solid #ff000036;
 }
 
 select:focus,
