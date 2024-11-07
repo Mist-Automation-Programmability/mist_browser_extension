@@ -42,10 +42,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 * Direct access to the Mist API Pages (Django) from the current Mist dashboard page
 
 <div>
-<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/api.png" width="50%">
+<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/api.png" width="75%">
 </div>
 <div>
-<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/api_2.png" width="50%">
+<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/api_2.png" width="75%">
 </div>
 
 ### When on a Django Page
@@ -54,37 +54,37 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 * Direct access to the Online API Documentation for the current API Call (GET/POST/PUT/DELETE)
 
 <div>
-<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/django.png" width="50%">
+<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/django.png" width="75%">
 </div>
 
 ## Account Tab
 
 * List all the current valid Mist session in the web browser for manage.mist.com, manage.eu.mist.com, manage.gc1.mist.com, ...
 <div>
-<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/accounts_list.png" width="40%">
+<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/accounts_list.png" width="25%">
 </div>
 
 
 * Manage User API Token (list / delete / create)
 
 <div>
-<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/accounts_create.png" width="40%">
-<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/accounts_manage.png" width="40%">
+<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/accounts_create.png" width="25%">
+<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/accounts_manage.png" width="25%">
 </div>
 
 
 * Manage Org API Token (list / delete / create)
 
 <div>
-<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/accounts_org_create.png" width="40%">
-<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/accounts_org_manage.png" width="40%">
+<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/accounts_org_create.png" width="25%">
+<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/accounts_org_manage.png" width="25%">
 </div>
 
 ## About Tab
 * Quick access to the Mist API documentation (Mist official documentation, Postman documentation, OpenAPI documentation)
 * Version check from the extension to know if a new version is available, and download new versions directly from the extension
 <div>
-<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/about.png" width="40%">
+<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/about.png" width="25%">
 </div>
 
 
@@ -108,10 +108,10 @@ This extension is not yet available on the [Chrome Web Store](https://chrome.goo
 ### Firefox
 1. Download the file `mist_extension-X.Y.Z.xpi` from the [latest release](https://github.com/Mist-Automation-Programmability/mist_browser_extension/releases)
 2. Go to `about:addons` url from Firefox
-<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/firefox_1.png" width="30%">
+<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/firefox_1.png" width="50%">
 
 3. Click on the "Settings" button, then "Install Add-on From Files..."
-<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/firefox_2.png" width="50%">
+<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/firefox_2.png" width="80%">
 
 4. Select the `mist_extension-X.Y.Z.xpi`file
 
