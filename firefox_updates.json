@@ -130,6 +130,11 @@
                     "version": "4.2.1",
                     "update_link": "https://github.com/Mist-Automation-Programmability/mist_browser_extension/releases/download/4.2.1/mist_extension-4.2.1.xpi",
                     "update_info_url": "https://github.com/Mist-Automation-Programmability/mist_browser_extension/releases/tag/4.2.1"
+                },
+                {
+                    "version": "4.2.2",
+                    "update_link": "https://github.com/Mist-Automation-Programmability/mist_browser_extension/releases/download/4.2.2/mist_extension-4.2.2.xpi",
+                    "update_info_url": "https://github.com/Mist-Automation-Programmability/mist_browser_extension/releases/tag/4.2.2"
                 }
             ]
         }
