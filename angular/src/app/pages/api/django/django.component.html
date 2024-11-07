@@ -79,11 +79,13 @@
 
 
                     <select *ngIf="query.schema.hasOwnProperty('enum')" [(ngModel)]="query.value" [name]="query.value">
+                        <option value=""></option>
                         <option *ngFor="let enum of query.schema.enum" [value]="enum">{{enum}}</option>
                     </select>
 
                     <div *ngIf="!query.schema.hasOwnProperty('enum')">
                         <select *ngIf="query.schema.type=='boolean'" [(ngModel)]="query.value" [name]="query.value">
+                            <option value=""></option>
                             <option value="true">True</option>
                             <option value="false">False</option>
                         </select>

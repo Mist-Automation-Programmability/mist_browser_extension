@@ -181,7 +181,7 @@ export class ApiDjangoComponent implements OnInit {
     let url = this.tabUrl.split("?")[0]
     let query: string[] = []
     this.query_params.forEach(param => {
-      if (param.value != undefined) query.push(param.name + "=" + param.value)
+      if (param.value != undefined && param.value != "") query.push(param.name + "=" + param.value)
     })
     if (query.length > 0) url = url + "?" + query.join("&")
     this._browser.tabUpdate(url);
