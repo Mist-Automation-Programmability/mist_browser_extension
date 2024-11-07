@@ -11,7 +11,7 @@ MAX_Y=0
 MAX_Z=0
 for FILE in `ls | grep .zip`
 do 
-    VERSION=`echo $FILE | sed -e "s/\.zip//" | cut -d- -f2`
+    VERSION=`echo $FILE | sed -e "s/\.zip//" | sed -e "s/-chrome//" | sed -e "s/-ffx//" | cut -d- -f2`
     X=`echo $VERSION | cut -d. -f1`
     Y=`echo $VERSION | cut -d. -f2`
     Z=`echo $VERSION | cut -d. -f3`
