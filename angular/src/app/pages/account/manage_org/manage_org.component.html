@@ -9,7 +9,7 @@
         </option>
     </select>
 </div>
-<select name=org_id [(ngModel)]="org_id" (change)="getTokens()">
+<select name=org_id [(ngModel)]="org_id" (change)="getTokens()" [disabled]="org_loading">
     <option class="none" value="none">
         <div style="width: 100%; text-align: center;">-- Please Select an Org --</div>
     </option>
@@ -19,11 +19,15 @@
 </select>
 
 <div class="container" style="height: 100%; display: flex; flex-direction: column; justify-content: flex-start;">
-    <div *ngIf="org_id == 'none'"
+    <div *ngIf="org_loading" 
         style="height: 100%;display: flex;justify-content: center;flex-direction: column;text-align: center; font-weight: lighter; margin: 1em;">
+        <div style="margin: 1em;">Loading the list of Orgs...</div>
+    </div>
+    <div *ngIf="!org_loading && org_id == 'none'" 
+    style="height: 100%;display: flex;justify-content: center;flex-direction: column;text-align: center; font-weight: lighter; margin: 1em;">
         <div style="margin: 1em;">Please select an Org...</div>
     </div>
-    <div *ngIf="tokens.length == 0 && org_id != 'none'"
+    <div *ngIf="!org_loading && tokens.length == 0 && org_id != 'none'"
         style="height: 100%;display: flex;justify-content: center;flex-direction: column;text-align: center; font-weight: lighter; margin: 1em;">
         <div style="margin: 1em;">This Org doesn't have any API Token yet...</div>
         <div style="margin: 0 2em;">You can go back and create a new API Token directly from this extension!</div>
@@ -41,6 +45,12 @@
                     <th>Key:</th>
                     <td>
                         <div>{{token.key}}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Created By:</th>
+                    <td>
+                        <div>{{token.created_by}}</div>
                     </td>
                 </tr>
                 <tr>

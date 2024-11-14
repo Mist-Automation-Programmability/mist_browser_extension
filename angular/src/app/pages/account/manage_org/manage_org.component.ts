@@ -1,7 +1,7 @@
 import { Component, Input, Output, ChangeDetectionStrategy, ChangeDetectorRef, EventEmitter, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { SessionElement} from '../../../services/browser.service';
+import { SessionElement } from '../../../services/browser.service';
 import { PrivilegeService, OrgElement, MspElement } from "../../../services/privileges.service"
 
 
@@ -16,7 +16,7 @@ export interface TokenElement {
 @Component({
   selector: 'app-account-manage-org',
   templateUrl: 'manage_org.component.html',
-  styleUrls: ['../manage/manage.component.scss','manage_org.component.scss', '../../../scss/button.component.scss'],
+  styleUrls: ['../manage/manage.component.scss', './manage_org.component.scss', '../../../scss/button.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AccountManageOrgComponent implements OnInit {
@@ -36,7 +36,8 @@ export class AccountManageOrgComponent implements OnInit {
   now: number;
   displayed_msps: MspElement[] = [];
   displayed_orgs: OrgElement[] = [];
-  msp_id: string|undefined = undefined;
+  msp_id: string | undefined = undefined;
+  org_loading: boolean = false;
   org_id: string;
   do_manage: boolean = false;
 
@@ -55,7 +56,12 @@ export class AccountManageOrgComponent implements OnInit {
   }
 
   mspSelected(): void {
-    this._privilege.getOrgsPrivileges(this.session, this.msp_id, "admin", (orgs) => {this.displayed_orgs =  orgs});
+    this.org_loading = true;
+    this._privilege.getOrgsPrivileges(this.session, this.msp_id, "admin", (orgs) => {
+      this.displayed_orgs = orgs;
+      this.org_loading = false;
+      this._cd.detectChanges();
+    });
   }
 
   ////////////
