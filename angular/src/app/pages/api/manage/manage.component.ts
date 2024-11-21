@@ -144,18 +144,21 @@ export class ApiManageComponent implements OnInit {
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// COMMON ORG FUNCTIONS
-  forgeOrgObject(obj_name: string, host: string, detail: string | undefined, extra_param: string | undefined = undefined): void {
+  forgeOrgObject(obj_name: string, host: string, detail: string | undefined, extra_param: string | undefined = undefined, ui_name:string|undefined=undefined): void {
     let url = "";
+    if (!ui_name){
+      ui_name = this.obj_name;
+    }
     if (detail && detail != "new") {
       // set QUICK LINK
       url = "https://api." + host + "/api/v1/orgs/" + this.org_id + "/" + obj_name + "/" + this.obj_id;
-      this.quick_links.push({ url: url, name: this.obj_name });
+      this.quick_links.push({ url: url, name: ui_name });
     } else {
       // set QUICK LINK
       this.obj_id = undefined;
       url = "https://api." + host + "/api/v1/orgs/" + this.org_id + "/" + obj_name;
       if (extra_param) url += "?" + extra_param;
-      this.quick_links.push({ url: url, name: this.obj_name });
+      this.quick_links.push({ url: url, name: ui_name });
     }
   }
 
@@ -931,7 +934,8 @@ export class ApiManageComponent implements OnInit {
           break;
         case "auditlogs":
           this.setName(res?.groups?.obj.substr(0, res?.groups?.obj.length - 1), res?.groups?.detail);
-          this.forgeOrgObject("logs", res?.groups?.host, res?.groups?.detail);
+          this.forgeOrgObject("logs", res?.groups?.host, res?.groups?.detail, undefined, "audit logs");
+          this.forgeOrgObject("logs", res?.groups?.host, res?.groups?.detail, "message=\"accessed%20org%20\"", "access logs");
           break;
         case "apinventory":
           this.obj_name = "inventory";
