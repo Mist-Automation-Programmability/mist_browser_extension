@@ -978,6 +978,7 @@ export class ApiManageComponent implements OnInit {
         case "applicationpolicy":
           this.setName("servicepolicy", res?.groups?.details);
           this.forgeOrgObject("servicepolicies", res?.groups?.host, res?.groups?.detail);
+          this.forgeOrgObject("idpprofiles", res?.groups?.host, res?.groups?.detail, undefined, "idp profiles");
           break;
         case "authpolicylabels":
           this.setName("NAC Tag", res?.groups?.detail);
