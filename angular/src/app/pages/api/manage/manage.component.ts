@@ -63,6 +63,7 @@ export class ApiManageComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////
   // API URL ENTRYPOINT
   generateApiUrl() {
+    const minis_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!marvisMini\??(?<q_param>.*)/yis;
     const orgsle_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!dashboard\/(?<scope>siteComparison|wiredSiteComparison|wanSiteComparison)\/(?<sle>[a-z-]*)\/(?<worstsle>[a-z-]*)\/([a-z-_]*)\/(?<period>[0-9a-z-]*)\/(?<start>[0-9]*)\/(?<stop>[0-9]*)/iys;
     const sle_details_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!dashboard\/(?<detail>serviceLevels|wiredserviceLevels|wanServiceLevels|juniperGateway)\/page2\/(stats|timeline)\/[a-zA-Z-]+\/[a-zA-Z-]+\/(?<scope>site|device|client|juniperSwitch|juniperGateway)\/(?<scope_id>[a-f0-9-]*)\/(?<sle_name>[a-z-]*)\/(?<sle_sub_1>[a-zA-Z-]+)\/(?<sle_sub_2>[a-zA-Z-]+)(\/(?<period>[0-9a-z]*))?(\/(?<start>[0-9]*))?(\/(?<stop>[0-9]*))?\/(?<site_id>[a-f0-9-]*)/iys;
     const sle_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!dashboard\/(?<detail>serviceLevels|wiredserviceLevels|wanServiceLevels|juniperGateway|applicationServiceLevels)(\/(?<scope>org|site|device|client|juniperSwitch|juniperGateway))?(\/(?<scope_id>[a-f0-9-]*))?(\/(?<period>[0-9a-z-]*))?(\/(?<start>[0-9]*))?(\/(?<stop>[0-9]*))?\/(?<site_id>[a-f0-9-]*)(\?app=(?<app>[a-zA-Z]*))?/iys;
@@ -79,10 +80,11 @@ export class ApiManageComponent implements OnInit {
     const org_common_objs = ["orgtags", "misttunnels", "templates", "switchtemplate", "gatewaytemplates", "hubs", "deviceprofiles", "org", "orgpsk", "configuration", "auditlogs", "apinventory", "adminconfig", "subscription", "edge", "vpns", "template", "rftemplates", "services", "networks", "applicationpolicy", "authpolicylabels", "naccertificates", "nacpolicy", "nacidentityproviders", "onboardingworkflow", "sdk", "premiumanalytics", "private5g", "securityevents", "nacclients", "nacendpoints"];
     const base_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!/yis;
     const msp_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/msp\/\?msp_id=(?<msp_id>[0-9a-f-]{36})#!(?<obj>orgs|admins|auditLogs|mspInfo|labels)\/?(?<detail>aiops|details|detail|invite)?\/?(?<obj_id>[0-9a-z_-]*)/yis;;
-
     var regexp_result;
 
-    if (regexp_result = orgsle_re.exec(this.tabUrl)) {
+    if (regexp_result = minis_re.exec(this.tabUrl)) {
+      this.MarvisMinisUrl(regexp_result);
+    } else if (regexp_result = orgsle_re.exec(this.tabUrl)) {
       this.orgSleUrl(regexp_result);
     } else if (regexp_result = sle_details_re.exec(this.tabUrl)) {
       this.sleDetailsUrl(regexp_result);
@@ -144,9 +146,9 @@ export class ApiManageComponent implements OnInit {
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// COMMON ORG FUNCTIONS
-  forgeOrgObject(obj_name: string, host: string, detail: string | undefined, extra_param: string | undefined = undefined, ui_name:string|undefined=undefined): void {
+  forgeOrgObject(obj_name: string, host: string, detail: string | undefined, extra_param: string | undefined = undefined, ui_name: string | undefined = undefined): void {
     let url = "";
-    if (!ui_name){
+    if (!ui_name) {
       ui_name = this.obj_name;
     }
     if (detail && detail != "new") {
@@ -265,10 +267,10 @@ export class ApiManageComponent implements OnInit {
     }
   }
 
-  forgeSiteObjectStatsSearch(obj_name: string, host: string, extra_param: string | undefined = undefined, ui_name:string|undefined=undefined): void {
+  forgeSiteObjectStatsSearch(obj_name: string, host: string, extra_param: string | undefined = undefined, ui_name: string | undefined = undefined): void {
     let url = "";
-    if (!ui_name){
-      ui_name =  obj_name.replace(/_/g, " ");
+    if (!ui_name) {
+      ui_name = obj_name.replace(/_/g, " ");
     }
     url = "https://api." + host + "/api/v1/sites/" + this.site_id + "/stats/" + obj_name + "/search";
     if (extra_param) url += "?" + extra_param;
@@ -399,6 +401,12 @@ export class ApiManageComponent implements OnInit {
         })
       }
     }
+  }
+  forgeSiteSyntheticTest(host: string, extra_param: string): void {
+    this.quick_links.push({
+      url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/synthetic_test/search?" + extra_param,
+      name: "Marvis Minis Test Results"
+    })
   }
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// ORG OBJ FUNCTION
@@ -1261,6 +1269,38 @@ export class ApiManageComponent implements OnInit {
     }
   }
 
+
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////// MARVIS MINIS
+  MarvisMinisUrl(res: RegExpExecArray): void {
+    this.org_id = res?.groups?.org_id;
+    let extra_params: string | undefined = undefined;
+    let e_params = [];
+    if (res?.groups?.q_param) {
+      res?.groups?.q_param.split("&").forEach(param => {
+        let splitted_param = param.split("=");
+        if (splitted_param.length == 2) {
+          let key = splitted_param[0];
+          let val = splitted_param[1];
+          switch (key) {
+            case "site":
+              this.site_id = val;
+              break;
+            case "start":
+            case "end":
+              e_params.push(param);
+              break
+          }
+        }
+      })
+      if (this.site_id) {
+        extra_params = e_params.join("&");
+        this.forgeSiteSyntheticTest(res?.groups?.host, extra_params);
+      }
+    }
+
+  }
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
