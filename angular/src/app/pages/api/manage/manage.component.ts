@@ -362,6 +362,9 @@ export class ApiManageComponent implements OnInit {
   forgeNacPolicies(host: string): void {
     this.quick_links.push({
       url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/nac_clients/search",
+      name: "NAC Clients"
+    }, {
+      url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/nac_clients/events/search",
       name: "NAC Events"
     }, {
       url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/nac_clients/count",
