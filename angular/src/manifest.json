@@ -22,6 +22,7 @@
         "https://*.ai.juniper.net/*"
       ],
       "js": [
+        "browser-polyfill.js",
         "/assets/js/content.js"
       ]
     }
