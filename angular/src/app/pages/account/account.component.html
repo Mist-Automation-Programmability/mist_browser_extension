@@ -13,8 +13,14 @@
                 </h2>
             </div>            
         </div>
-        <div class="text-cloud first">Logged in as <b>{{session.email}}</b></div>
-        <div class="text-cloud last">Session expires at <b>{{(session.expires_at * 1000) | date:'yyyy-MM-dd HH:mm:ss'}}</b></div>
+        <div class="text-cloud first">Logged in as <b style="margin-left: 2px;">{{session.email}}</b></div>
+        <div class="text-cloud">Session expires at <b style="margin-left: 2px;">{{(session.expires_at * 1000) | date:'yyyy-MM-dd HH:mm:ss'}}</b></div>
+        <div class="text-cloud last api-usage" >
+            <div class="api-usage-back">API usage: <b style="margin-left: 2px;">{{session.requests}} / {{session.request_limit}}</b></div>
+            <div class="api-usage-front" [ngStyle]="{'clip-path': 'inset(0 0 0 '+session.requests/session.request_limit*100+'%)', '-webkit-clip-path': 'inset(0 0 0 '+session.requests/session.request_limit*100+'%)'}">
+                Current User API usage: <b style="margin-left: 2px;">{{session.requests}} / {{session.request_limit}}</b>
+            </div>
+        </div>
         <div style="display: flex; flex-direction: row;">
             <div style="display: flex;flex-direction: column;width: 45%;margin: 1em;border: 1px solid #bbb;border-radius: 2px;align-items: stretch;">
                 <div style="display: flex;flex-direction: row;justify-content: center; user-select: none;">

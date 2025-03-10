@@ -62,6 +62,7 @@ export class AccountCreateComponent implements OnInit {
     if (this.do_create) {
       let url = "https://" + this.session.api_host + "/api/v1/self/apitokens";
       this._http.post(url, {name: this.token_name}, { headers: { "X-CSRFTOKEN": this.session.csrftoken } }).subscribe((token: TokenElement) => {
+        this.session.requests += 1;
         this.token = token;
         this._cd.detectChanges();
       })

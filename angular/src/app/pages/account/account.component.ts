@@ -4,9 +4,11 @@ import { AccountManageComponent } from './manage/manage.component';
 import { Subject } from 'rxjs';
 import { BrowserService, SessionElement } from "../../services/browser.service"
 
-
-
-
+export interface UsageElement {
+  requests: number,
+  request_limit: number,
+  seconds: number,
+}
 
 @Component({
   selector: 'app-account',
@@ -18,6 +20,7 @@ import { BrowserService, SessionElement } from "../../services/browser.service"
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
+
 export class AccountComponent implements OnInit {
 
   @ViewChild(AccountManageComponent) accountManage;
@@ -54,6 +57,7 @@ export class AccountComponent implements OnInit {
           session.privileges = data["privileges"];
           this.has_active_sessions = true;
           this.is_working = false;
+          this.getApiUsage(session)
           this._cd.detectChanges()
         })
       }
@@ -67,10 +71,20 @@ export class AccountComponent implements OnInit {
   }
 
 
+  getApiUsage(session: SessionElement) {
+    let url = "https://" + session.api_host + "/api/v1/self/usage";
+    this._http.get(url,{ headers: { "X-CSRFTOKEN": session.csrftoken } }).subscribe((usage: UsageElement) => {
+      session.requests = usage.requests;
+      session.request_limit = usage.request_limit;
+      this._cd.detectChanges();
+    })
+}
+
   openTab(cloud_host: string) {
     let dest_url = "https://" + cloud_host + "/cloud.html";
     this._browser.tabOpen(dest_url);
   }
+
 
 
   ////////////

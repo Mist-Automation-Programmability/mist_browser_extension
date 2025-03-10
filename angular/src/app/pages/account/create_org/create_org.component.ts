@@ -94,6 +94,7 @@ export class AccountCreateOrgComponent implements OnInit {
       let url = "https://" + this.session.api_host + "/api/v1/orgs/" + this.org_id + "/apitokens"
       this._http.post(url, body, { headers: { "X-CSRFTOKEN": this.session.csrftoken } }).subscribe((token: TokenElement) => {
         this.token = token;
+        this.session.requests += 1;
         this._cd.detectChanges();
       })
     }

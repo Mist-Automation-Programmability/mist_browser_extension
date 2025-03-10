@@ -56,6 +56,7 @@ export class AccountManageComponent {
         this.tokens.sort((a, b) => {
           return a.created_time - b.created_time;
         })
+        this.session.requests += 1;
         this._cd.detectChanges();
       })
     }
@@ -64,11 +65,13 @@ export class AccountManageComponent {
   deleteToken(token_id: string): void {
     let url = "https://" + this.session.api_host + "/api/v1/self/apitokens/" + token_id
     this._http.delete(url, { headers: { "X-CSRFTOKEN": this.session.csrftoken } }).subscribe(() => {
+      this.session.requests += 1;
       this.getTokens();
     })
   }
 
   close(): void {
+    this._cd.detectChanges();
     this.closeManageTokens.emit();
   }
 

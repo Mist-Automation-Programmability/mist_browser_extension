@@ -77,6 +77,7 @@ export class AccountManageOrgComponent implements OnInit {
         this.tokens.sort((a, b) => {
           return a.created_time - b.created_time;
         })
+        this.session.requests += 1;
         this._cd.detectChanges();
       })
     } else {
@@ -88,11 +89,13 @@ export class AccountManageOrgComponent implements OnInit {
   deleteToken(token_id: string): void {
     let url = "https://" + this.session.api_host + "/api/v1/orgs/" + this.org_id + "/apitokens/" + token_id
     this._http.delete(url, { headers: { "X-CSRFTOKEN": this.session.csrftoken } }).subscribe(() => {
+      this.session.requests += 1;
       this.getTokens();
     })
   }
 
   close(): void {
+    this._cd.detectChanges();
     this.closeManageTokens.emit();
   }
 

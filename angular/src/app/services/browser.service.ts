@@ -13,6 +13,8 @@ export interface SessionElement {
     cloud_host: string,
     api_host: string,
     additional_cloud_hosts: string[],
+    requests: number,
+    request_limit: number,
 }
 
 @Injectable({
@@ -119,6 +121,7 @@ export class BrowserService {
     getHostApi(): string[] {
         return this.host_api;
     }
+    
     getUrl = browser.tabs.query({ currentWindow: true, active: true })
         .then((tabs) => {
             const url: string = tabs[0].url;
@@ -186,6 +189,8 @@ export class BrowserService {
             expires_at: cookie.expirationDate,
             privileges: [],
             additional_cloud_hosts: additional_cloud_hosts,
+            requests: -1,
+            request_limit: -1,
         });
         else if (cookie.name.startsWith("sessionid")) tmp.push({
             domain: domain,
@@ -197,6 +202,8 @@ export class BrowserService {
             expires_at: cookie.expirationDate,
             privileges: [],
             additional_cloud_hosts: additional_cloud_hosts,
+            requests: -1,
+            request_limit: -1,
         });
         this.sessionsSource.next(tmp);
     }
