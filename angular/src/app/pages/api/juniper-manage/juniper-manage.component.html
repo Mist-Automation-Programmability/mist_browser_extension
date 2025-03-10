@@ -69,11 +69,11 @@
     <h2>Quick API Access</h2>
     <div class="box-apitab">
         <button *ngFor="let quick_link of quick_links" (click)="openApiTab(quick_link.url)" class="large">
-            <div style="width: 100%;">{{quick_link.name | uppercase}}</div>
+            <div>{{quick_link.name | uppercase}}</div>
             <img class="icon-open" src="assets/open.svg" alt="open">
         </button>
         <button *ngFor="let quick_action of quick_actions" (click)="openActionTab(quick_action.action)" class="large stroked">
-            <div style="width: 100%;">{{quick_action.name | uppercase}}</div>            
+            <div>{{quick_action.name | uppercase}}</div>            
         </button>
     </div>
 </div>
