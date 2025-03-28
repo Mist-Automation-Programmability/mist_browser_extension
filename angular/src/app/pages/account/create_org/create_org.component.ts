@@ -15,7 +15,12 @@ export interface TokenElement {
 @Component({
   selector: 'app-account-create-org',
   templateUrl: 'create_org.component.html',
-  styleUrls: ['../create/create.component.scss', 'create_org.component.scss', '../../../scss/button.component.scss'],
+  styleUrls: [
+    '../create/create.component.scss',
+    'create_org.component.scss',
+    '../../../scss/button.component.scss',
+    '../../../scss/select.component.scss'
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AccountCreateOrgComponent implements OnInit {
@@ -70,7 +75,7 @@ export class AccountCreateOrgComponent implements OnInit {
   }
 
   mspSelected(): void {
-    this._privilege.getOrgsPrivileges(this.session, this.msp_id, "admin", (orgs) => {this.displayed_orgs =  orgs});
+    this._privilege.getOrgsPrivileges(this.session, this.msp_id, "admin", (orgs) => { this.displayed_orgs = orgs });
   }
   ////////////
   // TOKEN

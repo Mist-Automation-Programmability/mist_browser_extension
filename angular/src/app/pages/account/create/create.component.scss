@@ -4,11 +4,11 @@
     display: flex;
     align-items: stretch;
     flex-direction: column;
-    background-color: white;
+    background-color: #202836;
     margin: 1em;
     padding: 0;
     border: 1px solid #bbb;
-    border-radius: 2px;
+    border-radius: 15px;
 }
 
 .cloud {
@@ -30,18 +30,28 @@
     align-items: center;
 }
 
+.token-input button.copy {
+    height: 75px;
+}
+
 textarea.token:read-only {
     resize: none;
     width: 100%;
     text-align: center;
     font: inherit;
     font-weight: 200;
-    border: none;
-    padding: 1em 1em;
+    padding: 0 1em;
     margin: 1em 0;
-    border-radius: 6px;
     background-color: transparent;
     transition: all 1s ease-in-out;
+    color: white;
+    height: 75px;
+    border: 1px solid #4f5560;
+    border-radius: 15px 0 0 15px;
+    align-content: center;
+    justify-content: center;
+    vertical-align: middle;
+    align-items: center;
 }
 
 
@@ -57,4 +67,18 @@ label.token {
     display: flex;
     flex-direction: column;
     width: 100%;
+}
+
+.token_opt input {
+    margin: 1em 0;
+    padding: 0.5em;
+    border: 1px solid white;
+    border-radius: 10px;
+    background-color: rgba(50, 50, 93, 0.25);
+    color: white;
+}
+
+.token_opt input:focus {
+    background-color: black;
+    border-color: #63b4ee;
 }

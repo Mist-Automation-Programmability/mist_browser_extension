@@ -23,19 +23,24 @@ button:disabled:hover {
 }
 
 button:enabled {
-    background-color: #1964a3;
-    color: white;
+    background-color: #161c26;
+    color: #fff;
+    border: 2px solid #63b4ee;
+    border-radius: 15px;
+    padding: 1.5em 1em;
+    // background-color: #1964a3;
+    // color: white;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px !important;
     transition: all 0.2s ease-in-out;
 }
 
 button:enabled:hover {
     background-color: #05477e;
-    box-shadow: rgb(50 50 93 / 25%) 0 3px 6px -1px inset, rgb(0 0 0 / 30%) 0 1px 3px -1px inset !important;
+    box-shadow: rgba(50, 50, 93, 0.5) 0 4px 7px 2px inset, rgba(0, 0, 0, 0.3) 0 3px 3px -1px inset !important
 }
 
 button.stroked:disabled,
-button:disabled:hover {
+button.Stroked:disabled:hover {
     background-color: unset;
     color: #aaa;
     border: 1px solid #aaa;
@@ -45,12 +50,12 @@ button:disabled:hover {
 
 button.stroked:enabled {
     background-color: unset;
-    color: #1964a3;
-    border: 1px solid #1964a3;
+    color: white;
+    border: 1px solid #18c956;
 }
 
 button.stroked:enabled:hover {
-    background-color: unset;
+    background-color: #18c956;
     box-shadow: rgb(50 50 93 / 60%) 0 4px 6px -12px inset, rgb(0 0 0 / 60%) 0 3px 6px -4px inset !important;
 }
 
@@ -66,27 +71,22 @@ button.xlarge {
 
 // COPY IDS
 button.copy {
-    background-color: white;
-    transition: all 0.2s ease-in-out;
-    border-radius: 5px;
+    background-color: #18c956;
+    transition: all 0.1s ease-in-out;
+    border-radius: 15px;
     display: flex;
-    margin-left: 1em;
-    border: 1px solid #1964a3;
+    border: unset;
+    margin: 0;
+    border-radius: 0 15px 15px 0;
 }
 
 button.copy:enabled:hover {
-    background-color: unset !important;
-    border: 1px solid #0096a3;
-}
-
-button.copy:enabled:hover img.copy {
-    filter: invert(42%) sepia(93%) saturate(1352%) hue-rotate(145deg) brightness(72%) contrast(119%);
-    transition: all 0.2s ease-in-out;
+    background-color: #18c956a3;
 }
 
 button.copy img.copy {
     height: 20px;
-    filter: invert(42%) sepia(93%) saturate(1352%) hue-rotate(196deg) brightness(73%) contrast(100%);
+    filter: invert(42%) brightness(1000%) contrast(100%);
 }
 
 button.copy:disabled,
@@ -103,7 +103,7 @@ button.copy:disabled img.copy {
 button img.icon-open {
     height: 15px;
     padding: 0 5px;
-    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%);
+    filter: invert(100%) brightness(100%) contrast(100%);
 }
 
 // REQUEST
@@ -120,12 +120,13 @@ button.request:hover {
 
 // CLOSE
 button.close {
-    background-color: #0096a3;
+    background-color: #1d2430;
     color: white;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
     transition: background-color 0.2s ease-in-out;
-    margin: 0;
-    border-radius: 0;
+    margin: 1em 1em;
+    border-radius: 15px;
+    padding: 1.5em 2em;
 }
 
 button.close:hover {
@@ -174,7 +175,8 @@ button.doc-link .operation img {
     color: gray;
     height: 1.5em;
     margin: 0.5em;
-    filter: invert(100%) sepia(0) saturate(1352%) hue-rotate(0deg) brightness(10%) contrast(0);
+    filter: invert(100%) brightness(100%) contrast(100%);
+    //filter: invert(100%)  saturate(1352%) brightness(10%) contrast(0);
 }
 
 button.doc-link .operation .operationId {
@@ -196,50 +198,6 @@ button.doc-link .method {
     text-align: center;
     box-shadow: inherit;
     font-weight: 600;
-}
-
-button.doc-link .method.get {
-    color: #008000;
-    border-radius: 5px;
-    background-color: #00800036;
-}
-
-button.doc-link .method.post {
-    color: #0000ff;
-    border-radius: 5px;
-    background-color: #0000ff36;
-}
-
-button.doc-link .method.put {
-    color: #ffa500;
-    border-radius: 5px;
-    background-color: #ffa50036;
-}
-
-button.doc-link .method.delete {
-    color: #ff0000;
-    border-radius: 5px;
-    background-color: #ff000036;
-}
-
-button.doc-link.get,
-button.doc-link .method.get {
-    border: .1px solid #00800036;
-}
-
-button.doc-link.post,
-button.doc-link .method.post {
-    border: .1px solid #0000ff36;
-}
-
-button.doc-link.put,
-button.doc-link .method.put {
-    border: .1px solid #ffa50036;
-}
-
-button.doc-link.delete,
-button.doc-link .method.delete {
-    border: .1px solid #ff000036;
 }
 
 select:focus,

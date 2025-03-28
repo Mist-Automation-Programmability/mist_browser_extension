@@ -12,7 +12,7 @@ export interface actionElement {
 
 @Component({
   selector: 'app-api-juniper-manage',
-  templateUrl: 'juniper-manage.component.html',
+  templateUrl: '../manage/manage.component.html',
   styleUrls: [
     '../api.component.scss',
     '../../../scss/button.component.scss',

@@ -79,6 +79,8 @@ export class AboutComponent implements OnInit {
     }
     if (dest_url) {
       this._browser.tabOpen(dest_url);
+    } else if (target.startsWith("https://")){
+      this._browser.tabOpen(target);
     }
   }
 }

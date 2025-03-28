@@ -1,4 +1,3 @@
-<button (click)="close()" class="close">CLOSE</button>
 <div *ngIf="displayed_msps.length > 0">
     <select name=msp_id [(ngModel)]="msp_id" (change)="mspSelected()">
         <option class="none" value="none">
@@ -76,4 +75,8 @@
             </button>
         </div>
     </div>
+</div>
+
+<div style="display: flex;">
+    <button (click)="close()" class="close">CLOSE</button>
 </div>

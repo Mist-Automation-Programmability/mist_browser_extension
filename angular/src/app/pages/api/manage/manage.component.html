@@ -1,26 +1,31 @@
-<div class="content no-grow">
-    <h2>Page Info</h2>
-    <div *ngIf="!org_id && !msp_id" class="notice-text">
-        <div>Sorry, this website does not look like a Mist Dashboard...</div>
-        <div>If you think I'm wrong, please send me an email with the current URL.</div>
+<div *ngIf="!org_id && !msp_id" class="notice-text">
+    <div>
+        This page is not supported by the extension...
     </div>
+    <div style="margin-top:1em;">If you think it should, please report your current URL.</div>
+    <div style="display: flex;flex-direction: row;justify-content: center;">
+        <button class="request" (click)="openApiTab('https://github.com/tmunzer/mist_browser_extension/issues/new')">Report a missing URL</button>
+    </div>
+</div>
+<div *ngIf="org_id || msp_id" class="content no-grow page-info">
+    <h2>Page Info</h2>
     <div *ngIf="msp_id">
-        <div class="box-ids" *ngIf="msp_id" style="display: flex;flex-direction: row;align-items: center;justify-content: center;">
-            <div style="flex-direction: column;display: flex;align-items: center;justify-content: center;flex-grow: 1;">
+        <div class="box-ids" *ngIf="msp_id">
+            <div class="box-ids-text" [ngClass]="focused == 'msp_id'? 'focused' : ''">
                 <label class="ids" for="org_id">MSP ID</label>
                 <div class=box-ids-input>
-                    <input class="ids" type="text" readonly [value]="msp_id" [ngClass]="focused == 'msp_id'? 'focused' : ''" id="msp_id" #msp_id_input>
+                    <input class="ids" type="text" readonly [value]="msp_id" id="msp_id" #msp_id_input>
                 </div>
             </div>
             <button class="copy" name="copy" (click)="copyId(msp_id_input)">
                 <img class="copy" src="assets/copy.svg" alt="copy">
             </button>
         </div>
-        <div class="box-ids" *ngIf="obj_id" style="display: flex;flex-direction: row;align-items: center;justify-content: center;">
-            <div style="flex-direction: column;display: flex;align-items: center;justify-content: center;flex-grow: 1;">
+        <div class="box-ids" *ngIf="obj_id">
+            <div class="box-ids-text" [ngClass]="focused == 'obj_id'? 'focused': ''">
                 <label class="ids" for="obj_id">{{obj_name | uppercase}} ID</label>
                 <div class=box-ids-input>
-                    <input class="ids" type="text" readonly [value]="obj_id" [ngClass]="focused == 'obj_id'? 'focused': ''" id="obj_id" #obj_id_input>
+                    <input class="ids" type="text" readonly [value]="obj_id" id="obj_id" #obj_id_input>
                 </div>
             </div>
             <button class="copy" name="copy" (click)="copyId(obj_id_input)">
@@ -29,34 +34,34 @@
         </div>
     </div>
     <div *ngIf="org_id">
-        <div class="box-ids" *ngIf="org_id" style="display: flex;flex-direction: row;align-items: center;justify-content: center;">
-            <div style="flex-direction: column;display: flex;align-items: center;justify-content: center;flex-grow: 1;">
+        <div class="box-ids" *ngIf="org_id">
+            <div class="box-ids-text"  [ngClass]="focused == 'org_id'? 'focused' : ''">
                 <label class="ids" for="org_id">ORG ID</label>
                 <div class=box-ids-input>
-                    <input class="ids" type="text" readonly [value]="org_id" [ngClass]="focused == 'org_id'? 'focused' : ''" id="org_id" #org_id_input>
+                    <input class="ids" type="text" readonly [value]="org_id" id="org_id" #org_id_input>
                 </div>
             </div>
             <button class="copy" name="copy" (click)="copyId(org_id_input)">
                 <img class="copy" src="assets/copy.svg" alt="copy">
             </button>
         </div>
-        <div class="box-ids" *ngIf="site_id" style="display: flex;flex-direction: row;align-items: center;justify-content: center;">
-            <div style="flex-direction: column;display: flex;align-items: center;justify-content: center;flex-grow: 1;">
+        <div class="box-ids" *ngIf="site_id">
+            <div class="box-ids-text" [ngClass]="focused == 'site_id'? 'focused' : ''">
                 <label class="ids" for="site_id">SITE ID</label>
                 <div class=box-ids-input>
-                    <input class="ids" type="text" readonly [value]="site_id" [ngClass]="focused == 'site_id'? 'focused' : ''" id="site_id" #site_id_input>
+                    <input class="ids" type="text" readonly [value]="site_id" id="site_id" #site_id_input>
                 </div>
             </div>
             <button class="copy" name="copy" (click)="copyId(site_id_input)">
                 <img class="copy" src="assets/copy.svg" alt="copy">
             </button>
         </div>
-        <div class="box-ids" *ngIf="obj_id" style="display: flex;flex-direction: row;align-items: center;justify-content: center;">
-            <div style="flex-direction: column;display: flex;align-items: center;justify-content: center;flex-grow: 1;">
+        <div class="box-ids" *ngIf="obj_id">
+            <div class="box-ids-text" [ngClass]="focused == 'obj_id'? 'focused': ''">
                 <label class="ids" for="obj_id" *ngIf="obj_name != 'other device'">{{obj_name | uppercase}} ID</label>
                 <label class="ids" for="obj_id" *ngIf="obj_name == 'other device'">{{obj_name | uppercase}} MAC</label>
                 <div class=box-ids-input>
-                    <input class="ids" type="text" readonly [value]="obj_id" [ngClass]="focused == 'obj_id'? 'focused': ''" id="obj_id" #obj_id_input>
+                    <input class="ids" type="text" readonly [value]="obj_id" id="obj_id" #obj_id_input>
                 </div>
             </div>
             <button class="copy" name="copy" (click)="copyId(obj_id_input)">
@@ -68,11 +73,11 @@
 <div *ngIf="quick_links.length > 0" class="content no-grow">
     <h2>Quick API Access</h2>
     <div class="box-apitab">
-        <button *ngFor="let quick_link of quick_links" (click)="openApiTab(quick_link.url)" class="large">
+        <button *ngFor="let quick_link of quick_links" (click)="openApiTab(quick_link.url)" class="xlarge">
             <div style="width: 100%;">{{quick_link.name | uppercase}}</div>
             <img class="icon-open" src="assets/open.svg" alt="open">
         </button>
-        <button *ngFor="let quick_action of quick_actions" (click)="openActionTab(quick_action.action)" class="large stroked">
+        <button *ngFor="let quick_action of quick_actions" (click)="openActionTab(quick_action.action)" class="xlarge stroked">
             <div style="width: 100%;">{{quick_action.name | uppercase}}</div>            
         </button>
     </div>

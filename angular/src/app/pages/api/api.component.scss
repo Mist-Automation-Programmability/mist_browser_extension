@@ -14,6 +14,16 @@
     flex-grow: 1;
 }
 
+.page-info,
+.documentation {
+    background-color: #161c26;
+    border: 1px solid #4f5560;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    border-radius: 15px;
+    padding: 0 1em 1em;
+    margin: 1em;
+}
+
 // TITLES
 h2 {
     margin-left: 0.8em;
@@ -43,9 +53,14 @@ h2 {
 }
 
 .box-ids {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    border: 1px solid #4f5560;
+    border-radius: 15px;
+    margin: .6em 0;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: center;
+    display: flex
+;
 }
 
 .box-ids-input {
@@ -55,7 +70,17 @@ h2 {
     justify-content: space-around;
 }
 
+.box-ids-text {
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    transition: all 1s ease-in-out;
+}
+
 input.ids:read-only {
+    color: white;
     width: 100%;
     border-radius: 2px;
     text-align: center;
@@ -72,12 +97,14 @@ input.ids:focus-visible {
     outline: none;
 }
 
-input.ids.focused {
+input.ids.focused,
+.box-ids div.focused {
     background-color: #555;
     transition: all 0.2s ease-in-out;
 }
 
 label.ids {
+    color: #ddd;
     margin: .2em .5em .2em 1em;
     display: flex;
     flex-direction: row;

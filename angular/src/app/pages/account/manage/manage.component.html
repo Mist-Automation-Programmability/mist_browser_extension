@@ -1,4 +1,4 @@
-<button (click)="close()" class="close">CLOSE</button>
+
 <div class="container" style="height: 100%; display: flex; flex-direction: column; justify-content: flex-start;">
     <div *ngIf="tokens.length == 0" style="height: 100%;display: flex;justify-content: center;flex-direction: column;text-align: center; font-weight: lighter; margin: 1em;">
         <div style="margin: 1em;">This account doesn't have any API Token yet...</div>
@@ -40,4 +40,7 @@
             </button>
         </div>
     </div>
+</div>
+<div style="display: flex;">
+    <button (click)="close()" class="close">CLOSE</button>
 </div>

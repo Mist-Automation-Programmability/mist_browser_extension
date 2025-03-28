@@ -26,18 +26,21 @@ button.close:hover {
 
 .container {
     margin: 0;
-    overflow: auto;
+    overflow: auto;  
+    scrollbar-width: thin;
+    scrollbar-color: #63b4ee #202836;
 }
 
 .token-container {
-    margin: 1em;
+    margin: 0.7em;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    border: 1px solid #ddd;
+    background-color: #161c26;
+    border: 1px solid #4f5560;
     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-    border-radius: 2px;
+    border-radius: 15px;
     height: 7em;
 }
 
@@ -55,12 +58,13 @@ button.close:hover {
 .delete,
 .delete button {
     height: 100%;
-    background-color: white;
     margin: 0;
     box-shadow: unset !important;
-    border-radius: 2px;
     transition: background-color 0.2s ease-in-out;
     cursor: pointer;
+    border-radius: 0 15px 15px 0;
+    border: none;
+    background-color: #4f5560;
 }
 
 .delete button:hover {
@@ -69,6 +73,7 @@ button.close:hover {
 
 .delete button img {
     transition: background-color 0.2s ease-in-out;
+    filter: invert(90%);
 }
 
 .delete button:hover img {

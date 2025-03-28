@@ -1,58 +1,70 @@
 <div *ngFor="let session of sessions">
     <div *ngIf="session.email" class="box-cloud">
-        <div>
-            <div *ngIf="session.additional_cloud_hosts.length <= 1" class="title-cloud-box link">
-                <h2 class="title-cloud link" (click)="openTab(session.cloud_host)">
-                    {{session.cloud_host}}
-                    <img src="assets/open.svg" alt="open">
-                </h2>
-            </div>            
-            <div *ngIf="session.additional_cloud_hosts.length > 1" class="title-cloud-box">
-                <h2 class="title-cloud" >
-                    {{session.domain.substring(1)}}
-                </h2>
-            </div>            
-        </div>
-        <div class="text-cloud first">Logged in as <b style="margin-left: 2px;">{{session.email}}</b></div>
-        <div class="text-cloud">Session expires at <b style="margin-left: 2px;">{{(session.expires_at * 1000) | date:'yyyy-MM-dd HH:mm:ss'}}</b></div>
-        <div class="text-cloud last api-usage" >
-            <div class="api-usage-back">Current User API usage: <b style="margin-left: 2px;">{{session.requests}} / {{session.request_limit}}</b></div>
-            <div class="api-usage-front" [ngStyle]="{'clip-path': 'inset(0 0 0 '+session.requests/session.request_limit*100+'%)', '-webkit-clip-path': 'inset(0 0 0 '+session.requests/session.request_limit*100+'%)'}">
-                Current User API usage: <b style="margin-left: 2px;">{{session.requests}} / {{session.request_limit}}</b>
+        <div class="box-cloud-info">
+            <div class="box-cloud-info-left">
+                <div>
+                    <div *ngIf="session.additional_cloud_hosts.length <= 1" class="title-cloud-box link">
+                        <h2 class="title-cloud link" (click)="openTab(session.cloud_host)">
+                            {{session.cloud_host}}
+                            <img src="assets/open.svg" alt="open">
+                        </h2>
+                    </div>            
+                    <div *ngIf="session.additional_cloud_hosts.length > 1" class="title-cloud-box">
+                        <h2 class="title-cloud" >
+                            {{session.domain.substring(1)}}
+                        </h2>
+                    </div>            
+                </div>
+                <div class="box-cloud-info-login">
+                    <div *ngIf="session.api_threshold_reached" class="text-cloud first"><b style="margin-left: 2px;">API Usage Threshold Reached</b></div>
+                    <div *ngIf="!session.api_threshold_reached" class="text-cloud first">Logged in as <b style="margin-left: 2px;">{{session.email}}</b></div>
+                    <div class="text-cloud">Session expires at <b style="margin-left: 2px;">{{(session.expires_at * 1000) | date:'yyyy-MM-dd HH:mm:ss'}}</b></div>
+                </div>
             </div>
-        </div>
-        <div style="display: flex; flex-direction: row;">
-            <div style="display: flex;flex-direction: column;width: 45%;margin: 1em;border: 1px solid #bbb;border-radius: 2px;align-items: stretch;">
-                <div style="display: flex;flex-direction: row;justify-content: center; user-select: none;">
-                    <img class="bottom icon" src="assets/user.svg" alt="user" style="height: 20px; margin: 4px;">
-                    <div style="display: flex;justify-content: center;flex-direction: column;"> User Tokens
+            <div class="box-cloud-info-right">
+                    <h3 class="title-cloud">API Usage</h3>
+                    <div style="font-size: x-small;">({{session.requests}} / {{session.request_limit}})</div>
+                <div *ngIf="session.request_percentage>=100" class="progress-bar" role="progressbar" [ngStyle]="{'background': 'radial-gradient(closest-side, #161c26 79%, transparent 80% 100%), conic-gradient(#ff6969 '+session.request_percentage+'%, #698bc7 0)'}">
+                    {{session.request_percentage | number: '1.0-0' }}%
+                </div>
+                <div *ngIf="session.request_percentage<100" class="progress-bar" role="progressbar" [ngStyle]="{'background': 'radial-gradient(closest-side, #161c26 79%, transparent 80% 100%), conic-gradient(#7dff69 '+session.request_percentage+'%, #698bc7 0)'}">
+                    {{session.request_percentage | number: '1.0-0' }}%
+                </div>
+            </div>
+        </div>  
+        <div class="box-cloud-token">
+            <div class="box-cloud-token-container">
+                <div class="box-cloud-token-title">
+                    <img class="bottom icon" src="assets/user.svg" alt="user">
+                    <div style="display: flex;justify-content: center;flex-direction: column;">
+                        User API Tokens
                     </div>
                 </div>
-
-                <div style="display: flex;flex-direction: row;">
-                    <button class="cloud token tooltip left" (click)="openManageTokens(session.domain, 'user')">
+                <div class="box-cloud-token-buttons">
+                    <button class="box-cloud-token-button tooltip" (click)="openManageTokens(session.domain, 'user')">
                             <img class="icon"src="assets/list.svg">
                             <span class="tooltiptext">Manage</span>
                     </button>
-                    <button class="cloud token tooltip right" (click)="openCreateToken(session.domain, 'user')">
+                    <button class="box-cloud-token-button stroked tooltip" (click)="openCreateToken(session.domain, 'user')">
                         <img class="icon" src="assets/add.svg">
                         <span class="tooltiptext">Create</span>
                     </button>
                 </div>
             </div>
-            <div style="display: flex;flex-direction: column;width: 45%;margin: 1em;border: 1px solid #bbb;border-radius: 2px;align-items: stretch;">
-                <div style="display: flex;flex-direction: row;justify-content: center; user-select: none;">
-                    <img class="bottom icon" src="assets/org.svg" alt="user" style="height: 20px; margin: 4px;">
+
+            <div class="box-cloud-token-container">
+                <div class="box-cloud-token-title">
+                    <img class="bottom icon" src="assets/org.svg" alt="user">
                     <div style="display: flex;justify-content: center;flex-direction: column;">
-                        Org Tokens
+                        Org API Tokens
                     </div>
                 </div>
-                <div style="display: flex;flex-direction: row;">
-                    <button class="cloud token tooltip left" (click)="openManageTokens(session.domain, 'org')">
+                <div class="box-cloud-token-buttons">
+                    <button class="box-cloud-token-button tooltip" (click)="openManageTokens(session.domain, 'org')">
                         <img class="icon"src="assets/list.svg">
                         <span class="tooltiptext">Manage</span>
                     </button>
-                    <button class="cloud token tooltip right" (click)="openCreateToken(session.domain, 'org')">
+                    <button class="box-cloud-token-button stroked tooltip" (click)="openCreateToken(session.domain, 'org')">
                         <img class="icon" src="assets/add.svg">
                         <span class="tooltiptext">Create</span>
                     </button>
@@ -70,7 +82,7 @@
     <div>Please wait a bit more... Thanks!</div>
 </div>
 
-<app-account-manage [ngClass]="{hidden: manageTokens == '' || scope !='user'}" class="popup white" [sessionEvent]="eventSession.asObservable()" (closeManageTokens)="closeManageTokens()" [eventManageTokens]="eventManageTokens.asObservable()"></app-account-manage>
+<app-account-manage [ngClass]="{hidden: manageTokens == '' || scope !='user'}" class="popup" [sessionEvent]="eventSession.asObservable()" (closeManageTokens)="closeManageTokens()" [eventManageTokens]="eventManageTokens.asObservable()"></app-account-manage>
 <app-account-create [ngClass]="{hidden: createToken == '' || scope != 'user'}" class="popup transparent" [sessionEvent]="eventSession.asObservable()" (closeCreateToken)="closeCreateToken()" [eventCreateToken]="eventCreateToken.asObservable()"></app-account-create>
-<app-account-manage-org [ngClass]="{hidden: manageTokens == '' || scope != 'org'}" class="popup white" [sessionEvent]="eventSession.asObservable()" (closeManageTokens)="closeManageTokens()" [eventManageTokens]="eventManageTokens.asObservable()"></app-account-manage-org>
+<app-account-manage-org [ngClass]="{hidden: manageTokens == '' || scope != 'org'}" class="popup" [sessionEvent]="eventSession.asObservable()" (closeManageTokens)="closeManageTokens()" [eventManageTokens]="eventManageTokens.asObservable()"></app-account-manage-org>
 <app-account-create-org [ngClass]="{hidden: createToken == '' || scope != 'org'}" class="popup transparent" [sessionEvent]="eventSession.asObservable()" (closeCreateToken)="closeCreateToken()" [eventCreateToken]="eventCreateToken.asObservable()"></app-account-create-org>

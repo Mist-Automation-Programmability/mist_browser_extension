@@ -15,6 +15,8 @@ export interface SessionElement {
     additional_cloud_hosts: string[],
     requests: number,
     request_limit: number,
+    request_percentage: number,
+    api_threshold_reached: boolean,
 }
 
 @Injectable({
@@ -156,7 +158,6 @@ export class BrowserService {
                         i = index;
                     }
                 })
-                console.log(cookie);
                 // if the session already exists in the list, update it with the current cookie
                 if (i > -1) {
                     if (cookie.name.startsWith("csrftoken")) sessions[i].csrftoken = cookie.value;
@@ -191,6 +192,8 @@ export class BrowserService {
             additional_cloud_hosts: additional_cloud_hosts,
             requests: -1,
             request_limit: -1,
+            request_percentage: 0,
+            api_threshold_reached: false,
         });
         else if (cookie.name.startsWith("sessionid")) tmp.push({
             domain: domain,
@@ -204,6 +207,8 @@ export class BrowserService {
             additional_cloud_hosts: additional_cloud_hosts,
             requests: -1,
             request_limit: -1,
+            request_percentage: 0,
+            api_threshold_reached: false,
         });
         this.sessionsSource.next(tmp);
     }

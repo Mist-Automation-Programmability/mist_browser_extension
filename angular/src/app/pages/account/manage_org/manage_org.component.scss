@@ -1,11 +1,3 @@
-select {
-    padding: 0.5em;
-    border: 1px solid #bbb;
-    width: 100%;
-    box-shadow: rgb(0 0 0 / 5%) 0px 0px 0px 1px;
-    text-align: center;
-}
-
 option {
     text-align: start;
 }
@@ -16,4 +8,15 @@ option.none {
 
 .token-container {
     height: 8em;
+}
+
+.token table tr th {
+    width: 80px;
+}
+.token table tr td {
+    width: 160px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 160px;
 }

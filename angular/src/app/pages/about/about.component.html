@@ -1,11 +1,11 @@
 <div class="content no-grow">
     <h2>Mist API Documentation</h2>
     <div class="box-links">
-        <button class="links large" (click)="openTab('openapi')">
+        <button class="links xlarge" (click)="openTab('openapi')">
             <div>API Documentation</div>
             <img class="icon-open" src="assets/open.svg" alt="open">
         </button>
-        <button class="links large" (click)="openTab('postman')">
+        <button class="links xlarge" (click)="openTab('postman')">
             <div>Postman Collection</div>
             <img class="icon-open" src="assets/open.svg" alt="open">
         </button>
@@ -41,11 +41,28 @@
             </div>
         </div>
     </div>
-    <div class="box-links">
-        <button class="links large" (click)="openTab('github')">
+    <div class="box-links" style="margin: 0 1em;">
+        <button class="links xlarge" (click)="openTab('github')">
             <div>Extension Page</div>
             <img class="icon-open" src="assets/open.svg" alt="open">
         </button>
     </div>
+</div>
 
+<div class="content no-grow">
+    <h2>Mist Integrations</h2>
+    <div class="box-links">
+        <button class="links xlarge" (click)="openTab('https://store.servicenow.com/sn_appstore_store.do#!/store/search?q=juniper')">
+            <div>Servnicenow</div>
+            <img class="icon-open" src="assets/open.svg" alt="open">
+        </button>
+        <button class="links xlarge" (click)="openTab('https://registry.terraform.io/providers/Juniper/mist/latest')">
+            <div>Terraform</div>
+            <img class="icon-open" src="assets/open.svg" alt="open">
+        </button>
+        <button class="links xlarge" (click)="openTab('https://www.pulumi.com/registry/packages/junipermist/')">
+            <div>Pulumi</div>
+            <img class="icon-open" src="assets/open.svg" alt="open">
+        </button>
+    </div>
 </div>

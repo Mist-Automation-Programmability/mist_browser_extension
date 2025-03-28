@@ -15,6 +15,7 @@ export interface UsageElement {
   templateUrl: 'account.component.html',
   styleUrls: [
     'account.component.scss',
+    '../../scss/button.component.scss',
     '../../scss/notice.component.scss',
     '../../scss/popup.component.scss'
   ],
@@ -52,12 +53,22 @@ export class AccountComponent implements OnInit {
   getSelf() {
     this.sessions.forEach(session => {
       if (session.has_sessionid && session.csrftoken) {
-        this._http.get("https://" + session.api_host + "/api/v1/self").subscribe((data) => {
-          session.email = data["email"];
-          session.privileges = data["privileges"];
-          this.has_active_sessions = true;
-          this.is_working = false;
-          this.getApiUsage(session)
+        this._http.get("https://" + session.api_host + "/api/v1/self", { observe: 'response' }).subscribe((data) => {
+          if (data.status == 200) {
+            session.email = data.body["email"];
+            session.privileges = data.body["privileges"];
+            this.has_active_sessions = true;
+            this.is_working = false;
+            this.getApiUsage(session)
+          } else if (data.status == 429) {
+            session.email = "threshold_reached"
+            session.api_threshold_reached = true
+            this.has_active_sessions = true;
+            this.is_working = false;
+            session.requests = 5000;
+            session.request_limit = 5000;
+            session.request_percentage = 100;
+          }
           this._cd.detectChanges()
         })
       }
@@ -73,12 +84,13 @@ export class AccountComponent implements OnInit {
 
   getApiUsage(session: SessionElement) {
     let url = "https://" + session.api_host + "/api/v1/self/usage";
-    this._http.get(url,{ headers: { "X-CSRFTOKEN": session.csrftoken } }).subscribe((usage: UsageElement) => {
+    this._http.get(url, { headers: { "X-CSRFTOKEN": session.csrftoken } }).subscribe((usage: UsageElement) => {
       session.requests = usage.requests;
       session.request_limit = usage.request_limit;
+      session.request_percentage = (usage.requests / usage.request_limit) * 100;
       this._cd.detectChanges();
     })
-}
+  }
 
   openTab(cloud_host: string) {
     let dest_url = "https://" + cloud_host + "/cloud.html";

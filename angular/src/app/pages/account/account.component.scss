@@ -1,38 +1,62 @@
 // clouds
 .box-cloud {
-    margin: 2em 1em 0;
+    margin: 2em 2em 0;
     display: flex;
     align-items: stretch;
     flex-direction: column;
-    border: 1px solid #ddd;
-    box-shadow: 0 3px 6px 0 rgb(99 99 99 / 10%);
-    border-radius: 2px;
+    border: 1px solid #4f5560;
+    box-shadow: 0 3px 6px 0 rgba(99, 99, 99, 0.1);
+    border-radius: 15px;
+    background-color: #161c26;
 }
+
+// info on the top part of the box
+.box-cloud-info {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+// left part (mostly text)
+.box-cloud-info-left {
+    width: 75%;
+}
+
+.box-cloud-info-login {
+    margin: 3em 1em 0 1em;
+}
+
 
 .title-cloud-box {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     flex-direction: column;
-    background-color: white;
-    border-radius: 2px;
     margin-top: 0em;
     transition: background-color 0.2s ease-in-out;
+    padding-left: .6em;
 }
 
 .title-cloud-box.link {
     cursor: pointer;
 }
 
-.title-cloud-box.link:hover {
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
-    background-color: #ddd;
+.title-cloud-box.link h2 {
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+    color: white;
+}
+
+.title-cloud-box.link:hover h2 {
+    text-decoration: underline;
+    transition: all 0.2s ease-in-out;
+    color: #62b4ee;
 }
 
 .title-cloud {
-    color: black;
     font-weight: 300;
     margin: 0.2em;
     display: flex;
+    color: white;
     flex-direction: row;
     align-items: center;
 }
@@ -43,8 +67,9 @@
 
 .title-cloud img {
     margin-left: 0.5em;
-    opacity: 0.5;
+    margin-top: .2em;
     height: 1em;
+    filter: invert(100%) brightness(100%) contrast(100%);
 }
 
 .text-cloud {
@@ -71,16 +96,91 @@
     background-color: #bbb;
 }
 
-.cloud.token.left {
-    border-radius: 0 0 0 2px;
+// right part (api usage)
+.box-cloud-info-right {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    align-items: center;
+    margin-right: 1em;
 }
 
-.cloud.token.right {
-    border-radius: 0 0 2px 0;
+.box-cloud-info-right h3 {
+    margin-top: 0.6em;
 }
 
-.cloud.token img {
+.progress-bar {
+    height: 3.5em;
+    width: 3.5em;
+    color: white;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, #161c26 79%, transparent 80% 100%), conic-gradient(#7dff69 0%, #698bc7 0);
+    margin: 1em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+}
+
+// Bottom part with API token 
+.box-cloud-token {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: center;
+}
+
+.box-cloud-token-container {
+    display: flex;
+    flex-direction: column;
+    margin: .7em;
+    border: 1px solid #4f5560;
+    border-radius: 15px;
+    align-items: center;
+    justify-content: space-between;
+    align-content: center;
+    width: 40%;
+    padding: .5em;
+    background-color: black;
+}
+
+.box-cloud-token-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    margin: .5em;
+}
+
+.box-cloud-token-button {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    width: 3em;
+    height: 3em;
+    border-radius: 60px !important;
+    margin: 0 1em;
+    padding: 0 !important;
+}
+
+.box-cloud-token-title {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    -webkit-user-select: none;
+    user-select: none;
+    align-items: center;
+}
+
+.box-cloud-token-title img {
     height: 20px;
+    margin: 4px;
+    filter: invert(100%) brightness(100%) contrast(100%);
+}
+
+.box-cloud-token-button img {
+    height: 15px;
+    filter: invert(100%) brightness(100%) contrast(100%);
 }
 
 // BUTTONS
@@ -105,49 +205,19 @@ button.token {
     cursor: pointer;
 }
 
+
+
 // tooltip
 .tooltip .tooltiptext {
-    top: 130%;
-    left: 30%;
+    top: -84%;
+    left: 10%;
     font-size: smaller;
     font-weight: 100;
+    background-color: #161c26;
+    border: 1px solid #4f5560;
+    border-radius: 15px;
 }
 
 b {
     font-weight: 600;
-}
-
-// api usage
-.api-usage {
-    position: relative;
-    display: flex;
-    height: 13.5px;
-    border: 1px solid #064a7e8c;
-    border-radius: 4px;
-    overflow: hidden;
-    width: 90%;
-}
-
-.api-usage-back {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    background: #064a7e;
-    color: white;
-}
-
-.api-usage-front {
-    position: absolute;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    background: #f9f9f9;
-    color: black;
-    clip-path: inset(0 0 0 0);
-    -webkit-clip-path: inset(0 0 0 0);
 }

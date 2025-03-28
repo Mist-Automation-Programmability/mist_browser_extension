@@ -4,8 +4,8 @@
             NEW API TOKEN
         </label>
         <div class="cloud">manage{{session.domain}}</div>
-        <div class="org_select">
-            <input type="text" [(ngModel)]="token_name" placeholder="Token Name (optional)" style="margin: 1em 0;padding: 0.5em;border: 1px solid #a7a7a7;" />
+        <div class="org_select token_opt">
+            <input type="text" [(ngModel)]="token_name" placeholder="Token Name (optional)"/>
             <div *ngIf="displayed_msps.length > 0" >
             <select name=msp_id [(ngModel)]="msp_id" (change)="mspSelected()">
                 <option class="none" value="none">
@@ -15,7 +15,6 @@
                     <div>{{msp.name}}</div>
                 </option>
             </select>
-        </div>
             <select name=org_id [(ngModel)]="org_id">
                 <option class="none" value="none">
                     <div style="width: 100%; text-align: center;">-- Please Select an Org --</div>
@@ -34,7 +33,8 @@
                 <option value="site" disabled>Site</option>
                 <option value="sitegroup" disabled>SiteGroup</option>
             </select>
-
+        </div>
+            
             <select *ngIf="scope=='site'" name="site_id" [(ngModel)]="site_id">                
                 <option class="none" value="none">
                     <div style="width: 100%; text-align: center;">-- Please Select a Site --</div>
@@ -46,11 +46,11 @@
                 </option>
             </select>
 
-            <button (click)="createToken()" class="xlarge">Create</button>
+            <button (click)="createToken()" class="stroked xlarge">Create</button>
         </div>
         <div class=token-input>
             <textarea class="token" type="text" readonly rows="3" [ngClass]="focused == 'token'? 'focused' : ''" id="token" #org_token_input>{{token.key}}</textarea>
-            <button class="copy" name="copy" (click)="copyToken(org_token_input)">
+            <button class="copy" name="copy" (click)="copyToken(org_token_input)" [disabled]="token.key==''">
                 <img class="copy" src="assets/copy.svg" alt="copy">
             </button>
         </div>

@@ -16,7 +16,7 @@ import { BrowserService } from "../../services/browser.service";
 export class ApiComponent implements OnInit {
 
   constructor(
-    private _broswer: BrowserService
+    private _browser: BrowserService
   ) { }
 
   display: string;
@@ -26,9 +26,9 @@ export class ApiComponent implements OnInit {
   tabUrl: string;
 
   ngOnInit() {
-    this.hosts_manage = this._broswer.getHostManage();
-    this.hosts_api = this._broswer.getHostApi();
-    this._broswer.getUrl
+    this.hosts_manage = this._browser.getHostManage();
+    this.hosts_api = this._browser.getHostApi();
+    this._browser.getUrl
       .then(tabUrl => {
         this.tabUrl = tabUrl;
         let host = tabUrl.split("/")[2];
@@ -44,7 +44,7 @@ export class ApiComponent implements OnInit {
   }
 
   openTab(): void {
-    this._broswer.issueOpen();
+    this._browser.issueOpen();
   }
 
 }

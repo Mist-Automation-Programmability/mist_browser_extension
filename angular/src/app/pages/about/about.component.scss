@@ -35,9 +35,10 @@ h2 {
     display: flex;
     align-items: stretch;
     flex-direction: column;
-    border: 1px solid #ddd;
+    background-color: #161c26;
+    border: 1px solid #4f5560;
     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-    border-radius: 2px;
+    border-radius: 15px;
 }
 
 .version-info {

@@ -1658,5 +1658,4 @@ export class ApiManageComponent implements OnInit {
     inputElement.setSelectionRange(0, 0);
   }
 
-
 }
