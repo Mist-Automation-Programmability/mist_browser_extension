@@ -338,6 +338,8 @@ app-about {
   display: flex;
   flex-direction: column;
   overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #63b4ee #202836;
 }
 
 label {
