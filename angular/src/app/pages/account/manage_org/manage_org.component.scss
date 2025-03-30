@@ -10,13 +10,3 @@ option.none {
     height: 8em;
 }
 
-.token table tr th {
-    width: 80px;
-}
-.token table tr td {
-    width: 160px;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    max-width: 160px;
-}

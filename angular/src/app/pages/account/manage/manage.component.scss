@@ -80,14 +80,35 @@ button.close:hover {
     filter: invert(90%);
 }
 
-th {
-    font-weight: 300;
-    text-align: left;
-}
 
 div.token table tr td div.name {
     max-width: 13em;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+}
+
+.token table tr th {
+    width: 80px;
+    font-weight: 300;
+    text-align: left;
+}
+.token table tr td {
+    width: 130px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 130px;
+}
+
+.token table tr td:hover {
+overflow: visible;
+}
+
+.token table tr td:hover span {
+position: relative;
+background-color: white;
+
+box-shadow: 0 0 4px 0 black;
+border-radius: 1px;
 }
