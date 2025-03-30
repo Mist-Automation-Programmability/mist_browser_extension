@@ -8,7 +8,11 @@
         </div>
             <button  class="stroked xlarge" [disabled]="!api_token" (click)="check_usage()">Get Info</button>
     </div>
-    <div class="usage" >
+    <div class="info">
+        <span *ngIf="invalid" class="error">Invalid Token</span>
+        <span *ngIf="working">Check {{check_index}} / {{check_total}} </span>
+    </div>
+    <div class="usage" >        
         <div class="text-container">
             <div class="label">API request usage: </div>
             <div *ngIf="usage.requests > -1" class="value">{{usage.requests}}</div>
@@ -17,10 +21,10 @@
             <div *ngIf="usage.request_limit > -1" class="value">{{usage.request_limit}}</div>
             <div *ngIf="usage.request_limit == -1" class="value">-</div>
         </div>
-        <div *ngIf="usage.request_percentage>=100" class="progress-bar" role="progressbar" [ngStyle]="{'background': 'radial-gradient(closest-side, #161c26 79%, transparent 80% 100%), conic-gradient(#ff6969 '+usage.request_percentage+'%, #698bc7 0)'}">
+        <div *ngIf="usage.request_percentage>=100" class="progress-bar" role="progressbar" [ngStyle]="{'background': 'radial-gradient(closest-side, #202836 79%, transparent 80% 100%), conic-gradient(#ff6969 '+usage.request_percentage+'%, #698bc7 0)'}">
             {{usage.request_percentage | number: '1.0-0' }}%
         </div>
-        <div *ngIf="usage.request_percentage<100" class="progress-bar" role="progressbar" [ngStyle]="{'background': 'radial-gradient(closest-side, #161c26 79%, transparent 80% 100%), conic-gradient(#7dff69 '+usage.request_percentage+'%, #698bc7 0)'}">
+        <div *ngIf="usage.request_percentage<100" class="progress-bar" role="progressbar" [ngStyle]="{'background': 'radial-gradient(closest-side, #202836 79%, transparent 80% 100%), conic-gradient(#7dff69 '+usage.request_percentage+'%, #698bc7 0)'}">
             {{usage.request_percentage | number: '1.0-0' }}%
         </div>
     </div>
