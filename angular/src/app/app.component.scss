@@ -28,7 +28,7 @@
 
 //
 .app-container {
-    height: 455px;
+    height: 460px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -69,7 +69,8 @@ button.bottom:not(.selected):hover {
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
-button.bottom:not(.selected):hover img {
+button.bottom:not(.selected):hover img,
+button.bottom.selected img {
     transition: all 0.2s ease-in-out;
     filter: brightness(0) saturate(100%) invert(84%) sepia(36%) saturate(6550%) hue-rotate(179deg) brightness(103%) contrast(87%);
 }
@@ -80,13 +81,8 @@ button.bottom:active {
 }
 
 button.bottom:not(.selected) img {
-    filter: brightness(0) saturate(100%) invert(98%) sepia(2%) saturate(6%) hue-rotate(314deg) brightness(93%) contrast(89%);
     transition: all 0.2s ease-in-out;
-}
-
-button.bottom.selected img {
-    filter: brightness(0) saturate(100%) invert(84%) sepia(36%) saturate(6550%) hue-rotate(179deg) brightness(103%) contrast(87%);
-    transition: all 0.2s ease-in-out;
+    filter: brightness(0) saturate(100%) invert(100%) sepia(4%) saturate(747%) hue-rotate(150deg) brightness(117%) contrast(71%);
 }
 
 img.bottom {
