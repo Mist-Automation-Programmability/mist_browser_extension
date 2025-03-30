@@ -14,11 +14,20 @@ button {
 }
 
 button:disabled,
-button:disabled:hover {
-    background-color: #eee;
+button:disabled:hover,
+button.stroked:disabled,
+button.Stroked:disabled:hover {
+    background-color: rgba(99, 99, 99, 0.2);
+    border: 1px solid #4f5560;
     color: #aaa;
     box-shadow: rgb(0 0 0 / 5%) 0px 0px 0px 1px !important;
     cursor: default;
+}
+button:disabled img,
+button:disabled:hover img,
+button.stroked:disabled img,
+button.Stroked:disabled:hover img {
+    filter: brightness(0) saturate(100%) invert(87%) sepia(0%) saturate(726%) hue-rotate(227deg) brightness(80%) contrast(85%);
 }
 
 button:enabled {
@@ -34,28 +43,19 @@ button:enabled {
 }
 
 button:enabled:hover {
-    background-color: #05477e;
+    background-color: #63b4ee75;
     box-shadow: rgba(50, 50, 93, 0.5) 0 4px 7px 2px inset, rgba(0, 0, 0, 0.3) 0 3px 3px -1px inset !important
-}
-
-button.stroked:disabled,
-button.Stroked:disabled:hover {
-    background-color: unset;
-    color: #aaa;
-    border: 1px solid #aaa;
-    box-shadow: rgb(0 0 0 / 5%) 0px 0px 0px 1px !important;
-    cursor: default;
 }
 
 button.stroked:enabled {
     background-color: unset;
     color: white;
-    border: 1px solid #18c956;
+    border: 2px solid #18c956;
 }
 
 button.stroked:enabled:hover {
-    background-color: #18c956;
-    box-shadow: rgb(50 50 93 / 60%) 0 4px 6px -12px inset, rgb(0 0 0 / 60%) 0 3px 6px -4px inset !important;
+    background-color: #18c95675;
+    box-shadow: rgba(50, 50, 93, 0.5) 0 4px 7px 2px inset, rgba(0, 0, 0, 0.3) 0 3px 3px -1px inset !important
 }
 
 // LARGE 
