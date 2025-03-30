@@ -17,7 +17,8 @@ export interface actionElement {
     '../api.component.scss',
     '../../../scss/button.component.scss',
     '../../../scss/popup.component.scss',
-    '../../../scss/notice.component.scss'
+    '../../../scss/notice.component.scss',
+    '../../../scss/container.component.scss'
   ]
 })
 export class ApiManageComponent implements OnInit {

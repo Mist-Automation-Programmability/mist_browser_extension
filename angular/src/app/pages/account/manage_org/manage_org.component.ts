@@ -20,6 +20,7 @@ export interface TokenElement {
     '../manage/manage.component.scss',
     './manage_org.component.scss',
     '../../../scss/button.component.scss',
+    '../../../scss/popup.component.scss',
     '../../../scss/select.component.scss'
   ],
   changeDetection: ChangeDetectionStrategy.OnPush

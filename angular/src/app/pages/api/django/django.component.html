@@ -1,4 +1,4 @@
-<div class="content no-grow page-info" *ngIf="objects.length > 0">
+<div class="content no-grow data-container" *ngIf="objects.length > 0">
     <h2>Page Info</h2>
     <div *ngFor="let object of objects">
         <div class="box-ids" *ngIf="object.id" style="display: flex;flex-direction: row;align-items: center;justify-content: center;">
@@ -14,7 +14,7 @@
         </div>
     </div>
 </div>
-<div class="documentation">
+<div class="data-container">
     <h2>API Documentation</h2>
     <div class="documentation-container">
         <button class="post" (click)="openDoc(docs.post.doc_url)" [disabled]="!docs.post">

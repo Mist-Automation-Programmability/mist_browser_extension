@@ -14,7 +14,11 @@ export interface TokenElement {
 @Component({
   selector: 'app-account-manage',
   templateUrl: 'manage.component.html',
-  styleUrls: ['manage.component.scss', '../../../scss/button.component.scss'],
+  styleUrls: [
+    'manage.component.scss',
+    '../../../scss/popup.component.scss',
+    '../../../scss/button.component.scss'
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AccountManageComponent {

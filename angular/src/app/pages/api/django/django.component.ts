@@ -20,7 +20,8 @@ interface QueryparamsInterface {
     'api.django.component.scss',
     '../api.component.scss',
     '../../../scss/button.component.scss',
-    '../../../scss/notice.component.scss'
+    '../../../scss/notice.component.scss',
+    '../../../scss/container.component.scss'
   ]
 })
 export class ApiDjangoComponent implements OnInit {
@@ -43,7 +44,7 @@ export class ApiDjangoComponent implements OnInit {
   }
   constructor(
     private _cd: ChangeDetectorRef,
-    private _browser: BrowserService
+    private _browser: BrowserService,
   ) { }
 
 

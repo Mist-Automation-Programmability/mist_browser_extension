@@ -20,7 +20,11 @@ export interface TokenElement {
 @Component({
   selector: 'app-account-create',
   templateUrl: 'create.component.html',
-  styleUrls: ['create.component.scss', '../../../scss/button.component.scss'],
+  styleUrls: [
+    'create.component.scss',
+    '../../../scss/popup.component.scss',
+    '../../../scss/button.component.scss'
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AccountCreateComponent implements OnInit {
@@ -36,7 +40,7 @@ export class AccountCreateComponent implements OnInit {
     private _http: HttpClient
   ) { }
 
-  token_name:string = "";
+  token_name: string = "";
   token: TokenElement;
   do_create: boolean = false;
 
@@ -49,7 +53,7 @@ export class AccountCreateComponent implements OnInit {
         id: undefined,
         last_used: undefined,
         created_time: 0,
-        key: "", 
+        key: "",
         name: ""
       }
     })
@@ -61,7 +65,7 @@ export class AccountCreateComponent implements OnInit {
   createToken(): void {
     if (this.do_create) {
       let url = "https://" + this.session.api_host + "/api/v1/self/apitokens";
-      this._http.post(url, {name: this.token_name}, { headers: { "X-CSRFTOKEN": this.session.csrftoken } }).subscribe((token: TokenElement) => {
+      this._http.post(url, { name: this.token_name }, { headers: { "X-CSRFTOKEN": this.session.csrftoken } }).subscribe((token: TokenElement) => {
         this.session.requests += 1;
         this.token = token;
         this._cd.detectChanges();

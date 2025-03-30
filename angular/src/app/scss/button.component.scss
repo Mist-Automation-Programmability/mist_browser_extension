@@ -1,8 +1,6 @@
 // MAIN
 button {
     user-select: none;
-    border: none;
-    padding: .5em;
     margin: 0.3em auto;
     height: 2.5em;
     font-size: small;
@@ -10,7 +8,8 @@ button {
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    border-radius: 4px;
+    border-radius: 15px;
+    padding: 1.5em 1em;
     cursor: pointer;
 }
 

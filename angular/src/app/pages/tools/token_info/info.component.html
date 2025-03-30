@@ -8,5 +8,11 @@
             <button  class="stroked xlarge" [disabled]="!api_token">Get Info</button>
         </div>
     </div>
+    <div *ngIf="token_type=='org'" class="content no-grow data-container">
+        <div><span>Cloud: </span><b>{{cloud}}</b></div>
+        <div><span>Token Type: </span><b>{{cloud}}</b></div>
+        <div><span>Token Name: </span><b>{{cloud}}</b></div>
+        <div><span>Last Name: </span><b>{{cloud}}</b></div>
+</div>
     <button (click)="close()" class="close">CLOSE</button>
 </div>

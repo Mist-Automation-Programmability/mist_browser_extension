@@ -7,7 +7,7 @@
         <button class="request" (click)="openApiTab('https://github.com/tmunzer/mist_browser_extension/issues/new')">Report a missing URL</button>
     </div>
 </div>
-<div *ngIf="org_id || msp_id" class="content no-grow page-info">
+<div *ngIf="org_id || msp_id" class="content no-grow data-container">
     <h2>Page Info</h2>
     <div *ngIf="msp_id">
         <div class="box-ids" *ngIf="msp_id">

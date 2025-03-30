@@ -1,11 +1,25 @@
-
-// CONTENAIRS
 .content {
-    margin: 1em;
+    padding: 1em;
     display: flex;
     align-items: stretch;
     flex-direction: column;
+    background-color: #202836;
+    margin: 1em;
+    padding: 0;
+    border: 1px solid #bbb;
+    border-radius: 15px;
+    max-height: 96vh;
 }
+.content.full-height {
+    min-height: 96vh;
+}
+// CONTENAIRS
+// .content {
+//     margin: 1em;
+//     display: flex;
+//     align-items: stretch;
+//     flex-direction: column;
+// }
 
 .popup {
     position: absolute;
@@ -21,7 +35,9 @@
     opacity: 1;
     transition: visibility 0.2s ease-in-out, opacity 0.2s ease-in-out;
     background-color: #202836;
+    z-index: 100;
 }
+
 
 .popup.transparent {
     backdrop-filter: blur(2px);
