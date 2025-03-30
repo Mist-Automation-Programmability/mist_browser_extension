@@ -22,7 +22,8 @@
         "https://*.ai.juniper.net/*"
       ],
       "js": [
-        "/assets/js/content.js"
+        "/assets/js/content.js",
+        "/assets/js/id_links.js"
       ]
     }
   ],
