@@ -1,0 +1,22 @@
+<div class="content no-grow data-container">
+  <h2>API Token</h2>
+  <div class="box-links">
+    <button class="links xlarge" (click)="openPopup('token-info')">
+      <div>API Token Info</div>
+    </button>
+    <button class="links xlarge" (click)="openPopup('token-usage')">
+      <div>API Token Usage</div>
+    </button>
+  </div>
+</div>
+
+<app-tools-token-info
+  class="popup transparent"
+  [ngClass]="{ hidden: view != 'token-info' }"
+  (closeManageTokens)="closePopup('token-info')"
+></app-tools-token-info>
+<app-tools-token-usage
+  class="popup transparent"
+  [ngClass]="{ hidden: view != 'token-usage' }"
+  (closeManageTokens)="closePopup('token-usage')"
+></app-tools-token-usage>

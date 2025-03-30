@@ -10,17 +10,22 @@
 <div class="app-container">
     <app-api *ngIf="display=='api'" style="overflow: auto;"></app-api>
     <app-account *ngIf="display=='account'" style="overflow: auto;"></app-account>
+    <app-tools *ngIf="display=='tools'" style="overflow: auto;"></app-tools>
     <app-about *ngIf="display=='about'" style="overflow: auto;"></app-about>
 </div>
 
 <div class="bottom">
     <button class="bottom" (click)="show('api')" [ngClass]="display == 'api'? 'selected' : ''">
-        <img class="bottom icon" src="assets/api.svg" alt="api">
+        <img class="bottom icon" src="assets/hub.svg" alt="api">
         <div class="bottom xxs">API</div>
     </button>
     <button class="bottom" (click)="show('account')" [ngClass]="display == 'account'? 'selected' : ''">
         <img class="bottom icon" src="assets/account.svg" alt="account">
         <div class="bottom xxs">Accounts</div>
+    </button>
+    <button class="bottom" (click)="show('tools')" [ngClass]="display == 'tools'? 'selected' : ''">
+        <img class="bottom icon" src="assets/tools.svg" alt="tools">
+        <div class="bottom xxs">Tools</div>
     </button>
     <button class="bottom" (click)="show('about')" [ngClass]="display == 'about'? 'selected' : ''">
         <img class="bottom icon" src="assets/help.svg" alt="help">

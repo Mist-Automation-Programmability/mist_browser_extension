@@ -1,0 +1,28 @@
+
+label.token {
+    margin: .2em .5em .2em 1em;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    letter-spacing: 0.1em;
+}
+
+.token_opt {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.token_opt input {
+    margin: 1em 0;
+    padding: 0.5em;
+    border: 1px solid white;
+    border-radius: 10px;
+    background-color: rgba(50, 50, 93, 0.25);
+    color: white;
+}
+
+.token_opt input:focus {
+    background-color: black;
+    border-color: #63b4ee;
+}

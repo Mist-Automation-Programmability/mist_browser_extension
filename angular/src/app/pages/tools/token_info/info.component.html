@@ -1,0 +1,12 @@
+<div class="content">
+    <div class="box-token">
+        <label class="token" for="token">
+            API TOKEN INFO
+        </label>
+        <div class="token_opt">
+            <input type="text" [(ngModel)]="api_token" placeholder="API Token"/>
+            <button  class="stroked xlarge" [disabled]="!api_token">Get Info</button>
+        </div>
+    </div>
+    <button (click)="close()" class="close">CLOSE</button>
+</div>
