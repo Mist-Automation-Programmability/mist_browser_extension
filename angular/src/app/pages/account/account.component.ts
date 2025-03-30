@@ -57,9 +57,19 @@ export class AccountComponent implements OnInit {
           if (data.status == 200) {
             session.email = data.body["email"];
             session.privileges = data.body["privileges"];
-            this.has_active_sessions = true;
+            if (
+              data.body.hasOwnProperty("two_factor_required") &&
+              data.body.hasOwnProperty("two_factor_passed") &&
+              data.body["two_factor_required"] &&
+              !data.body["two_factor_passed"]
+            ) {
+              session.two_factor_passed = false;
+            } else {
+              session.two_factor_passed = true;
+              this.has_active_sessions = true;
+              this.getApiUsage(session)
+            }
             this.is_working = false;
-            this.getApiUsage(session)
           } else if (data.status == 429) {
             session.email = "threshold_reached"
             session.api_threshold_reached = true

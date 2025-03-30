@@ -23,9 +23,14 @@
 }
 
 .box-cloud-info-login {
-    margin: 2.7em 1em 0 1em;
+    margin: .3em 1em 0 1em;
 }
 
+.box-cloud-info-login div.error {
+    height: 1em;
+    margin: .9em 0;
+    color: #ff0000d7;
+}
 
 .title-cloud-box {
     display: flex;
@@ -79,7 +84,7 @@
 }
 
 .text-cloud.first {
-    margin-top: 1.5em;
+    margin-top: .5em;
 }
 
 .text-cloud.last {
