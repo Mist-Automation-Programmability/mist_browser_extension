@@ -6,13 +6,17 @@
         <div class="token_opt">
             <input type="text" [(ngModel)]="api_token" placeholder="API Token"/>
         </div>
-            <button  class="stroked xlarge" [disabled]="!api_token" (click)="check_usage()">Get Info</button>
+            <button  class="stroked xlarge" [disabled]="!api_token || working" (click)="check_usage()">Get Info</button>
     </div>
     <div class="info">
         <span *ngIf="invalid" class="error">Invalid Token</span>
         <span *ngIf="working">Check {{check_index}} / {{check_total}} </span>
     </div>
-    <div class="usage" >        
+    <div class="cloud-container">
+        <div class="label">Cloud: </div>
+        <div class="value"><span *ngIf="usage.cloud != ''" style="margin-right: 5px;">{{usage.cloud}} - </span><span>{{usage.host}}</span></div>
+    </div>
+    <div class="usage" >
         <div class="text-container">
             <div class="label">API request usage: </div>
             <div *ngIf="usage.requests > -1" class="value">{{usage.requests}}</div>

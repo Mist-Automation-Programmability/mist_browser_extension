@@ -1,28 +1,96 @@
+.info-container {
+    height: 50vh;
+    padding: 0;
+    max-height: 50vh;
+    border-radius: 0;
+    overflow: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #63b4ee #202836;
+}
 
-label.token {
-    margin: .2em .5em .2em 1em;
+.info-header {
+    font-size: larger;
+    user-select: none;
+}
+.info-header .cosm {
+    font-weight: 200;
+}
+.info-header .value {
+    font-weight: 500;
+}
+
+.usage_count {
+    display: flex;
+    justify-content: space-between;
+    margin: 1em;
+}
+
+.privilege {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+    border: 1px solid #4f5560;
+    box-shadow: 0 3px 6px 0 rgba(99, 99, 99, 0.1);
+    border-radius: 15px;
+    background-color: #161c26;
+    padding: 1em;
+    margin: 1em 0;
+}
+
+.privilege-info.row {
     display: flex;
     flex-direction: row;
-    align-items: center;
-    letter-spacing: 0.1em;
+    justify-content: flex-start;
 }
 
-.token_opt {
+.privilege-info.column {
     display: flex;
     flex-direction: column;
+}
+
+.privilege-info-container {
+    margin: 0 0 .5em 0;
+}
+
+.privilege-info-container>.label {
+    font-weight: 300;
+    user-select: none;
+}
+
+.privilege-info-container>.value {
+    font-size: larger;
+    font-weight: 700;
+}
+
+.privilege-info-container>.value.fixed {
+    width: 4em;
+}
+
+.copy-button {
     width: 100%;
+    display: flex;
+    align-items: center;
+    align-content: center;
+    justify-content: flex-end;
 }
 
-.token_opt input {
-    margin: 1em 0;
-    padding: 0.5em;
-    border: 1px solid white;
-    border-radius: 10px;
-    background-color: rgba(50, 50, 93, 0.25);
-    color: white;
+.copy-button button {
+    border-radius: 60px;
+    height: 3em;
+    width: 3em;
+    margin: 0;
 }
 
-.token_opt input:focus {
-    background-color: black;
-    border-color: #63b4ee;
+.copy-button button img {
+    filter: invert(42%) brightness(1000%) contrast(100%);
+}
+
+.copy-button button span.tooltiptext {
+    top: 10px;
+    right: 40px;
+    font-size: smaller;
+    font-weight: 100;
+    background-color: #161c26;
+    border: 1px solid #4f5560;
+    border-radius: 15px;
 }

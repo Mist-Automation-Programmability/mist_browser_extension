@@ -1,7 +1,5 @@
-import { Component, OnInit, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Subject } from 'rxjs';
-import { BrowserService } from "../../services/browser.service";
 
 @Component({
   selector: 'app-tools',
@@ -19,8 +17,6 @@ export class ToolsComponent implements OnInit {
   view: string = "";
   constructor(
     private _cd: ChangeDetectorRef,
-    private _http: HttpClient,
-    private _browser: BrowserService
   ) { }
 
   ngOnInit() {

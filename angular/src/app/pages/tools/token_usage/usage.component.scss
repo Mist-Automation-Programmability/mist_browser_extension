@@ -1,63 +1,21 @@
-.box-token {
-    margin: 1em;
-}
 
-.info{
+.info {
     font-size: larger;
     text-align: center;
     height: 1.5em;
 }
+
 .info .error {
     color: #ff0000d7;
 }
-.usage{
+
+.usage {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     padding: 0 1em 1em;
     font-size: small;
 }
-
-.content .text-container {
-    display: flex;flex-direction: column;
-}
-
-.text-container > .label {
-    font-weight: 300;margin-top: 1em;
-}
-.text-container > .value {
-    font-size: large;font-weight: 800;
-}
-
-label.token {
-    margin: .2em .5em .2em 1em;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    letter-spacing: 0.1em;
-    user-select: none;
-}
-
-.token_opt {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-}
-
-.token_opt input {
-    margin: 1em 0;
-    padding: 0.5em;
-    border: 1px solid white;
-    border-radius: 10px;
-    background-color: rgba(50, 50, 93, 0.25);
-    color: white;
-}
-
-.token_opt input:focus {
-    background-color: black;
-    border-color: #63b4ee;
-}
-
 
 .progress-bar {
     height: 7em;
