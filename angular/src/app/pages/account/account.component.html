@@ -48,11 +48,11 @@
                 <div class="box-cloud-token-buttons">
                     <button class="box-cloud-token-button tooltip" (click)="openManageTokens(session.domain, 'user')" [disabled]="!session.two_factor_passed">
                             <img class="icon"src="assets/list.svg">
-                            <span class="tooltiptext">Manage</span>
+                            <span *ngIf="session.two_factor_passed" class="tooltiptext">Manage</span>
                     </button>
                     <button class="box-cloud-token-button stroked tooltip" (click)="openCreateToken(session.domain, 'user')" [disabled]="!session.two_factor_passed">
                         <img class="icon" src="assets/add.svg">
-                        <span class="tooltiptext">Create</span>
+                        <span *ngIf="session.two_factor_passed" class="tooltiptext">Create</span>
                     </button>
                 </div>
             </div>
@@ -67,11 +67,11 @@
                 <div class="box-cloud-token-buttons">
                     <button class="box-cloud-token-button tooltip" (click)="openManageTokens(session.domain, 'org')" [disabled]="!session.two_factor_passed">
                         <img class="icon"src="assets/list.svg">
-                        <span class="tooltiptext">Manage</span>
+                        <span *ngIf="session.two_factor_passed" class="tooltiptext">Manage</span>
                     </button>
                     <button class="box-cloud-token-button stroked tooltip" (click)="openCreateToken(session.domain, 'org')" [disabled]="!session.two_factor_passed">
                         <img class="icon" src="assets/add.svg">
-                        <span class="tooltiptext">Create</span>
+                        <span *ngIf="session.two_factor_passed" class="tooltiptext">Create</span>
                     </button>
                 </div>
             </div>

@@ -7,14 +7,15 @@
         <div class="org_select token_opt">
             <input type="text" [(ngModel)]="token_name" placeholder="Token Name (optional)"/>
             <div *ngIf="displayed_msps.length > 0" >
-            <select name=msp_id [(ngModel)]="msp_id" (change)="mspSelected()">
-                <option class="none" value="none">
-                    <div style="width: 100%; text-align: center;">-- MSP Account --</div>
-                </option>
-                <option *ngFor="let msp of displayed_msps" [value]="msp.msp_id">
-                    <div>{{msp.name}}</div>
-                </option>
-            </select>
+                <select name=msp_id [(ngModel)]="msp_id" (change)="mspSelected()">
+                    <option class="none" value="none">
+                        <div style="width: 100%; text-align: center;">-- MSP Account --</div>
+                    </option>
+                    <option *ngFor="let msp of displayed_msps" [value]="msp.msp_id">
+                        <div>{{msp.name}}</div>
+                    </option>
+                </select>
+            </div>
             <select name=org_id [(ngModel)]="org_id">
                 <option class="none" value="none">
                     <div style="width: 100%; text-align: center;">-- Please Select an Org --</div>
@@ -33,7 +34,6 @@
                 <option value="site" disabled>Site</option>
                 <option value="sitegroup" disabled>SiteGroup</option>
             </select>
-        </div>
             
             <select *ngIf="scope=='site'" name="site_id" [(ngModel)]="site_id">                
                 <option class="none" value="none">

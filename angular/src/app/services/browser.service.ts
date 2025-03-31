@@ -20,6 +20,10 @@ export interface SessionElement {
     api_threshold_reached: boolean,
 }
 
+export interface CloudName {
+    string
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -88,6 +92,19 @@ export class BrowserService {
         "routing.stage.ai.juniper.net",
     ]
 
+    private cloud_name: { [id: string] : string; } = {
+        "mist.com": "Global 01",
+        "gc1.mist.com": "Global 02",
+        "ac2.mist.com": "Global 03",
+        "gc2.mist.com": "Global 04",
+        "gc4.mist.com": "Global 05",
+        "eu.mist.com": "EMEA 01",
+        "gc3.mist.com": "EMEA 02",
+        "ac6.mist.com": "EMEA 03",
+        "ac5.mist.com": "APAC 01",
+        "us.mist-federal.com": "GOV"
+    }
+
 
     private issue_url: string = "https://github.com/tmunzer/mist_browser_extension/issues/new";
 
@@ -120,6 +137,13 @@ export class BrowserService {
     }
     getHostApi(): string[] {
         return this.host_api;
+    }
+    getCloud(host:string): string {
+        var host_cleansed = host.replace("api.", "").replace("manage.", "");
+        if (this.cloud_name.hasOwnProperty(host_cleansed)) {
+            return this.cloud_name[host_cleansed]
+        } 
+        return null
     }
     
     getUrl = browser.tabs.query({ currentWindow: true, active: true })

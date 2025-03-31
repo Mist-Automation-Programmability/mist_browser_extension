@@ -32,7 +32,7 @@ button.close:hover {
 }
 
 .token-container {
-    margin: 0.7em;
+    margin: 0.5em 0;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -41,13 +41,13 @@ button.close:hover {
     border: 1px solid #4f5560;
     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
     border-radius: 15px;
-    height: 7em;
+    height: 8em;
 }
 
 .token {
     display: flex;
     flex-direction: column;
-    padding: 1em;
+    padding: .5em;
 }
 
 .token-info {
@@ -94,11 +94,11 @@ div.token table tr td div.name {
     text-align: left;
 }
 .token table tr td {
-    width: 130px;
+    width: 140px;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-    max-width: 130px;
+    max-width: 140px;
 }
 
 .token table tr td:hover {

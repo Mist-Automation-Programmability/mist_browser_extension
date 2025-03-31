@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Mist Extension",
   "short_name": "mist-extension",
-  "version": "4.3.1",
+  "version": "5.0.0",
   "description": "Web Browser Extension for Mist Developpers to provide easier access to Mist APIs",
   "icons": {
     "16": "assets/favicon-16x16.png",
@@ -28,7 +28,8 @@
         "https://*.ai.juniper.net/*"
       ],
       "js": [
-        "/assets/js/content.js"
+        "/assets/js/content.js",
+        "/assets/js/id_links.js"
       ]
     }
   ],

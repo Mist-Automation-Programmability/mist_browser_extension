@@ -21,3 +21,4 @@ browser.runtime.onMessage.addListener((request, sender, respond) => {
         .catch(error => respond(error));
     return true;
 });
+

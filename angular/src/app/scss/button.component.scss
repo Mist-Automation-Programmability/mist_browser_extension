@@ -33,7 +33,7 @@ button.Stroked:disabled:hover img {
 button:enabled {
     background-color: #161c26;
     color: #fff;
-    border: 2px solid #63b4ee;
+    border: 1px solid #63b4ee;
     border-radius: 15px;
     padding: 1.5em 1em;
     // background-color: #1964a3;
@@ -50,7 +50,7 @@ button:enabled:hover {
 button.stroked:enabled {
     background-color: unset;
     color: white;
-    border: 2px solid #18c956;
+    border: 1px solid #18c956;
 }
 
 button.stroked:enabled:hover {
