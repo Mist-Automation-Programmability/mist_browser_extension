@@ -1,40 +1,54 @@
 
+k = "id_links"
+browser.storage.local
+    .get({ k })
+    .then(
+        res => {
+            if (res.k == "true") process_ids();
+        }, err => {
+            console.log(err);
+        }
+    );
+
 //if (window.location.host == "api.mist.com") {
-    const uuid_re = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/
+const uuid_re = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/
+function process_ids() {
 
     const domElements = document.getElementsByClassName("response-info")
     var domElement, finalElements;
     if (domElements.length > 0) {
         domElement = domElements[0].getElementsByClassName("prettyprint");
         if (domElement.length > 0) {
-            console.log(domElement[0].innerHTML);
+            //console.log(domElement[0].innerHTML);
             finalElements = domElement[0].getElementsByClassName("str");
             for (var i = 0; i < finalElements.length; i++) {
                 const baseURI = finalElements[i].baseURI;
                 if (finalElements[i].innerText == "\"next\"") {
-                    inject_next(finalElements, i+1, window.location.host);
+                    inject_next(finalElements, i + 1, window.location.host);
                 } else if (finalElements[i].innerText == "\"id\"") {
                     inject_common_link(finalElements, i + 1, baseURI);
                 } else if (finalElements[i].innerHTML == "\"site_id\"") {
                     inject_common_link(finalElements, i + 1, "https://" + window.location.host + "/api/v1/sites");
                 } else if (finalElements[i].innerHTML == "\"org_id\"") {
                     inject_common_link(finalElements, i + 1, "https://" + window.location.host + "/api/v1/orgs");
-                } else if (baseURI.includes("nacrules") && (finalElements[i].innerText=="\"nactags\"" || finalElements[i].innerText=="\"apply_tags\"")){
-                    var index = i+1;
+                } else if (finalElements[i].innerHTML == "\"msp_id\"") {
+                    inject_common_link(finalElements, i + 1, "https://" + window.location.host + "/api/v1/msps");
+                } else if (baseURI.includes("nacrules") && (finalElements[i].innerText == "\"nactags\"" || finalElements[i].innerText == "\"apply_tags\"")) {
+                    var index = i + 1;
                     var uuid;
-                    while (uuid = uuid_re.exec(finalElements[index].innerText.replaceAll("\"", ""))){
-                        inject_common_link(finalElements, index, baseURI.split("nacrules")[0]+"nactags");
-                        index+=1;
+                    while (uuid = uuid_re.exec(finalElements[index].innerText.replaceAll("\"", ""))) {
+                        inject_common_link(finalElements, index, baseURI.split("nacrules")[0] + "nactags");
+                        index += 1;
                     }
                 }
             }
         }
     }
-//}
+}
 
-function inject_next(finalElements, index, host){
+function inject_next(finalElements, index, host) {
     const next_value = finalElements[index].innerText.replaceAll("\"", "")
-    const url = "https://"+host+next_value;
+    const url = "https://" + host + next_value;
     finalElements[index].innerHTML = "\"<a href=\"" + url + "\" style=\"text-decoration: underline;color: #D14;\">" + next_value + "</a>\"";
 }
 

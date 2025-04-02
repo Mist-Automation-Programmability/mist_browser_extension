@@ -1,4 +1,4 @@
-// MAIN
+////////////////////// MAIN
 button {
     user-select: none;
     margin: 0.3em auto;
@@ -15,7 +15,7 @@ button {
 
 button:disabled,
 button:disabled:hover,
-button.stroked:disabled,
+button.secondary:disabled,
 button.Stroked:disabled:hover {
     background-color: rgba(99, 99, 99, 0.2);
     border: 1px solid #4f5560;
@@ -23,9 +23,10 @@ button.Stroked:disabled:hover {
     box-shadow: rgb(0 0 0 / 5%) 0px 0px 0px 1px !important;
     cursor: default;
 }
+
 button:disabled img,
 button:disabled:hover img,
-button.stroked:disabled img,
+button.secondary:disabled img,
 button.Stroked:disabled:hover img {
     filter: brightness(0) saturate(100%) invert(87%) sepia(0%) saturate(726%) hue-rotate(227deg) brightness(80%) contrast(85%);
 }
@@ -33,44 +34,49 @@ button.Stroked:disabled:hover img {
 button:enabled {
     background-color: #161c26;
     color: #fff;
-    border: 1px solid #63b4ee;
+    border: 1px solid var(--primary);
     border-radius: 15px;
     padding: 1.5em 1em;
-    // background-color: #1964a3;
-    // color: white;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px !important;
     transition: all 0.2s ease-in-out;
 }
 
 button:enabled:hover {
-    background-color: #63b4ee75;
+    background-color: var(--primary-background);
     box-shadow: rgba(50, 50, 93, 0.5) 0 4px 7px 2px inset, rgba(0, 0, 0, 0.3) 0 3px 3px -1px inset !important
 }
 
-button.stroked:enabled {
+button.secondary:enabled {
     background-color: unset;
     color: white;
-    border: 1px solid #18c956;
+    border: 1px solid var(--secondary);
 }
 
-button.stroked:enabled:hover {
-    background-color: #18c95675;
+button.secondary:enabled:hover {
+    background-color: var(--secondary-background);
     box-shadow: rgba(50, 50, 93, 0.5) 0 4px 7px 2px inset, rgba(0, 0, 0, 0.3) 0 3px 3px -1px inset !important
 }
 
-// LARGE 
+////////////////////// LARGE 
 button.large {
     width: 80%;
 }
 
-// XLARGE 
+////////////////////// XLARGE 
 button.xlarge {
     width: 100%;
 }
 
-// COPY IDS
+////////////////////// XLARGE 
+button.links {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+////////////////////// COPY IDS
 button.copy {
-    background-color: #18c956;
+    background-color: var(--secondary);
     transition: all 0.1s ease-in-out;
     border-radius: 15px;
     display: flex;
@@ -80,7 +86,7 @@ button.copy {
 }
 
 button.copy:enabled:hover {
-    background-color: #18c956a3;
+    background-color: var(--secondary);
 }
 
 button.copy img.copy {
@@ -98,14 +104,14 @@ button.copy:disabled img.copy {
     filter: none;
 }
 
-// OPEN EXTERNAL
+////////////////////// OPEN EXTERNAL
 button img.icon-open {
     height: 15px;
     padding: 0 5px;
     filter: invert(100%) brightness(100%) contrast(100%);
 }
 
-// REQUEST
+////////////////////// REQUEST (report missing url)
 button.request {
     margin: 2em;
     background-color: unset;
@@ -117,7 +123,7 @@ button.request:hover {
     background-color: lightgray;
 }
 
-// CLOSE
+////////////////////// CLOSE
 button.close {
     background-color: #1d2430;
     color: white;
@@ -132,84 +138,33 @@ button.close:hover {
     background-color: #007683;
 }
 
-// LINKS TO DOC
-button.doc-link {
-    font-family: 'Lato';
-    font-weight: 300;
+////////////////////// CIRCLE
+button.circle {
     display: flex;
-    flex-direction: row;
+    justify-content: center;
+    align-content: center;
     align-items: center;
-    justify-content: flex-start;
-    font-size: smaller;
-    background-color: white;
-    border: 1px solid #eee;
-    box-shadow: rgb(0 0 0 / 10%) 0px 1px 3px 0px, rgb(0 0 0 / 6%) 0px 1px 2px 0px;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-    padding: 1.5em 0;
-    border-radius: 5px;
-    width: 100%;
+    width: 3em;
+    height: 3em;
+    border-radius: 60px !important;
+    margin: 0 1em;
+    padding: 0 !important;
 }
 
-button.doc-link:hover {
-    background-color: #fbfbfb;
-    transition: all 1s ease-in-out;
-}
-
-button.doc-link .operation {
-    color: black;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    font-size: small;
-    padding: 0 0.5em;
-}
-
-button.doc-link .operation img {
-    color: gray;
-    height: 1.5em;
-    margin: 0.5em;
+button.circle img {
+    height: 15px;
     filter: invert(100%) brightness(100%) contrast(100%);
-    //filter: invert(100%)  saturate(1352%) brightness(10%) contrast(0);
 }
 
-button.doc-link .operation .operationId {
-    width: 14em;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    color: gray;
-    text-align: start;
+button.tooltip .tooltiptext {
+    font-size: smaller;
+    font-weight: 100;
+    background-color: #161c26;
+    border: 1px solid #4f5560;
+    border-radius: 15px;
 }
 
-button.doc-link .method {
-    background-color: white;
-    border-radius: 2px 0 0;
-    margin: 0;
-    padding: 0.8em;
-    width: 6em;
-    font-weight: 500;
-    text-align: center;
-    box-shadow: inherit;
-    font-weight: 600;
-}
-
-select:focus,
-input:focus {
-    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 10%), 0 1px 2px 0 rgb(0 0 0 / 6%);
-}
-
-
-textarea.token:focus-visible {
-    outline: none;
-}
-
-textarea.token.focused {
-    background-color: #555;
-    transition: all 0.2s ease-in-out;
+button.tooltip .tooltiptext.top {
+    top: -84%;
+    left: 10%;
 }

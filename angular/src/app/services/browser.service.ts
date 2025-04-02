@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-var browser = require("webextension-polyfill");
+//import browser from "webextension-polyfill";
+import browser from "webextension-polyfill";
 
 
 export interface SessionElement {
@@ -108,7 +109,8 @@ export class BrowserService {
 
     private issue_url: string = "https://github.com/tmunzer/mist_browser_extension/issues/new";
 
-    constructor() { }
+    constructor(
+    ) { }
 
     tabUpdate(url: string): void {
         browser.tabs.update({ url: url });
@@ -155,7 +157,7 @@ export class BrowserService {
     getCookies(cb: () => void): void {
         this.sessionsSource.next([]);
         browser.cookies.getAll({})
-            .then((cookies: browser.cookies.Cookie[]) => {
+            .then((cookies: browser.Cookies.Cookie[]) => {
                 cookies.forEach((cookie) => {
                     this._processCookie(cookie);
                 })
@@ -164,10 +166,26 @@ export class BrowserService {
             .catch(err => console.log(err));
     }
 
+    setStorage(k:string, v:string):void{
+        browser.storage.local.set({k: v}).then((res)=>{
+            console.log("Storage: "+k+" saved to "+v)
+        }).catch(err => console.log(err))
+    }
+    getStorage(k:string, cb:(res)=>void) {
+        browser.storage.local.get({k}).then(
+            data => {
+            console.log("Storage: "+k+" was saved to "+data.k)
+            console.log(data.k)
+            cb(data.k);
+        }, err => {
+            console.log(err)
+        });
+    }
+
     ////////////
     // SESSIONS
     ////////////
-    private _processCookie(cookie: browser.cookies.Cookie): void {
+    private _processCookie(cookie: browser.Cookies.Cookie): void {
         // check if it's part of our domains
         if (this.domains.indexOf(cookie.domain) > -1) {
             // check if the cookie is still valid
@@ -199,7 +217,7 @@ export class BrowserService {
         }
     }
 
-    private addSession(cookie: browser.cookies.Cookie, domain: string, cloud: string, api: string, additional_cloud_hosts: string[]): void {
+    private addSession(cookie: browser.Cookies.Cookie, domain: string, cloud: string, api: string, additional_cloud_hosts: string[]): void {
         var tmp = this.sessionsSource.getValue();
 
         if (cookie.name.startsWith("csrftoken")) tmp.push({

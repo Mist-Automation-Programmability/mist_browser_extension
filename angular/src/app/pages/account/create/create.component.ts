@@ -21,9 +21,11 @@ export interface TokenElement {
   selector: 'app-account-create',
   templateUrl: 'create.component.html',
   styleUrls: [
-    'create.component.scss',
     '../../../scss/popup.component.scss',
-    '../../../scss/button.component.scss'
+    '../../../scss/input.component.scss',
+    '../../../scss/button.component.scss',
+    '../../../scss/textarea.component.scss',
+    'create.component.scss',
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })

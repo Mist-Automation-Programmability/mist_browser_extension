@@ -1,34 +1,8 @@
-// CONTENAIRS
-.content {
-    margin: 1em;
-    display: flex;
-    align-items: stretch;
-    flex-direction: column;
-}
-
-// BUTTONS
-button {
-    border: none;
-    padding: 0.5em;
-}
-
-button.close {
-    width: 100%;
-    background-color: #0096a3;
-    color: white;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
-    transition: background-color 0.2s ease-in-out;
-}
-
-button.close:hover {
-    background-color: #007683;
-}
-
 .container {
     margin: 0;
-    overflow: auto;  
+    overflow: auto;
     scrollbar-width: thin;
-    scrollbar-color: #63b4ee #202836;
+    scrollbar-color: var(--primary) #202836;
 }
 
 .token-container {
@@ -42,73 +16,66 @@ button.close:hover {
     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
     border-radius: 15px;
     height: 8em;
-}
 
-.token {
-    display: flex;
-    flex-direction: column;
-    padding: .5em;
-}
+    .token {
+        display: flex;
+        flex-direction: column;
+        padding: .5em;
 
-.token-info {
-    display: flex;
-    flex-direction: row;
-}
+        table tr {
+            th {
+                width: 80px;
+                font-weight: 300;
+                text-align: left;
+            }
 
-.delete,
-.delete button {
-    height: 100%;
-    margin: 0;
-    box-shadow: unset !important;
-    transition: background-color 0.2s ease-in-out;
-    cursor: pointer;
-    border-radius: 0 15px 15px 0;
-    border: none;
-    background-color: #4f5560;
-}
+            td {
+                width: 140px;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+                max-width: 140px;
 
-.delete button:hover {
-    background-color: #f44336;
-}
+                div.name {
+                    max-width: 13em;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                }
+            }
 
-.delete button img {
-    transition: background-color 0.2s ease-in-out;
-    filter: invert(90%);
-}
+            td:hover {
+                overflow: visible;
+            }
 
-.delete button:hover img {
-    filter: invert(90%);
-}
+            td:hover span {
+                position: relative;
+                background-color: white;
 
+                box-shadow: 0 0 4px 0 black;
+                border-radius: 1px;
+            }
+        }
+    }
 
-div.token table tr td div.name {
-    max-width: 13em;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
+    .delete,
+    .delete button {
+        height: 100%;
+        margin: 0;
+        box-shadow: unset !important;
+        transition: background-color 0.2s ease-in-out;
+        cursor: pointer;
+        border-radius: 0 15px 15px 0;
+        border: none;
+        background-color: #4f5560;
 
-.token table tr th {
-    width: 80px;
-    font-weight: 300;
-    text-align: left;
-}
-.token table tr td {
-    width: 140px;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    max-width: 140px;
-}
+        img {
+            transition: background-color 0.2s ease-in-out;
+            filter: invert(90%);
+        }
+    }
 
-.token table tr td:hover {
-overflow: visible;
-}
-
-.token table tr td:hover span {
-position: relative;
-background-color: white;
-
-box-shadow: 0 0 4px 0 black;
-border-radius: 1px;
+    .delete button:hover {
+        background-color: #f44336;
+    }
 }

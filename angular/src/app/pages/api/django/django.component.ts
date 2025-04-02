@@ -17,11 +17,11 @@ interface QueryparamsInterface {
   selector: 'app-api-django',
   templateUrl: 'django.component.html',
   styleUrls: [
-    'api.django.component.scss',
-    '../api.component.scss',
     '../../../scss/button.component.scss',
     '../../../scss/notice.component.scss',
-    '../../../scss/container.component.scss'
+    '../../../scss/container.component.scss',
+    '../../../scss/input.component.scss',
+    'django.component.scss',
   ]
 })
 export class ApiDjangoComponent implements OnInit {
@@ -62,7 +62,7 @@ export class ApiDjangoComponent implements OnInit {
         let path_part = path.splice(3, path.length)
         this.processPath(path_part, query);
       })
-      .error(error => { console.log(error) })
+      //.error(error => { console.log(error) })
       .catch(error => { console.log(error) })
   }
 

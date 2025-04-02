@@ -43,7 +43,8 @@
   },
   "permissions": [
     "cookies",
-    "tabs"
+    "tabs",
+    "storage"
   ],
   "host_permissions": [
     "https://*.mist.com/*",

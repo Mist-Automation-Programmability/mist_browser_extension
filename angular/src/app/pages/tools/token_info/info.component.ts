@@ -34,6 +34,7 @@ export interface TokenInfoElement {
   styleUrls: [
     '../../../scss/popup.component.scss',
     '../../../scss/button.component.scss',
+    '../../../scss/input.component.scss',
     '../token.component.scss',
     'info.component.scss',
   ],
@@ -66,7 +67,7 @@ export class TokenInfoComponent implements OnInit {
   check_index: number = 0;
   check_total: number = 0;
   api_token: string = "";
-  success: boolean = true;
+  success: boolean = false;
 
   ngOnInit() {
     this.reset();
@@ -129,6 +130,7 @@ export class TokenInfoComponent implements OnInit {
     console.log(this.info)
   }
   private set_privileges(data): void {
+    this.success = true;
     data.body["privileges"].forEach(p => {
       switch (p.scope) {
         case "msp":
@@ -157,12 +159,14 @@ export class TokenInfoComponent implements OnInit {
       }
       this.info.privileges.push(tmp)
     })
+    console.log(this.info)
   }
 
   private reset() {
     this.invalid = false;
     this.check_index = 0;
     this.api_token = "";
+    this.success = false;
     this.info = {
       cloud: null,
       host: null,
@@ -177,8 +181,19 @@ export class TokenInfoComponent implements OnInit {
     this._cd.detectChanges();
   }
 
-  copyId(p: PrivilegeElement) {
-
+  token_updated() {
+    this.invalid = false;
+  }
+  // copy the id (org_id, site_id, ...) into the clipboard
+  copyId(inputElement: HTMLInputElement): void {
+    this.focused = inputElement.id;
+    inputElement.select();
+    document.execCommand('copy');
+    setTimeout(() => {
+      this.focused = "";
+      this._cd.detectChanges()
+    }, 100);
+    inputElement.setSelectionRange(0, 0);
   }
 
   close(): void {
@@ -186,4 +201,91 @@ export class TokenInfoComponent implements OnInit {
     this.closePopup.emit();
   }
 
+
+  debug() {
+    this.success = true;
+    this.info = {
+      "cloud": "Global 02",
+      "host": "api.gc1.mist.com",
+      "type": "user",
+      "email": "tmunzer@juniper.net",
+      "name": "Thomas Munzer",
+      "site_count": 0,
+      "org_count": 5,
+      "msp_count": 0,
+      "privileges": [
+        {
+          "scope": "org",
+          "role": "admin",
+          "name": "Walmart_Mist_Test",
+          "org_id": "534d6f25-84ab-4b27-9895-6d4789199b92",
+          "ui_string": "admin on org Walmart_Mist_Test",
+          view: "",
+          msp_id: "",
+          site_id: "",
+          msp_name: "",
+          org_name: "",
+          orggroup_ids: [],
+          sitegroup_ids: []
+        },
+        {
+          "scope": "org",
+          "role": "admin",
+          "name": "terraform",
+          "org_id": "4b0db0e9-f350-408c-b242-470b3e3c92ac",
+          "ui_string": "admin on org terraform",
+          view: "",
+          msp_id: "",
+          site_id: "",
+          msp_name: "",
+          org_name: "",
+          orggroup_ids: [],
+          sitegroup_ids: []
+        },
+        {
+          "scope": "org",
+          "role": "admin",
+          "name": "TM-LAB",
+          "org_id": "8aa21779-1178-4357-b3e0-42c02b93b870",
+          "ui_string": "admin on org TM-LAB",
+          view: "",
+          msp_id: "",
+          site_id: "",
+          msp_name: "",
+          org_name: "",
+          orggroup_ids: [],
+          sitegroup_ids: []
+        },
+        {
+          "scope": "org",
+          "role": "admin",
+          "name": "tf test source",
+          "org_id": "ef5e9434-a04c-4bc5-9fd1-904a74e5b8c4",
+          "ui_string": "admin on org tf test source",
+          view: "",
+          msp_id: "",
+          site_id: "",
+          msp_name: "",
+          org_name: "",
+          orggroup_ids: [],
+          sitegroup_ids: []
+        },
+        {
+          "scope": "org",
+          "role": "admin",
+          "name": "Google-Chrogfdsgfdsgfdsgfdsfdsfdsfdsmebook QA",
+          "org_id": "a7dfba2c-5c15-4fa5-b33d-e2e9f00be20a",
+          "ui_string": "admin on org Google-Chromebook QA",
+          view: "",
+          msp_id: "",
+          site_id: "",
+          msp_name: "",
+          org_name: "",
+          orggroup_ids: [],
+          sitegroup_ids: []
+        }
+      ]
+    }
+    this._cd.detectChanges();
+  }
 }

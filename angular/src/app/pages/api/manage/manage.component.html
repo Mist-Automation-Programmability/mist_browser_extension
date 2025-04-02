@@ -7,7 +7,7 @@
         <button class="request" (click)="openApiTab('https://github.com/tmunzer/mist_browser_extension/issues/new')">Report a missing URL</button>
     </div>
 </div>
-<div *ngIf="org_id || msp_id" class="content no-grow data-container">
+<div *ngIf="org_id || msp_id" class="content data-container">
     <h2>Page Info</h2>
     <div *ngIf="msp_id">
         <div class="box-ids" *ngIf="msp_id">
@@ -70,14 +70,14 @@
         </div>
     </div>
 </div>
-<div *ngIf="quick_links.length > 0" class="content no-border no-grow">
+<div *ngIf="quick_links.length > 0" class="content">
     <h2>Quick API Access</h2>
-    <div class="box-apitab">
+    <div class="links-container">
         <button *ngFor="let quick_link of quick_links" (click)="openApiTab(quick_link.url)" class="xlarge">
             <div style="width: 100%;">{{quick_link.name | uppercase}}</div>
             <img class="icon-open" src="assets/open.svg" alt="open">
         </button>
-        <button *ngFor="let quick_action of quick_actions" (click)="openActionTab(quick_action.action)" class="xlarge stroked">
+        <button *ngFor="let quick_action of quick_actions" (click)="openActionTab(quick_action.action)" class="xlarge secondary">
             <div style="width: 100%;">{{quick_action.name | uppercase}}</div>            
         </button>
     </div>

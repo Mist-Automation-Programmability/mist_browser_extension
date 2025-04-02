@@ -1,92 +1,117 @@
-<div class="content full-height" style="padding: 0;">
-    <div class="box-token">
-        <label class="token" for="token">
-            API TOKEN INFO
-        </label>
-        <div class="token_opt">
-            <input type="text" [(ngModel)]="api_token" placeholder="API Token"/>
-            <button  class="stroked xlarge" [disabled]="!api_token" (click)="check_info()">Get Info</button>
-        </div>
+<div class="popup-content full-height">
+  <div class="rw-container">
+    <label for="token"> API TOKEN INFO </label>
+    <div class="input">
+      <input
+        type="text"
+        [(ngModel)]="api_token"
+        placeholder="API Token"
+        (ngModelChange)="token_updated()"
+        [ngStyle]="{'border': invalid ? '1px solid red' : ''}"
+        [readonly]="working"
+      />
     </div>
-    <div class="content no-border info-container">
-        <div class="info-header">
-            <div style="margin-bottom: 1em;">
-                <span class="value">{{info.type | uppercase}}</span>
-                <span class="cosm"> API Token on </span>
-                <span class="value">{{info.host}}</span>
-                <span class="cosm"> (</span>
-                <span class="value">{{info.cloud}}</span>
-                <span class="cosm"> )</span>
-            </div>
-            <div *ngIf="info.type=='org'"><span class="cosm">Token Name: </span><span class="value">{{info.name}}</span></div>
-            <div *ngIf="info.type=='user'"><span class="cosm">User Name: </span><span class="value">{{info.name}}</span></div>
-        </div>
-        <div class="usage_count">
-            <div class="text-container">
-                <div class="label">MSP Access</div>
-                <div class="value">{{info.msp_count}}</div>
-            </div>
-            <div class="text-container">
-                <div class="label">Org Access</div>
-                <div class="value">{{info.org_count}}</div>
-            </div>
-            <div class="text-container">
-                <div class="label">Site Access</div>
-                <div class="value">{{info.site_count}}</div>
-            </div>
-        </div>
-        <div>
-                <div *ngFor="let p of info.privileges" class="privilege">
-                    <div class="privilege-info row">
-                        <div class="privilege-info-container">
-                            <div class="label">Scope</div>
-                            <div class="value fixed">{{p.scope | uppercase}}</div>
-                        </div>
-                        <div class="privilege-info-container">
-                            <div class="label">Role</div>
-                            <div class="value fixed">{{p.role | uppercase}}</div>
-                        </div>
-                        <div class="copy-button">
-                            <button class="box-cloud-token-button stroked tooltip copy" (click)="copyId(p)">
-                                <img class="icon" src="assets/copy.svg">
-                                <span *ngIf="p.scope=='msp'" class="tooltiptext">Copy MSP ID</span>
-                                <span *ngIf="p.scope=='org'" class="tooltiptext">Copy ORG ID</span>
-                                <span *ngIf="p.scope=='site'" class="tooltiptext">Copy SITE ID</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div *ngIf="p.scope=='msp'" class="privilege-info column">
-                        <div class="privilege-info-container">
-                            <div class="label">Name</div>
-                            <div class="value grow">{{p.name}}</div>
-                        </div>
-                        <div class="privilege-info-container">
-                            <div class="label">MSP ID:</div>
-                            <div class="value">{{p.msp_id}}</div>
-                        </div>
-                    </div> 
-                    <div *ngIf="p.scope=='org'" class="privilege-info column">
-                        <div class="privilege-info-container">
-                            <div class="label">Name</div>
-                            <div class="value grow">{{p.name}}</div>
-                        </div>
-                        <div class="privilege-info-container">
-                            <div class="label">ORG ID:</div>
-                            <div class="value">{{p.org_id}}</div>
-                        </div>
-                    </div> 
-                    <div *ngIf="p.scope=='site'" class="privilege-info column">
-                        <div class="privilege-info-container">
-                            <div class="label">Name</div>
-                            <div class="value grow">{{p.name}}</div>
-                        </div>
-                        <div class="privilege-info-container">
-                            <div class="label">SITE ID:</div>
-                            <div class="value">{{p.site_id}}</div>
-                        </div>
+    <button
+      class="secondary xlarge"
+      [disabled]="!api_token || working || invalid"
+      (click)="check_info()"
+    >
+      <span *ngIf="!working && !invalid">Get Info</span>
+      <span *ngIf="invalid" class="error">Invalid Token</span>
+      <span *ngIf="working">Check {{ check_index }} / {{ check_total }} </span>
+    </button>
+  </div>
+
+  <div class="content info-container">
+      <div *ngIf="success">
+    <div class="header">
+      <div style="margin-bottom: 1em">
+        <span class="value">{{ info.type | uppercase }}</span>
+        <span class="cosm"> API Token on </span>
+        <span class="value">{{ info.host }}</span>
+        <span class="cosm"> (</span>
+        <span class="value">{{ info.cloud }}</span>
+        <span class="cosm"> )</span>
+      </div>
+      <div *ngIf="info.type == 'org'">
+        <span class="cosm">Token Name: </span
+        ><span class="value">{{ info.name }}</span>
+      </div>
+      <div *ngIf="info.type == 'user'">
+        <span class="cosm">User Name: </span
+        ><span class="value">{{ info.name }}</span>
+      </div>
+    </div>
+    <div class="usage_count">
+      <div class="text-container">
+        <div class="label">MSP Access</div>
+        <div class="value">{{ info.msp_count }}</div>
+      </div>
+      <div class="text-container">
+        <div class="label">Org Access</div>
+        <div class="value">{{ info.org_count }}</div>
+      </div>
+      <div class="text-container">
+        <div class="label">Site Access</div>
+        <div class="value">{{ info.site_count }}</div>
+      </div>
+    </div>
+    <div>
+    <div *ngFor="let p of info.privileges" class="privilege">
+        <div class="privilege-info-container column">
+            <div class="box-ids" *ngIf="p.msp_id">
+                <div class="box-ids-text" [ngClass]="focused == p.msp_id? 'focused' : ''">
+                    <label class="ids" for={{p.msp_id}}>MSP ID</label>
+                    <div class=box-ids-input>
+                        <input class="ids" type="text" readonly [value]="p.msp_id"  id={{p.msp_id}} #object_int>
                     </div>
                 </div>
+                <button class="copy" name="copy" (click)="copyId(object_int)">
+                    <img class="copy" src="assets/copy.svg" alt="copy">
+                </button>
+            </div>
+            <div class="box-ids" *ngIf="p.org_id">
+                <div class="box-ids-text" [ngClass]="focused == p.org_id? 'focused' : ''">
+                    <label class="ids" for={{p.org_id}}>ORG ID</label>
+                    <div class=box-ids-input>
+                        <input class="ids" type="text" readonly [value]="p.org_id"  id={{p.org_id}} #object_int>
+                    </div>
+                </div>
+                <button class="copy" name="copy" (click)="copyId(object_int)">
+                    <img class="copy" src="assets/copy.svg" alt="copy">
+                </button>
+            </div>
+            <div class="box-ids" *ngIf="p.site_id">
+                <div class="box-ids-text" [ngClass]="focused == p.site_id? 'focused' : ''">
+                    <label class="ids" for={{p.site_id}}>SITE ID</label>
+                    <div class=box-ids-input>
+                        <input class="ids" type="text" readonly [value]="p.site_id"  id={{p.site_id}} #object_int>
+                    </div>
+                </div>
+                <button class="copy" name="copy" (click)="copyId(object_int)">
+                    <img class="copy" src="assets/copy.svg" alt="copy">
+                </button>
+            </div>
         </div>
+          <div class="privilege-info row" style="justify-content: space-between;">
+              <div class="privilege-info-container">
+                <div class="label">Name</div>
+                <div class="value name">{{ p.name }}</div>
+              </div>
+              <div  class="privilege-info row">
+                <div class="privilege-info-container">
+                    <div class="label">Scope</div>
+                    <div class="value fixed">{{ p.scope | uppercase }}</div>
+                </div>
+                <div class="privilege-info-container">
+                    <div class="label">Role</div>
+                    <div class="value fixed">{{ p.role | uppercase }}</div>
+                </div>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
 </div>
     <button (click)="close()" class="close">CLOSE</button>
 </div>

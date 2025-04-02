@@ -6,9 +6,9 @@ import { BrowserService } from "../../services/browser.service";
   selector: 'app-api',
   templateUrl: 'api.component.html',
   styleUrls: [
-    'api.component.scss',
+    '../../scss/container.component.scss',
     '../../scss/button.component.scss',
-    '../../scss/notice.component.scss'
+    '../../scss/notice.component.scss',
   ],
   //changeDetection: ChangeDetectionStrategy.OnPush
 })

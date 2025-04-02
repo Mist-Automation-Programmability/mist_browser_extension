@@ -1,4 +1,4 @@
-<div class="content full-height">
+<div class="popup-content full-height">
     <div *ngIf="displayed_msps.length > 0">
         <select name=msp_id [(ngModel)]="msp_id" (change)="mspSelected()">
             <option class="none" value="none">
@@ -79,6 +79,6 @@
     </div>
 
     <div style="display: flex;">
-        <button (click)="close()" class="close">CLOSE</button>
+        <button (click)="close()" class="xlarge">CLOSE</button>
     </div>
 </div>

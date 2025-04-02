@@ -14,11 +14,12 @@ export interface actionElement {
   selector: 'app-api-manage',
   templateUrl: 'manage.component.html',
   styleUrls: [
-    '../api.component.scss',
     '../../../scss/button.component.scss',
     '../../../scss/popup.component.scss',
     '../../../scss/notice.component.scss',
-    '../../../scss/container.component.scss'
+    '../../../scss/container.component.scss',
+    '../../../scss/input.component.scss',
+    'manage.component.scss',
   ]
 })
 export class ApiManageComponent implements OnInit {

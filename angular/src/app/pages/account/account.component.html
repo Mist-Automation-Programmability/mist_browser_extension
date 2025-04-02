@@ -46,13 +46,13 @@
                     </div>
                 </div>
                 <div class="box-cloud-token-buttons">
-                    <button class="box-cloud-token-button tooltip" (click)="openManageTokens(session.domain, 'user')" [disabled]="!session.two_factor_passed">
+                    <button class="circle tooltip" (click)="openManageTokens(session.domain, 'user')" [disabled]="!session.two_factor_passed">
                             <img class="icon"src="assets/list.svg">
-                            <span *ngIf="session.two_factor_passed" class="tooltiptext">Manage</span>
+                            <span *ngIf="session.two_factor_passed" class="tooltiptext top">Manage</span>
                     </button>
-                    <button class="box-cloud-token-button stroked tooltip" (click)="openCreateToken(session.domain, 'user')" [disabled]="!session.two_factor_passed">
+                    <button class="circle secondary tooltip" (click)="openCreateToken(session.domain, 'user')" [disabled]="!session.two_factor_passed">
                         <img class="icon" src="assets/add.svg">
-                        <span *ngIf="session.two_factor_passed" class="tooltiptext">Create</span>
+                        <span *ngIf="session.two_factor_passed" class="tooltiptext top">Create</span>
                     </button>
                 </div>
             </div>
@@ -65,13 +65,13 @@
                     </div>
                 </div>
                 <div class="box-cloud-token-buttons">
-                    <button class="box-cloud-token-button tooltip" (click)="openManageTokens(session.domain, 'org')" [disabled]="!session.two_factor_passed">
+                    <button class="circle tooltip" (click)="openManageTokens(session.domain, 'org')" [disabled]="!session.two_factor_passed">
                         <img class="icon"src="assets/list.svg">
-                        <span *ngIf="session.two_factor_passed" class="tooltiptext">Manage</span>
+                        <span *ngIf="session.two_factor_passed" class="tooltiptext top">Manage</span>
                     </button>
-                    <button class="box-cloud-token-button stroked tooltip" (click)="openCreateToken(session.domain, 'org')" [disabled]="!session.two_factor_passed">
+                    <button class="circle secondary tooltip" (click)="openCreateToken(session.domain, 'org')" [disabled]="!session.two_factor_passed">
                         <img class="icon" src="assets/add.svg">
-                        <span *ngIf="session.two_factor_passed" class="tooltiptext">Create</span>
+                        <span *ngIf="session.two_factor_passed" class="tooltiptext top">Create</span>
                     </button>
                 </div>
             </div>

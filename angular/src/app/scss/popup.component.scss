@@ -1,29 +1,19 @@
-.content {
+.popup-content {
     display: flex;
     align-items: stretch;
     flex-direction: column;
     background-color: #202836;
     margin: 1em;
-    padding: 0 1em;
-    border: 1px solid #bbb;
+    padding: 1em;
     border-radius: 15px;
     max-height: 95vh;
+    border: 1px solid #bbb;
 }
 
-.content.no-border {
-    border: none;
-}
 
-.content.full-height {
+.popup-content.full-height {
     min-height: 90vh;
 }
-// CONTENAIRS
-// .content {
-//     margin: 1em;
-//     display: flex;
-//     align-items: stretch;
-//     flex-direction: column;
-// }
 
 .popup {
     position: absolute;

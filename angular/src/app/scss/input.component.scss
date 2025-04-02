@@ -1,38 +1,55 @@
-// CONTENAIRS
-.content {
-    margin: 0.5em 1em;
-    display: flex;
-    align-items: stretch;
-    flex-direction: column;
-}
-
-.content.no-grow {
-    flex-grow: 0;
-}
-
-.content.grow {
-    flex-grow: 1;
-}
-
-// TITLES
-h2 {
-    margin-left: 0.8em;
+input.working:read-only,
+input.working:read-only:focus {
+    border: 1px solid #4f5560 !important;
+    background-color: #2d343f !important;
+    color: #4f5560 !important;
     user-select: none;
 }
 
-.not_mist {
-    text-align: center;
-    font-weight: 50%;
-    user-select: none;
+
+select:focus,
+input:focus {
+    background-color: black;
+    border-color: var(--primary);
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 10%), 0 1px 2px 0 rgb(0 0 0 / 6%);
 }
 
-// apitab
-.box-apitab {
-    align-items: stretch;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
+
+.rw-container {
+    margin: 1em;
+
+    label {
+        margin: .2em .5em .2em 1em;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        letter-spacing: 0.1em;
+    }
+
+    div.input {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    div.input input {
+        margin: 1em 0;
+        padding: 0.5em;
+        border: 1px solid white;
+        border-radius: 10px;
+        background-color: rgba(50, 50, 93, 0.25);
+        color: white;
+        transition: border-color .2s ease-in-out;
+    }
+
+    div.input input:focus {
+        background-color: black;
+        border-color: var(--primary);
+        transition: border-color .2s ease-in-out;
+    }
+
 }
+
 
 // DISABLED INPUTS
 .ids {
@@ -46,11 +63,11 @@ h2 {
     border: 1px solid #4f5560;
     border-radius: 15px;
     margin: .6em 0;
+    display: flex;
     flex-direction: row;
     align-items: stretch;
     justify-content: center;
-    display: flex
-;
+    padding: 0;
 }
 
 .box-ids-input {
@@ -67,6 +84,7 @@ h2 {
     justify-content: center;
     flex-grow: 1;
     transition: all 1s ease-in-out;
+    border-radius: 15px 0 0 15px;
 }
 
 input.ids:read-only {
@@ -100,11 +118,4 @@ label.ids {
     flex-direction: row;
     align-items: center;
     letter-spacing: 0.1em;
-}
-
-.missing-fields {
-    display: flex;
-    margin: 5em 2em;
-    justify-content: center;
-    color: darkgray;
 }

@@ -56,5 +56,3 @@ function apiBadge(color) {
         browser.action.setBadgeText({ "text": "" });
     }
 }
-
-console.log('serviceWorker script loaded, browser is ' + browser_name);

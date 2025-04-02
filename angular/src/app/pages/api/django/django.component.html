@@ -1,7 +1,7 @@
-<div class="content no-grow data-container" *ngIf="objects.length > 0">
+<div class="content data-container" *ngIf="objects.length > 0">
     <h2>Page Info</h2>
     <div *ngFor="let object of objects">
-        <div class="box-ids" *ngIf="object.id" style="display: flex;flex-direction: row;align-items: center;justify-content: center;">
+        <div class="box-ids" *ngIf="object.id">
             <div class="box-ids-text" [ngClass]="focused == object.name? 'focused' : ''">
                 <label class="ids" for={{object.name}}>{{object.name}} ID</label>
                 <div class=box-ids-input>
@@ -14,9 +14,9 @@
         </div>
     </div>
 </div>
-<div class="data-container">
+<div class="content data-container">
     <h2>API Documentation</h2>
-    <div class="documentation-container">
+    <div class="crud-container">
         <button class="post" (click)="openDoc(docs.post.doc_url)" [disabled]="!docs.post">
             <div class="method post">POST</div>
             <div>
@@ -43,19 +43,15 @@
         </button>
     </div>
 </div>
-<div class="content no-border no-grow">
+<div class="content">
     <h2>Query Parameters</h2>
     <div *ngIf="query_params.length > 0">
         <button class="xlarge" (click)="updateUrl()">
             <span>Update URL</span>
         </button>
-        <div class="grid-wrapper">
-            <div *ngFor="let query of query_params" class="grid-item">
+        <div class="query-params">
+            <div *ngFor="let query of query_params" class="query-param">
                 <label>{{query.name}}
-                    <!-- <div *ngIf="query.description" class="tooltip">
-                        <img class="help icon" src="assets/question.svg">
-                        <span class="tooltiptext">{{query.description}}</span>
-                    </div> -->
                 </label>
 
 

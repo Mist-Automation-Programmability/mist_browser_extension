@@ -214,7 +214,18 @@ body {
   margin: 0 !important;
   font-size: 11px;
   font-family: "Lato";
-  color: white;
+  color: white;       
+  --primary: #63b4ee;
+  --primary-background: #63b4eea3;
+  --secondary: #18c956;
+  --secondary-background: #18c956a3;
+  --active-inner: #fff;
+  --focus: 2px rgba(39, 94, 254, .3);
+  --border: #BBC1E1;
+  --border-hover: #63b4ee;
+  --background: #fff;
+  --disabled: #F6F8FF;
+  --disabled-inner: #E1E6F9;
 }
 
 html {
@@ -315,13 +326,13 @@ app-api {
   align-items: stretch;
   overflow: auto;
   scrollbar-width: thin;
-  scrollbar-color: #63b4ee #202836;
+  scrollbar-color: var(--primary)  #202836;
 }
 
 app-api-django {
   max-width: 99%;
   scrollbar-width: thin;
-  scrollbar-color: #63b4ee #202836;
+  scrollbar-color: var(--primary)  #202836;
 }
 
 app-account {
@@ -330,7 +341,7 @@ app-account {
   flex-direction: column;
   justify-content: flex-start;
   scrollbar-width: thin;
-  scrollbar-color: #63b4ee #202836;
+  scrollbar-color: var(--primary)  #202836;
 }
 
 app-about {
@@ -339,7 +350,7 @@ app-about {
   flex-direction: column;
   overflow: auto;
   scrollbar-width: thin;
-  scrollbar-color: #63b4ee #202836;
+  scrollbar-color: var(--primary)  #202836;
 }
 
 label {

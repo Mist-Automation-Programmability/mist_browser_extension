@@ -14,10 +14,12 @@ export interface TokenUsageElement {
   selector: 'app-tools-token-usage',
   templateUrl: 'usage.component.html',
   styleUrls: [
-    'usage.component.scss',
-    '../token.component.scss',
     '../../../scss/popup.component.scss',
-    '../../../scss/button.component.scss'
+    '../../../scss/button.component.scss',
+    '../../../scss/input.component.scss',
+    '../../../scss/progress.component.scss',
+    '../token.component.scss',
+    'usage.component.scss',
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -108,6 +110,10 @@ export class TokenUsageComponent implements OnInit {
     this.usage.host = api_host;
     this.working = false;
     this._cd.detectChanges();
+  }
+
+  token_updated(){
+    this.invalid = false;
   }
 
   close(): void {

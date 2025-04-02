@@ -1,22 +1,21 @@
 
-.org_select {
+.scope-selection {
     display: flex;
     flex-direction: column;
     width: 100%;
     align-content: center;
     justify-content: space-between;
     margin: 1em;
-}
-
-.org_select select {
-    width: 100%;
-    margin: .6em auto;
-}
-
-option {
-    text-align: start;
-}
-
-option.none {
-    text-align: center !important;
+    select {
+        width: 100%;
+        margin: .6em auto;
+    }
+    
+    option {
+        text-align: start;
+    }
+    
+    option.none {
+        text-align: center !important;
+    }
 }

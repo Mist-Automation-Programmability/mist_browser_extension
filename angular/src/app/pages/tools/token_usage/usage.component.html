@@ -1,36 +1,71 @@
-<div class="content">
-    <div class="box-token">
-        <label class="token" for="token">
-            API TOKEN USAGE
-        </label>
-        <div class="token_opt">
-            <input type="text" [(ngModel)]="api_token" placeholder="API Token"/>
-        </div>
-            <button  class="stroked xlarge" [disabled]="!api_token || working" (click)="check_usage()">Get Info</button>
+<div class="popup-content">
+  <div class="rw-container">
+    <label for="token"> API TOKEN USAGE </label>
+    <div class="input">
+      <input
+        type="text"
+        [(ngModel)]="api_token"
+        placeholder="API Token"
+        (ngModelChange)="token_updated()"
+        [ngStyle]="{'border': invalid ? '1px solid red' : ''}"
+        [readonly]="working"
+      />
     </div>
-    <div class="info">
-        <span *ngIf="invalid" class="error">Invalid Token</span>
-        <span *ngIf="working">Check {{check_index}} / {{check_total}} </span>
+    <button
+      class="secondary xlarge"
+      [disabled]="!api_token || working || invalid"
+      (click)="check_usage()"
+    >
+      <span *ngIf="!working && !invalid">Get Info</span>
+      <span *ngIf="invalid" class="error">Invalid Token</span>
+      <span *ngIf="working">Check {{ check_index }} / {{ check_total }} </span>
+    </button>
+  </div>
+  <div class="cloud-container">
+    <div class="label">Cloud:</div>
+    <div class="value">
+      <span *ngIf="usage.cloud != ''" style="margin-right: 5px"
+        >{{ usage.cloud }} - </span
+      ><span>{{ usage.host }}</span>
     </div>
-    <div class="cloud-container">
-        <div class="label">Cloud: </div>
-        <div class="value"><span *ngIf="usage.cloud != ''" style="margin-right: 5px;">{{usage.cloud}} - </span><span>{{usage.host}}</span></div>
+  </div>
+  <div class="usage">
+    <div class="text-container">
+      <div class="label">API request usage:</div>
+      <div *ngIf="usage.requests > -1" class="value">{{ usage.requests }}</div>
+      <div *ngIf="usage.requests == -1" class="value">-</div>
+      <div class="label">API request limit:</div>
+      <div *ngIf="usage.request_limit > -1" class="value">
+        {{ usage.request_limit }}
+      </div>
+      <div *ngIf="usage.request_limit == -1" class="value">-</div>
     </div>
-    <div class="usage" >
-        <div class="text-container">
-            <div class="label">API request usage: </div>
-            <div *ngIf="usage.requests > -1" class="value">{{usage.requests}}</div>
-            <div *ngIf="usage.requests == -1" class="value">-</div>
-            <div class="label">API request limit: </div>
-            <div *ngIf="usage.request_limit > -1" class="value">{{usage.request_limit}}</div>
-            <div *ngIf="usage.request_limit == -1" class="value">-</div>
-        </div>
-        <div *ngIf="usage.request_percentage>=100" class="progress-bar" role="progressbar" [ngStyle]="{'background': 'radial-gradient(closest-side, #202836 79%, transparent 80% 100%), conic-gradient(#ff6969 '+usage.request_percentage+'%, #698bc7 0)'}">
-            {{usage.request_percentage | number: '1.0-0' }}%
-        </div>
-        <div *ngIf="usage.request_percentage<100" class="progress-bar" role="progressbar" [ngStyle]="{'background': 'radial-gradient(closest-side, #202836 79%, transparent 80% 100%), conic-gradient(#7dff69 '+usage.request_percentage+'%, #698bc7 0)'}">
-            {{usage.request_percentage | number: '1.0-0' }}%
-        </div>
+    <div
+      *ngIf="usage.request_percentage >= 100"
+      class="progress-bar"
+      role="progressbar"
+      [ngStyle]="{
+        background:
+          'radial-gradient(closest-side, #202836 79%, transparent 80% 100%), conic-gradient(#ff6969 ' +
+          usage.request_percentage +
+          '%, #698bc7 0)'
+      }"
+    >
+      {{ usage.request_percentage | number : "1.0-0" }}%
     </div>
-    <button (click)="close()" class="close">CLOSE</button>
+    <div
+      *ngIf="usage.request_percentage < 100"
+      class="progress-bar"
+      role="progressbar"
+      [ngStyle]="{
+        background:
+          'radial-gradient(closest-side, #202836 79%, transparent 80% 100%), conic-gradient(#7dff69 ' +
+          usage.request_percentage +
+          '%, #698bc7 0)'
+      }"
+    >
+      {{ usage.request_percentage | number : "1.0-0" }}%
+    </div>
+  </div>
+  <button (click)="close()" class="close">CLOSE</button>
 </div>

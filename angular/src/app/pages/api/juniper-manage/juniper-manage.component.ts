@@ -14,7 +14,6 @@ export interface actionElement {
   selector: 'app-api-juniper-manage',
   templateUrl: '../manage/manage.component.html',
   styleUrls: [
-    '../api.component.scss',
     '../../../scss/button.component.scss',
     '../../../scss/popup.component.scss',
     '../../../scss/notice.component.scss'

@@ -1,19 +1,19 @@
-<div class="content" *ngIf='session'>
+<div class="popup-content" *ngIf='session'>
     <div class="box-token">
-        <label class="token" for="token">
+        <label for="token">
             NEW API TOKEN
         </label>
         <div class="cloud">manage{{session.domain}}</div>
-        <div class="token_opt">
+        <div class="token-name">
             <input type="text" [(ngModel)]="token_name" placeholder="Token Name (optional)"/>
-            <button (click)="createToken()" class="stroked xlarge">Create</button>
+            <button (click)="createToken()" class="secondary xlarge">Create</button>
         </div>
-        <div class="token-input" fxLayout="row">
+        <div class="textarea" fxLayout="row">
             <textarea class="token" type="text" readonly rows="3" [ngClass]="focused == 'token'? 'focused' : ''" id="token" #token_input>{{token.key}}</textarea>
             <button class="copy" name="copy" (click)="copyToken(token_input)" [disabled]="token.key==''">
                     <img class="copy" src="assets/copy.svg" alt="copy">
                 </button>
         </div>
     </div>
-    <button (click)="close()" class="close">CLOSE</button>
+    <button (click)="close()" class="xlarge">CLOSE</button>
 </div>

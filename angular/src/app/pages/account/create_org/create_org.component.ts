@@ -16,11 +16,12 @@ export interface TokenElement {
   selector: 'app-account-create-org',
   templateUrl: 'create_org.component.html',
   styleUrls: [
-    '../create/create.component.scss',
-    'create_org.component.scss',
     '../../../scss/button.component.scss',
     '../../../scss/popup.component.scss',
-    '../../../scss/select.component.scss'
+    '../../../scss/select.component.scss',
+    '../../../scss/textarea.component.scss',
+    'create_org.component.scss',
+    '../create/create.component.scss',
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })

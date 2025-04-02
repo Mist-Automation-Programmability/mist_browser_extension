@@ -41,6 +41,7 @@
   "permissions": [
     "cookies",
     "tabs",
+    "storage",
     "https://*.mist.com/*",
     "https://*.mistsys.com/*",
     "https://*.mist-federal.com/*"
