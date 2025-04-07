@@ -17,6 +17,7 @@ import { AccountCreateOrgComponent } from './pages/account/create_org/create_org
 import { ToolsComponent } from './pages/tools/tools.component';
 import { TokenInfoComponent } from './pages/tools/token_info/info.component';
 import { TokenUsageComponent } from './pages/tools/token_usage/usage.component';
+import { ToolsWarningComponent } from './pages/tools/warning/warning.component';
 import { AboutComponent } from './pages/about/about.component';
 
 
@@ -25,7 +26,7 @@ import { AboutComponent } from './pages/about/about.component';
         ApiJuniperManageComponent,
         ApiComponent, ApiManageComponent, ApiDjangoComponent, ZtpPasswordComponent,
         AccountComponent, AccountManageComponent, AccountCreateComponent, AccountManageOrgComponent, AccountCreateOrgComponent,
-        ToolsComponent, TokenInfoComponent, TokenUsageComponent,
+        ToolsComponent, TokenInfoComponent, TokenUsageComponent, ToolsWarningComponent,
         AboutComponent
     ],
     bootstrap: [AppComponent], imports: [BrowserModule, AppRoutingModule, FormsModule], providers: [provideHttpClient(withInterceptorsFromDi())] })

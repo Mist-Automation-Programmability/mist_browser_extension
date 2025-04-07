@@ -3,9 +3,9 @@
         <h2>Warning</h2>
     </div>
     <div class="popup-body">
-      <div *ngIf="experimentalMessage">This is an experimental feature. </div>
-        <div>{{ warningMessage }}</div>
-        <div>Do you want to continue?</div>
+      <div *ngIf="experimentalMessage">This is an experimental feature.</div>
+      <div>{{ warningMessage }}</div>
+      <div>Do you want to continue?</div>
     </div>
     <div class="popup-footer">
       <button (click)="cancel()">CANCEL</button>

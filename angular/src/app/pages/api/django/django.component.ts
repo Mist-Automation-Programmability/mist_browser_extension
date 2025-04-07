@@ -77,7 +77,6 @@ export class ApiDjangoComponent implements OnInit {
     path_part.forEach(next_path => {
       if ("paths" in tmp && next_path in tmp.paths) {
         tmp = tmp.paths[next_path]
-
       } else if ("paths" in tmp) {
         let data;
         for (let [key, val] of Object.entries(tmp.paths)) {
@@ -86,10 +85,9 @@ export class ApiDjangoComponent implements OnInit {
           }
         }
         if (data) tmp = data;
-        else console.error("Not able to find the right entry for " + path_part.join("/"))
-
+        else console.warn("Not able to find the right entry for " + path_part.join("/"))
       } else {
-        console.error("Not able to find the right entry for " + path_part.join("/"))
+        console.warn("Not able to find the right entry for " + path_part.join("/"))
       }
     })
 
