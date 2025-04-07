@@ -39,3 +39,11 @@
   [ngClass]="{ hidden: view != 'token-usage' }"
   (closePopup)="closePopup('token-usage')"
 ></app-tools-token-usage>
+<app-tools-warning
+  [warningMessage]="warningMessage"
+  [experimentalMessage]="experimentalMessage"
+  class="popup transparent"
+  [ngClass]="{ hidden: view != 'warning' }"
+  (warningConfirm)="warningConfirm()"
+  (warningCancel)="warningCancel()"
+></app-tools-warning>
