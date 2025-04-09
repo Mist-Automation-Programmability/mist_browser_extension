@@ -2,6 +2,15 @@
 
 A web browser extension designed to simplify access to Juniper Mist APIs and API Tokens. This extension is supported on Firefox, Chrome, and Chromium-based browsers (e.g., Edge, Brave, Sidekick). It is a valuable tool for Juniper Mist developers and users to explore and utilize Mist APIs efficiently.
 
+> [!IMPORTANT]
+> This extension is currently beeing published on the Chrome, Ms Edge and Firefox extension stores. Once published, the links will be available below.
+> 
+> If you are using one of these web browser, it is recommended to install the extension directly from the store to benefit of the extension automatic update.
+
+## Store links:
+- [Chrome Web Store](https://chromewebstore.google.com/detail/mist-extension/ejhpdcljeamillfhdihkkmoakanpbplh)
+
+
 ## Table of Contents
 - [Features](#features)
   - [Supported Juniper Clouds](#supported-juniper-clouds)
@@ -29,9 +38,6 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ---
-
-## Store links:
-- [Chrome Web Store](https://chromewebstore.google.com/detail/mist-extension/ejhpdcljeamillfhdihkkmoakanpbplh)
 
 
 ## Features
