@@ -13,8 +13,8 @@ browser.storage.local
 //if (window.location.host == "api.mist.com") {
 const uuid_re = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/
 const uuid_re_tail = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/
-function process_ids() {
 
+function process_ids() {
     const domElements = document.getElementsByClassName("response-info")
     var domElement, finalElements;
     try {
@@ -73,21 +73,23 @@ function process_ids() {
             }
         }
     } catch (e) {
-        console.warning("Error in process_ids: ", e);
+        console.warn("Error in process_ids: ", e);
     }
 }
 
 function inject_next(finalElements, index, host) {
     const next_value = finalElements[index].innerText.replaceAll("\"", "")
     const url = "https://" + host + next_value;
-    finalElements[index].innerHTML = "\"<a href=\"" + url + "\" style=\"text-decoration: underline;color: #D14;\">" + next_value + "</a>\"";
+    let cleanHTML = DOMPurify.sanitize("\"<a href=\"" + url + "\" style=\"text-decoration: underline;color: #D14;\">" + next_value + "</a>\"");
+    finalElements[index].innerHTML = cleanHTML;
 }
 
 function inject_common_link(finalElements, index, baseUrl) {
     const id = get_id(finalElements, index)
     const url = get_url(baseUrl, id)
     if (url && id) {
-        finalElements[index].innerHTML = "\"<a href=\"" + url + "\" style=\"text-decoration: underline;color: #D14;\">" + id + "</a>\"";
+        let cleanHTML = DOMPurify.sanitize("\"<a href=\"" + url + "\" style=\"text-decoration: underline;color: #D14;\">" + id + "</a>\"")
+        finalElements[index].innerHTML = cleanHTML;
     }
     return id;
 }

@@ -30,6 +30,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---
 
+## Store links:
+- [Chrome Web Store](https://chromewebstore.google.com/detail/mist-extension/ejhpdcljeamillfhdihkkmoakanpbplh)
+
+
 ## Features
 
 ### Supported Juniper Clouds
@@ -141,9 +145,9 @@ This extension is not yet available on the [Chrome Web Store](https://chrome.goo
 ## Build Instructions
 
 This extension was developed on macOS 12.6.1 using:
-- Node.js 19.0.1
-- npm 8.19.2
-- Python 3.8.5
+- Node.js >= 19.0.1
+- npm >= 8.19.2
+- Python >= 3.8.5
 
 ### Prerequisites
 From the `angular` folder, install dependencies:

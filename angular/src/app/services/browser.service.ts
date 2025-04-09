@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-//import browser from "webextension-polyfill";
 import browser from "webextension-polyfill";
 
 
@@ -167,15 +166,11 @@ export class BrowserService {
     }
 
     setStorage(k:string, v:string):void{
-        browser.storage.local.set({k: v}).then((res)=>{
-            console.log("Storage: "+k+" saved to "+v)
-        }).catch(err => console.log(err))
+        browser.storage.local.set({k: v}).catch(err => console.log(err))
     }
     getStorage(k:string, cb:(res)=>void) {
         browser.storage.local.get({k}).then(
             data => {
-            console.log("Storage: "+k+" was saved to "+data.k)
-            console.log(data.k)
             cb(data.k);
         }, err => {
             console.log(err)
