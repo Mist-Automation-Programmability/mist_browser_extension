@@ -7,12 +7,9 @@ A web browser extension designed to simplify access to Juniper Mist APIs and API
 > 
 > For users of these browsers, it is strongly recommended to install the extension directly from the respective store to ensure automatic updates and the latest features.
 
-> [!TIP]
-> For chromium-based web browsers (Ms Edge, Opera, Brave, Vivaldi, Ecosia, ...), the extension can be installed from the Chrome Web Store page
-
 ## Store Links:
-- [Chrome Web Store](https://chromewebstore.google.com/detail/mist-extension/ejhpdcljeamillfhdihkkmoakanpbplh)
-
+- Chrome, Ms Edge, Opera, Brave and all Chromium-Based web browsers: [Chrome Web Store](https://chromewebstore.google.com/detail/mist-extension/ejhpdcljeamillfhdihkkmoakanpbplh)
+- Firefox: TBD
 
 ## Table of Contents
 - [Features](#features)
