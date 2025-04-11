@@ -9,7 +9,7 @@ A web browser extension designed to simplify access to Juniper Mist APIs and API
 
 ## Store Links:
 - Chrome, Ms Edge, Opera, Brave and all Chromium-Based web browsers: [Chrome Web Store](https://chromewebstore.google.com/detail/mist-extension/ejhpdcljeamillfhdihkkmoakanpbplh)
-- Firefox: TBD
+- Firefox: [Firefox Addon](https://addons.mozilla.org/en-US/firefox/addon/mist-extension/)
 
 ## Table of Contents
 - [Features](#features)
