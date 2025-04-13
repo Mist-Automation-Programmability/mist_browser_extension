@@ -29,10 +29,10 @@
                 <div *ngIf="session.requests == -1" class="progress-bar" role="progressbar" [ngStyle]="{'background': 'radial-gradient(closest-side, #161c26 79%, transparent 80% 100%), conic-gradient(#ff6969 0%, #698bc7 0)'}">
                     - %
                 </div>
-                <div *ngIf="session.requests > 1 && session.request_percentage>=100" class="progress-bar" role="progressbar" [ngStyle]="{'background': 'radial-gradient(closest-side, #161c26 79%, transparent 80% 100%), conic-gradient(#ff6969 '+session.request_percentage+'%, #698bc7 0)'}">
+                <div *ngIf="session.requests > -1 && session.request_percentage>=100" class="progress-bar" role="progressbar" [ngStyle]="{'background': 'radial-gradient(closest-side, #161c26 79%, transparent 80% 100%), conic-gradient(#ff6969 '+session.request_percentage+'%, #698bc7 0)'}">
                     {{session.request_percentage | number: '1.0-0' }}%
                 </div>
-                <div *ngIf="session.requests > 1 && session.request_percentage<100" class="progress-bar" role="progressbar" [ngStyle]="{'background': 'radial-gradient(closest-side, #161c26 79%, transparent 80% 100%), conic-gradient(#7dff69 '+session.request_percentage+'%, #698bc7 0)'}">
+                <div *ngIf="session.requests > -1 && session.request_percentage<100" class="progress-bar" role="progressbar" [ngStyle]="{'background': 'radial-gradient(closest-side, #161c26 79%, transparent 80% 100%), conic-gradient(#7dff69 '+session.request_percentage+'%, #698bc7 0)'}">
                     {{session.request_percentage | number: '1.0-0' }}%
                 </div>
             </div>
