@@ -66,6 +66,7 @@ export class ApiManageComponent implements OnInit {
   // API URL ENTRYPOINT
   generateApiUrl() {
     const minis_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!marvisMini\??(?<q_param>.*)/yis;
+    const orginsights_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!orgInsights\??(?<query_params>[0-9a-z_=&-]*)?/iys;
     const orgsle_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!dashboard\/(?<scope>siteComparison|wiredSiteComparison|wanSiteComparison)\/(?<sle>[a-z-]*)\/(?<worstsle>[a-z-]*)\/([a-z-_]*)\/(?<period>[0-9a-z-]*)\/(?<start>[0-9]*)\/(?<stop>[0-9]*)/iys;
     const sle_details_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!dashboard\/(?<detail>serviceLevels|wiredserviceLevels|wanServiceLevels|juniperGateway)\/page2\/(stats|timeline)\/[a-zA-Z-]+\/[a-zA-Z-]+\/(?<scope>site|device|client|juniperSwitch|juniperGateway)\/(?<scope_id>[a-f0-9-]*)\/(?<sle_name>[a-z-]*)\/(?<sle_sub_1>[a-zA-Z-]+)\/(?<sle_sub_2>[a-zA-Z-]+)(\/(?<period>[0-9a-z]*))?(\/(?<start>[0-9]*))?(\/(?<stop>[0-9]*))?\/(?<site_id>[a-f0-9-]*)/iys;
     const sle_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!dashboard\/(?<detail>serviceLevels|wiredserviceLevels|wanServiceLevels|juniperGateway|applicationServiceLevels)(\/(?<scope>org|site|device|client|juniperSwitch|juniperGateway))?(\/(?<scope_id>[a-f0-9-]*))?(\/(?<period>[0-9a-z-]*))?(\/(?<start>[0-9]*))?(\/(?<stop>[0-9]*))?\/(?<site_id>[a-f0-9-]*)(\?app=(?<app>[a-zA-Z]*))?/iys;
@@ -86,6 +87,8 @@ export class ApiManageComponent implements OnInit {
 
     if (regexp_result = minis_re.exec(this.tabUrl)) {
       this.MarvisMinisUrl(regexp_result);
+    } else if (regexp_result = orginsights_re.exec(this.tabUrl)) {
+      this.orgInsightUrl(regexp_result);
     } else if (regexp_result = orgsle_re.exec(this.tabUrl)) {
       this.orgSleUrl(regexp_result);
     } else if (regexp_result = sle_details_re.exec(this.tabUrl)) {
@@ -1335,6 +1338,76 @@ export class ApiManageComponent implements OnInit {
 
   }
 
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////// ORG SLE URL FUNCTION DISPATCHER
+
+  orgInsightUrl(res: RegExpExecArray): void {
+    this.org_id = res?.groups?.org_id;
+    let query_params = res?.groups?.query_params;
+    if (res?.groups?.host && res?.groups?.org_id) {
+      const host = res?.groups?.host;
+      const org_id = res?.groups?.org_id;
+      this.quick_links.push(
+        {
+          url: "https://api." + host + "/api/v1/orgs/" + org_id + "/insights/sites-sle?sle=wireless&limit=100&"+query_params,
+          name:"Wi-Fi SLEs"
+        },
+        {
+          url: "https://api." + host + "/api/v1/orgs/" + org_id + "/insights/sites-sle?sle=wired&limit=100&"+query_params,
+          name:"Wired SLEs"
+        },
+        {
+          url: "https://api." + host + "/api/v1/orgs/" + org_id + "/insights/sites-sle?sle=wan&limit=100&"+query_params,
+          name:"Wan SLEs"
+        },
+        {
+          url: "https://api." + host + "/api/v1/orgs/" + org_id + "/nac_clients/count?interval=3600&distinct=time&" + query_params,
+           name: "NAC Clients Count"
+        },  
+        {
+          url: "https://api." + host + "/api/v1/orgs/" + org_id + "/clients/count?interval=3600&distinct=time&" + query_params,
+           name: "Wi-Fi Clients Count"
+        },  
+        {
+          url: "https://api." + host + "/api/v1/orgs/" + org_id + "/wired_clients/count?interval=3600&distinct=time&" + query_params,
+           name: "Wired Clients Count"
+        },  
+        {
+          url: "https://api." + host + "/api/v1/orgs/" + org_id + "/alarms/search?start=1745532000&end=1745598080&group=marvis&limit=1000&" + query_params,
+          name: "Marvis Actions"
+        },
+        {
+          url: "https://api." + host + "/api/v1/orgs/" + org_id + "/alarms/count?interval=3600&group=marvis&distinct=time&" + query_params,
+          name: "Marvis Actions count"
+        },
+        {
+          url: "https://api." + host + "/api/v1/orgs/" + org_id + "/alarms/search?type=loop_detected_by_ap%2Cinfra_dhcp_failure%2Cinfra_dns_failure%2Cinfra_arp_failure%2Cmistnac_server_cert_expired%2Cmistnac_server_cert_expiring%2Cmistnac_ca_cert_expired%2Cmistnac_ca_cert_expiring&limit=1000&" + query_params,
+          name: "Alerts"
+        },
+        {
+          url: "https://api." + host + "/api/v1/orgs/" + org_id + "/alarms/count?interval=3600&group=infrastructure&distinct=time&" + query_params,
+          name: "Infra Alerts count"
+        },
+        {
+          url: "https://api." + host + "/api/v1/orgs/" + org_id + "/alarms/count?interval=3600&group=security&distinct=time&" + query_params,
+          name: "Security Alerts count"
+        },
+        {
+          url: "https://api." + host + "/api/v1/orgs/" + org_id + "/devices/count?distinct=version&type=ap" ,
+          name: "AP Versions Count"
+        },
+        {
+          url: "https://api." + host + "/api/v1/orgs/" + org_id + "/devices/count?distinct=version&type=switch" ,
+          name: "Switch Versions Count"
+        },
+        {
+          url: "https://api." + host + "/api/v1/orgs/" + org_id + "/devices/count?distinct=version&type=wan" ,
+          name: "Gateway Versions Count"
+        },
+      );
+    }
+  }
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// ORG SLE URL FUNCTION DISPATCHER
