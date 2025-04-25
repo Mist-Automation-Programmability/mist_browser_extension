@@ -87,25 +87,27 @@ export class TokenInfoComponent implements OnInit {
     this._cd.detectChanges()
     if (this.check_index < api_hosts.length) {
       this._http.get(
-        "https://" + api_hosts[this.check_index] + "/api/v1/self",
-        { headers: { "Authorization": "Token " + this.api_token }, observe: 'response' }
-      ).subscribe(data => {
-        if (data.status == 200) {
-          this.set_success(api_hosts[this.check_index], data);
-        } else if (data.status == 429) {
-          this.success = false;
-        } else {
-          this.check_index += 1;
-          this.check_cloud_usage(api_hosts);
-        }
-      }, err => {
-        if (err.status == 429) {
-          this.success = false;
-        } else {
-          this.check_index += 1;
-          this.check_cloud_usage(api_hosts);
-        }
-      })
+        "https://" + api_hosts[this.check_index] + "/api/v1/self", { headers: { "Authorization": "Token " + this.api_token }, observe: 'response' })
+        .subscribe({
+          next: data => {
+            if (data.status == 200) {
+              this.set_success(api_hosts[this.check_index], data);
+            } else if (data.status == 429) {
+              this.success = false;
+            } else {
+              this.check_index += 1;
+              this.check_cloud_usage(api_hosts);
+            }
+          },
+          error: err => {
+            if (err.status == 429) {
+              this.success = false;
+            } else {
+              this.check_index += 1;
+              this.check_cloud_usage(api_hosts);
+            }
+          }
+        })
     } else {
       this.working = false;
       this.invalid = true;

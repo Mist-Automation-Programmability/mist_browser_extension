@@ -8,14 +8,14 @@
             <div class="version-value">{{current_version}}</div>
         </div>
         <div class="version-info">
-            <div class="version-text">Lastest Version:</div>
+            <div class="version-text">Latest Version:</div>
             <div class="version-unknown" *ngIf="!last_version && !error_happened">
                 <div>Searching for new version...</div>
-                <img src="assets/question.svg" alt="unknow version">
+                <img src="assets/question.svg" alt="unknown version">
             </div>
             <div class="version-uptodate" *ngIf="last_version && up_to_date">
-                <div>You have the lastest Version</div>
-                <img src="assets/check_circle.svg" alt="unknow version">
+                <div>You have the latest Version</div>
+                <img src="assets/check_circle.svg" alt="unknown version">
             </div>
             <div class="version-newversion" *ngIf="last_version && !up_to_date">
                 <div>New version available ({{last_version}})</div>

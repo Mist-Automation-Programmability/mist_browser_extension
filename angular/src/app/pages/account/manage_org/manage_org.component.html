@@ -63,9 +63,9 @@
                         <th>Last Used Time:</th>
                         <td>
                             <div *ngIf="token.last_used"
-                                [ngStyle]="{'color': now - (token.last_used * 1000) > 7776000000  ? '#e26b00' : null}">
+                                [ngStyle]="{'color': now - (token.last_used * 1000) > 7776000000  ? 'var(--warning)' : null}">
                                 {{(token.last_used * 1000)| date:'yyyy-MM-dd HH:mm:ss'}}</div>
-                            <div *ngIf="!token.last_used" style="color: #f44336;font-weight: 400;"> Never</div>
+                            <div *ngIf="!token.last_used" style="color: var(--error);font-weight: 400;">Never</div>
                         </td>
                     </tr>
                 </table>

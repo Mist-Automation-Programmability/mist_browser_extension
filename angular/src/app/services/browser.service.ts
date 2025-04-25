@@ -83,13 +83,14 @@ export class BrowserService {
         "api.ac5.mist.com",
         "api.ac6.mist.com",
         "api.us.mist-federal.com",
-        "api.staging.mist-federal.com",
         "dc.ai.juniper.net",
         "dc.stage.ai.juniper.net",
         "jsi.ai.juniper.net",
         "jsi.stage.ai.juniper.net",
         "routing.ai.juniper.net",
         "routing.stage.ai.juniper.net",
+        "api.mistsys.com",
+        "api.staging.mist-federal.com",
     ]
 
     private cloud_name: { [id: string] : string; } = {

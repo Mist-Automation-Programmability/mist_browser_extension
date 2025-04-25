@@ -4,8 +4,8 @@ textarea:focus-visible {
 }
 
 textarea.focused {
-    background-color: #555 !important;
-    transition: all 0.2s ease-in-out !important;
+    background-color: var(--border) !important;
+    transition: background-color 0.3s ease-in-out !important;
 }
 
 
@@ -24,9 +24,9 @@ textarea.focused {
         margin: 0;
         background-color: transparent;
         transition: all 1s ease-in-out;
-        color: white;
+        color: var(--text-color);
         height: 90px;
-        border: 1px solid #4f5560;
+        border: 1px solid var(--border);
         border-radius: 15px 0 0 15px;
         align-content: center;
         justify-content: center;

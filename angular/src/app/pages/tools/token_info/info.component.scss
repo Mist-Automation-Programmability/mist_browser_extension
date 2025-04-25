@@ -1,5 +1,5 @@
 .error {
-    color: #ff0000d7;
+    color: var(--error);
 }
 
 .info-container {
@@ -9,7 +9,7 @@
     border-radius: 0;
     overflow: auto;
     scrollbar-width: thin;
-    scrollbar-color: var(--primary)  #202836;
+    scrollbar-color: var(--primary)  var(--background);
 
     .header {
         font-size: larger;
@@ -32,10 +32,10 @@
         display: flex;
         align-items: stretch;
         flex-direction: column;
-        border: 1px solid #4f5560;
+        border: 1px solid var(--border);
         box-shadow: 0 3px 6px 0 rgba(99, 99, 99, 0.1);
         border-radius: 15px;
-        background-color: #161c26;
+        background-color: var(--background2);
         padding: 1em;
         margin: 1em 0;
         

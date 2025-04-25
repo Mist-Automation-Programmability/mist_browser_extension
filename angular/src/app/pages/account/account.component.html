@@ -26,13 +26,19 @@
                     <h3 class="title-cloud">API Usage</h3>
                     <div *ngIf="session.requests > -1" style="font-size: x-small;">{{session.requests}} / {{session.request_limit}}</div>
                     <div *ngIf="session.requests == -1" style="font-size: x-small;"> - / - </div>
-                <div *ngIf="session.requests == -1" class="progress-bar" role="progressbar" [ngStyle]="{'background': 'radial-gradient(closest-side, #161c26 79%, transparent 80% 100%), conic-gradient(#ff6969 0%, #698bc7 0)'}">
+                <div *ngIf="session.requests == -1" class="progress-bar" role="progressbar" [ngStyle]="{
+                    'background': 'radial-gradient(closest-side, var(--background2) 79%, transparent 80% 100%), conic-gradient(var(--progress-warning) 0%, var(--progress-background) 0)'
+                }">
                     - %
                 </div>
-                <div *ngIf="session.requests > 1 && session.request_percentage>=100" class="progress-bar" role="progressbar" [ngStyle]="{'background': 'radial-gradient(closest-side, #161c26 79%, transparent 80% 100%), conic-gradient(#ff6969 '+session.request_percentage+'%, #698bc7 0)'}">
+                <div *ngIf="session.requests > -1 && session.request_percentage>=100" class="progress-bar" role="progressbar" [ngStyle]="{
+                    'background': 'radial-gradient(closest-side, var(--background2) 79%, transparent 80% 100%), conic-gradient(var(--progress-warning) '+session.request_percentage+'%, var(--progress-background) 0)'
+                }">
                     {{session.request_percentage | number: '1.0-0' }}%
                 </div>
-                <div *ngIf="session.requests > 1 && session.request_percentage<100" class="progress-bar" role="progressbar" [ngStyle]="{'background': 'radial-gradient(closest-side, #161c26 79%, transparent 80% 100%), conic-gradient(#7dff69 '+session.request_percentage+'%, #698bc7 0)'}">
+                <div *ngIf="session.requests > -1 && session.request_percentage<100" class="progress-bar" role="progressbar" [ngStyle]="{
+                    'background': 'radial-gradient(closest-side, var(--background2) 79%, transparent 80% 100%), conic-gradient(var(--progress-green) '+session.request_percentage+'%, var(--progress-background) 0)'}
+                    ">
                     {{session.request_percentage | number: '1.0-0' }}%
                 </div>
             </div>
@@ -50,9 +56,13 @@
                             <img class="icon"src="assets/list.svg">
                             <span *ngIf="session.two_factor_passed" class="tooltiptext top">Manage</span>
                     </button>
-                    <button class="circle secondary tooltip" (click)="openCreateToken(session.domain, 'user')" [disabled]="!session.two_factor_passed">
+                    <button  *ngIf="!session.domain.includes('mistsys.com')" class="circle secondary tooltip" (click)="openCreateToken(session.domain, 'user')" [disabled]="!session.two_factor_passed">
                         <img class="icon" src="assets/add.svg">
                         <span *ngIf="session.two_factor_passed" class="tooltiptext top">Create</span>
+                    </button>
+                    <button  *ngIf="session.domain.includes('mistsys.com')" class="circle secondary tooltip" disabled>
+                        <img class="icon" src="assets/add.svg">
+                        <span *ngIf="session.two_factor_passed" class="tooltiptext top" style="color: var(--warning)">Disabled on staging</span>
                     </button>
                 </div>
             </div>
@@ -69,9 +79,13 @@
                         <img class="icon"src="assets/list.svg">
                         <span *ngIf="session.two_factor_passed" class="tooltiptext top">Manage</span>
                     </button>
-                    <button class="circle secondary tooltip" (click)="openCreateToken(session.domain, 'org')" [disabled]="!session.two_factor_passed">
+                    <button *ngIf="!session.domain.includes('mistsys.com')" class="circle secondary tooltip" (click)="openCreateToken(session.domain, 'org')" [disabled]="!session.two_factor_passed">
                         <img class="icon" src="assets/add.svg">
                         <span *ngIf="session.two_factor_passed" class="tooltiptext top">Create</span>
+                    </button>
+                    <button *ngIf="session.domain.includes('mistsys.com')" class="circle secondary tooltip" disabled>
+                        <img class="icon" src="assets/add.svg">
+                        <span *ngIf="session.two_factor_passed" class="tooltiptext top" style="color: var(--warning)">Disabled on staging</span>
                     </button>
                 </div>
             </div>

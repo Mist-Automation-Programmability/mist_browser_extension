@@ -6,6 +6,6 @@ select {
     text-align: center;
     border-radius: 15px;
     margin: .6em 1em;
-    background-color: #1d2430;
-    color: white;
+    background-color: var(--background2);
+    color: var(--text-color);
 }

@@ -69,21 +69,23 @@ export class TokenUsageComponent implements OnInit {
       this._http.get(
         "https://" + api_hosts[this.check_index] + "/api/v1/self/usage",
         { headers: { "Authorization": "Token " + this.api_token }, observe: 'response' }
-      ).subscribe(data => {
-        if (data.status == 200) {
-          this.set_success(api_hosts[this.check_index], data);
-        } else if (data.status == 429) {
-          this.set_failure(api_hosts[this.check_index]);
-        } else {
-          this.check_index += 1;
-          this.check_cloud_usage(api_hosts);
-        }
-      }, err => {
-        if (err.status == 429) {
-          this.set_failure(api_hosts[this.check_index]);
-        } else {
-          this.check_index += 1;
-          this.check_cloud_usage(api_hosts);
+      ).subscribe({
+        next: data => {
+          if (data.status == 200) {
+            this.set_success(api_hosts[this.check_index], data);
+          } else if (data.status == 429) {
+            this.set_failure(api_hosts[this.check_index]);
+          } else {
+            this.check_index += 1;
+            this.check_cloud_usage(api_hosts);
+          }
+        }, error: err => {
+          if (err.status == 429) {
+            this.set_failure(api_hosts[this.check_index]);
+          } else {
+            this.check_index += 1;
+            this.check_cloud_usage(api_hosts);
+          }
         }
       })
     } else {
@@ -93,7 +95,7 @@ export class TokenUsageComponent implements OnInit {
     }
   }
 
-  private set_success(api_host:string, data):void{
+  private set_success(api_host: string, data): void {
     this.usage.requests = data.body["requests"];
     this.usage.request_limit = data.body["request_limit"];
     this.usage.request_percentage = (this.usage.requests / this.usage.request_limit) * 100;
@@ -102,7 +104,7 @@ export class TokenUsageComponent implements OnInit {
     this.working = false;
     this._cd.detectChanges();
   }
-  private set_failure(api_host:string){
+  private set_failure(api_host: string) {
     this.usage.requests = 5000;
     this.usage.request_limit = 5000;
     this.usage.request_percentage = 100;
@@ -112,7 +114,7 @@ export class TokenUsageComponent implements OnInit {
     this._cd.detectChanges();
   }
 
-  token_updated(){
+  token_updated() {
     this.invalid = false;
   }
 

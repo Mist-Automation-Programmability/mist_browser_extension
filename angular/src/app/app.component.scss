@@ -2,7 +2,7 @@
     height: 50px;
     width: 100%;
     object-fit: cover;
-    background: rgb(13, 76, 125);
+    background: #0d4c7d;
     background: linear-gradient(0deg, rgba(13, 76, 125, 1) 0%, rgba(52, 153, 244, 1) 100%);
     box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
 }
@@ -45,8 +45,8 @@ div.bottom {
 
 // MENU BUTTONS
 button.bottom {
-    background-color: #202836;
-    color: #ddd;
+    background-color:  var(--background);
+    color: var(--text-color);
     transition: all .2s ease-in-out;
     flex-direction: column;
     width: 100%;
