@@ -25,13 +25,13 @@
         input {
             margin: 1em 0;
             padding: 0.5em;
-            border: 1px solid white;
+            border: 1px solid var(--b, var(--text-color));
             border-radius: 10px;
-            background-color: rgba(50, 50, 93, 0.25);
-            color: white;
+            background-color: var(--b, var(--background));
+            color:  var(--b, var(--text-color));
         }
         input:focus {
-            background-color: black;
+            background-color:  var(--background2);
             border-color: var(--primary) ;
     }
 }

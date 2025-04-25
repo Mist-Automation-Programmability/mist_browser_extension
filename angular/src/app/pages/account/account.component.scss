@@ -4,10 +4,10 @@
     display: flex;
     align-items: stretch;
     flex-direction: column;
-    border: 1px solid #4f5560;
+    border: 1px solid var(--border);
     box-shadow: 0 3px 6px 0 rgba(99, 99, 99, 0.1);
     border-radius: 15px;
-    background-color: #161c26;
+    background-color: var(--background);
 }
 
 // info on the top part of the box
@@ -29,7 +29,7 @@
 .box-cloud-info-login div.error {
     height: 1em;
     margin: .9em 0;
-    color: #ff0000d7;
+    color: var(--error);
 }
 
 .title-cloud-box {
@@ -48,20 +48,20 @@
 .title-cloud-box.link h2 {
     text-decoration: none;
     transition: all 0.2s ease-in-out;
-    color: white;
+    color: var(--text-color);
 }
 
 .title-cloud-box.link:hover h2 {
     text-decoration: underline;
     transition: all 0.2s ease-in-out;
-    color: #62b4ee;
+    color: var(--text-hover);
 }
 
 .title-cloud {
     font-weight: 300;
     margin: 0.2em;
     display: flex;
-    color: white;
+    color: var(--text-color);
     flex-direction: row;
     align-items: center;
 }
@@ -120,14 +120,14 @@
         display: flex;
         flex-direction: column;
         margin: .7em;
-        border: 1px solid #4f5560;
+        border: 1px solid var(--border);
         border-radius: 15px;
         align-items: center;
         justify-content: space-between;
         align-content: center;
         width: 40%;
         padding: .5em;
-        background-color: black;
+        background-color:  var(--background2);
 
         .box-cloud-token-title {
             display: flex;

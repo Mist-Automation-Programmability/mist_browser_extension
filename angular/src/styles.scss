@@ -1,14 +1,3 @@
-/* You can add global styles to this file, and also import other style files */
-
-// @font-face {
-//     font-family: "Lato";
-//     src: url("assets/font/Lato/Lato-Regular.ttf") format("truetype");
-//     // font-family: "OpenSans";
-//     // src: url("assets/font/Open_Sans/OpenSans-VariableFont_wdth,wght.ttf") format("truetype-variations");
-//     font-weight: 125 950;
-//     font-stretch: 75% 125%;
-//     font-style: normal;
-// }
 /* latin-ext */
 @font-face {
   font-family: 'Lato';
@@ -221,21 +210,27 @@ body {
   --secondary-background: #18c956a3;
   --active-inner: #fff;
   --focus: 2px rgba(39, 94, 254, .3);
-  --border: #BBC1E1;
+  --text-color: #fff;
+  --text-hover: #63b4ee;
+  --text-disabled: #aaa;
+  --border: #4f5560;
   --border-hover: #63b4ee;
-  --background: #fff;
+  --background:  #202836;
+  --background2:  #161c26;
   --disabled: #F6F8FF;
+  --warning: #FFB74D;
+  --error: #ff0000d7;
   --disabled-inner: #E1E6F9;
+  --progress-warning: #ff6969;
+  --progress-background: #698bc750;
+  --progress-green: #7dff69;
+  --input-background: #2d343f;
+  --input-background-focus: black;
 }
 
 html {
   font-style: normal;
   font-weight: 400;
-}
-
-html.dark {
-  background-color: #333;
-  color: white;
 }
 
 button:hover {
@@ -313,7 +308,7 @@ select:focus {
 
 
 .app-container {
-  background-color: #202836;
+  background-color: var(--background);
   ;
 }
 
@@ -326,13 +321,13 @@ app-api {
   align-items: stretch;
   overflow: auto;
   scrollbar-width: thin;
-  scrollbar-color: var(--primary)  #202836;
+  scrollbar-color: var(--primary)  var(--background);
 }
 
 app-api-django {
   max-width: 99%;
   scrollbar-width: thin;
-  scrollbar-color: var(--primary)  #202836;
+  scrollbar-color: var(--primary)  var(--background);
 }
 
 app-account {
@@ -341,7 +336,7 @@ app-account {
   flex-direction: column;
   justify-content: flex-start;
   scrollbar-width: thin;
-  scrollbar-color: var(--primary)  #202836;
+  scrollbar-color: var(--primary)  var(--background);
 }
 
 app-about {
@@ -350,7 +345,7 @@ app-about {
   flex-direction: column;
   overflow: auto;
   scrollbar-width: thin;
-  scrollbar-color: var(--primary)  #202836;
+  scrollbar-color: var(--primary)  var(--background);
 }
 
 label {

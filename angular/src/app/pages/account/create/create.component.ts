@@ -64,14 +64,19 @@ export class AccountCreateComponent implements OnInit {
   ////////////
   // SESSIONS
   ////////////
-  createToken(): void {
+  createToken(csrftoken: string = null, retry:boolean=true): void {
+    console.log(this.session);
+    if (!csrftoken) {csrftoken = this.session.csrftoken}
     if (this.do_create) {
       let url = "https://" + this.session.api_host + "/api/v1/self/apitokens";
-      this._http.post(url, { name: this.token_name }, { headers: { "X-CSRFTOKEN": this.session.csrftoken } }).subscribe((token: TokenElement) => {
-        this.session.requests += 1;
-        this.token = token;
-        this._cd.detectChanges();
-      })
+      this._http.post(url, { name: this.token_name }, { headers: { "X-CSRFTOKEN": csrftoken, 'Access-Control-Allow-Origin': 'https://api.mistsys.com/api/v1/self/apitokens' } })
+        .subscribe({
+          next: (token: TokenElement) => {
+            this.session.requests += 1;
+            this.token = token;
+            this._cd.detectChanges();
+          }
+        })
     }
   }
 

@@ -2,7 +2,7 @@
     margin: 0;
     overflow: auto;
     scrollbar-width: thin;
-    scrollbar-color: var(--primary) #202836;
+    scrollbar-color: var(--primary) var(--background);
 }
 
 .token-container {
@@ -11,8 +11,8 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    background-color: #161c26;
-    border: 1px solid #4f5560;
+    background-color: var(--background2);
+    border: 1px solid var(--border);
     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
     border-radius: 15px;
     height: 8em;
@@ -64,10 +64,9 @@
         margin: 0;
         box-shadow: unset !important;
         transition: background-color 0.2s ease-in-out;
-        cursor: pointer;
         border-radius: 0 15px 15px 0;
         border: none;
-        background-color: #4f5560;
+        background-color: var(--border);
 
         img {
             transition: background-color 0.2s ease-in-out;
@@ -75,7 +74,10 @@
         }
     }
 
-    .delete button:hover {
-        background-color: #f44336;
+    .delete button:not(:disabled) {
+        cursor: pointer;
+    }
+    .delete button:not(:disabled):hover {
+        background-color: var(--error);
     }
 }

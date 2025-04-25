@@ -1,7 +1,7 @@
 .progress-bar {
-    color: white;
+    color: var(--text-color);
     border-radius: 50%;
-    background: radial-gradient(closest-side, #161c26 79%, transparent 80% 100%), conic-gradient(#7dff69 0%, #698bc7 0);
+    background: radial-gradient(closest-side, var(--background2) 79%, transparent 80% 100%), conic-gradient(var(--progress-green) 0%, var(--progress-background) 0);
     margin: 1em;
     display: flex;
     justify-content: center;

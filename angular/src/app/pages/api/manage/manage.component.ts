@@ -527,6 +527,9 @@ export class ApiManageComponent implements OnInit {
         url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/mxedges",
         name: "mxedges"
       }, {
+        url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/stats/mxedges",
+        name: "mxedges stats"
+      }, {
         url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/mxclusters",
         name: "mxclusters"
       }, {
@@ -534,6 +537,11 @@ export class ApiManageComponent implements OnInit {
         name: "mxtunnels"
       })
     }
+  }
+
+  forgeMxTunnel(host: string, detail: string): void {
+    this.obj_name = "mx tunenel";
+    this.forgeOrgObject("mxtunnels", host, detail);
   }
 
   ////////////////////////////////////////////////////////////////////////////////////
@@ -975,8 +983,12 @@ export class ApiManageComponent implements OnInit {
           this.setName("mxedge", res?.groups?.detail);
           this.forgeEdge(res?.groups?.host, res?.groups?.detail)
           break;
+        case "misttunnels":
+          this.setName("mxedge", res?.groups?.detail);
+          this.forgeMxTunnel(res?.groups?.host, res?.groups?.detail)
+          break;
         case "hubs":
-          this.setName("hubprofile", res?.groups?.detail);
+          this.setName("mxclusters", res?.groups?.detail);
           this.forgeHubProfile(res?.groups?.host, res?.groups?.detail)
           break;
         case "services":

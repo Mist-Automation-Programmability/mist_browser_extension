@@ -1,7 +1,8 @@
 
 // SETTINGS
 .setting-desc {
-    color: #ddd;
+    color: var(--text-color);
+    font-weight: 300;;
     width: calc(100% - 60px);
     margin-top: -1.2em;
 }
@@ -17,7 +18,7 @@
         margin: 1em 0;
         
         label {
-            color: white;
+            color: var(--text-color);
         }
     }
 }

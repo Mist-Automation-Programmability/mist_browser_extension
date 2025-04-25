@@ -46,9 +46,9 @@
       role="progressbar"
       [ngStyle]="{
         background:
-          'radial-gradient(closest-side, #202836 79%, transparent 80% 100%), conic-gradient(#ff6969 ' +
+          'radial-gradient(closest-side, var(--background) 79%, transparent 80% 100%), conic-gradient(var(--progress-warning) ' +
           usage.request_percentage +
-          '%, #698bc7 0)'
+          '%, var(--progress-background) 0)'
       }"
     >
       {{ usage.request_percentage | number : "1.0-0" }}%
@@ -59,9 +59,9 @@
       role="progressbar"
       [ngStyle]="{
         background:
-          'radial-gradient(closest-side, #202836 79%, transparent 80% 100%), conic-gradient(#7dff69 ' +
+          'radial-gradient(closest-side, var(--background) 79%, transparent 80% 100%), conic-gradient(var(--progress-green) ' +
           usage.request_percentage +
-          '%, #698bc7 0)'
+          '%, var(--progress-background) 0)'
       }"
     >
       {{ usage.request_percentage | number : "1.0-0" }}%

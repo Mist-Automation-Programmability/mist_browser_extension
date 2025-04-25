@@ -18,8 +18,8 @@ button:disabled:hover,
 button.secondary:disabled,
 button.Stroked:disabled:hover {
     background-color: rgba(99, 99, 99, 0.2);
-    border: 1px solid #4f5560;
-    color: #aaa;
+    border: 1px solid var(--border);
+    color: var(--text-disabled);
     box-shadow: rgb(0 0 0 / 5%) 0px 0px 0px 1px !important;
     cursor: default;
 }
@@ -32,8 +32,8 @@ button.Stroked:disabled:hover img {
 }
 
 button:enabled {
-    background-color: #161c26;
-    color: #fff;
+    background-color: var(--background2);
+    color: var(--text-color);
     border: 1px solid var(--primary);
     border-radius: 15px;
     padding: 1.5em 1em;
@@ -48,7 +48,7 @@ button:enabled:hover {
 
 button.secondary:enabled {
     background-color: unset;
-    color: white;
+    color: var(--text-color);
     border: 1px solid var(--secondary);
 }
 
@@ -115,8 +115,8 @@ button img.icon-open {
 button.request {
     margin: 2em;
     background-color: unset;
-    border: 1px solid #777;
-    color: #777;
+    border: 1px solid var(--disabled);
+    color:  var(--text-disabled);
 }
 
 button.request:hover {
@@ -126,7 +126,7 @@ button.request:hover {
 ////////////////////// CLOSE
 button.close {
     background-color: #1d2430;
-    color: white;
+    color: var(--text-color);
     box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
     transition: background-color 0.2s ease-in-out;
     margin: 1em 1em;
@@ -159,8 +159,8 @@ button.circle img {
 button.tooltip .tooltiptext {
     font-size: smaller;
     font-weight: 100;
-    background-color: #161c26;
-    border: 1px solid #4f5560;
+    background-color: var(--background2);
+    border: 1px solid var(--border);
     border-radius: 15px;
 }
 
