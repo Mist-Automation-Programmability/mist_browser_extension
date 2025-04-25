@@ -50,7 +50,7 @@ function _gen_id_site_common(site_id, element, element_type) {
 function process_element(org_id, site_id, self, element, element_type, element_scope, gen_self_id, stats) {
     var id;
 
-    if (element.hasOwnProperty("id")) {
+    if (element.hasOwnProperty("id") && gen_self_id) {
         if (element.id && element.id != "00000000-0000-0000-0000-000000000000") {
             id = element.id
             if (self) {
@@ -184,6 +184,10 @@ function process_ids() {
                 }
                 if (baseUri.includes("/events/search")) {
                     gen_self_id = false;
+                } else if (baseUri.includes("/alarms/")) {
+                    gen_self_id = false;
+                } else if (baseUri.includes("/logs")) {
+                    gen_self_id = false;
                 }
                 switch (element_type) {
                     case "inventory":
@@ -218,7 +222,6 @@ function process_ids() {
                 } else {
                     process_element(org_id, site_id, self, cloneElements_json, element_type, element_scope, false, stats);
                 }
-                console.log(uuids)
                 for (const [key, value] of Object.entries(uuids)) {
                     var cleanHTML = DOMPurify.sanitize("\"<a href=\"" + value + "\" style=\"text-decoration: underline;color: #D14;\">" + key + "</a>\"")
                     domElement[0].innerHTML = domElement[0].innerHTML.replaceAll("\"" + key + "\"", cleanHTML);
