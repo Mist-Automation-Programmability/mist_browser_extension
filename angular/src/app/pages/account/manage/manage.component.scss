@@ -5,6 +5,11 @@
     scrollbar-color: var(--primary) var(--background);
 }
 
+.token-container.deleted {
+    height: 0px;
+    display: none !important;
+}
+
 .token-container {
     margin: 0.5em 0;
     display: flex;
@@ -77,6 +82,7 @@
     .delete button:not(:disabled) {
         cursor: pointer;
     }
+
     .delete button:not(:disabled):hover {
         background-color: var(--error);
     }

@@ -11,6 +11,7 @@ export interface TokenElement {
   last_used: number | null,
   created_time: number,
   key: string
+  deleted: boolean
 }
 
 @Component({
@@ -18,6 +19,7 @@ export interface TokenElement {
   templateUrl: 'manage_org.component.html',
   styleUrls: [
     '../../../scss/button.component.scss',
+    '../../../scss/message.component.scss',
     '../../../scss/popup.component.scss',
     '../../../scss/select.component.scss',
     './manage_org.component.scss',
@@ -46,6 +48,8 @@ export class AccountManageOrgComponent implements OnInit {
   org_loading: boolean = false;
   org_id: string;
   do_manage: boolean = false;
+  success: boolean = false;
+  error: boolean = false;
 
   ngOnInit() {
     this.now = new Date().getTime();
@@ -92,12 +96,43 @@ export class AccountManageOrgComponent implements OnInit {
     }
   }
 
-  deleteToken(token_id: string): void {
-    let url = "https://" + this.session.api_host + "/api/v1/orgs/" + this.org_id + "/apitokens/" + token_id
-    this._http.delete(url, { headers: { "X-CSRFTOKEN": this.session.csrftoken } }).subscribe(() => {
-      this.session.requests += 1;
-      this.getTokens();
+  deleteToken(token: TokenElement): void {
+    let url = "https://" + this.session.api_host + "/api/v1/orgs/" + this.org_id + "/apitokens/" + token.id
+    this._http.delete(url, { headers: { "X-CSRFTOKEN": this.session.csrftoken }, observe: 'response'  })
+    .subscribe({
+      next: data => {
+        this.session.requests += 1;
+        if (data.status == 200) {
+          this.delete_success(token);
+        } else {
+          this.delete_error(data);
+        }
+      }, error: err => {
+        this.delete_error(err);
+      }
     })
+  }
+
+  private delete_success(token: TokenElement) {
+    this.session.requests += 1;
+    token.deleted = true;
+    this.success = true;
+    this._cd.detectChanges()
+    setTimeout(() => {
+      this.success = false;
+      this._cd.detectChanges()
+    }, 2000);
+  }
+
+  private delete_error(err:any) {
+    this.session.requests += 1;
+    console.log(err);
+    this.error = true;
+    this._cd.detectChanges()
+    setTimeout(() => {
+      this.error = false;
+      this._cd.detectChanges()
+    }, 3000);
   }
 
   close(): void {

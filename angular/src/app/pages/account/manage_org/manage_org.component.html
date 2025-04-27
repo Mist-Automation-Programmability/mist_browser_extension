@@ -32,7 +32,7 @@
             <div style="margin: 1em;">This Org doesn't have any API Token yet...</div>
             <div style="margin: 0 2em;">You can go back and create a new API Token directly from this extension!</div>
         </div>
-        <div class="token-container" *ngFor="let token of tokens">
+        <div class="token-container" *ngFor="let token of tokens" [ngClass]="token.deleted == true ? 'deleted' : ''">
             <div class="token">
                 <table>
                     <tr>
@@ -71,7 +71,7 @@
                 </table>
             </div>
             <div class="delete">
-                <button (click)="deleteToken(token.id)">
+                <button (click)="deleteToken(token)">
                     <img src="assets/delete.svg" alt="delete">
                 </button>
             </div>
@@ -80,5 +80,13 @@
 
     <div style="display: flex;">
         <button (click)="close()" class="xlarge">CLOSE</button>
+    </div>
+</div>
+<div class="message-container">
+    <div class="message success" [ngClass]="success == true ? 'show' : ''">
+        API Token Deleted
+    </div>
+    <div class="message error" [ngClass]="error == true ? 'show' : ''">
+        Unable to delete the API Token
     </div>
 </div>

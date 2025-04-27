@@ -1,0 +1,35 @@
+
+.message-container {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .message {
+        width: 75%;
+        text-align: center;
+        padding: 1em 2em;
+        border-radius: 30px;
+        margin: 2em auto;
+        user-select: none;
+        opacity: 0;
+        display: none;
+        transition: all 0.5s linear;
+        transition-behavior: allow-discrete;
+    }
+    .message.success {
+        background: var(--success);
+        color: black;
+
+    }
+    .message.error {
+        background: var(--error);
+        color: black;
+    }
+    .message.show {
+        display: unset;
+        opacity: 1;
+    }
+}
