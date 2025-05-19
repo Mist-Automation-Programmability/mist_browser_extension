@@ -57,6 +57,17 @@ button.secondary:enabled:hover {
     box-shadow: rgba(50, 50, 93, 0.5) 0 4px 7px 2px inset, rgba(0, 0, 0, 0.3) 0 3px 3px -1px inset !important
 }
 
+button.warning:enabled {
+    background-color: unset;
+    color: var(--text-color);
+    border: 1px solid var(--error);
+}
+
+button.warning:enabled:hover {
+    background-color: var(--error-background);
+    box-shadow: rgba(50, 50, 93, 0.5) 0 4px 7px 2px inset, rgba(0, 0, 0, 0.3) 0 3px 3px -1px inset !important
+}
+
 ////////////////////// LARGE 
 button.large {
     width: 80%;

@@ -15,7 +15,7 @@ export interface ZtpResponseElement {
     '../../../../scss/button.component.scss',
     '../../../../scss/textarea.component.scss',
     'ztp_password.component.scss',
-    ],
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ZtpPasswordComponent implements OnInit {
@@ -34,7 +34,7 @@ export class ZtpPasswordComponent implements OnInit {
   ) { }
 
   session: SessionElement;
-  request_done: boolean = false;  
+  request_done: boolean = false;
   response_empty: boolean = false;
   is_working: boolean = false;
   ztp_password: ZtpResponseElement = { root_password: "" };
@@ -52,7 +52,7 @@ export class ZtpPasswordComponent implements OnInit {
                 sessions.forEach(s => {
                   if (s.domain == domain) {
                     this.session = s;
-                    this.retrieve_ztp_pasword();
+                    this.retrieve_ztp_password();
                   }
                 })
               });
@@ -60,7 +60,7 @@ export class ZtpPasswordComponent implements OnInit {
           }
         });
       })
-     // .error(error => { console.log(error) })
+      // .error(error => { console.log(error) })
       .catch(error => { console.log(error) })
 
   }
@@ -68,29 +68,44 @@ export class ZtpPasswordComponent implements OnInit {
   ////////////
   // SESSIONS
   ////////////
-  retrieve_ztp_pasword(): void {
+  retrieve_ztp_password(): void {
     if (this.site_id && this.device_id) {
       let url = "https://api" + this.session.domain + "/api/v1/sites/" + this.site_id + "/devices/" + this.device_id + "/request_ztp_password";
-      this._http.post(url, {}, { headers: { "X-CSRFTOKEN": this.session.csrftoken } }).subscribe((resp: ZtpResponseElement) => {        
-        if (resp.root_password == ""){
-          this.ztp_password_failed();
-        } else {
-          this.ztp_password_success(resp);
-        }        
-      })
+      this._http
+        .post<ZtpResponseElement>(url, {}, { headers: { "X-CSRFTOKEN": this.session.csrftoken } })
+        .subscribe({
+          next: data => {
+            if (data.root_password == "") {
+              this.ztp_password_failed();
+            } else {
+              this.ztp_password_success(data);
+            }
+          },
+          error: e => {
+            this.retrieve_ztp_password_backup(url);
+          }
+        })
     }
   }
 
-  ztp_password_init(): void{
+  retrieve_ztp_password_backup(url: string): void {
+    this._browser.setStorage("post", JSON.stringify({ url: url, ts: Date.now() }));
+    setTimeout(() => {
+      this._browser.tabOpen(url);
+    }, 10);
+  }
+
+
+  ztp_password_init(): void {
     this.request_done = false;
     this.response_empty = false;
     this.is_working = true;
     this.ztp_color = "white";
     this.ztp_password.root_password = "Retrieving ZTP Password from Mist... Please wait..."
-        this._cd.detectChanges();
+    this._cd.detectChanges();
   }
 
-  ztp_password_failed(): void{
+  ztp_password_failed(): void {
     this.request_done = true;
     this.response_empty = true;
     this.is_working = false;
@@ -99,7 +114,7 @@ export class ZtpPasswordComponent implements OnInit {
     this._cd.detectChanges();
   }
 
-  ztp_password_success(ztp_password: ZtpResponseElement):void{
+  ztp_password_success(ztp_password: ZtpResponseElement): void {
     this.request_done = true;
     this.response_empty = false;
     this.is_working = false;

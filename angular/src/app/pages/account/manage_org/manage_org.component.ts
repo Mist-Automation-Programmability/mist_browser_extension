@@ -1,7 +1,7 @@
 import { Component, Input, Output, ChangeDetectionStrategy, ChangeDetectorRef, EventEmitter, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { SessionElement } from '../../../services/browser.service';
+import { Observable, Subject } from 'rxjs';
+import { BrowserService, SessionElement } from '../../../services/browser.service';
 import { PrivilegeService, OrgElement, MspElement } from "../../../services/privileges.service"
 
 
@@ -30,6 +30,7 @@ export interface TokenElement {
 export class AccountManageOrgComponent implements OnInit {
 
   //@Input() domain: string;
+  eventWarning: Subject<boolean> = new Subject<boolean>()
   @Input() sessionEvent: Observable<SessionElement>;
   @Input() eventManageTokens: Observable<boolean>;
   @Output() closeManageTokens = new EventEmitter<string>();
@@ -37,11 +38,13 @@ export class AccountManageOrgComponent implements OnInit {
   constructor(
     private _cd: ChangeDetectorRef,
     private _http: HttpClient,
-    private _privilege: PrivilegeService
+    private _privilege: PrivilegeService,
+    private _browser: BrowserService,
   ) { }
 
   tokens = [];
   now: number;
+  tokenToDelete: TokenElement;
   displayed_msps: MspElement[] = [];
   displayed_orgs: OrgElement[] = [];
   msp_id: string | undefined = undefined;
@@ -50,6 +53,7 @@ export class AccountManageOrgComponent implements OnInit {
   do_manage: boolean = false;
   success: boolean = false;
   error: boolean = false;
+  view: string = "";
 
   ngOnInit() {
     this.now = new Date().getTime();
@@ -96,22 +100,28 @@ export class AccountManageOrgComponent implements OnInit {
     }
   }
 
-  deleteToken(token: TokenElement): void {
+  private deleteToken(token: TokenElement): void {
     let url = "https://" + this.session.api_host + "/api/v1/orgs/" + this.org_id + "/apitokens/" + token.id
-    this._http.delete(url, { headers: { "X-CSRFTOKEN": this.session.csrftoken }, observe: 'response'  })
-    .subscribe({
-      next: data => {
-        this.session.requests += 1;
-        if (data.status == 200) {
+    this._http
+      .delete(url, { headers: { "X-CSRFTOKEN": this.session.csrftoken } })
+      .subscribe({
+        next: data => {
+          this.session.requests += 1;
           this.delete_success(token);
-        } else {
-          this.delete_error(data);
+        },
+        error: err => {
+          this.deleteTokenBackup(url);
         }
-      }, error: err => {
-        this.delete_error(err);
-      }
-    })
+      })
   }
+
+  private deleteTokenBackup(url: string): void {
+    this._browser.setStorage("delete", JSON.stringify({ url: url, ts: Date.now() }));
+    setTimeout(() => {
+      this._browser.tabOpen(url);
+    }, 10);
+  }
+
 
   private delete_success(token: TokenElement) {
     this.session.requests += 1;
@@ -124,7 +134,7 @@ export class AccountManageOrgComponent implements OnInit {
     }, 2000);
   }
 
-  private delete_error(err:any) {
+  private delete_error(err: any) {
     this.session.requests += 1;
     console.log(err);
     this.error = true;
@@ -140,4 +150,25 @@ export class AccountManageOrgComponent implements OnInit {
     this.closeManageTokens.emit();
   }
 
+
+  confirmDeleteToken(token: TokenElement): void {
+      this.view = "warning";
+      this.tokenToDelete = token;
+      this.eventWarning.next(true);
+      this._cd.detectChanges();
+  }
+
+  warningConfirm(): void {
+    this.view = "";
+    this.eventWarning.next(false);
+    this.deleteToken(this.tokenToDelete)
+    this.tokenToDelete = undefined;
+    this._cd.detectChanges();
+  }
+  warningCancel(): void {
+    this.view = "";
+    this.eventWarning.next(false);
+    this.tokenToDelete = undefined;
+    this._cd.detectChanges();
+  }
 }

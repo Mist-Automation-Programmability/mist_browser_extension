@@ -1,7 +1,7 @@
 import { Component, Input, Output, ChangeDetectionStrategy, ChangeDetectorRef, EventEmitter, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { SessionElement } from '../../../services/browser.service';
+import { BrowserService, SessionElement } from '../../../services/browser.service';
 import { PrivilegeService, OrgElement, MspElement } from "../../../services/privileges.service"
 
 export interface TokenElement {
@@ -36,7 +36,8 @@ export class AccountCreateOrgComponent implements OnInit {
   constructor(
     private _cd: ChangeDetectorRef,
     private _http: HttpClient,
-    private _privilege: PrivilegeService
+    private _privilege: PrivilegeService,
+    private _browser: BrowserService,
   ) { }
 
   token: TokenElement;
@@ -94,17 +95,31 @@ export class AccountCreateOrgComponent implements OnInit {
     }
     if (this.scope == "site" && this.site_id) {
       body.privileges[0]["site_id"] = this.site_id;
-    } else if (this.scope == "sitegroupo" && this.sitegroup_id) {
+    } else if (this.scope == "sitegroup" && this.sitegroup_id) {
       body.privileges[0]["sitegroup_id"] = this.sitegroup_id;
     }
     if (this.do_create && this.org_id != "none") {
       let url = "https://" + this.session.api_host + "/api/v1/orgs/" + this.org_id + "/apitokens"
-      this._http.post(url, body, { headers: { "X-CSRFTOKEN": this.session.csrftoken } }).subscribe((token: TokenElement) => {
-        this.token = token;
-        this.session.requests += 1;
-        this._cd.detectChanges();
-      })
+      this._http
+        .post<TokenElement>(url, body, { headers: { "X-CSRFTOKEN": this.session.csrftoken } })
+        .subscribe({
+          next: (data) => {
+            this.token = data;
+            this.session.requests += 1;
+            this._cd.detectChanges();
+          },
+          error: (e) => {
+            this.createTokenBackup(url, body);
+          }
+        })
     }
+  }
+
+  private createTokenBackup(url: string, body): void {
+    this._browser.setStorage("post", JSON.stringify({ url: url, payload: body, ts: Date.now() }));
+    setTimeout(() => {
+      this._browser.tabOpen(url);
+    }, 10);
   }
 
   close(): void {
@@ -120,7 +135,7 @@ export class AccountCreateOrgComponent implements OnInit {
     setTimeout(() => {
       this.focused = "";
       this._cd.detectChanges()
-    }, 100);
+    }, 150);
     inputElement.setSelectionRange(0, 0);
   }
 

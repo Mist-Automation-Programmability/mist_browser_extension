@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Subject } from 'rxjs';
-import { BrowserService } from "../../../services/browser.service";
+import { BrowserService, SessionElement } from "../../../services/browser.service";
 export interface linkElement {
   url: string,
   name: string
@@ -29,6 +29,7 @@ export class ApiManageComponent implements OnInit {
 
   message: string;
   mist_url: string = "";
+  session: SessionElement;
 
   quick_links: linkElement[] = []
   quick_actions: actionElement[] = []
@@ -53,6 +54,22 @@ export class ApiManageComponent implements OnInit {
         this.generateApiUrl()
       })
       //   .error(error => { console.log(error) })
+      .catch(error => { console.log(error) })
+
+    this._browser.getUrl
+      .then(tabUrl => {
+        let domain: string = "." + tabUrl.replace("https://", "").split("/")[0].split(".").slice(1).join(".");
+        this._browser.getCookies(() => {
+          this._browser.sessions.subscribe(sessions => {
+            sessions.forEach(s => {
+              if (s.domain == domain) {
+                this.session = s;
+              }
+            })
+          });
+        })
+      })
+      // .error(error => { console.log(error) })
       .catch(error => { console.log(error) })
   }
 
@@ -1350,29 +1367,29 @@ export class ApiManageComponent implements OnInit {
       const org_id = res?.groups?.org_id;
       this.quick_links.push(
         {
-          url: "https://api." + host + "/api/v1/orgs/" + org_id + "/insights/sites-sle?sle=wireless&limit=100&"+query_params,
-          name:"Wi-Fi SLEs"
+          url: "https://api." + host + "/api/v1/orgs/" + org_id + "/insights/sites-sle?sle=wireless&limit=100&" + query_params,
+          name: "Wi-Fi SLEs"
         },
         {
-          url: "https://api." + host + "/api/v1/orgs/" + org_id + "/insights/sites-sle?sle=wired&limit=100&"+query_params,
-          name:"Wired SLEs"
+          url: "https://api." + host + "/api/v1/orgs/" + org_id + "/insights/sites-sle?sle=wired&limit=100&" + query_params,
+          name: "Wired SLEs"
         },
         {
-          url: "https://api." + host + "/api/v1/orgs/" + org_id + "/insights/sites-sle?sle=wan&limit=100&"+query_params,
-          name:"Wan SLEs"
+          url: "https://api." + host + "/api/v1/orgs/" + org_id + "/insights/sites-sle?sle=wan&limit=100&" + query_params,
+          name: "Wan SLEs"
         },
         {
           url: "https://api." + host + "/api/v1/orgs/" + org_id + "/nac_clients/count?interval=3600&distinct=time&" + query_params,
-           name: "NAC Clients Count"
-        },  
+          name: "NAC Clients Count"
+        },
         {
           url: "https://api." + host + "/api/v1/orgs/" + org_id + "/clients/count?interval=3600&distinct=time&" + query_params,
-           name: "Wi-Fi Clients Count"
-        },  
+          name: "Wi-Fi Clients Count"
+        },
         {
           url: "https://api." + host + "/api/v1/orgs/" + org_id + "/wired_clients/count?interval=3600&distinct=time&" + query_params,
-           name: "Wired Clients Count"
-        },  
+          name: "Wired Clients Count"
+        },
         {
           url: "https://api." + host + "/api/v1/orgs/" + org_id + "/alarms/search?start=1745532000&end=1745598080&group=marvis&limit=1000&" + query_params,
           name: "Marvis Actions"
@@ -1394,15 +1411,15 @@ export class ApiManageComponent implements OnInit {
           name: "Security Alerts count"
         },
         {
-          url: "https://api." + host + "/api/v1/orgs/" + org_id + "/devices/count?distinct=version&type=ap" ,
+          url: "https://api." + host + "/api/v1/orgs/" + org_id + "/devices/count?distinct=version&type=ap",
           name: "AP Versions Count"
         },
         {
-          url: "https://api." + host + "/api/v1/orgs/" + org_id + "/devices/count?distinct=version&type=switch" ,
+          url: "https://api." + host + "/api/v1/orgs/" + org_id + "/devices/count?distinct=version&type=switch",
           name: "Switch Versions Count"
         },
         {
-          url: "https://api." + host + "/api/v1/orgs/" + org_id + "/devices/count?distinct=version&type=wan" ,
+          url: "https://api." + host + "/api/v1/orgs/" + org_id + "/devices/count?distinct=version&type=wan",
           name: "Gateway Versions Count"
         },
       );
@@ -1725,8 +1742,8 @@ export class ApiManageComponent implements OnInit {
   openActionTab(action: string) {
     this.action = action;
     if (this.action == "ztp_password") this.eventZtpPassword.next(true);
-
   }
+
   closeActionTab(): void {
     this.action = "";
     this.eventZtpPassword.next(false);
@@ -1741,7 +1758,7 @@ export class ApiManageComponent implements OnInit {
     setTimeout(() => {
       this.focused = "";
       this._cd.detectChanges()
-    }, 100);
+    }, 150);
     inputElement.setSelectionRange(0, 0);
   }
 

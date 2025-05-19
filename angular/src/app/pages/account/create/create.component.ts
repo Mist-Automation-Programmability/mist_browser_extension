@@ -1,7 +1,7 @@
 import { Component, Input, Output, ChangeDetectionStrategy, ChangeDetectorRef, EventEmitter, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { SessionElement } from "../../../services/browser.service"
+import { BrowserService, SessionElement } from "../../../services/browser.service"
 
 export interface TokenElement {
   id: string | undefined,
@@ -39,7 +39,8 @@ export class AccountCreateComponent implements OnInit {
   focused: string = "";
   constructor(
     private _cd: ChangeDetectorRef,
-    private _http: HttpClient
+    private _http: HttpClient,
+    private _browser: BrowserService,
   ) { }
 
   token_name: string = "";
@@ -64,21 +65,31 @@ export class AccountCreateComponent implements OnInit {
   ////////////
   // SESSIONS
   ////////////
-  createToken(csrftoken: string = null, retry:boolean=true): void {
-    console.log(this.session);
-    if (!csrftoken) {csrftoken = this.session.csrftoken}
+  createToken(): void {
     if (this.do_create) {
       let url = "https://" + this.session.api_host + "/api/v1/self/apitokens";
-      this._http.post(url, { name: this.token_name }, { headers: { "X-CSRFTOKEN": csrftoken, 'Access-Control-Allow-Origin': 'https://api.mistsys.com/api/v1/self/apitokens' } })
+      this._http
+        .post<TokenElement>(url, { name: this.token_name }, { headers: { "X-CSRFTOKEN": this.session.csrftoken } })
         .subscribe({
-          next: (token: TokenElement) => {
+          next: (data) => {
+            this.token = data;
             this.session.requests += 1;
-            this.token = token;
             this._cd.detectChanges();
+          },
+          error: (e) => {
+            this.createTokenBackup(url);
           }
         })
     }
   }
+
+  private createTokenBackup(url: string): void {
+    this._browser.setStorage("post", JSON.stringify({ url: url, payload: { name: this.token_name }, ts: Date.now() }));
+    setTimeout(() => {
+      this._browser.tabOpen(url);
+    }, 10);
+  }
+
 
   close(): void {
     this.closeCreateToken.emit()
@@ -93,7 +104,7 @@ export class AccountCreateComponent implements OnInit {
     setTimeout(() => {
       this.focused = "";
       this._cd.detectChanges()
-    }, 100);
+    }, 150);
     inputElement.setSelectionRange(0, 0);
   }
 

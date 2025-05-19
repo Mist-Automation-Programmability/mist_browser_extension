@@ -1,6 +1,6 @@
 {
   "name": "mist-extension",
-  "version": "5.1.0",
+  "version": "5.2.0",
   "description": "Generated with @larscom/ng-mist-extension",
   "scripts": {
     "start": "npm run watch",
@@ -38,7 +38,7 @@
     "@types/webextension-polyfill": "^0.12.1",
     "dompurify": "^3.2.5",
     "ngx-build-plus": "^18.0.0",
-    "rxjs": "^7.8.1",
+    "rxjs": "^7.8.2",
     "tslib": "^2.8.1",
     "web-ext-types": "^3.2.1",
     "webext-base-css": "^2.1.0",

@@ -1,10 +1,9 @@
 
-k = "id_links"
 browser.storage.local
-    .get({ k })
+    .get("id_links")
     .then(
         res => {
-            if (res.k == "true") process_ids();
+            if (res && res.id_links == "true") process_ids();
         }, err => {
             console.log(err);
         }

@@ -167,12 +167,15 @@ export class BrowserService {
     }
 
     setStorage(k:string, v:string):void{
-        browser.storage.local.set({k: v}).catch(err => console.log(err))
+        var storage_key = {}
+        storage_key[k]=v
+        browser.storage.local.set(storage_key).catch(err => console.log(err))
     }
-    getStorage(k:string, cb:(res)=>void) {
-        browser.storage.local.get({k}).then(
+
+    getStorage(key:string, cb:(res)=>void) {
+        browser.storage.local.get(key).then(
             data => {
-            cb(data.k);
+            cb(data);
         }, err => {
             console.log(err)
         });

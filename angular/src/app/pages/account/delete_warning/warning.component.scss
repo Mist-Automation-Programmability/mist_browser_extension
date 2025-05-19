@@ -1,0 +1,21 @@
+.popup-header h2 {
+    color: var(--warning);
+}
+.popup-body {
+    font-size: larger;
+    margin-bottom: 1em;
+    div {
+        margin: 1em 0;
+    }
+}
+
+.popup-footer {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+
+    button {
+        width: 40%;
+    }
+}

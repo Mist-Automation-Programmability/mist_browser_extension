@@ -1,11 +1,9 @@
-// CONTENAIRS
-
 .box-token {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin: 0 1em;
-    
+
     label {
         margin: .2em .5em .2em 1em;
         display: flex;
@@ -22,18 +20,31 @@
         display: flex;
         flex-direction: column;
         width: 100%;
+
         input {
             margin: 1em 0;
             padding: 0.5em;
             border: 1px solid var(--b, var(--text-color));
             border-radius: 10px;
             background-color: var(--b, var(--background));
-            color:  var(--b, var(--text-color));
+            color: var(--b, var(--text-color));
         }
+
         input:focus {
-            background-color:  var(--background2);
-            border-color: var(--primary) ;
+            background-color: var(--background2);
+            border-color: var(--primary);
+        }
     }
+
 }
 
+.popup-footer {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+
+    button {
+        width: 40%;
+    }
 }

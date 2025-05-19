@@ -29,7 +29,7 @@
       ],
       "js": [
         "/assets/js/content.js",
-        "/assets/js/id_links.js",
+        "/assets/js/django_links.js",
         "/assets/js/purify.min.js"
       ]
     }

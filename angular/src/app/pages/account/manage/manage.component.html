@@ -36,7 +36,7 @@
                 </table>
             </div>
             <div class="delete">
-                <button (click)="deleteToken(token)" [disabled]="session.domain.includes('mistsys.com')">
+                <button (click)="confirmDeleteToken(token)">
                     <img src="assets/delete.svg" alt="delete">
                 </button>
             </div>
@@ -55,3 +55,11 @@
         Unable to delete the API Token
     </div>
 </div>
+
+<app-token-delete-warning 
+    [ngClass]="{hidden: view != 'warning'}"
+    class="popup transparent"
+    (warningConfirm)="warningConfirm()"
+    (warningCancel)="warningCancel()"
+>
+</app-token-delete-warning>

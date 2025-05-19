@@ -6,7 +6,6 @@
         <div class="cloud">manage{{session.domain}}</div>
         <div class="token-name">
             <input type="text" [(ngModel)]="token_name" placeholder="Token Name (optional)"/>
-            <button (click)="createToken()" class="secondary xlarge">Create</button>
         </div>
         <div class="textarea" fxLayout="row">
             <textarea class="token" type="text" readonly rows="3" [ngClass]="focused == 'token'? 'focused' : ''" id="token" #token_input>{{token.key}}</textarea>
@@ -15,5 +14,8 @@
                 </button>
         </div>
     </div>
-    <button (click)="close()" class="xlarge">CLOSE</button>
+    <div class="popup-footer">
+        <button (click)="close()" class="xlarge">CLOSE</button>
+        <button (click)="createToken()" class="secondary xlarge">Create</button>
+        </div>
 </div>

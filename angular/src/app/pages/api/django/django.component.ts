@@ -6,7 +6,7 @@ export interface linkElement {
   url: string,
   name: string
 }
-interface QueryparamsInterface {
+interface QueryParamsInterface {
   name: string,
   value: string,
   description: string,
@@ -35,7 +35,7 @@ export class ApiDjangoComponent implements OnInit {
   objects = [];
   focused: string | undefined = "";
   path_params = [];
-  query_params: QueryparamsInterface[] = [];
+  query_params: QueryParamsInterface[] = [];
   docs = {
     "get": undefined,
     "post": undefined,
@@ -68,7 +68,7 @@ export class ApiDjangoComponent implements OnInit {
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
-  // PÄTH FUNCTIONS
+  // PATH FUNCTIONS
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
 
@@ -157,7 +157,7 @@ export class ApiDjangoComponent implements OnInit {
     }
     if (specs) {
       specs.forEach((spec: any) => {
-        let data: QueryparamsInterface = { name: "", value: "", description: "", schema: undefined };
+        let data: QueryParamsInterface = { name: "", value: "", description: "", schema: undefined };
         if ("in" in spec && spec["in"] == "query") data = spec
         else if ("$ref" in spec && spec["$ref"]) {
           const ref_parts = spec["$ref"].split("/")
@@ -205,7 +205,7 @@ export class ApiDjangoComponent implements OnInit {
     setTimeout(() => {
       this.focused = "";
       this._cd.detectChanges()
-    }, 100);
+    }, 150);
     inputElement.setSelectionRange(0, 0);
   }
 }
