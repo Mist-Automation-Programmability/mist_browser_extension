@@ -16,7 +16,10 @@ export interface actionElement {
   styleUrls: [
     '../../../scss/button.component.scss',
     '../../../scss/popup.component.scss',
-    '../../../scss/notice.component.scss'
+    '../../../scss/notice.component.scss',
+    '../../../scss/container.component.scss',
+    '../../../scss/input.component.scss',
+    '../manage/manage.component.scss',
   ]
 })
 export class ApiJuniperManageComponent implements OnInit {
