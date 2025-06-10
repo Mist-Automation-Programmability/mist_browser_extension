@@ -53,7 +53,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 - EMEA 01: `manage.eu.mist.com`
 - EMEA 02: `manage.gc3.mist.com`
 - EMEA 03: `manage.ac6.mist.com`
+- EMEA 04: `manage..gc6mist.com`
 - APAC 01: `manage.ac5.mist.com`
+- APAC 03: `manage.gc7.mist.com`
 - US GOV Cloud: `manage.us.mist-federal.com`
 
 #### Juniper AI Clouds
