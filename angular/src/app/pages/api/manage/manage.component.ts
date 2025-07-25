@@ -97,7 +97,7 @@ export class ApiManageComponent implements OnInit {
     const site_common_objs = ["ap", "gateway", "switch", "assets", "wlan", "tags", "psk", "tunnels", "clients", "guestclients", "sdkclients", "wiredclients", "wxlan", "security", "switchconfig", "pcap", "siteedge", "cellularedges"]
     const org_evpn_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!evpn\/org(\/(?<topology_id>[0-9a-f-]{36}))?/yis;
     const org_common_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!(?<obj>[a-zA-Z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view|template|rfTemplate|provider)\/)?([0-9]\/)?(?<obj_id>[0-9a-z_-]*)\??(?<query_params>[0-9a-z_=&-]*)?/yis;
-    const org_common_objs = ["orgtags", "misttunnels", "templates", "switchtemplate", "gatewaytemplates", "hubs", "deviceprofiles", "org", "orgpsk", "configuration", "auditlogs", "apinventory", "adminconfig", "subscription", "edge", "vpns", "template", "rftemplates", "services", "networks", "applicationpolicy", "authpolicylabels", "naccertificates", "nacpolicy", "nacidentityproviders", "onboardingworkflow", "sdk", "premiumanalytics", "private5g", "securityevents", "nacclients", "nacendpoints"];
+    const org_common_objs = ["orgtags", "misttunnels", "templates", "switchtemplate", "gatewaytemplates", "hubs", "deviceprofiles", "org", "orgpsk", "configuration", "auditlogs", "apinventory", "adminconfig", "subscription", "edge", "vpns", "template", "rftemplates", "services", "networks", "applicationpolicy", "authpolicylabels", "naccertificates", "nacpolicy", "nacidentityproviders", "onboardingworkflow", "sdk", "premiumanalytics", "private5g", "securityevents", "nacclients", "nacendpoints", "sitetemplates"];
     const base_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!/yis;
     const msp_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/msp\/\?msp_id=(?<msp_id>[0-9a-f-]{36})#!(?<obj>orgs|admins|auditLogs|mspInfo|labels)\/?(?<detail>aiops|details|detail|invite)?\/?(?<obj_id>[0-9a-z_-]*)/yis;;
     var regexp_result;
@@ -173,7 +173,7 @@ export class ApiManageComponent implements OnInit {
     if (!ui_name) {
       ui_name = this.obj_name;
     }
-    if (detail && detail != "new") {
+    if (detail && detail != "new" || this.obj_id) {
       // set QUICK LINK
       url = "https://api." + host + "/api/v1/orgs/" + this.org_id + "/" + obj_name + "/" + this.obj_id;
       this.quick_links.push({ url: url, name: ui_name });
@@ -199,11 +199,17 @@ export class ApiManageComponent implements OnInit {
 
   forgeOrgObjectEvents(obj_name: string, host: string, detail: string, extra_param: string | undefined = undefined): void {
     let url = "";
+    let filter = "";
     if (detail && detail != "new" && this.obj_id) {
       // MAC
       const mac = this.getMac(this.obj_id);
+      if (obj_name == "mxedges") {
+        filter = "mxedge_id=00000000-0000-0000-1000-" + mac;
+      } else {
+        filter = "mac" + mac;
+      }
       // set QUICK LINK
-      url = "https://api." + host + "/api/v1/orgs/" + this.org_id + "/" + obj_name + "/events/search?limit=1000&mac=" + mac;
+      url = "https://api." + host + "/api/v1/orgs/" + this.org_id + "/" + obj_name + "/events/search?limit=1000&" + filter;
       if (!extra_param) {
         url += "&duration=1d";
       } else {
@@ -538,7 +544,7 @@ export class ApiManageComponent implements OnInit {
       this.obj_name = "mxedge";
       this.forgeOrgObject("mxedges", host, detail);
       this.forgeOrgObjectStats("mxedges", host, detail);
-      this.forgeSiteObjectEvents("mxedges", "mxedge", host, detail);
+      this.forgeOrgObjectEvents("mxedges", host, detail);
     } else if (detail == "clusterdetail") {
       this.obj_name = "mxcluster";
       this.forgeOrgObject("mxclusters", host, detail);
@@ -823,6 +829,7 @@ export class ApiManageComponent implements OnInit {
           if (this.missing_fields.length == 0) {
             this.forgeSiteObject("mxedges", res?.groups?.host, res?.groups?.detail);
             this.forgeSiteObjectStats("mxedges", res?.groups?.host, res?.groups?.detail);
+            this.forgeSiteObjectEvents("mxedges", "mxedge", res?.groups?.host, res?.groups?.detail);
           }
           break;
         case "tunnels":
@@ -1000,6 +1007,7 @@ export class ApiManageComponent implements OnInit {
           this.forgeOrgObject("licenses", res?.groups?.host, res?.groups?.detail);
           break;
         case "edge":
+          console.log(res?.groups)
           this.setName("mxedge", res?.groups?.detail);
           this.forgeEdge(res?.groups?.host, res?.groups?.detail)
           break;
@@ -1017,7 +1025,9 @@ export class ApiManageComponent implements OnInit {
         case "deviceprofiles":
         case "gatewaytemplates":
         case "networks":
-          this.setName(res?.groups?.obj.substr(0, res?.groups?.obj.length - 1), res?.groups?.detail);
+        case "sitetemplates":
+          // TODO: fix name when detail/obj_id
+          this.setName(res?.groups?.obj.substring(0, res?.groups?.obj.length - 1), res?.groups?.detail);
           this.forgeOrgObject(res?.groups?.obj.toLowerCase(), res?.groups?.host, res?.groups?.detail);
           break;
         case "applicationpolicy":
