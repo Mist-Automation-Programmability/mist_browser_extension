@@ -9,6 +9,11 @@
     "48": "assets/favicon-48x48.png",
     "128": "assets/favicon-128x128.png"
   },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{46f824d5-3c9d-468e-950f-cd2448e488d5}"
+    }
+  },
   "action": {
     "default_popup": "index.html?#/popup",
     "default_title": "Mist Extension"
@@ -30,7 +35,9 @@
     }
   ],
   "background": {
-    "service_worker": "assets/js/serviceWorker.js"
+    "scripts": [
+      "assets/js/serviceWorker.js"
+    ]
   },
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'"
