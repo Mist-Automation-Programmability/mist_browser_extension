@@ -986,16 +986,11 @@ export class ApiManageComponent implements OnInit {
           this.forgeOrgObject("logs", res?.groups?.host, res?.groups?.detail, "message=\"accessed%20org%20\"", "access logs");
           break;
         case "apinventory":
-          this.obj_name = "inventory";
-          this.forgeOrgObject("inventory", res?.groups?.host, res?.groups?.detail, null);
-          this.obj_name = "APs inventory";
-          this.forgeOrgObject("inventory", res?.groups?.host, res?.groups?.detail, "type=ap");
-          this.obj_name = "Switches inventory";
-          this.forgeOrgObject("inventory", res?.groups?.host, res?.groups?.detail, "type=switch");
-          this.obj_name = "Gateways inventory";
-          this.forgeOrgObject("inventory", res?.groups?.host, res?.groups?.detail, "type=gateway");
-          this.obj_name = "Other Device inventory";
-          this.forgeOrgObject("otherdevices", res?.groups?.host, res?.groups?.detail);
+          const url = "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/inventory";
+          this.quick_links.push({ url: url, name: "inventory" });
+          this.quick_links.push({ url: url + "?type=ap", name: "aps inventory" });
+          this.quick_links.push({ url: url + "?type=switch", name: "switches inventory" });
+          this.quick_links.push({ url: url + "?type=gateway", name: "gateways inventory" });
           break;
         case "adminconfig":
           this.setName("admin", res?.groups?.detail);
