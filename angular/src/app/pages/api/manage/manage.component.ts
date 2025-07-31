@@ -173,7 +173,7 @@ export class ApiManageComponent implements OnInit {
     if (!ui_name) {
       ui_name = this.obj_name;
     }
-    if (detail && detail != "new" || this.obj_id) {
+    if (detail && detail != "new") {//} || this.obj_id) { <- this is causing issues with the quick links where the site_id is in the org url
       // set QUICK LINK
       url = "https://api." + host + "/api/v1/orgs/" + this.org_id + "/" + obj_name + "/" + this.obj_id;
       this.quick_links.push({ url: url, name: ui_name });
