@@ -96,7 +96,7 @@ export class ApiManageComponent implements OnInit {
     const site_common_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!(?<obj>[a-z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*)\/)?(?<site_id>[0-9a-f-]{36})?/yis;
     const site_common_objs = ["ap", "gateway", "switch", "assets", "wlan", "tags", "psk", "tunnels", "clients", "guestclients", "sdkclients", "wiredclients", "wxlan", "security", "switchconfig", "pcap", "siteedge", "cellularedges"]
     const org_evpn_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!evpn\/org(\/(?<topology_id>[0-9a-f-]{36}))?/yis;
-    const org_common_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!(?<obj>[a-zA-Z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view|template|rfTemplate|provider)\/)?([0-9]\/)?(?<obj_id>[0-9a-z_-]*)\??(?<query_params>[0-9a-z_=&-]*)?/yis;
+    const org_common_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!(?<obj>[a-zA-Z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view|template|rfTemplate|provider|nacportals|pskportals)\/)?([0-9]\/)?(?<obj_id>[0-9a-z_-]*)\??(?<query_params>[0-9a-z_=&-]*)?/yis;
     const org_common_objs = ["orgtags", "misttunnels", "templates", "switchtemplate", "gatewaytemplates", "hubs", "deviceprofiles", "org", "orgpsk", "configuration", "auditlogs", "apinventory", "adminconfig", "subscription", "edge", "vpns", "template", "rftemplates", "services", "networks", "applicationpolicy", "authpolicylabels", "naccertificates", "nacpolicy", "nacidentityproviders", "onboardingworkflow", "sdk", "premiumanalytics", "private5g", "securityevents", "nacclients", "nacendpoints", "sitetemplates"];
     const base_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!/yis;
     const msp_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/msp\/\?msp_id=(?<msp_id>[0-9a-f-]{36})#!(?<obj>orgs|admins|auditLogs|mspInfo|labels)\/?(?<detail>aiops|details|detail|invite)?\/?(?<obj_id>[0-9a-z_-]*)/yis;;
@@ -1052,8 +1052,17 @@ export class ApiManageComponent implements OnInit {
           this.forgeOrgNacIdp(res?.groups?.host);
           break;
         case "onboardingworkflow":
-          this.setName("Psk Portal", res?.groups?.detail);
-          this.forgeOrgObject("pskportals", res?.groups?.host, res?.groups?.detail);
+          console.log(res?.groups)
+          switch (res?.groups?.detail) {
+            case "pskportals":
+              this.setName("Psk Portals", res?.groups?.detail);
+              this.quick_links.push({ url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/pskportals", name: this.obj_name });
+              break;
+              case "nacportals":
+                this.setName("NAC Portals", res?.groups?.detail);
+                this.quick_links.push({ url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/nacportals", name: this.obj_name });
+              break;
+          }
           break;
         case "sdk":
           this.setName("sdk client", res?.groups?.detail);
