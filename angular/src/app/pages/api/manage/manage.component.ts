@@ -1041,6 +1041,14 @@ export class ApiManageComponent implements OnInit {
             url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/setting",
             name: "org setting"
           })
+          this.quick_links.push({
+            url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/cert",
+            name: "org CA certificate"
+          })
+          this.quick_links.push({
+            url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/setting/mist_scep/client_certs",
+            name: "SCEP client certificates"
+          })
           break;
         case "nacpolicy":
           this.setName("NAC Policy", res?.groups?.detail);
