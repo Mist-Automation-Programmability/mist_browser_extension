@@ -158,13 +158,13 @@ This extension was developed on macOS 12.6.1 using:
 - Python >= 3.8.5
 
 ### Prerequisites
-From the `angular` folder, install dependencies:
+From the root folder, install dependencies:
 ```bash
-npm install
+make init
 ```
 
 ### Run/Debug
-From the `angular` folder:
+From the root folder:
 
 - Build the Angular app in debug mode:
 ```bash
@@ -179,15 +179,11 @@ npx web-ext run -t chromium -s ./dist --browser-console
  - For Chromium-based browsers:
 
 ### Build
-From the `angular` folder:
+From the root folder:
 
 - Build the Angular app in production mode:
 ```bash
-npm run build:prod
-```
-- Package the extension:
-```bash
-npx web-ext build -s ./dist -o
+make build VERSION=x.y.z
 ```
 
 The packaged extension will be located in web-ext-artifacts.
