@@ -6,14 +6,14 @@ define BUILD_EXTENSION
 	@echo "---------------------------------------"
 	@cd ./angular && \
 		echo "Using manifest_$(1).json" && \
-		cp ./src/manifest_$(1).json ./src/manifest.json && \
-		npm run build:prod && \
-		npx web-ext build -s ./dist -o && \
-		VERSION=$$(jq -r '.version' ./src/manifest.json) && \
+		cp ./src/manifest_$(1).json ./src/manifest.json && \						# Copy the appropriate manifest file
+		npm run build:prod && \ 													# Build the Angular app in production mode
+		npx web-ext build -s ./dist -o && \ 										# Build the web extension package
+		VERSION=$$(jq -r '.version' ./src/manifest.json) && \						# Extract version from manifest
 		cd ./web-ext-artifacts && \
-		mv mist_extension-$$VERSION.zip mist_extension-$(1)-$$VERSION.zip && \
-		rm -rf mist_extension-$(1) && \
-		unzip -q mist_extension-$(1)-$$VERSION.zip -d mist_extension-$(1)
+		mv mist_extension-$$VERSION.zip mist_extension-$(1)-$$VERSION.zip && \		# Rename the zip file based on browser type
+		rm -rf mist_extension-$(1) && \												# Remove any existing directory
+		unzip -q mist_extension-$(1)-$$VERSION.zip -d mist_extension-$(1)			# Unzip the package into a directory
 endef
 
 .PHONY: help init-openapi init-angular init update-openapi run build webext-ffx webext-chrome webext-all

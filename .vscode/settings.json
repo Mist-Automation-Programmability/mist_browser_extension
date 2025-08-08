@@ -1,5 +1,8 @@
 {
     "compile-hero.disable-compile-files-on-did-save-code": false,
     "python.pythonPath": "/usr/local/bin/python3",
-    "apimatic.notifications.whenApiFileIsDetected.enabled": false
+    "apimatic.notifications.whenApiFileIsDetected.enabled": false,
+    "cSpell.words": [
+        "webext"
+    ]
 }
