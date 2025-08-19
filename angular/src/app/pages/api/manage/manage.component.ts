@@ -11,16 +11,17 @@ export interface actionElement {
 }
 
 @Component({
-  selector: 'app-api-manage',
-  templateUrl: 'manage.component.html',
-  styleUrls: [
-    '../../../scss/button.component.scss',
-    '../../../scss/popup.component.scss',
-    '../../../scss/notice.component.scss',
-    '../../../scss/container.component.scss',
-    '../../../scss/input.component.scss',
-    'manage.component.scss',
-  ]
+    selector: 'app-api-manage',
+    templateUrl: 'manage.component.html',
+    styleUrls: [
+        '../../../scss/button.component.scss',
+        '../../../scss/popup.component.scss',
+        '../../../scss/notice.component.scss',
+        '../../../scss/container.component.scss',
+        '../../../scss/input.component.scss',
+        'manage.component.scss',
+    ],
+    standalone: false
 })
 export class ApiManageComponent implements OnInit {
 

@@ -11,17 +11,18 @@ export interface TokenUsageElement {
 }
 
 @Component({
-  selector: 'app-tools-token-usage',
-  templateUrl: 'usage.component.html',
-  styleUrls: [
-    '../../../scss/popup.component.scss',
-    '../../../scss/button.component.scss',
-    '../../../scss/input.component.scss',
-    '../../../scss/progress.component.scss',
-    '../token.component.scss',
-    'usage.component.scss',
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-tools-token-usage',
+    templateUrl: 'usage.component.html',
+    styleUrls: [
+        '../../../scss/popup.component.scss',
+        '../../../scss/button.component.scss',
+        '../../../scss/input.component.scss',
+        '../../../scss/progress.component.scss',
+        '../token.component.scss',
+        'usage.component.scss',
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class TokenUsageComponent implements OnInit {
 

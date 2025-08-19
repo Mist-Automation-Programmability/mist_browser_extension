@@ -3,15 +3,16 @@ import { Subject } from 'rxjs';
 import { BrowserService } from "../../services/browser.service";
 
 @Component({
-  selector: 'app-tools',
-  templateUrl: 'tools.component.html',
-  styleUrls: [
-    '../../scss/button.component.scss',
-    '../../scss/popup.component.scss',
-    '../../scss/container.component.scss',
-    '../../scss/checkbox.component.scss',
-    'tools.component.scss',
-  ]
+    selector: 'app-tools',
+    templateUrl: 'tools.component.html',
+    styleUrls: [
+        '../../scss/button.component.scss',
+        '../../scss/popup.component.scss',
+        '../../scss/container.component.scss',
+        '../../scss/checkbox.component.scss',
+        'tools.component.scss',
+    ],
+    standalone: false
 })
 export class ToolsComponent implements OnInit {
   eventTokenInfo: Subject<boolean> = new Subject<boolean>()

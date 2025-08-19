@@ -14,15 +14,16 @@ interface QueryParamsInterface {
 }
 
 @Component({
-  selector: 'app-api-django',
-  templateUrl: 'django.component.html',
-  styleUrls: [
-    '../../../scss/button.component.scss',
-    '../../../scss/notice.component.scss',
-    '../../../scss/container.component.scss',
-    '../../../scss/input.component.scss',
-    'django.component.scss',
-  ]
+    selector: 'app-api-django',
+    templateUrl: 'django.component.html',
+    styleUrls: [
+        '../../../scss/button.component.scss',
+        '../../../scss/notice.component.scss',
+        '../../../scss/container.component.scss',
+        '../../../scss/input.component.scss',
+        'django.component.scss',
+    ],
+    standalone: false
 })
 export class ApiDjangoComponent implements OnInit {
   message: string;

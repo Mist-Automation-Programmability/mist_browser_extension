@@ -11,17 +11,18 @@ export interface UsageElement {
 }
 
 @Component({
-  selector: 'app-account',
-  templateUrl: 'account.component.html',
-  styleUrls: [
-    '../../scss/button.component.scss',
-    '../../scss/notice.component.scss',
-    '../../scss/container.component.scss',
-    '../../scss/popup.component.scss',
-    '../../scss/progress.component.scss',
-    'account.component.scss',
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-account',
+    templateUrl: 'account.component.html',
+    styleUrls: [
+        '../../scss/button.component.scss',
+        '../../scss/notice.component.scss',
+        '../../scss/container.component.scss',
+        '../../scss/popup.component.scss',
+        '../../scss/progress.component.scss',
+        'account.component.scss',
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 
 export class AccountComponent implements OnInit {

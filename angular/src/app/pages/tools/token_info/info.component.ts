@@ -29,16 +29,17 @@ export interface TokenInfoElement {
 }
 
 @Component({
-  selector: 'app-tools-token-info',
-  templateUrl: 'info.component.html',
-  styleUrls: [
-    '../../../scss/popup.component.scss',
-    '../../../scss/button.component.scss',
-    '../../../scss/input.component.scss',
-    '../token.component.scss',
-    'info.component.scss',
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-tools-token-info',
+    templateUrl: 'info.component.html',
+    styleUrls: [
+        '../../../scss/popup.component.scss',
+        '../../../scss/button.component.scss',
+        '../../../scss/input.component.scss',
+        '../token.component.scss',
+        'info.component.scss',
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class TokenInfoComponent implements OnInit {
 

@@ -8,15 +8,16 @@ export interface ZtpResponseElement {
 }
 
 @Component({
-  selector: 'app-ztp-password',
-  templateUrl: 'ztp_password.component.html',
-  styleUrls: [
-    '../../../../scss/popup.component.scss',
-    '../../../../scss/button.component.scss',
-    '../../../../scss/textarea.component.scss',
-    'ztp_password.component.scss',
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-ztp-password',
+    templateUrl: 'ztp_password.component.html',
+    styleUrls: [
+        '../../../../scss/popup.component.scss',
+        '../../../../scss/button.component.scss',
+        '../../../../scss/textarea.component.scss',
+        'ztp_password.component.scss',
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ZtpPasswordComponent implements OnInit {
 

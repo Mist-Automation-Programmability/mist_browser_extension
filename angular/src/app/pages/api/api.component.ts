@@ -3,14 +3,14 @@ import { BrowserService } from "../../services/browser.service";
 
 
 @Component({
-  selector: 'app-api',
-  templateUrl: 'api.component.html',
-  styleUrls: [
-    '../../scss/container.component.scss',
-    '../../scss/button.component.scss',
-    '../../scss/notice.component.scss',
-  ],
-  //changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-api',
+    templateUrl: 'api.component.html',
+    styleUrls: [
+        '../../scss/container.component.scss',
+        '../../scss/button.component.scss',
+        '../../scss/notice.component.scss',
+    ],
+    standalone: false
 })
 
 export class ApiComponent implements OnInit {

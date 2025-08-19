@@ -13,17 +13,18 @@ export interface TokenElement {
 }
 
 @Component({
-  selector: 'app-account-create-org',
-  templateUrl: 'create_org.component.html',
-  styleUrls: [
-    '../../../scss/button.component.scss',
-    '../../../scss/popup.component.scss',
-    '../../../scss/select.component.scss',
-    '../../../scss/textarea.component.scss',
-    'create_org.component.scss',
-    '../create/create.component.scss',
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-account-create-org',
+    templateUrl: 'create_org.component.html',
+    styleUrls: [
+        '../../../scss/button.component.scss',
+        '../../../scss/popup.component.scss',
+        '../../../scss/select.component.scss',
+        '../../../scss/textarea.component.scss',
+        'create_org.component.scss',
+        '../create/create.component.scss',
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class AccountCreateOrgComponent implements OnInit {
 
