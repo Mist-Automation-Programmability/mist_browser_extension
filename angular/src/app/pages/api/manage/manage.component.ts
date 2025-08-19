@@ -860,6 +860,7 @@ export class ApiManageComponent implements OnInit {
           this.forgeSiteSecurity(res?.groups?.host)
           break;
         case "switchconfig":
+          this.obj_id = null;
           this.setName("switchconfig", res?.groups?.detail);
           this.forgeSiteSwitchConfig(res?.groups?.host);
           break;
