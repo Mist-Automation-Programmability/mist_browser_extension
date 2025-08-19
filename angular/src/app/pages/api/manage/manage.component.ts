@@ -865,7 +865,7 @@ export class ApiManageComponent implements OnInit {
           break;
         case "pcap":
           this.setName(res?.groups?.obj, res?.groups?.detail);
-          this.forgeSiteObject("pcaps", res?.groups?.host, res?.groups?.detail);
+          this.forgeSiteObject("pcaps", res?.groups?.host, null);
           break;
         case "cellularedges":
           this.setName("other device", res?.groups?.detail);
