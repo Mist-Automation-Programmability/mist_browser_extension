@@ -32,7 +32,7 @@ export class AboutComponent implements OnInit {
 
   ngOnInit(){
     this.current_version = this._browser.getVersion();
-    this.checkNewRelease();
+    // this.checkNewRelease();
   }
 
 

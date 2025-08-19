@@ -3,11 +3,11 @@
 <div class="content">
     <h2>Extension information</h2>
     <div class="content data-container box-version">
-        <div class="version-info">
+        <div class="version-info" style="padding: 0.5em 0;">
             <div class="version-text">Current Version:</div>
             <div class="version-value">{{current_version}}</div>
         </div>
-        <div class="version-info">
+        <!-- <div class="version-info">
             <div class="version-text">Latest Version:</div>
             <div class="version-unknown" *ngIf="!last_version && !error_happened">
                 <div>Searching for new version...</div>
@@ -27,7 +27,7 @@
             <div class="version-error" *ngIf="error_happened">
                 <div>{{error_message}}</div>
             </div>
-        </div>
+        </div> -->
     </div>
     <div class="links-container">
         <button class="links xlarge" (click)="openTab('github')">
