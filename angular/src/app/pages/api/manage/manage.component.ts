@@ -93,8 +93,8 @@ export class ApiManageComponent implements OnInit {
     const floorplans_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!cliLocation\/(?<detail>view|config|validationPath|wayfinding)?\/?(?<uuid>[0-9a-f-]{36})\/?(floorplan|beaconsAndZones)?\/?(?<site_id>[0-9a-f-]{36})?/iys;
     const site_evpn_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!evpn\/site\/?([0-9]\/)?(?<site_id>[0-9a-z_-]*)?(\/(?<topology_id>[0-9a-f-]{36}))?/yis;
     const site_wlan_template_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!wlan\/orgWlanDetail\/(?<template_id>[0-9a-z_-]*)\/(?<wlan_id>[0-9a-f-]{36})\/(?<site_id>[0-9a-f-]{36})/is;
-    const site_common_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!(?<obj>[a-z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view)\/)?([0-9]\/)?((?<obj_id>[0-9a-z_-]*)\/)?(?<site_id>[0-9a-f-]{36})?/yis;
-    const site_common_objs = ["ap", "gateway", "switch", "assets", "wlan", "tags", "psk", "tunnels", "clients", "guestclients", "sdkclients", "wiredclients", "wxlan", "security", "switchconfig", "pcap", "siteedge", "cellularedges"]
+    const site_common_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!(?<obj>[a-z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view|band)\/)?(?<inter>[0-9]*\/)?((?<obj_id>[0-9a-z_-]*)\/)?(?<site_id>[0-9a-f-]{36})?/yis;
+    const site_common_objs = ["ap", "gateway", "switch", "assets", "wlan", "tags", "psk", "tunnels", "clients", "guestclients", "sdkclients", "wiredclients", "wxlan", "security", "switchconfig", "pcap", "siteedge", "cellularedges", "rrm"]
     const org_evpn_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!evpn\/org(\/(?<topology_id>[0-9a-f-]{36}))?/yis;
     const org_common_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!(?<obj>[a-zA-Z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view|template|rfTemplate|provider|nacportals|pskportals)\/)?([0-9]\/)?(?<obj_id>[0-9a-z_-]*)\??(?<query_params>[0-9a-z_=&-]*)?/yis;
     const org_common_objs = ["orgtags", "misttunnels", "templates", "switchtemplate", "gatewaytemplates", "hubs", "deviceprofiles", "org", "orgpsk", "configuration", "auditlogs", "apinventory", "adminconfig", "subscription", "edge", "vpns", "template", "rftemplates", "services", "networks", "applicationpolicy", "authpolicylabels", "naccertificates", "nacpolicy", "nacidentityproviders", "onboardingworkflow", "sdk", "premiumanalytics", "private5g", "securityevents", "nacclients", "nacendpoints", "sitetemplates"];
@@ -872,7 +872,22 @@ export class ApiManageComponent implements OnInit {
           this.setName("other device", res?.groups?.detail);
           this.forgeSiteOtherDevices(res?.groups?.host, res?.groups?.detail);
           break;
-
+        case "rrm":
+          console.log(res?.groups)
+          var band = (res.groups.inter || "5").replace("/", "");
+          var band_text = band;
+          if (band_text=="24")  band_text = "2.4";
+          this.quick_links.push(
+            {
+              url: "https://api." + res?.groups?.host + "/api/v1/sites/" + this.site_id + "/rrm/current",
+              name: "Site RRM Info"
+            }, {
+            url: "https://api." + res?.groups?.host + "/api/v1/sites/" + this.site_id + "/rrm/neighbors/band/" + band,
+            name: "Site RRM Neighbors (" + band + "GHz)"
+          }, {
+            url: "https://api." + res?.groups?.host + "/api/v1/sites/" + this.site_id + "/rrm/events?band=" + band,
+            name: "Site RRM Events (" + band + "GHz)"
+          });
       }
     }
   }
@@ -1067,9 +1082,9 @@ export class ApiManageComponent implements OnInit {
               this.setName("Psk Portals", res?.groups?.detail);
               this.quick_links.push({ url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/pskportals", name: this.obj_name });
               break;
-              case "nacportals":
-                this.setName("NAC Portals", res?.groups?.detail);
-                this.quick_links.push({ url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/nacportals", name: this.obj_name });
+            case "nacportals":
+              this.setName("NAC Portals", res?.groups?.detail);
+              this.quick_links.push({ url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/nacportals", name: this.obj_name });
               break;
           }
           break;
