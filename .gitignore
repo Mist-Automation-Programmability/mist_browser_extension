@@ -82,3 +82,4 @@ typings/
 .fusebox/
 
 .vscode/
+.vscode/settings.json
