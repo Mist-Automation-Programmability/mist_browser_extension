@@ -348,6 +348,36 @@ export class ApiManageComponent implements OnInit {
     }
   }
 
+  forgeSiteObjectAlarms(obj_name: string, device_type: string | undefined, host: string, detail: string, extra_param: string | undefined = undefined): void {
+    let url = "";
+    let filter = "";
+    if (device_type == "ap") filter = "&aps=";
+    else if (device_type == "switch") filter = "&switches=";
+    else if (device_type == "gateway") filter = "&gateways="
+    if (detail && detail != "new" && this.obj_id) {
+      // MAC
+      const mac = this.getMac(this.obj_id);
+      if (filter) filter += mac;
+      // set QUICK LINK
+      url = "https://api." + host + "/api/v1/sites/" + this.site_id + "/alarms/search?limit=1000" + filter;
+      if (!extra_param) {
+        url += "&duration=1d";
+      } else {
+        url += "&" + extra_param;
+      }
+      this.quick_links.push({ url: url, name: this.obj_name + " ALARMS" })
+    } else {
+      if (filter) filter += "*";
+      url = "https://api." + host + "/api/v1/sites/" + this.site_id +  "/alarms/search?limit=1000" + filter;
+      if (!extra_param) {
+        url += "&duration=1d";
+      } else {
+        url += "&" + extra_param;
+      }
+      this.quick_links.push({ url: url, name: this.obj_name + " ALARMS" });
+    }
+  }
+
   forgeClientCalls(obj_name: string, device_type: string | undefined, host: string, detail: string, extra_param: string | undefined = undefined): void {
     this.quick_links.push({
       url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/stats/calls/search?interval=3600&mac=" + this.obj_id + "&" + extra_param, //&app=teams&wired=false",
@@ -764,6 +794,7 @@ export class ApiManageComponent implements OnInit {
           this.forgeSiteObject("devices", res?.groups?.host, res?.groups?.detail, extra_params);
           this.forgeSiteObjectStats("devices", res?.groups?.host, res?.groups?.detail, extra_params);
           this.forgeSiteObjectEvents("devices", res?.groups?.obj, res?.groups?.host, res?.groups?.detail);
+          this.forgeSiteObjectAlarms("devices", res?.groups?.obj, res?.groups?.host, res?.groups?.detail);
           this.forgeSiteApLastConfig(res?.groups?.detail, res?.groups?.host, res?.groups?.obj);
           this.forgeSiteDeviceSyntheticTest(res?.groups?.detail, res?.groups?.host, res?.groups?.obj);
           break;
@@ -773,6 +804,7 @@ export class ApiManageComponent implements OnInit {
           this.forgeSiteObject("devices", res?.groups?.host, res?.groups?.detail, extra_params);
           this.forgeSiteObjectStats("devices", res?.groups?.host, res?.groups?.detail, extra_params);
           this.forgeSiteObjectEvents("devices", res?.groups?.obj, res?.groups?.host, res?.groups?.detail);
+          this.forgeSiteObjectAlarms("devices", res?.groups?.obj, res?.groups?.host, res?.groups?.detail);
           this.forgeSiteApLastConfig(res?.groups?.detail, res?.groups?.host, res?.groups?.obj);
           this.forgeSiteDeviceSyntheticTest(res?.groups?.detail, res?.groups?.host, res?.groups?.obj);
           this.forgeSiteObjectStatsSearch("ports", res?.groups?.host, "mac=" + this.obj_id.split("-")[4], "gateway ports");
@@ -791,6 +823,7 @@ export class ApiManageComponent implements OnInit {
             this.forgeSiteObject("devices", res?.groups?.host, res?.groups?.detail, extra_params);
             this.forgeSiteObjectStats("devices", res?.groups?.host, res?.groups?.detail, extra_params);
             this.forgeSiteObjectEvents("devices", res?.groups?.obj, res?.groups?.host, res?.groups?.detail);
+            this.forgeSiteObjectAlarms("devices", res?.groups?.obj, res?.groups?.host, res?.groups?.detail);
             this.forgeSiteDiscoveredSwitchUrl(res?.groups?.host);
             this.forgeSiteDeviceSyntheticTest(res?.groups?.detail, res?.groups?.host, res?.groups?.obj);
             this.forgeSiteObjectSearch("wired_clients", res?.groups?.host, null, "last_device_mac=" + this.obj_id.split("-")[4]);
@@ -831,6 +864,7 @@ export class ApiManageComponent implements OnInit {
             this.forgeSiteObject("mxedges", res?.groups?.host, res?.groups?.detail);
             this.forgeSiteObjectStats("mxedges", res?.groups?.host, res?.groups?.detail);
             this.forgeSiteObjectEvents("mxedges", "mxedge", res?.groups?.host, res?.groups?.detail);
+            this.forgeSiteObjectAlarms("mxedges", "mxedge", res?.groups?.host, res?.groups?.detail);
           }
           break;
         case "tunnels":
@@ -1319,6 +1353,7 @@ export class ApiManageComponent implements OnInit {
           this.forgeSiteObject("devices", res?.groups?.host, "detail");
           this.forgeSiteObjectStats("devices", res?.groups?.host, "detail", extra_params);
           this.forgeSiteObjectEvents("devices", "ap", res?.groups?.host, "detail", extra_params);
+          this.forgeSiteObjectAlarms("devices", "ap", res?.groups?.host, "detail", extra_params);
           this.forgeSiteApLastConfig(res?.groups?.detail, res?.groups?.host, 'ap');
           break;
         case "client":
@@ -1326,6 +1361,7 @@ export class ApiManageComponent implements OnInit {
           this.forgeSiteObjectSearch("clients", res?.groups?.host, "detail");
           this.forgeSiteObjectStats("clients", res?.groups?.host, "detail", extra_params);
           this.forgeSiteObjectEvents("clients", undefined, res?.groups?.host, "detail", extra_params);
+          this.forgeSiteObjectAlarms("clients", undefined, res?.groups?.host, "detail", extra_params);
           this.forgeClientCalls("clients", undefined, res?.groups?.host, "detail", extra_params);
           break;
         case "juniperSwitch":
@@ -1333,12 +1369,14 @@ export class ApiManageComponent implements OnInit {
           this.forgeSiteObject("devices", res?.groups?.host, "detail");
           this.forgeSiteObjectStats("devices", res?.groups?.host, "detail", extra_params);
           this.forgeSiteObjectEvents("devices", "switch", res?.groups?.host, "detail", extra_params);
+          this.forgeSiteObjectAlarms("devices", "switch", res?.groups?.host, "detail", extra_params);
           break;
         case "juniperGateway":
           this.setName("gateway", "insights");
           this.forgeSiteObject("devices", res?.groups?.host, "detail");
           this.forgeSiteObjectStats("devices", res?.groups?.host, "detail", extra_params);
           this.forgeSiteObjectEvents("devices", "gateway", res?.groups?.host, "detail", extra_params);
+          this.forgeSiteObjectAlarms("devices", "gateway", res?.groups?.host, "detail", extra_params);
           break;
         case "wiredClient":
           this.setName("wired client", "insights");
