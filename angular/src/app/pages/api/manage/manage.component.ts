@@ -348,7 +348,7 @@ export class ApiManageComponent implements OnInit {
     }
   }
 
-  forgeSiteObjectAlarms(obj_name: string, device_type: string | undefined, host: string, detail: string, extra_param: string | undefined = undefined): void {
+  forgeSiteObjectAlarms(_: string, device_type: string | undefined, host: string, detail: string, extra_param: string | undefined = undefined): void {
     let url = "";
     let filter = "";
     if (device_type == "ap") filter = "&aps=";
@@ -1165,36 +1165,38 @@ export class ApiManageComponent implements OnInit {
     let severity_array: string[] = [];
     let scope = "";
     let scope_id: string | undefined = undefined;
-    if (res?.groups?.scope == "org") {
-      scope = "orgs";
-      scope_id = res?.groups?.org_id;
-    } else {
-      if (res?.groups?.site_id) {
-        this.site_id = res?.groups?.site_id;
-      } else {
-        this.site_id = res?.groups?.uuid;
-      }
+    if (res?.groups?.uuid) {
+      this.site_id = res?.groups?.uuid;
       scope = "sites";
       scope_id = this.site_id;
+    } else if (res?.groups?.site_id) {
+      this.site_id = res?.groups?.site_id;
+      scope = "sites";
+      scope_id = this.site_id;
+    } else if (res?.groups?.org_id) {
+      scope = "orgs";
+      scope_id = res?.groups?.org_id;    
     }
+
     if (res?.groups?.start && res?.groups?.stop) {
       extra_params = "start=" + res?.groups?.start + "&end=" + res?.groups?.stop;
     }
-    if (res?.groups?.show_crit && res?.groups?.show_crit == "true") severity_array.push("critical")
-    if (res?.groups?.show_warn && res?.groups?.show_warn == "true") severity_array.push("warn")
-    if (res?.groups?.show_info && res?.groups?.show_info == "true") severity_array.push("info")
-    if (severity_array.length > 0) extra_params += "&severity=" + severity_array.join(",")
-    else extra_params += "&severity=none"
+    if (res?.groups?.show_crit && res?.groups?.show_crit == "true") severity_array.push("critical");
+    if (res?.groups?.show_warn && res?.groups?.show_warn == "true") severity_array.push("warn");
+    if (res?.groups?.show_info && res?.groups?.show_info == "true") severity_array.push("info");
+    if (severity_array.length > 0) extra_params += "&severity=" + severity_array.join(",");
+    //else extra_params += "&severity=none"
 
     if (res?.groups?.group && res?.groups?.group != "any%20type") extra_params += "&group=" + res?.groups?.group;
 
     if (res?.groups?.show_ack && res?.groups?.show_ack == "false") extra_params += "&acked=false";
 
+    if (extra_params) extra_params = "?" + extra_params;
     this.quick_links.push({
-      url: "https://api." + res?.groups?.host + "/api/v1/" + scope + "/" + scope_id + "/alarms/search?" + extra_params,
+      url: "https://api." + res?.groups?.host + "/api/v1/" + scope + "/" + scope_id + "/alarms/search" + extra_params,
       name: scope + " Alarms"
     }, {
-      url: "https://api." + res?.groups?.host + "/api/v1/" + scope + "/" + scope_id + "/alarms/count?" + extra_params,
+      url: "https://api." + res?.groups?.host + "/api/v1/" + scope + "/" + scope_id + "/alarms/count" + extra_params,
       name: scope + " Alarms count"
     }, {
       url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/alarmtemplates",
