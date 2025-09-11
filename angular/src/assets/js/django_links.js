@@ -48,7 +48,6 @@ function _gen_id_site_common(site_id, element, element_type) {
 
 function process_element(org_id, site_id, self, element, element_type, element_scope, gen_self_id, stats) {
     var id;
-
     if (element.hasOwnProperty("id") && gen_self_id) {
         if (element.id && element.id != "00000000-0000-0000-0000-000000000000") {
             id = element.id
@@ -56,6 +55,8 @@ function process_element(org_id, site_id, self, element, element_type, element_s
                 uuids[id] = "https://" + window.location.host + "/api/v1/self/" + element_type + "/" + id;
             } else if (element_type == "sites" && gen_self_id) {
                 uuids[id] = "https://" + window.location.host + "/api/v1/sites/" + id;
+            } else if (gen_self_id) {
+                uuids[id] = "https://" + window.location.host + "/api/v1/sites/" + site_id + "/" + element_type + "/" + id;
             }
         }
     }
@@ -97,63 +98,63 @@ function process_element(org_id, site_id, self, element, element_type, element_s
 
 
     if (org_id) {
-        if (element.hasOwnProperty("admin_id")) _gen_id_org_common(org_id, element.admin_id, "admins")
-        if (element.hasOwnProperty("alarmtemplate_id")) _gen_id_org_common(org_id, element.alarmtemplate_id, "alarmtemplates")
-        if (element.hasOwnProperty("anchor_mxtunnel_ids")) _gen_id_org_common(org_id, element.anchor_mxtunnel_ids, "mxtunnels")
+        if (element.hasOwnProperty("admin_id")) _gen_id_org_common(org_id, element.admin_id, "admins");
+        if (element.hasOwnProperty("alarmtemplate_id")) _gen_id_org_common(org_id, element.alarmtemplate_id, "alarmtemplates");
+        if (element.hasOwnProperty("anchor_mxtunnel_ids")) _gen_id_org_common(org_id, element.anchor_mxtunnel_ids, "mxtunnels");
         if (element.hasOwnProperty("applies")) {
-            if (element.applies.hasOwnProperty("site_ids")) _gen_id_org_common(org_id, element.applies.site_ids, "sites")
-            if (element.applies.hasOwnProperty("sitegroup_ids")) _gen_id_org_common(org_id, element.applies.sitegroup_ids, "sitegroups")
+            if (element.applies.hasOwnProperty("site_ids")) _gen_id_org_common(org_id, element.applies.site_ids, "sites");
+            if (element.applies.hasOwnProperty("sitegroup_ids")) _gen_id_org_common(org_id, element.applies.sitegroup_ids, "sitegroups");
         }
-        if (element.hasOwnProperty("apply_tags")) _gen_id_org_common(org_id, element.apply_tags, "nactags")
-        if (element.hasOwnProperty("aptemplate_id")) _gen_id_org_common(org_id, element.aptemplate_id, "aptemplates")
-        if (element.hasOwnProperty("deviceprofile_id")) _gen_id_org_common(org_id, element.deviceprofile_id, "deviceprofiles")
-        if (element.hasOwnProperty("deviceprofile_ids")) _gen_id_org_common(org_id, element.deviceprofile_ids, "deviceprofiles")
+        if (element.hasOwnProperty("apply_tags")) _gen_id_org_common(org_id, element.apply_tags, "nactags");
+        if (element.hasOwnProperty("aptemplate_id")) _gen_id_org_common(org_id, element.aptemplate_id, "aptemplates");
+        if (element.hasOwnProperty("deviceprofile_id")) _gen_id_org_common(org_id, element.deviceprofile_id, "deviceprofiles");
+        if (element.hasOwnProperty("deviceprofile_ids")) _gen_id_org_common(org_id, element.deviceprofile_ids, "deviceprofiles");
         if (element.hasOwnProperty("exceptions")) {
-            if (element.exceptions.hasOwnProperty("site_ids")) _gen_id_org_common(org_id, element.exceptions.site_ids, "sites")
-            if (element.exceptions.hasOwnProperty("sitegroup_ids")) _gen_id_org_common(org_id, element.exceptions.sitegroup_ids, "sitegroups")
+            if (element.exceptions.hasOwnProperty("site_ids")) _gen_id_org_common(org_id, element.exceptions.site_ids, "sites");
+            if (element.exceptions.hasOwnProperty("sitegroup_ids")) _gen_id_org_common(org_id, element.exceptions.sitegroup_ids, "sitegroups");
         }
-        if (element.hasOwnProperty("gatewaytemplate_id")) _gen_id_org_common(org_id, element.gatewaytemplate_id, "gatewaytemplates")
+        if (element.hasOwnProperty("gatewaytemplate_id")) _gen_id_org_common(org_id, element.gatewaytemplate_id, "gatewaytemplates");
         if (element.hasOwnProperty("idp")) {
-            if (element.idp.hasOwnProperty("idpprofile_id")) _gen_id_org_common(org_id, element.idp.idpprofile_id, "idpprofiles")
+            if (element.idp.hasOwnProperty("idpprofile_id")) _gen_id_org_common(org_id, element.idp.idpprofile_id, "idpprofiles");
         }
         if (element.hasOwnProperty("last_nacrule_id")) _gen_id_org_common(org_id, element.last_nacrule_id, "nactags")
         if (element.hasOwnProperty("mist_nac") && element.mist_nac.hasOwnProperty("idps")) {
             element.mist_nac.idps.forEach(function (idp) {
-                if (idp.hasOwnProperty("id")) _gen_id_org_common(org_id, idp.id, "ssos")
+                if (idp.hasOwnProperty("id")) _gen_id_org_common(org_id, idp.id, "ssos");
             });
         }
         if (element.hasOwnProperty("matching")) {
-            if (element.matching.hasOwnProperty("nactags")) _gen_id_org_common(org_id, element.matching.nactags, "nactags")
+            if (element.matching.hasOwnProperty("nactags")) _gen_id_org_common(org_id, element.matching.nactags, "nactags");
         }
-        if (element.hasOwnProperty("mxcluster_id")) _gen_id_org_common(org_id, element.mxcluster_id, "mxclusters")
-        if (element.hasOwnProperty("mxcluster_ids")) _gen_id_org_common(org_id, element.mxcluster_ids, "mxclusters")
-        if (element.hasOwnProperty("mxedge_id")) _gen_id_org_common(org_id, element.mxedge_id, "mxedges")
-        if (element.hasOwnProperty("nacrule_id")) _gen_id_org_common(org_id, element.nacrule_id, "nacrules")
-        if (element.hasOwnProperty("nactag_id")) _gen_id_org_common(org_id, element.nactag_id, "nactags")
-        if (element.hasOwnProperty("networktemplate_id")) _gen_id_org_common(org_id, element.networktemplate_id, "networktemplates")
+        if (element.hasOwnProperty("mxcluster_id")) _gen_id_org_common(org_id, element.mxcluster_id, "mxclusters");
+        if (element.hasOwnProperty("mxcluster_ids")) _gen_id_org_common(org_id, element.mxcluster_ids, "mxclusters");
+        if (element.hasOwnProperty("mxedge_id")) _gen_id_org_common(org_id, element.mxedge_id, "mxedges");
+        if (element.hasOwnProperty("nacrule_id")) _gen_id_org_common(org_id, element.nacrule_id, "nacrules");
+        if (element.hasOwnProperty("nactag_id")) _gen_id_org_common(org_id, element.nactag_id, "nactags");
+        if (element.hasOwnProperty("networktemplate_id")) _gen_id_org_common(org_id, element.networktemplate_id, "networktemplates");
         if (element.hasOwnProperty("privileges")) {
             element.privileges.forEach(function (privilege) {
-                if (privilege.hasOwnProperty("org_id")) _gen_id_org_common(org_id, privilege.org_id, "orgs")
-                if (privilege.hasOwnProperty("site_id")) _gen_id_org_common(org_id, privilege.org_id, "sites")
-                if (privilege.hasOwnProperty("sitegroup_id")) _gen_id_org_common(org_id, privilege.org_id, "sitegroup_id")
-            })
+                if (privilege.hasOwnProperty("org_id")) _gen_id_org_common(org_id, privilege.org_id, "orgs");
+                if (privilege.hasOwnProperty("site_id")) _gen_id_org_common(org_id, privilege.org_id, "sites");
+                if (privilege.hasOwnProperty("sitegroup_id")) _gen_id_org_common(org_id, privilege.org_id, "sitegroup_id");
+            });
         }
-        if (element.hasOwnProperty("rftemplate_id")) _gen_id_org_common(org_id, element.rftemplate_id, "rftemplates")
-        if (element.hasOwnProperty("secpolicy_id")) _gen_id_org_common(org_id, element.secpolicy_id, "secpolicies")
-        if (element.hasOwnProperty("sitegroup_ids")) _gen_id_org_common(org_id, element.sitegroup_ids, "sitegroups")
-        if (element.hasOwnProperty("sitetemplate_id")) _gen_id_org_common(org_id, element.sitetemplate_id, "sitetemplates")
-        if (element.hasOwnProperty("template_id")) _gen_id_org_common(org_id, element.template_id, "templates")
-        if (element.hasOwnProperty("webhook_id")) _gen_id_org_common(org_id, element.webhook_id, "webhooks")
-        if (element.hasOwnProperty("wlan_id")) _gen_id_org_common(org_id, element.wlan_id, "wlans")
-        if (element.hasOwnProperty("wxtunnel_id")) _gen_id_org_common(org_id, element.wxtunnel_id, "mxtunnels")
+        if (element.hasOwnProperty("rftemplate_id")) _gen_id_org_common(org_id, element.rftemplate_id, "rftemplates");
+        if (element.hasOwnProperty("secpolicy_id")) _gen_id_org_common(org_id, element.secpolicy_id, "secpolicies");
+        if (element.hasOwnProperty("sitegroup_ids")) _gen_id_org_common(org_id, element.sitegroup_ids, "sitegroups");
+        if (element.hasOwnProperty("sitetemplate_id")) _gen_id_org_common(org_id, element.sitetemplate_id, "sitetemplates");
+        if (element.hasOwnProperty("template_id")) _gen_id_org_common(org_id, element.template_id, "templates");
+        if (element.hasOwnProperty("webhook_id")) _gen_id_org_common(org_id, element.webhook_id, "webhooks");
+        if (element.hasOwnProperty("wlan_id")) _gen_id_org_common(org_id, element.wlan_id, "wlans");
+        if (element.hasOwnProperty("wxtunnel_id")) _gen_id_org_common(org_id, element.wxtunnel_id, "mxtunnels");
     }
 
     if (site_id) {
-        if (element.hasOwnProperty("device_id")) _gen_id_site_common(site_id, element.device_id, "devices")
-        if (element.hasOwnProperty("dst_allow_wxtags")) _gen_id_site_common(site_id, element.dst_allow_wxtags, "wxtags")
-        if (element.hasOwnProperty("dst_deny_wxtags")) _gen_id_site_common(site_id, element.dst_deny_wxtags, "wxtags")
-        if (element.hasOwnProperty("src_wxtags")) _gen_id_site_common(site_id, element.src_wxtags, "wxtags")
-            if (element.hasOwnProperty("webhook_id")) _gen_id_site_common(org_id, element.webhook_id, "webhooks")
+        if (element.hasOwnProperty("device_id")) _gen_id_site_common(site_id, element.device_id, "devices");
+        if (element.hasOwnProperty("dst_allow_wxtags")) _gen_id_site_common(site_id, element.dst_allow_wxtags, "wxtags");
+        if (element.hasOwnProperty("dst_deny_wxtags")) _gen_id_site_common(site_id, element.dst_deny_wxtags, "wxtags");
+        if (element.hasOwnProperty("src_wxtags")) _gen_id_site_common(site_id, element.src_wxtags, "wxtags");
+        if (element.hasOwnProperty("webhook_id")) _gen_id_site_common(org_id, element.webhook_id, "webhooks");
     }
 
 
@@ -187,6 +188,8 @@ function process_ids() {
                     gen_self_id = false;
                 } else if (baseUri.includes("/logs")) {
                     gen_self_id = false;
+                } else if (baseUri.includes("/devices/upgrade")){
+                    element_type = "devices/upgrade"
                 }
                 switch (element_type) {
                     case "inventory":
