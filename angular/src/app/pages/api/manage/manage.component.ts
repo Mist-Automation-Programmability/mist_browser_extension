@@ -11,17 +11,17 @@ export interface actionElement {
 }
 
 @Component({
-    selector: 'app-api-manage',
-    templateUrl: 'manage.component.html',
-    styleUrls: [
-        '../../../scss/button.component.scss',
-        '../../../scss/popup.component.scss',
-        '../../../scss/notice.component.scss',
-        '../../../scss/container.component.scss',
-        '../../../scss/input.component.scss',
-        'manage.component.scss',
-    ],
-    standalone: false
+  selector: 'app-api-manage',
+  templateUrl: 'manage.component.html',
+  styleUrls: [
+    '../../../scss/button.component.scss',
+    '../../../scss/popup.component.scss',
+    '../../../scss/notice.component.scss',
+    '../../../scss/container.component.scss',
+    '../../../scss/input.component.scss',
+    'manage.component.scss',
+  ],
+  standalone: false
 })
 export class ApiManageComponent implements OnInit {
 
@@ -296,12 +296,12 @@ export class ApiManageComponent implements OnInit {
     }
   }
 
-  forgeSiteObjectStatsSearch(obj_name: string, host: string, extra_param: string | undefined = undefined, ui_name: string | undefined = undefined): void {
+  forgeOrgObjectStatsSearch(obj_name: string, host: string, extra_param: string | undefined = undefined, ui_name: string | undefined = undefined): void {
     let url = "";
     if (!ui_name) {
       ui_name = obj_name.replace(/_/g, " ");
     }
-    url = "https://api." + host + "/api/v1/sites/" + this.site_id + "/stats/" + obj_name + "/search";
+    url = "https://api." + host + "/api/v1/orgs/" + this.org_id + "/stats/" + obj_name + "/search";
     if (extra_param) url += "?" + extra_param;
     this.quick_links.push({ url: url, name: ui_name + " STATS" });
   }
@@ -368,7 +368,7 @@ export class ApiManageComponent implements OnInit {
       this.quick_links.push({ url: url, name: this.obj_name + " ALARMS" })
     } else {
       if (filter) filter += "*";
-      url = "https://api." + host + "/api/v1/sites/" + this.site_id +  "/alarms/search?limit=1000" + filter;
+      url = "https://api." + host + "/api/v1/sites/" + this.site_id + "/alarms/search?limit=1000" + filter;
       if (!extra_param) {
         url += "&duration=1d";
       } else {
@@ -781,7 +781,8 @@ export class ApiManageComponent implements OnInit {
   ////////////////////// COMMON URL FUNCTION DISPATCHER FOR SITE URLS
   commonSiteUrl(res: RegExpExecArray): void {
     this.org_id = res?.groups?.org_id;
-    let extra_params: string | undefined = undefined;
+    let extra_params: string | undefined;
+    var stats_filter: string | undefined;
     const uuid_re = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/
     if (res?.groups?.host && res?.groups?.org_id && res?.groups?.obj) {
       this.obj_id = res?.groups?.obj_id;
@@ -801,13 +802,18 @@ export class ApiManageComponent implements OnInit {
         case "gateway":
           this.setName(res?.groups?.obj, res?.groups?.detail);
           if (!res?.groups?.details) extra_params = "type=" + res?.groups?.obj;
+          stats_filter = "site_id=" + this.site_id;
+          if (this.obj_id) stats_filter += "&mac=" + this.obj_id.split("-")[4];
+
           this.forgeSiteObject("devices", res?.groups?.host, res?.groups?.detail, extra_params);
           this.forgeSiteObjectStats("devices", res?.groups?.host, res?.groups?.detail, extra_params);
           this.forgeSiteObjectEvents("devices", res?.groups?.obj, res?.groups?.host, res?.groups?.detail);
           this.forgeSiteObjectAlarms("devices", res?.groups?.obj, res?.groups?.host, res?.groups?.detail);
           this.forgeSiteApLastConfig(res?.groups?.detail, res?.groups?.host, res?.groups?.obj);
           this.forgeSiteDeviceSyntheticTest(res?.groups?.detail, res?.groups?.host, res?.groups?.obj);
-          this.forgeSiteObjectStatsSearch("ports", res?.groups?.host, "mac=" + this.obj_id.split("-")[4], "gateway ports");
+          this.forgeOrgObjectStatsSearch("bgp_peers", res?.groups?.host, stats_filter, this.obj_name + " bgp peers");
+          this.forgeOrgObjectStatsSearch("ports", res?.groups?.host, stats_filter, this.obj_name + " ports");
+          this.forgeOrgObjectStatsSearch("vpn_peers", res?.groups?.host, stats_filter, this.obj_name + " vpn peers");
           break;
         case "switch":
           if (["list", "topology", "location"].includes(this.obj_id)) this.obj_id = undefined;
@@ -820,6 +826,9 @@ export class ApiManageComponent implements OnInit {
           } else {
             this.setName(res?.groups?.obj, res?.groups?.detail);
             if (!res?.groups?.details) extra_params = "type=" + res?.groups?.obj;
+            stats_filter = "site_id=" + this.site_id;
+            if (this.obj_id) stats_filter += "&mac=" + this.obj_id.split("-")[4];
+
             this.forgeSiteObject("devices", res?.groups?.host, res?.groups?.detail, extra_params);
             this.forgeSiteObjectStats("devices", res?.groups?.host, res?.groups?.detail, extra_params);
             this.forgeSiteObjectEvents("devices", res?.groups?.obj, res?.groups?.host, res?.groups?.detail);
@@ -827,7 +836,8 @@ export class ApiManageComponent implements OnInit {
             this.forgeSiteDiscoveredSwitchUrl(res?.groups?.host);
             this.forgeSiteDeviceSyntheticTest(res?.groups?.detail, res?.groups?.host, res?.groups?.obj);
             this.forgeSiteObjectSearch("wired_clients", res?.groups?.host, null, "last_device_mac=" + this.obj_id.split("-")[4]);
-            this.forgeSiteObjectStatsSearch("ports", res?.groups?.host, "mac=" + this.obj_id.split("-")[4], "switch ports");
+            this.forgeOrgObjectStatsSearch("bgp_peers", res?.groups?.host, stats_filter, this.obj_name + " bgp peers");
+            this.forgeOrgObjectStatsSearch("ports", res?.groups?.host, stats_filter, this.obj_name + " ports");
           }
           break;
         case "assets":
@@ -911,7 +921,7 @@ export class ApiManageComponent implements OnInit {
           console.log(res?.groups)
           var band = (res.groups.inter || "5").replace("/", "");
           var band_text = band;
-          if (band_text=="24")  band_text = "2.4";
+          if (band_text == "24") band_text = "2.4";
           this.quick_links.push(
             {
               url: "https://api." + res?.groups?.host + "/api/v1/sites/" + this.site_id + "/rrm/current",
@@ -1175,7 +1185,7 @@ export class ApiManageComponent implements OnInit {
       scope_id = this.site_id;
     } else if (res?.groups?.org_id) {
       scope = "orgs";
-      scope_id = res?.groups?.org_id;    
+      scope_id = res?.groups?.org_id;
     }
 
     if (res?.groups?.start && res?.groups?.stop) {
@@ -1344,7 +1354,8 @@ export class ApiManageComponent implements OnInit {
       this.obj_id = res?.groups?.obj_id;
     }
     if (this.site_id == this.obj_id) this.obj_id = undefined
-    let extra_params: string | undefined = undefined;
+    let extra_params: string | undefined;
+    let stats_filter: string | undefined;
     if (res?.groups?.start && res?.groups?.stop) {
       extra_params = "start=" + res?.groups?.start + "&end=" + res?.groups?.stop;
     }
@@ -1367,18 +1378,27 @@ export class ApiManageComponent implements OnInit {
           this.forgeClientCalls("clients", undefined, res?.groups?.host, "detail", extra_params);
           break;
         case "juniperSwitch":
+          stats_filter = "site_id=" + this.site_id;
+          if (this.obj_id) stats_filter += "&mac=" + this.obj_id.split("-")[4];
           this.setName("switch", "insights");
           this.forgeSiteObject("devices", res?.groups?.host, "detail");
           this.forgeSiteObjectStats("devices", res?.groups?.host, "detail", extra_params);
           this.forgeSiteObjectEvents("devices", "switch", res?.groups?.host, "detail", extra_params);
           this.forgeSiteObjectAlarms("devices", "switch", res?.groups?.host, "detail", extra_params);
+          this.forgeOrgObjectStatsSearch("bgp_peers", res?.groups?.host, stats_filter, this.obj_name + " bgp peers");
+          this.forgeOrgObjectStatsSearch("ports", res?.groups?.host, stats_filter, this.obj_name + " ports");
           break;
         case "juniperGateway":
           this.setName("gateway", "insights");
+          stats_filter = "site_id=" + this.site_id;
+          if (this.obj_id) stats_filter += "&mac=" + this.obj_id.split("-")[4];
           this.forgeSiteObject("devices", res?.groups?.host, "detail");
           this.forgeSiteObjectStats("devices", res?.groups?.host, "detail", extra_params);
           this.forgeSiteObjectEvents("devices", "gateway", res?.groups?.host, "detail", extra_params);
           this.forgeSiteObjectAlarms("devices", "gateway", res?.groups?.host, "detail", extra_params);
+          this.forgeOrgObjectStatsSearch("bgp_peers", res?.groups?.host, stats_filter, this.obj_name + " bgp peers");
+          this.forgeOrgObjectStatsSearch("ports", res?.groups?.host, stats_filter, this.obj_name + " ports");
+          this.forgeOrgObjectStatsSearch("vpn_peers", res?.groups?.host, stats_filter, this.obj_name + " vpn peers");
           break;
         case "wiredClient":
           this.setName("wired client", "insights");
