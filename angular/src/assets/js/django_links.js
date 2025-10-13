@@ -144,6 +144,7 @@ function process_element(org_id, site_id, self, element, element_type, element_s
         if (element.hasOwnProperty("sitegroup_ids")) _gen_id_org_common(org_id, element.sitegroup_ids, "sitegroups");
         if (element.hasOwnProperty("sitetemplate_id")) _gen_id_org_common(org_id, element.sitetemplate_id, "sitetemplates");
         if (element.hasOwnProperty("template_id")) _gen_id_org_common(org_id, element.template_id, "templates");
+        if (element.hasOwnProperty("upgrade_id")) _gen_id_org_common(org_id, element.upgrade_id, "devices/upgrade");
         if (element.hasOwnProperty("webhook_id")) _gen_id_org_common(org_id, element.webhook_id, "webhooks");
         if (element.hasOwnProperty("wlan_id")) _gen_id_org_common(org_id, element.wlan_id, "wlans");
         if (element.hasOwnProperty("wxtunnel_id")) _gen_id_org_common(org_id, element.wxtunnel_id, "mxtunnels");
@@ -154,6 +155,7 @@ function process_element(org_id, site_id, self, element, element_type, element_s
         if (element.hasOwnProperty("dst_allow_wxtags")) _gen_id_site_common(site_id, element.dst_allow_wxtags, "wxtags");
         if (element.hasOwnProperty("dst_deny_wxtags")) _gen_id_site_common(site_id, element.dst_deny_wxtags, "wxtags");
         if (element.hasOwnProperty("src_wxtags")) _gen_id_site_common(site_id, element.src_wxtags, "wxtags");
+        if (element.hasOwnProperty("upgrade_id")) _gen_id_site_common(site_id, element.upgrade_id, "devices/upgrade");
         if (element.hasOwnProperty("webhook_id")) _gen_id_site_common(org_id, element.webhook_id, "webhooks");
     }
 
