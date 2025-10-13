@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Mist Extension",
   "short_name": "mist-extension",
-  "version": "5.5.0",
+  "version": "5.5.1",
   "description": "Web Browser Extension for Mist Developers to provide easier access to Mist APIs",
   "icons": {
     "16": "assets/favicon-16x16.png",
