@@ -90,9 +90,8 @@ export class ApiManageComponent implements OnInit {
     const sle_details_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!dashboard\/(?<detail>serviceLevels|wiredserviceLevels|wanServiceLevels|juniperGateway)\/page2\/(stats|timeline)\/[a-zA-Z-]+\/[a-zA-Z-]+\/(?<scope>site|device|client|juniperSwitch|juniperGateway)\/(?<scope_id>[a-f0-9-]*)\/(?<sle_name>[a-z-]*)\/(?<sle_sub_1>[a-zA-Z-]+)\/(?<sle_sub_2>[a-zA-Z-]+)(\/(?<period>[0-9a-z]*))?(\/(?<start>[0-9]*))?(\/(?<stop>[0-9]*))?\/(?<site_id>[a-f0-9-]*)/iys;
     const sle_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!dashboard\/(?<detail>serviceLevels|wiredserviceLevels|wanServiceLevels|juniperGateway|applicationServiceLevels)(\/(?<scope>org|site|device|client|juniperSwitch|juniperGateway))?(\/(?<scope_id>[a-f0-9-]*))?(\/(?<period>[0-9a-z-]*))?(\/(?<start>[0-9]*))?(\/(?<stop>[0-9]*))?\/(?<site_id>[a-f0-9-]*)(\?app=(?<app>[a-zA-Z]*))?/iys;
     const insights_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!dashboard\/(?<detail>insights|insights-full-stack)\/((?<obj>[a-z]+)\/)?((?<obj_id>[a-z0-9-]+)\/)?((?<period>[a-z0-9]+)\/)?((?<start>[0-9]*)\/)?((?<stop>[0-9]*)\/)?(?<site_id>[0-9a-f-]{36})?/iys;
-    //const alarm_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!alerts\/?(?<scope>org|site)?\/?(?<uuid>[0-9a-z-]*)\/?(?<period>[0-9a-z]*)?\/?(?<start>[0-9]*)?\/?(?<stop>[0-9]*)?\/?(?<show_ack>true|false)?\/?(?<group>[a-z%0-9]*)?\/?(?<show_crit>true|false)?\/?(?<show_warn>true|false)?\/?(?<show_info>true|false)?\/?(?<site_id>[0-9a-z-]*)?/iys;
     const alarm_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!alerts\/?(?<site_id>[0-9a-z-]*)\??(?<query_param>.*)?$/iys;
-    const events_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!marvis\/?(?<scope>org|site)?\/?(?<period>[0-9a-z]*)?\/?(?<start>[0-9]*)?\/?(?<stop>[0-9]*)?\/?(?<site_id>[0-9a-z-]*)?/iys;
+    const events_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!marvis\/?(?<site_id>[0-9a-z-]*)\??(?<query_param>.*)?$/iys;
     const floorplans_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!cliLocation\/(?<detail>view|config|validationPath|wayfinding)?\/?(?<uuid>[0-9a-f-]{36})\/?(floorplan|beaconsAndZones)?\/?(?<site_id>[0-9a-f-]{36})?/iys;
     const site_evpn_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!evpn\/site\/?([0-9]\/)?(?<site_id>[0-9a-z_-]*)?(\/(?<topology_id>[0-9a-f-]{36}))?/yis;
     const site_wlan_template_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!wlan\/orgWlanDetail\/(?<template_id>[0-9a-z_-]*)\/(?<wlan_id>[0-9a-f-]{36})\/(?<site_id>[0-9a-f-]{36})/is;
@@ -292,12 +291,12 @@ export class ApiManageComponent implements OnInit {
     if (detail && !this.not_detail.includes(detail)) {
       // set QUICK LINK
       url = "https://api." + host + "/api/v1/sites/" + this.site_id + "/" + obj_name + "/search?mac=" + this.obj_id;
-      this.quick_links.push({ url: url, name: ui_name});
+      this.quick_links.push({ url: url, name: ui_name });
     } else {
       // set QUICK LINK
       url = "https://api." + host + "/api/v1/sites/" + this.site_id + "/" + obj_name + "/search";
       if (extra_param) url += "?" + extra_param;
-      this.quick_links.push({ url: url, name: ui_name});
+      this.quick_links.push({ url: url, name: ui_name });
     }
   }
 
@@ -1202,12 +1201,12 @@ export class ApiManageComponent implements OnInit {
       res?.groups?.query_param.split("&").forEach(param => {
         let key = param.split("=")[0];
         let value = param.split("=")[1];
-        switch (key.toLowerCase()){
+        switch (key.toLowerCase()) {
           case "start":
-            extra_params_array.push("start="+value);
+            extra_params_array.push("start=" + value);
             break;
           case "end":
-            extra_params_array.push("end="+value);
+            extra_params_array.push("end=" + value);
             break;
         }
       })
@@ -1317,7 +1316,25 @@ export class ApiManageComponent implements OnInit {
   ////////////////////// EVENTS URL FUNCTION DISPATCHER
   eventsUrl(res: RegExpExecArray): void {
     this.org_id = res?.groups?.org_id;
-    let extra_params = "";
+    let extra_params: string = "";
+    let extra_params_array: string[] = [];
+
+    if (res?.groups?.query_param) {
+      res?.groups?.query_param.split("&").forEach(param => {
+        let key = param.split("=")[0];
+        let value = param.split("=")[1];
+        switch (key.toLowerCase()) {
+          case "start":
+            extra_params_array.push("start=" + value);
+            break;
+          case "end":
+            extra_params_array.push("end=" + value);
+            break;
+        }
+      })
+    }
+
+    if (extra_params_array) extra_params = "?" + extra_params_array.join("&");
     if (res?.groups?.site_id) {
       this.site_id = res?.groups?.site_id;
     } else {
