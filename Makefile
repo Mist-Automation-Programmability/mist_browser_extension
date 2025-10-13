@@ -55,14 +55,9 @@ init-angular: ## Initialize Angular project
 init: init-openapi init-angular ## Initialize the project
 
 
-update-openapi: ## Update OpenAPI submodule
-	@if [ ! -f "mist_openapi/.git" ]; then \
-		echo "OpenAPI submodule not initialized. Run 'make openapi-setup' first."; \
-		exit 1; \
-	fi
-	@echo "Updating OpenAPI submodule..."; \
-	git submodule update --remote mist_openapi
+update-openapi: init-openapi ## Update OpenAPI submodule
 	@echo "Generating code from OpenAPI spec..."
+	@python3 ./scripts/oas_converter.py
 
 
 run: ## Run the Angular application
