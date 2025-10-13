@@ -283,17 +283,20 @@ export class ApiManageComponent implements OnInit {
     }
   }
 
-  forgeSiteObjectSearch(obj_name: string, host: string, detail: string | null, extra_param: string | undefined = undefined): void {
+  forgeSiteObjectSearch(obj_name: string, host: string, detail: string | null, extra_param: string | undefined = undefined, ui_name: string | undefined = undefined): void {
     let url = "";
-    if (detail && detail != "new") {
+    if (!ui_name) {
+      ui_name = obj_name.replace(/_/g, " ");
+    }
+    if (detail && !this.not_detail.includes(detail)) {
       // set QUICK LINK
       url = "https://api." + host + "/api/v1/sites/" + this.site_id + "/" + obj_name + "/search?mac=" + this.obj_id;
-      this.quick_links.push({ url: url, name: obj_name.replace(/_/g, " ") });
+      this.quick_links.push({ url: url, name: ui_name});
     } else {
       // set QUICK LINK
       url = "https://api." + host + "/api/v1/sites/" + this.site_id + "/" + obj_name + "/search";
       if (extra_param) url += "?" + extra_param;
-      this.quick_links.push({ url: url, name: obj_name.replace(/_/g, " ") });
+      this.quick_links.push({ url: url, name: ui_name});
     }
   }
 
@@ -784,6 +787,7 @@ export class ApiManageComponent implements OnInit {
     this.org_id = res?.groups?.org_id;
     let extra_params: string | undefined;
     var stats_filter: string | undefined;
+    var clients_filter: string | undefined;
     const uuid_re = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/
     if (res?.groups?.host && res?.groups?.org_id && res?.groups?.obj) {
       this.obj_id = res?.groups?.obj_id;
@@ -828,17 +832,21 @@ export class ApiManageComponent implements OnInit {
             this.setName(res?.groups?.obj, res?.groups?.detail);
             if (!res?.groups?.details) extra_params = "type=" + res?.groups?.obj;
             stats_filter = "site_id=" + this.site_id;
-            if (this.obj_id) stats_filter += "&mac=" + this.obj_id.split("-")[4];
+            clients_filter = "site_id=" + this.site_id;
+            if (this.obj_id) {
+              stats_filter += "&mac=" + this.obj_id.split("-")[4];
+              clients_filter += "&device_mac=" + this.obj_id.split("-")[4];
+            }
 
             this.forgeSiteObject("devices", res?.groups?.host, res?.groups?.detail, extra_params);
             this.forgeSiteObjectStats("devices", res?.groups?.host, res?.groups?.detail, extra_params);
             this.forgeSiteObjectEvents("devices", res?.groups?.obj, res?.groups?.host, res?.groups?.detail);
             this.forgeSiteObjectAlarms("devices", res?.groups?.obj, res?.groups?.host, res?.groups?.detail);
-            this.forgeSiteDiscoveredSwitchUrl(res?.groups?.host);
             this.forgeSiteDeviceSyntheticTest(res?.groups?.detail, res?.groups?.host, res?.groups?.obj);
-            this.forgeSiteObjectSearch("wired_clients", res?.groups?.host, null, "last_device_mac=" + this.obj_id.split("-")[4]);
             this.forgeOrgObjectStatsSearch("bgp_peers", res?.groups?.host, stats_filter, this.obj_name + " bgp peers");
             this.forgeOrgObjectStatsSearch("ports", res?.groups?.host, stats_filter, this.obj_name + " ports");
+            this.forgeSiteObjectSearch("wired_clients", res?.groups?.host, null, clients_filter, this.obj_name + " clients");
+            this.forgeSiteDiscoveredSwitchUrl(res?.groups?.host);
           }
           break;
         case "assets":
