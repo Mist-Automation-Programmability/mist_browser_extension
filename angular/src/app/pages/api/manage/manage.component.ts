@@ -34,6 +34,7 @@ export class ApiManageComponent implements OnInit {
 
   quick_links: linkElement[] = []
   quick_actions: actionElement[] = []
+  not_detail: string[] = ["new", "list"]
 
   msp_id: string | undefined = undefined;
   org_id: string | undefined = undefined;
@@ -154,7 +155,7 @@ export class ApiManageComponent implements OnInit {
 
   setName(obj_name: string = "", detail: string | undefined) {
     obj_name = obj_name.toLowerCase();
-    if (detail && detail != "new") {
+    if (detail && !this.not_detail.includes(detail)) {
       this.obj_name = obj_name
     } else {
       if (obj_name.includes("switch")) {
@@ -174,7 +175,7 @@ export class ApiManageComponent implements OnInit {
     if (!ui_name) {
       ui_name = this.obj_name;
     }
-    if (detail && detail != "new") {//} || this.obj_id) { <- this is causing issues with the quick links where the site_id is in the org url
+    if (detail && !this.not_detail.includes(detail)) {//} || this.obj_id) { <- this is causing issues with the quick links where the site_id is in the org url
       // set QUICK LINK
       url = "https://api." + host + "/api/v1/orgs/" + this.org_id + "/" + obj_name + "/" + this.obj_id;
       this.quick_links.push({ url: url, name: ui_name });
@@ -189,7 +190,7 @@ export class ApiManageComponent implements OnInit {
 
   forgeOrgObjectStats(obj_name: string, host: string, detail: string, extra_param: string | undefined = undefined): void {
     let url = "";
-    if (detail && detail != "new") {
+    if (detail && !this.not_detail.includes(detail)) {
       // set QUICK LINK
       url = "https://api." + host + "/api/v1/orgs/" + this.org_id + "/stats/" + obj_name + "/" + this.obj_id;
       if (extra_param) url += "?" + extra_param;
@@ -201,7 +202,7 @@ export class ApiManageComponent implements OnInit {
   forgeOrgObjectEvents(obj_name: string, host: string, detail: string, extra_param: string | undefined = undefined): void {
     let url = "";
     let filter = "";
-    if (detail && detail != "new" && this.obj_id) {
+    if (detail && !this.not_detail.includes(detail) && this.obj_id) {
       // MAC
       const mac = this.getMac(this.obj_id);
       if (obj_name == "mxedges") {
@@ -247,7 +248,7 @@ export class ApiManageComponent implements OnInit {
   ////////////////////// COMMON SITE FUNCTIONS
   forgeSiteObject(obj_name: string, host: string | undefined, detail: string | undefined, extra_param: string | undefined = undefined): void {
     let url = "";
-    if (detail && detail != "new") {
+    if (detail && !this.not_detail.includes(detail)) {
       // set QUICK LINK
       url = "https://api." + host + "/api/v1/sites/" + this.site_id + "/" + obj_name + "/" + this.obj_id;
       this.quick_links.push({ url: url, name: this.obj_name });
@@ -308,7 +309,7 @@ export class ApiManageComponent implements OnInit {
 
   forgeSiteObjectStats(obj_name: string, host: string, detail: string, extra_param: string | undefined = undefined): void {
     let url = "";
-    if (detail && detail != "new") {
+    if (detail && !this.not_detail.includes(detail)) {
       // set QUICK LINK
       url = "https://api." + host + "/api/v1/sites/" + this.site_id + "/stats/" + obj_name + "/" + this.obj_id;
       if (extra_param) url += "?" + extra_param;
@@ -323,7 +324,7 @@ export class ApiManageComponent implements OnInit {
 
   forgeSiteObjectEvents(obj_name: string, device_type: string | undefined, host: string, detail: string, extra_param: string | undefined = undefined): void {
     let url = "";
-    if (detail && detail != "new" && this.obj_id) {
+    if (detail && !this.not_detail.includes(detail) && this.obj_id) {
       // MAC
       const mac = this.getMac(this.obj_id);
       // set QUICK LINK
@@ -354,7 +355,7 @@ export class ApiManageComponent implements OnInit {
     if (device_type == "ap") filter = "&aps=";
     else if (device_type == "switch") filter = "&switches=";
     else if (device_type == "gateway") filter = "&gateways="
-    if (detail && detail != "new" && this.obj_id) {
+    if (detail && !this.not_detail.includes(detail) && this.obj_id) {
       // MAC
       const mac = this.getMac(this.obj_id);
       if (filter) filter += mac;
@@ -509,7 +510,7 @@ export class ApiManageComponent implements OnInit {
 
   forgeSiteAssetStats(obj_name: string, host: string, detail: string, extra_param: string | undefined = undefined): void {
     let url = "";
-    if (detail && detail != "new") {
+    if (detail && !this.not_detail.includes(detail)) {
       // set QUICK LINK
       url = "https://api." + host + "/api/v1/sites/" + this.site_id + "/stats/" + obj_name + "/" + this.obj_id;
       if (extra_param) url += "?" + extra_param;
