@@ -597,7 +597,7 @@ export class ApiManageComponent implements OnInit {
   }
 
   forgeMxTunnel(host: string, detail: string): void {
-    this.obj_name = "mx tunenel";
+    this.obj_name = "mx tunnel";
     this.forgeOrgObject("mxtunnels", host, detail);
   }
 
