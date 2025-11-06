@@ -98,8 +98,9 @@ export class ApiManageComponent implements OnInit {
     const site_common_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!(?<obj>[a-z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view|band|list)\/)?(?<inter>[0-9]*\/)?((?<obj_id>[0-9a-z_-]*)\/)?(?<site_id>[0-9a-f-]{36})?/yis;
     const site_common_objs = ["ap", "gateway", "switch", "assets", "wlan", "tags", "psk", "tunnels", "clients", "guestclients", "sdkclients", "wiredclients", "wxlan", "security", "switchconfig", "pcap", "siteedge", "cellularedges", "rrm"]
     const org_evpn_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!evpn\/org(\/(?<topology_id>[0-9a-f-]{36}))?/yis;
+    const org_inventory = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!apinventory\/?((?<detail>aps|switches|wan_edges|mist_edges)\/)?([0-9]\/)?(?<site_id>[0-9a-z_-]*)/yis;
     const org_common_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!(?<obj>[a-zA-Z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view|template|rfTemplate|provider|nacportals|pskportals)\/)?([0-9]\/)?(?<obj_id>[0-9a-z_-]*)\??(?<query_params>[0-9a-z_=&-]*)?/yis;
-    const org_common_objs = ["orgtags", "misttunnels", "templates", "switchtemplate", "gatewaytemplates", "hubs", "deviceprofiles", "org", "orgpsk", "configuration", "auditlogs", "apinventory", "adminconfig", "subscription", "edge", "vpns", "template", "rftemplates", "services", "networks", "applicationpolicy", "authpolicylabels", "naccertificates", "nacpolicy", "nacidentityproviders", "onboardingworkflow", "sdk", "premiumanalytics", "private5g", "securityevents", "nacclients", "nacendpoints", "sitetemplates"];
+    const org_common_objs = ["orgtags", "misttunnels", "templates", "switchtemplate", "gatewaytemplates", "hubs", "deviceprofiles", "org", "orgpsk", "configuration", "auditlogs", "adminconfig", "subscription", "edge", "vpns", "template", "rftemplates", "services", "networks", "applicationpolicy", "authpolicylabels", "naccertificates", "nacpolicy", "nacidentityproviders", "onboardingworkflow", "sdk", "premiumanalytics", "private5g", "securityevents", "nacclients", "nacendpoints", "sitetemplates"];
     const base_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!/yis;
     const msp_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/msp\/\?msp_id=(?<msp_id>[0-9a-f-]{36})#!(?<obj>orgs|admins|auditLogs|mspInfo|labels)\/?(?<detail>aiops|details|detail|invite)?\/?(?<obj_id>[0-9a-z_-]*)/yis;;
     var regexp_result;
@@ -126,6 +127,8 @@ export class ApiManageComponent implements OnInit {
       this.siteWlanTemplateUrl(regexp_result);
     } else if (regexp_result = events_re.exec(this.tabUrl)) {
       this.eventsUrl(regexp_result);
+    } else if (regexp_result = org_inventory.exec(this.tabUrl)) {
+      this.orgInventoryUrl(regexp_result);
     } else if (regexp_result = floorplans_re.exec(this.tabUrl)) {
       this.floorplansUrl(regexp_result);
     } else if ((regexp_result = site_common_re.exec(this.tabUrl)) && regexp_result["groups"] && site_common_objs.includes(regexp_result["groups"]["obj"].toLowerCase())) {
@@ -1003,6 +1006,25 @@ export class ApiManageComponent implements OnInit {
     return res;
   }
 
+  orgInventoryUrl(res: RegExpExecArray): void {
+    res = this.process_query_params(res);
+    this.org_id = res?.groups?.org_id;
+    this.site_id = res?.groups?.site_id ? res?.groups?.site_id : null;
+    const url = "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/inventory";
+    if (res?.groups?.host && this.org_id && this.site_id) {
+      this.quick_links.push({ url: url, name: "site inventory" });
+      this.quick_links.push({ url: url + "?site_id="+this.site_id+"&type=ap", name: "site aps inventory" });
+      this.quick_links.push({ url: url + "?site_id="+this.site_id+"&type=switch", name: "site switches inventory" });
+      this.quick_links.push({ url: url + "?site_id="+this.site_id+"&type=gateway", name: "site gateways inventory" });
+    } else if (res?.groups?.host && this.org_id){
+      this.quick_links.push({ url: url, name: "org inventory" });
+      this.quick_links.push({ url: url + "?type=ap", name: "org aps inventory" });
+      this.quick_links.push({ url: url + "?type=switch", name: "org switches inventory" });
+      this.quick_links.push({ url: url + "?type=gateway", name: "org gateways inventory" });
+
+    }
+  }
+
   commonOrgUrl(res: RegExpExecArray): void {
     res = this.process_query_params(res);
     this.org_id = res?.groups?.org_id;
@@ -1055,18 +1077,10 @@ export class ApiManageComponent implements OnInit {
           this.forgeOrgObject("logs", res?.groups?.host, res?.groups?.detail, undefined, "audit logs");
           this.forgeOrgObject("logs", res?.groups?.host, res?.groups?.detail, "message=\"accessed%20org%20\"", "access logs");
           break;
-        case "apinventory":
-          const url = "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/inventory";
-          this.quick_links.push({ url: url, name: "inventory" });
-          this.quick_links.push({ url: url + "?type=ap", name: "aps inventory" });
-          this.quick_links.push({ url: url + "?type=switch", name: "switches inventory" });
-          this.quick_links.push({ url: url + "?type=gateway", name: "gateways inventory" });
-          break;
         case "adminconfig":
           this.setName("admin", res?.groups?.detail);
           this.forgeOrgObject("admins", res?.groups?.host, res?.groups?.detail);
           break;
-
         case "subscription":
           this.setName(res?.groups?.obj, res?.groups?.detail);
           this.forgeOrgObject("licenses", res?.groups?.host, res?.groups?.detail);
