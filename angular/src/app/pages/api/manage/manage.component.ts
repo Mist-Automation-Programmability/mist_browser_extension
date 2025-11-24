@@ -1428,6 +1428,7 @@ export class ApiManageComponent implements OnInit {
           this.forgeSiteObjectStats("devices", res?.groups?.host, "detail", extra_params);
           this.forgeSiteObjectEvents("devices", "switch", res?.groups?.host, "detail", extra_params);
           this.forgeSiteObjectAlarms("devices", "switch", res?.groups?.host, "detail", extra_params);
+          this.forgeOrgObjectStatsSearch("ospf_peers", res?.groups?.host, stats_filter, this.obj_name + " ospf peers");
           this.forgeOrgObjectStatsSearch("bgp_peers", res?.groups?.host, stats_filter, this.obj_name + " bgp peers");
           this.forgeOrgObjectStatsSearch("ports", res?.groups?.host, stats_filter, this.obj_name + " ports");
           break;
@@ -1439,6 +1440,7 @@ export class ApiManageComponent implements OnInit {
           this.forgeSiteObjectStats("devices", res?.groups?.host, "detail", extra_params);
           this.forgeSiteObjectEvents("devices", "gateway", res?.groups?.host, "detail", extra_params);
           this.forgeSiteObjectAlarms("devices", "gateway", res?.groups?.host, "detail", extra_params);
+          this.forgeOrgObjectStatsSearch("ospf_peers", res?.groups?.host, stats_filter, this.obj_name + " ospf peers");
           this.forgeOrgObjectStatsSearch("bgp_peers", res?.groups?.host, stats_filter, this.obj_name + " bgp peers");
           this.forgeOrgObjectStatsSearch("ports", res?.groups?.host, stats_filter, this.obj_name + " ports");
           this.forgeOrgObjectStatsSearch("vpn_peers", res?.groups?.host, stats_filter, this.obj_name + " vpn peers");
