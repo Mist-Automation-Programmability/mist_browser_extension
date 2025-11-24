@@ -1,3 +1,4 @@
 [submodule "mist_openapi"]
         path = mist_openapi
-        url = https://github.com/mistsys/mist_openapi.git
+	url = https://github.com/mistsys/mist_openapi.git
+        branch = master

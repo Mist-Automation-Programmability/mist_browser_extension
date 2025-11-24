@@ -2,7 +2,7 @@ import json
 import shutil
 import re
 
-JS_PATH = "./mist_openapi/Mist.openapi.json"
+JS_PATH = "./mist_openapi/mist.openapi.json"
 RES_PATH ="./api.json"
 JS_CHROME = {
     "paths":{},
