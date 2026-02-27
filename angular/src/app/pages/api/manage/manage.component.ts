@@ -92,15 +92,17 @@ export class ApiManageComponent implements OnInit {
     const insights_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!dashboard\/(?<detail>insights|insights-full-stack)\/((?<obj>[a-z]+)\/)?((?<obj_id>[a-z0-9-]+)\/)?((?<period>[a-z0-9]+)\/)?((?<start>[0-9]*)\/)?((?<stop>[0-9]*)\/)?(?<site_id>[0-9a-f-]{36})?/iys;
     const alarm_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!alerts\/?(?<site_id>[0-9a-z-]*)\??(?<query_param>.*)?$/iys;
     const events_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!marvis\/?(?<site_id>[0-9a-z-]*)\??(?<query_param>.*)?$/iys;
-    const floorplans_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!cliLocation\/(?<detail>view|config|validationPath|wayfinding)?\/?(?<uuid>[0-9a-f-]{36})\/?(floorplan|beaconsAndZones)?\/?(?<site_id>[0-9a-f-]{36})?/iys;
+    const floorplans_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!(cliLocation|liveView)\/(?<detail>view|config|validationPath|wayfinding)?\/?(?<uuid>[0-9a-f-]{36})\/?(floorplan|beaconsAndZones)?\/?(?<site_id>[0-9a-f-]{36})?/iys;
     const site_evpn_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!evpn\/site\/?([0-9]\/)?(?<site_id>[0-9a-z_-]*)?(\/(?<topology_id>[0-9a-f-]{36}))?/yis;
     const site_wlan_template_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!wlan\/orgWlanDetail\/(?<template_id>[0-9a-z_-]*)\/(?<wlan_id>[0-9a-f-]{36})\/(?<site_id>[0-9a-f-]{36})/is;
     const site_common_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!(?<obj>[a-z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view|band|list)\/)?(?<inter>[0-9]*\/)?((?<obj_id>[0-9a-z_-]*)\/)?(?<site_id>[0-9a-f-]{36})?/yis;
     const site_common_objs = ["ap", "gateway", "switch", "assets", "wlan", "tags", "psk", "tunnels", "clients", "guestclients", "sdkclients", "wiredclients", "wxlan", "security", "switchconfig", "pcap", "siteedge", "cellularedges", "rrm"]
     const org_evpn_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!evpn\/org(\/(?<topology_id>[0-9a-f-]{36}))?/yis;
     const org_inventory = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!apinventory\/?(?<detail>aps|switches|wan_edges|mist_edges)?\/?(?<site_id>[0-9a-z_-]*)/yis;
+    const org_identityProviders = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!nacIdentityProviders(\/oauth\/(?<provider>[a-z]+)\/(?<obj_id>[0-9a-z_-]+))?/yis;
+    const org_upgrade = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!upgrade\/?(?<device_type>ap|switch|gateway|mxedge)?/yis;
     const org_common_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!(?<obj>[a-zA-Z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view|template|rfTemplate|provider|nacportals|pskportals)\/)?([0-9]\/)?(?<obj_id>[0-9a-z_-]*)\??(?<query_params>[0-9a-z_=&-]*)?/yis;
-    const org_common_objs = ["orgtags", "misttunnels", "templates", "switchtemplate", "gatewaytemplates", "hubs", "deviceprofiles", "org", "orgpsk", "configuration", "auditlogs", "adminconfig", "subscription", "edge", "vpns", "template", "rftemplates", "services", "networks", "applicationpolicy", "authpolicylabels", "naccertificates", "nacpolicy", "nacidentityproviders", "onboardingworkflow", "sdk", "premiumanalytics", "private5g", "securityevents", "nacclients", "nacendpoints", "sitetemplates"];
+    const org_common_objs = ["orgtags", "misttunnels", "templates", "switchtemplate", "gatewaytemplates", "hubs", "deviceprofiles", "org", "orgpsk", "configuration", "auditlogs", "adminconfig", "subscription", "edge", "vpns", "template", "rftemplates", "services", "networks", "applicationpolicy", "authpolicylabels", "naccertificates", "nacpolicy", "onboardingworkflow", "sdk", "premiumanalytics", "private5g", "securityevents", "nacclients", "nacendpoints", "sitetemplates"];
     const base_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!/yis;
     const msp_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/msp\/\?msp_id=(?<msp_id>[0-9a-f-]{36})#!(?<obj>orgs|admins|auditLogs|mspInfo|labels)\/?(?<detail>aiops|details|detail|invite)?\/?(?<obj_id>[0-9a-z_-]*)/yis;;
     var regexp_result;
@@ -129,8 +131,12 @@ export class ApiManageComponent implements OnInit {
       this.eventsUrl(regexp_result);
     } else if (regexp_result = org_inventory.exec(this.tabUrl)) {
       this.orgInventoryUrl(regexp_result);
+    } else if (regexp_result = org_upgrade.exec(this.tabUrl)) {
+      this.orgUpgradeUrl(regexp_result);
     } else if (regexp_result = floorplans_re.exec(this.tabUrl)) {
       this.floorplansUrl(regexp_result);
+    } else if (regexp_result = org_identityProviders.exec(this.tabUrl)) {
+      this.orgNacIdentityProvidersUrl(regexp_result);
     } else if ((regexp_result = site_common_re.exec(this.tabUrl)) && regexp_result["groups"] && site_common_objs.includes(regexp_result["groups"]["obj"].toLowerCase())) {
       this.commonSiteUrl(regexp_result);
     } else if ((regexp_result = org_common_re.exec(this.tabUrl)) && regexp_result["groups"] && org_common_objs.includes(regexp_result["groups"]["obj"].toLowerCase())) {
@@ -1013,10 +1019,10 @@ export class ApiManageComponent implements OnInit {
     const url = "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/inventory";
     if (res?.groups?.host && this.org_id && this.site_id) {
       this.quick_links.push({ url: url, name: "site inventory" });
-      this.quick_links.push({ url: url + "?site_id="+this.site_id+"&type=ap", name: "site aps inventory" });
-      this.quick_links.push({ url: url + "?site_id="+this.site_id+"&type=switch", name: "site switches inventory" });
-      this.quick_links.push({ url: url + "?site_id="+this.site_id+"&type=gateway", name: "site gateways inventory" });
-    } else if (res?.groups?.host && this.org_id){
+      this.quick_links.push({ url: url + "?site_id=" + this.site_id + "&type=ap", name: "site aps inventory" });
+      this.quick_links.push({ url: url + "?site_id=" + this.site_id + "&type=switch", name: "site switches inventory" });
+      this.quick_links.push({ url: url + "?site_id=" + this.site_id + "&type=gateway", name: "site gateways inventory" });
+    } else if (res?.groups?.host && this.org_id) {
       this.quick_links.push({ url: url, name: "org inventory" });
       this.quick_links.push({ url: url + "?type=ap", name: "org aps inventory" });
       this.quick_links.push({ url: url + "?type=switch", name: "org switches inventory" });
@@ -1024,6 +1030,26 @@ export class ApiManageComponent implements OnInit {
 
     }
   }
+
+
+
+  orgNacIdentityProvidersUrl(res: RegExpExecArray): void {
+    res = this.process_query_params(res);
+    this.org_id = res?.groups?.org_id;
+    this.site_id = res?.groups?.site_id ? res?.groups?.site_id : null;
+    const url = "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/inventory";
+    if (res?.groups?.host && this.org_id && res?.groups?.provider) {
+      this.quick_links.push({ url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/setting/"+res?.groups?.provider+"/link_accounts", name: "NAC "+res?.groups?.provider+" MDM" });
+    } else if (res?.groups?.host && this.org_id) {
+      this.quick_links.push({ url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/ssos", name: "NAC IDPS" });
+      this.quick_links.push({ url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/setting/intune/link_accounts", name: "NAC INTUNE MDM" });
+      this.quick_links.push({ url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/setting/jamf/link_accounts", name: "NAC JAMF MDM" });
+      this.quick_links.push({ url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/setting/mobicontrol/link_accounts", name: "NAC MOBICONTROL MDM" });
+      this.quick_links.push({ url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/setting/vmware/link_accounts", name: "NAC VMWARE MDM" });
+    }
+  }
+
+
 
   commonOrgUrl(res: RegExpExecArray): void {
     res = this.process_query_params(res);
@@ -1139,20 +1165,16 @@ export class ApiManageComponent implements OnInit {
           this.forgeOrgObject("nacrules", res?.groups?.host, res?.groups?.detail);
           this.forgeNacPolicies(res?.groups?.host);
           break;
-        case "nacidentityproviders":
-          this.setName("NAC IDP", res?.groups?.detail);
-          this.forgeOrgNacIdp(res?.groups?.host);
-          break;
         case "onboardingworkflow":
           console.log(res?.groups)
           switch (res?.groups?.detail) {
-            case "pskportals":
-              this.setName("Psk Portals", res?.groups?.detail);
-              this.quick_links.push({ url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/pskportals", name: this.obj_name });
-              break;
             case "nacportals":
-              this.setName("NAC Portals", res?.groups?.detail);
+              this.setName("NAC Portal", res?.groups?.detail);
               this.quick_links.push({ url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/nacportals", name: this.obj_name });
+              break;
+            default:
+              this.setName("Psk Portal", res?.groups?.detail);
+              this.quick_links.push({ url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/pskportals", name: this.obj_name });
               break;
           }
           break;
@@ -1364,6 +1386,23 @@ export class ApiManageComponent implements OnInit {
       name: "Site Events"
     })
   }
+
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////// EVENTS URL FUNCTION DISPATCHER
+  orgUpgradeUrl(res: RegExpExecArray): void {
+    this.org_id = res?.groups?.org_id;
+    var device_type = "ap";
+    if (res?.groups?.device_type) device_type = res?.groups?.device_type;
+      this.quick_links.push({
+        url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/devices/upgrade?device_type="+device_type+"&duration=30d",
+        name: device_type+ " Upgrades"
+      })
+      this.quick_links.push({
+        url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/devices/versions?type="+device_type,
+        name: device_type+ " Versions"
+      })
+      }
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
