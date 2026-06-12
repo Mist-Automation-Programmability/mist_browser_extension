@@ -9,19 +9,30 @@ export interface actionElement {
   action: string,
   name: string
 }
+type ManageUrlParts = {
+  host: string;
+  org_id?: string;
+  msp_id?: string;
+  route: string;
+};
+type RouteHandler = {
+  re: RegExp;
+  handler: (match: RegExpExecArray) => void;
+  accept?: (match: RegExpExecArray) => boolean;
+};
 
 @Component({
-    selector: 'app-api-juniper-manage',
-    templateUrl: '../manage/manage.component.html',
-    styleUrls: [
-        '../../../scss/button.component.scss',
-        '../../../scss/popup.component.scss',
-        '../../../scss/notice.component.scss',
-        '../../../scss/container.component.scss',
-        '../../../scss/input.component.scss',
-        '../manage/manage.component.scss',
-    ],
-    standalone: false
+  selector: 'app-api-juniper-manage',
+  templateUrl: '../manage/manage.component.html',
+  styleUrls: [
+    '../../../scss/button.component.scss',
+    '../../../scss/popup.component.scss',
+    '../../../scss/notice.component.scss',
+    '../../../scss/container.component.scss',
+    '../../../scss/input.component.scss',
+    '../manage/manage.component.scss',
+  ],
+  standalone: false
 })
 export class ApiJuniperManageComponent implements OnInit {
 
@@ -62,8 +73,7 @@ export class ApiJuniperManageComponent implements OnInit {
   ngOnInit() {
     this._browser.getUrl
       .then(tabUrl => {
-        this.tabUrl = tabUrl;
-        this.generateApiUrl()
+        this.parseMistUrl(tabUrl);
       })
       //   .error(error => { console.log(error) })
       .catch(error => { console.log(error) })
@@ -74,46 +84,75 @@ export class ApiJuniperManageComponent implements OnInit {
   // API URL ENTRYPOINT
   ////////////////////////////////////////////////////////////////////////////////////
 
+  private parseMistUrl(tabUrl: string): void {
+    const url = new URL(tabUrl);
+
+    const hostMatch = /^(?<host>(dc|jsi|routing)(\.stage)?\.ai\.juniper\.net)$/i.exec(url.hostname);
+    if (!hostMatch?.groups?.host) return;
+
+    const route = url.hash.replace(/^#!/, "");
+
+    switch (url.pathname) {
+      case "/admin/":
+        this.org_id = url.searchParams.get("org_id") ?? undefined;
+        this.parseOrgUrl({ host: hostMatch.groups.host, org_id: this.org_id, route });
+        break;
+    }
+  }
+
+  private dispatchRoute(parsed: ManageUrlParts, routes: RouteHandler[]): boolean {
+    for (const route of routes) {
+      const match = route.re.exec(parsed.route);
+
+      if (match && (!route.accept || route.accept(match))) {
+        match.groups = {
+          ...match.groups,
+          host: parsed.host,
+          org_id: parsed.org_id,
+          msp_id: parsed.msp_id,
+        };
+
+        route.handler(match);
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
   // API URL ENTRYPOINT
-  generateApiUrl() {
-    const orgsle_re = /https:\/\/(?<host>(dc|jsi|routing)(\.stage)?\.ai\.juniper\.net)\/+admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!dashboard\/(?<scope>routingSiteComparison)\/(?<sle>[a-z-]*)\/(?<worstsle>[a-z-]*)\/([a-z-_]*)\/(?<period>[0-9a-z-]*)\/(?<start>[0-9]*)\/(?<stop>[0-9]*)/iys;
-    const sle_details_re = /https:\/\/(?<host>(dc|jsi|routing)(\.stage)?\.ai\.juniper\.net)\/+admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!dashboard\/(?<detail>routingServiceLevels)\/page2\/(stats|timeline|dist|affected)\/[a-zA-Z-]+\/[a-zA-Z-]+\/(?<scope>site|juniperRouter)\/(?<scope_id>[a-f0-9-]*)\/(?<sle_name>[a-z-]*)\/(?<sle_sub_1>[a-zA-Z-]+)\/(?<sle_sub_2>[a-zA-Z-]+)(\/(?<period>[0-9a-z]*))?(\/(?<start>[0-9]*))?(\/(?<stop>[0-9]*))?\/(?<site_id>[a-f0-9-]*)/iys;
-    const sle_re = /https:\/\/(?<host>(dc|jsi|routing)(\.stage)?\.ai\.juniper\.net)\/+admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!dashboard\/(?<detail>routingServiceLevels)(\/(?<scope>site|juniperRouter))?(\/(?<scope_id>[a-f0-9-]*))?(\/(?<period>[0-9a-z-]*))?(\/(?<start>[0-9]*))?(\/(?<stop>[0-9]*))?\/(?<site_id>[a-f0-9-]*)/iys;
-    const insights_re = /https:\/\/(?<host>(dc|jsi|routing)(\.stage)?\.ai\.juniper\.net)\/+admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!dashboard\/insights\/((?<obj>[a-z]+)\/)?((?<obj_id>[a-z0-9-]+)\/)?((?<period>[a-z0-9]+)\/)?((?<start>[0-9]*)\/)?((?<stop>[0-9]*)\/)?(?<site_id>[0-9a-f-]{36})?/iys;
-    const alarm_re = /https:\/\/(?<host>(dc|jsi|routing)(\.stage)?\.ai\.juniper\.net)\/+admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!alerts\/?(?<scope>org|site)?\/?(?<uuid>[0-9a-z-]*)\/?(?<period>[0-9a-z]*)?\/?(?<start>[0-9]*)?\/?(?<stop>[0-9]*)?\/?(?<show_ack>true|false)?\/?(?<group>[a-z%0-9]*)?\/?(?<show_crit>true|false)?\/?(?<show_warn>true|false)?\/?(?<show_info>true|false)?\/?(?<site_id>[0-9a-z-]*)?/iys;
-    const events_re = /https:\/\/(?<host>(dc|jsi|routing)(\.stage)?\.ai\.juniper\.net)\/+admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!marvis\/?(?<scope>org|site)?\/?(?<period>[0-9a-z]*)?\/?(?<start>[0-9]*)?\/?(?<stop>[0-9]*)?\/?(?<site_id>[0-9a-z-]*)?/iys;
-    const common_re = /https:\/\/(?<host>(dc|jsi|routing)(\.stage)?\.ai\.juniper\.net)\/+admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!(?<obj>[a-zA-Z]+)\/?((?<detail>detail|site|admin|new|view)\/)?([0-9]\/)?(?<obj_id>[0-9a-z_-]*)?(\/(?<site_id>[0-9a-f-]{36}))?(\?(?<query_params>[0-9a-z_=&-]*))?/yis;
-    const site_common_objs = ["routers"]
-    const org_common_objs = ["org", "configuration", "auditlogs", "apinventory", "adminconfig", "subscription"];
-    const base_re = /https:\/\/(?<host>(dc|jsi|routing)(\.stage)?\.ai\.juniper\.net)\/+admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!/yis;
+  parseOrgUrl(parsed: ManageUrlParts): void {
+    const orgsle_re = /^dashboard\/(?<scope>routingSiteComparison)\/(?<sle>[a-z-]*)\/(?<worstsle>[a-z-]*)\/([a-z-_]*)\/(?<period>[0-9a-z-]*)\/(?<start>[0-9]*)\/(?<stop>[0-9]*)$/is;
+    const sle_details_re = /^dashboard\/(?<detail>routingServiceLevels)\/page2\/(stats|timeline|dist|affected)\/[a-zA-Z-]+\/[a-zA-Z-]+\/(?<scope>site|juniperRouter)\/(?<scope_id>[a-f0-9-]*)\/(?<sle_name>[a-z-]*)\/(?<sle_sub_1>[a-zA-Z-]+)\/(?<sle_sub_2>[a-zA-Z-]+)(\/(?<period>[0-9a-z]*))?(\/(?<start>[0-9]*))?(\/(?<stop>[0-9]*))?\/(?<site_id>[a-f0-9-]*)$/is;
+    const sle_re = /^dashboard\/(?<detail>routingServiceLevels)(\/(?<scope>site|juniperRouter))?(\/(?<scope_id>[a-f0-9-]*))?(\/(?<period>[0-9a-z-]*))?(\/(?<start>[0-9]*))?(\/(?<stop>[0-9]*))?\/(?<site_id>[a-f0-9-]*)$/is;
+    const insights_re = /^dashboard\/insights\/((?<obj>[a-z]+)\/)?((?<obj_id>[a-z0-9-]+)\/)?((?<period>[a-z0-9]+)\/)?((?<start>[0-9]*)\/)?((?<stop>[0-9]*)\/)?(?<site_id>[0-9a-f-]{36})?$/is;
+    const alarm_re = /^alerts\/?(?<scope>org|site)?\/?(?<uuid>[0-9a-z-]*)\/?(?<period>[0-9a-z]*)?\/?(?<start>[0-9]*)?\/?(?<stop>[0-9]*)?\/?(?<show_ack>true|false)?\/?(?<group>[a-z%0-9]*)?\/?(?<show_crit>true|false)?\/?(?<show_warn>true|false)?\/?(?<show_info>true|false)?\/?(?<site_id>[0-9a-z-]*)?$/is;
+    const events_re = /^marvis\/?(?<scope>org|site)?\/?(?<period>[0-9a-z]*)?\/?(?<start>[0-9]*)?\/?(?<stop>[0-9]*)?\/?(?<site_id>[0-9a-z-]*)?$/is;
+    const common_re = /^(?<obj>[a-zA-Z]+)\/?((?<detail>detail|site|admin|new|view)\/)?([0-9]\/)?(?<obj_id>[0-9a-z_-]*)?(\/(?<site_id>[0-9a-f-]{36}))?(\?(?<query_params>[0-9a-z_=&-]*))?$/is;
+    const site_common_objs = new Set(["routers"]);
+    const org_common_objs = new Set(["org", "configuration", "auditlogs", "apinventory", "adminconfig", "subscription"]);
 
-    var regexp_result: RegExpExecArray;
-    
-    if (regexp_result = orgsle_re.exec(this.tabUrl)) {
-      this.orgSleUrl(regexp_result);
-    } else if (regexp_result = sle_details_re.exec(this.tabUrl)) {
-      this.sleDetailsUrl(regexp_result);
-    } else if ((regexp_result = sle_re.exec(this.tabUrl))) {
-      this.sleUrl(regexp_result);
-    } else if (regexp_result = insights_re.exec(this.tabUrl)) {
-      this.insightsUrl(regexp_result);
-    } else if (regexp_result = alarm_re.exec(this.tabUrl)) {
-      this.alarmUrl(regexp_result);
-    } else if (regexp_result = events_re.exec(this.tabUrl)) {
-      this.eventsUrl(regexp_result);
-    } else if ((regexp_result = common_re.exec(this.tabUrl)) && regexp_result["groups"]) {
-      if (site_common_objs.includes(regexp_result["groups"]["obj"].toLowerCase())) {
-        this.commonSiteUrl(regexp_result);
-      } else if (regexp_result["groups"] && org_common_objs.includes(regexp_result["groups"]["obj"].toLowerCase())) {
-        this.commonOrgUrl(regexp_result);
-      } else {
-        this.baseUrl(regexp_result);
-      }
-    } else if (regexp_result = base_re.exec(this.tabUrl)) {
-      this.baseUrl(regexp_result);
-    }
+
+    this.dispatchRoute(parsed, [
+      { re: orgsle_re, handler: this.orgSleUrl.bind(this) },
+      { re: sle_details_re, handler: this.sleDetailsUrl.bind(this) },
+      { re: sle_re, handler: this.sleUrl.bind(this) },
+      { re: insights_re, handler: this.insightsUrl.bind(this) },
+      { re: alarm_re, handler: this.alarmUrl.bind(this) },
+      { re: events_re, handler: this.eventsUrl.bind(this) },
+      {
+        re: common_re,
+        handler: this.commonSiteUrl.bind(this),
+        accept: match => !!match.groups?.obj && site_common_objs.has(match.groups.obj.toLowerCase()),
+      },
+      {
+        re: common_re,
+        handler: this.commonOrgUrl.bind(this),
+        accept: match => !!match.groups?.obj && org_common_objs.has(match.groups.obj.toLowerCase()),
+      },
+    ]);
     this._cd.detectChanges()
   }
 
@@ -125,12 +164,12 @@ export class ApiJuniperManageComponent implements OnInit {
 
 
   ////////////////////// MAC 
-  getMac(uuid: string): string {
+  private getMac(uuid: string): string {
     const splitted_uuid = uuid.split("-");
     return splitted_uuid[splitted_uuid.length - 1];
   }
 
-  setName(obj_name: string = "", detail: string | undefined) {
+  private setName(obj_name: string = "", detail: string | undefined) {
     obj_name = obj_name.toLowerCase();
     if (detail && detail != "new") {
       this.obj_name = obj_name
@@ -147,7 +186,7 @@ export class ApiJuniperManageComponent implements OnInit {
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// COMMON ORG FUNCTIONS
-  forgeOrgObject(obj_name: string, host: string, detail: string | undefined, extra_param: string | undefined = undefined): void {
+  private forgeOrgObject(obj_name: string, host: string, detail: string | undefined, extra_param: string | undefined = undefined): void {
     let url = "";
     if (detail && detail != "new") {
       // set QUICK LINK
@@ -164,7 +203,7 @@ export class ApiJuniperManageComponent implements OnInit {
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// COMMON SITE FUNCTIONS
-  forgeSiteObject(obj_name: string, host: string | undefined, detail: string | undefined, extra_param: string | undefined = undefined): void {
+  private forgeSiteObject(obj_name: string, host: string | undefined, detail: string | undefined, extra_param: string | undefined = undefined): void {
     let url = "";
     if (detail && detail != "new") {
       // set QUICK LINK
@@ -182,14 +221,14 @@ export class ApiJuniperManageComponent implements OnInit {
     }
   }
 
-  forgeSiteObjectStatsSearch(obj_name: string, host: string, extra_param: string | undefined = undefined): void {
+  private forgeSiteObjectStatsSearch(obj_name: string, host: string, extra_param: string | undefined = undefined): void {
     let url = "";
     url = "https://" + host + "/api/v1/sites/" + this.site_id + "/stats/" + obj_name + "/search";
     if (extra_param) url += "?" + extra_param;
     this.quick_links.push({ url: url, name: obj_name.replace(/_/g, " ") + " STATS" });
   }
 
-  forgeSiteObjectStats(obj_name: string, host: string, detail: string, extra_param: string | undefined = undefined): void {
+  private forgeSiteObjectStats(obj_name: string, host: string, detail: string, extra_param: string | undefined = undefined): void {
     let url = "";
     if (detail && detail != "new") {
       // set QUICK LINK
@@ -204,7 +243,7 @@ export class ApiJuniperManageComponent implements OnInit {
     }
   }
 
-  forgeSiteObjectEvents(obj_name: string, device_type: string | undefined, host: string, detail: string, extra_param: string | undefined = undefined): void {
+  private forgeSiteObjectEvents(obj_name: string, device_type: string | undefined, host: string, detail: string, extra_param: string | undefined = undefined): void {
     let url = "";
     if (detail && detail != "new" && this.obj_id) {
       // MAC
@@ -233,7 +272,7 @@ export class ApiJuniperManageComponent implements OnInit {
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// ORG OBJ FUNCTION
-  forgeOrg(host: string) {
+  private forgeOrg(host: string) {
     this.quick_links.push({
       url: "https://" + host + "/api/v1/orgs/" + this.org_id + "/setting",
       name: "org setting"
@@ -257,7 +296,7 @@ export class ApiJuniperManageComponent implements OnInit {
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// SITE OBJ FUNCTION
-  forgeSite(host: string, detail: string, extra_params: string | undefined = undefined): void {
+  private forgeSite(host: string, detail: string, extra_params: string | undefined = undefined): void {
     if (extra_params) {
       extra_params = "?" + extra_params;
     } else {
@@ -300,7 +339,7 @@ export class ApiJuniperManageComponent implements OnInit {
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// ORG SLE FUNCTION
-  forgeOrgSlehUrl(host: string, scope: string, sle: string, worstsle: string | undefined = undefined, extra_params: string | undefined = undefined): void {
+  private forgeOrgSlehUrl(host: string, scope: string, sle: string, worstsle: string | undefined = undefined, extra_params: string | undefined = undefined): void {
     /*
     scope: wifi, wire, wan
     */
@@ -316,7 +355,7 @@ export class ApiJuniperManageComponent implements OnInit {
 
   ////////////////////////////////////////////////////////////////////////////////////
   //////////////////////  SLE DETAILS FUNCTION
-  forgeSleDetailshUrl(host: string, scope: string | undefined, site_id: string, scope_id: string, sle: string, impacted_entities: string[] = [], extra_params: string | null = null): void {
+  private forgeSleDetailshUrl(host: string, scope: string | undefined, site_id: string, scope_id: string, sle: string, impacted_entities: string[] = [], extra_params: string | null = null): void {
     /*
     host: mist.com, eu.mist.com, gc1.mist.com
     scope: wifi, wire, wan
@@ -355,7 +394,7 @@ export class ApiJuniperManageComponent implements OnInit {
   }
   ////////////////////////////////////////////////////////////////////////////////////
   //////////////////////  SLE FUNCTION
-  forgeSlehUrl(host: string, scope: string | undefined, site_id: string, scope_id: string, sles: string[], extra_params: string | null = null): void {
+  private forgeSlehUrl(host: string, scope: string | undefined, site_id: string, scope_id: string, sles: string[], extra_params: string | null = null): void {
     /*
     host: mist.com, eu.mist.com, gc1.mist.com
     scope: wifi, wire, wan
@@ -367,20 +406,11 @@ export class ApiJuniperManageComponent implements OnInit {
       });
     })
   }
-  ////////////////////////////////////////////////////////////////////////////////////
-  ////////////////////////////////////////////////////////////////////////////////////
-  ////////////////////// BASE URL FUNCTION DISPATCHER
-
-  baseUrl(res: RegExpExecArray): void {
-    this.org_id = res?.groups?.org_id;
-  }
-
-
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// COMMON URL FUNCTION DISPATCHER FOR SITE URLS
-  commonSiteUrl(res: RegExpExecArray): void {
+  private commonSiteUrl(res: RegExpExecArray): void {
     this.org_id = res?.groups?.org_id;
     let extra_params: string | undefined = undefined;
     const uuid_re = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/
@@ -412,7 +442,7 @@ export class ApiJuniperManageComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// COMMON URL FUNCTION DISPATCHER FOR ORG URLS
-  process_time_interval(end: number | null, timeInterval: string): string | null {
+  private process_time_interval(end: number | null, timeInterval: string): string | null {
     switch (timeInterval) {
       case "today":
       case "thisWeek":
@@ -434,7 +464,7 @@ export class ApiJuniperManageComponent implements OnInit {
     else return null;
   }
 
-  process_query_params(res: RegExpExecArray): RegExpExecArray {
+  private process_query_params(res: RegExpExecArray): RegExpExecArray {
     let query_params = res?.groups?.query_params;
     let end, timeInterval;
     if (query_params) {
@@ -468,26 +498,26 @@ export class ApiJuniperManageComponent implements OnInit {
   }
 
 
-  inventory_dc(res:RegExpExecArray): void {
+  private inventory_dc(res: RegExpExecArray): void {
     this.obj_id = null
     this.obj_name = "inventory";
     this.quick_links.push(
       {
-      url: "https://" + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/datacenter-edges",
-      name: "Datacenters"
-    },
+        url: "https://" + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/datacenter-edges",
+        name: "Datacenters"
+      },
       {
-      url: "https://" + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/inventory",
-      name: "Inventory"
-    },
+        url: "https://" + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/inventory",
+        name: "Inventory"
+      },
       {
-      url: "https://" + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/jsi/inventory",
-      name: "JSI Inventory"
-    },
-  )
+        url: "https://" + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/jsi/inventory",
+        name: "JSI Inventory"
+      },
+    )
   }
 
-  commonOrgUrl(res: RegExpExecArray): void {
+  private commonOrgUrl(res: RegExpExecArray): void {
     res = this.process_query_params(res);
     this.org_id = res?.groups?.org_id;
     const uuid_re = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/
@@ -520,24 +550,24 @@ export class ApiJuniperManageComponent implements OnInit {
         case "apinventory":
           this.obj_id = null;
           var host = res?.groups?.host;
-          if (host.startsWith("dc")){
+          if (host.startsWith("dc")) {
             this.inventory_dc(res);
           } else {
             this.obj_name = "inventory";
             this.quick_links.push(
               {
-              url: "https://" + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/inventory",
-              name: "Inventory"
-            },
+                url: "https://" + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/inventory",
+                name: "Inventory"
+              },
               {
-              url: "https://" + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/jsi/inventory",
-              name: "JSI Inventory"
-            },
+                url: "https://" + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/jsi/inventory",
+                name: "JSI Inventory"
+              },
               {
-              url: "https://" + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/ocdevices/outbound_ssh_cmd",
-              name: "Adopt CMDS"
-            },
-          )
+                url: "https://" + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/ocdevices/outbound_ssh_cmd",
+                name: "Adopt CMDS"
+              },
+            )
           }
           break;
         case "adminconfig":
@@ -555,20 +585,20 @@ export class ApiJuniperManageComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// ALARM URL FUNCTION DISPATCHER
-  alarmUrl(res: RegExpExecArray): void {
+  private alarmUrl(res: RegExpExecArray): void {
     this.org_id = res?.groups?.org_id;
     let extra_params = "";
     let severity_array: string[] = [];
     let scope = "";
     let scope_id: string | undefined = undefined;
-    
-      if (res?.groups?.site_id) {
-        this.site_id = res?.groups?.site_id;
-      } else {
-        this.site_id = res?.groups?.uuid;
-      }
 
-    if (this.site_id){
+    if (res?.groups?.site_id) {
+      this.site_id = res?.groups?.site_id;
+    } else {
+      this.site_id = res?.groups?.uuid;
+    }
+
+    if (this.site_id) {
       scope = "sites";
       scope_id = this.site_id;
     } else {
@@ -588,7 +618,7 @@ export class ApiJuniperManageComponent implements OnInit {
     if (res?.groups?.group && res?.groups?.group != "any%20type") extra_params += "&group=" + res?.groups?.group;
 
     if (res?.groups?.show_ack && res?.groups?.show_ack == "false") extra_params += "&acked=false";
-    
+
     this.quick_links.push({
       url: "https://" + res?.groups?.host + "/api/v1/" + scope + "/" + scope_id + "/alarms/search?" + extra_params,
       name: scope + " Alarms"
@@ -607,7 +637,7 @@ export class ApiJuniperManageComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// EVENTS URL FUNCTION DISPATCHER
-  eventsUrl(res: RegExpExecArray): void {
+  private eventsUrl(res: RegExpExecArray): void {
     this.org_id = res?.groups?.org_id;
     let extra_params = "";
     if (res?.groups?.site_id) {
@@ -630,7 +660,7 @@ export class ApiJuniperManageComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// INSIGHTS URL FUNCTION DISPATCHER
-  insightsUrl(res: RegExpExecArray): void {
+  private insightsUrl(res: RegExpExecArray): void {
     this.org_id = res?.groups?.org_id;
     this.site_id = res?.groups?.site_id;
     this.obj_id = res?.groups?.obj_id;
@@ -661,7 +691,7 @@ export class ApiJuniperManageComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// ORG SLE URL FUNCTION DISPATCHER
 
-  orgSleUrl(res: RegExpExecArray): void {
+  private orgSleUrl(res: RegExpExecArray): void {
     this.org_id = res?.groups?.org_id;
     let extra_params: string | undefined = undefined;
     if (res?.groups?.start && res?.groups?.stop) {
@@ -680,7 +710,7 @@ export class ApiJuniperManageComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// SLE URL FUNCTION DISPATCHER
 
-  sleUrl(res: RegExpExecArray): void {
+  private sleUrl(res: RegExpExecArray): void {
     this.org_id = res?.groups?.org_id;
     this.site_id = res?.groups?.site_id;
     let extra_params: string | null = null;
@@ -731,7 +761,7 @@ export class ApiJuniperManageComponent implements OnInit {
   // <site_id>[a-f0-9-]*
 
 
-  sleDetailsUrl(res: RegExpExecArray): void {
+  private sleDetailsUrl(res: RegExpExecArray): void {
     this.org_id = res?.groups?.org_id;
     this.site_id = res?.groups?.site_id;
     let extra_params: string | null = null;

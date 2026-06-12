@@ -9,7 +9,17 @@ export interface actionElement {
   action: string,
   name: string
 }
-
+type ManageUrlParts = {
+  host: string;
+  org_id?: string;
+  msp_id?: string;
+  route: string;
+};
+type RouteHandler = {
+  re: RegExp;
+  handler: (match: RegExpExecArray) => void;
+  accept?: (match: RegExpExecArray) => boolean;
+};
 @Component({
   selector: 'app-api-manage',
   templateUrl: 'manage.component.html',
@@ -52,8 +62,7 @@ export class ApiManageComponent implements OnInit {
   ngOnInit() {
     this._browser.getUrl
       .then(tabUrl => {
-        this.tabUrl = tabUrl;
-        this.generateApiUrl()
+        this.parseMistUrl(tabUrl);
       })
       //   .error(error => { console.log(error) })
       .catch(error => { console.log(error) })
@@ -79,73 +88,112 @@ export class ApiManageComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////
   // API URL ENTRYPOINT
   ////////////////////////////////////////////////////////////////////////////////////
+  private parseMistUrl(tabUrl: string): void {
+    const url = new URL(tabUrl);
 
-  ////////////////////////////////////////////////////////////////////////////////////
-  ////////////////////////////////////////////////////////////////////////////////////
-  // API URL ENTRYPOINT
-  generateApiUrl() {
-    const minis_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!marvisMini\??(?<q_param>.*)/yis;
-    const orginsights_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!orgInsights\??(?<query_params>[0-9a-z_=&-]*)?/iys;
-    const orgsle_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!dashboard\/(?<scope>siteComparison|wiredSiteComparison|wanSiteComparison)\/(?<sle>[a-z-]*)\/(?<worstsle>[a-z-]*)\/([a-z-_]*)\/(?<period>[0-9a-z-]*)\/(?<start>[0-9]*)\/(?<stop>[0-9]*)/iys;
-    const sle_details_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!dashboard\/(?<detail>serviceLevels|wiredserviceLevels|wanServiceLevels|juniperGateway)\/page2\/(stats|timeline)\/[a-zA-Z-]+\/[a-zA-Z-]+\/(?<scope>site|device|client|juniperSwitch|juniperGateway)\/(?<scope_id>[a-f0-9-]*)\/(?<sle_name>[a-z-]*)\/(?<sle_sub_1>[a-zA-Z-]+)\/(?<sle_sub_2>[a-zA-Z-]+)(\/(?<period>[0-9a-z]*))?(\/(?<start>[0-9]*))?(\/(?<stop>[0-9]*))?\/(?<site_id>[a-f0-9-]*)/iys;
-    const sle_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!dashboard\/(?<detail>serviceLevels|wiredserviceLevels|wanServiceLevels|juniperGateway|applicationServiceLevels)(\/(?<scope>org|site|device|client|juniperSwitch|juniperGateway))?(\/(?<scope_id>[a-f0-9-]*))?(\/(?<period>[0-9a-z-]*))?(\/(?<start>[0-9]*))?(\/(?<stop>[0-9]*))?\/(?<site_id>[a-f0-9-]*)(\?app=(?<app>[a-zA-Z]*))?/iys;
-    const insights_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!dashboard\/(?<detail>insights|insights-full-stack)\/((?<obj>[a-z]+)\/)?((?<obj_id>[a-z0-9-]+)\/)?((?<period>[a-z0-9]+)\/)?((?<start>[0-9]*)\/)?((?<stop>[0-9]*)\/)?(?<site_id>[0-9a-f-]{36})?/iys;
-    const alarm_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!alerts\/?(?<site_id>[0-9a-z-]*)\??(?<query_param>.*)?$/iys;
-    const events_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!marvis\/?(?<site_id>[0-9a-z-]*)\??(?<query_param>.*)?$/iys;
-    const floorplans_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!(cliLocation|liveView)\/(?<detail>view|config|validationPath|wayfinding)?\/?(?<uuid>[0-9a-f-]{36})\/?(floorplan|beaconsAndZones)?\/?(?<site_id>[0-9a-f-]{36})?/iys;
-    const site_evpn_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!evpn\/site\/?([0-9]\/)?(?<site_id>[0-9a-z_-]*)?(\/(?<topology_id>[0-9a-f-]{36}))?/yis;
-    const site_wlan_template_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!wlan\/orgWlanDetail\/(?<template_id>[0-9a-z_-]*)\/(?<wlan_id>[0-9a-f-]{36})\/(?<site_id>[0-9a-f-]{36})/is;
-    const site_common_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!(?<obj>[a-z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view|band|list)\/)?(?<inter>[0-9]*\/)?((?<obj_id>[0-9a-z_-]*)\/)?(?<site_id>[0-9a-f-]{36})?/yis;
-    const site_common_objs = ["ap", "gateway", "switch", "assets", "wlan", "tags", "psk", "tunnels", "clients", "guestclients", "sdkclients", "wiredclients", "wxlan", "security", "switchconfig", "pcap", "siteedge", "cellularedges", "rrm"]
-    const org_evpn_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!evpn\/org(\/(?<topology_id>[0-9a-f-]{36}))?/yis;
-    const org_inventory = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!apinventory\/?(?<detail>aps|switches|wan_edges|mist_edges)?\/?(?<site_id>[0-9a-z_-]*)/yis;
-    const org_identityProviders = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!nacIdentityProviders(\/oauth\/(?<provider>[a-z]+)\/(?<obj_id>[0-9a-z_-]+))?/yis;
-    const org_upgrade = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!upgrade\/?(?<device_type>ap|switch|gateway|mxedge)?/yis;
-    const org_common_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!(?<obj>[a-zA-Z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view|template|rfTemplate|provider|nacportals|pskportals)\/)?([0-9]\/)?(?<obj_id>[0-9a-z_-]*)\??(?<query_params>[0-9a-z_=&-]*)?/yis;
-    const org_common_objs = ["orgtags", "misttunnels", "templates", "switchtemplate", "gatewaytemplates", "hubs", "deviceprofiles", "org", "orgpsk", "configuration", "auditlogs", "adminconfig", "subscription", "edge", "vpns", "template", "rftemplates", "services", "networks", "applicationpolicy", "authpolicylabels", "naccertificates", "nacpolicy", "onboardingworkflow", "sdk", "premiumanalytics", "private5g", "securityevents", "nacclients", "nacendpoints", "sitetemplates"];
-    const base_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/admin\/\?org_id=(?<org_id>[0-9a-f-]{36})#!/yis;
-    const msp_re = /https:\/\/(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)\/msp\/\?msp_id=(?<msp_id>[0-9a-f-]{36})#!(?<obj>orgs|admins|auditLogs|mspInfo|labels)\/?(?<detail>aiops|details|detail|invite)?\/?(?<obj_id>[0-9a-z_-]*)/yis;;
-    var regexp_result;
+    const hostMatch = /^(manage|integration|manage-staging)\.(?<host>[a-z0-9.]*(mist|mistsys|mist-federal)\.com)$/i.exec(url.hostname);
+    if (!hostMatch?.groups?.host) return;
 
-    if (regexp_result = minis_re.exec(this.tabUrl)) {
-      this.MarvisMinisUrl(regexp_result);
-    } else if (regexp_result = orginsights_re.exec(this.tabUrl)) {
-      this.orgInsightUrl(regexp_result);
-    } else if (regexp_result = orgsle_re.exec(this.tabUrl)) {
-      this.orgSleUrl(regexp_result);
-    } else if (regexp_result = sle_details_re.exec(this.tabUrl)) {
-      this.sleDetailsUrl(regexp_result);
-    } else if ((regexp_result = sle_re.exec(this.tabUrl))) {
-      this.sleUrl(regexp_result);
-    } else if (regexp_result = insights_re.exec(this.tabUrl)) {
-      this.insightsUrl(regexp_result);
-    } else if (regexp_result = alarm_re.exec(this.tabUrl)) {
-      this.alarmUrl(regexp_result);
-    } else if (regexp_result = site_evpn_re.exec(this.tabUrl)) {
-      this.siteEvpnUrl(regexp_result);
-    } else if (regexp_result = org_evpn_re.exec(this.tabUrl)) {
-      this.orgEvpnUrl(regexp_result);
-    } else if (regexp_result = site_wlan_template_re.exec(this.tabUrl)) {
-      this.siteWlanTemplateUrl(regexp_result);
-    } else if (regexp_result = events_re.exec(this.tabUrl)) {
-      this.eventsUrl(regexp_result);
-    } else if (regexp_result = org_inventory.exec(this.tabUrl)) {
-      this.orgInventoryUrl(regexp_result);
-    } else if (regexp_result = org_upgrade.exec(this.tabUrl)) {
-      this.orgUpgradeUrl(regexp_result);
-    } else if (regexp_result = floorplans_re.exec(this.tabUrl)) {
-      this.floorplansUrl(regexp_result);
-    } else if (regexp_result = org_identityProviders.exec(this.tabUrl)) {
-      this.orgNacIdentityProvidersUrl(regexp_result);
-    } else if ((regexp_result = site_common_re.exec(this.tabUrl)) && regexp_result["groups"] && site_common_objs.includes(regexp_result["groups"]["obj"].toLowerCase())) {
-      this.commonSiteUrl(regexp_result);
-    } else if ((regexp_result = org_common_re.exec(this.tabUrl)) && regexp_result["groups"] && org_common_objs.includes(regexp_result["groups"]["obj"].toLowerCase())) {
-      this.commonOrgUrl(regexp_result);
-    } else if (regexp_result = base_re.exec(this.tabUrl)) {
-      this.baseUrl(regexp_result);
-    } else if (regexp_result = msp_re.exec(this.tabUrl)) {
-      this.commonMspUrl(regexp_result);
+    const route = url.hash.replace(/^#!/, "");
+
+    switch (url.pathname) {
+      case "/admin/":
+        this.org_id = url.searchParams.get("org_id") ?? undefined;
+        this.parseOrgUrl({ host: hostMatch.groups.host, org_id: this.org_id, route });
+        break;
+      case "/msp/":
+        this.msp_id = url.searchParams.get("msp_id") ?? undefined;
+        this.parseMspUrl({ host: hostMatch.groups.host, msp_id: this.msp_id, route });
+        break;
     }
+  }
+
+  private dispatchRoute(parsed: ManageUrlParts, routes: RouteHandler[]): boolean {
+    for (const route of routes) {
+      const match = route.re.exec(parsed.route);
+
+      if (match && (!route.accept || route.accept(match))) {
+        match.groups = {
+          ...match.groups,
+          host: parsed.host,
+          org_id: parsed.org_id,
+          msp_id: parsed.msp_id,
+        };
+
+        route.handler(match);
+        return true;
+      }
+    }
+
+    return false;
+  }
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
+  // MSP URL ENTRYPOINT
+
+  private parseMspUrl(parsed: ManageUrlParts): void {
+
+    const msp_re = /^(?<obj>orgs|admins|auditLogs|mspInfo|labels)\/?(?<detail>aiops|details|detail|invite)?\/?(?<obj_id>[0-9a-z_-]*)?$/is;
+
+    this.dispatchRoute(parsed, [
+      { re: msp_re, handler: this.commonMspUrl.bind(this) },
+    ]);
+    this._cd.detectChanges()
+  }
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
+  // ORG URL ENTRYPOINT
+
+  private parseOrgUrl(parsed: ManageUrlParts): void {
+
+    const minis_re = /^marvisMini\??(?<query_params>.*)$/is;
+    const minis_sle_re = /^marvisMiniSLE\??(?<query_params>.*)$/is;
+    const orginsights_re = /^orgInsights\??(?<query_params>.*)?$/is;
+    const orgsle_re = /^dashboard\/(?<scope>siteComparison|wiredSiteComparison|wanSiteComparison)\/(?<sle>[a-z-]*)\/(?<worstsle>[a-z-]*)\/([a-z-_]*)\/(?<period>[0-9a-z-]*)\/(?<start>[0-9]*)\/(?<stop>[0-9]*)$/is;
+    const sle_details_re = /^dashboard\/(?<detail>serviceLevels|wiredserviceLevels|wanServiceLevels|juniperGateway)\/page2\/(stats|timeline)\/[a-zA-Z-]+\/[a-zA-Z-]+\/(?<scope>site|device|client|juniperSwitch|juniperGateway)\/(?<scope_id>[a-f0-9-]*)\/(?<sle_name>[a-z-]*)\/(?<sle_sub_1>[a-zA-Z-]+)\/(?<sle_sub_2>[a-zA-Z-]+)(\/(?<period>[0-9a-z]*))?(\/(?<start>[0-9]*))?(\/(?<stop>[0-9]*))?\/(?<site_id>[a-f0-9-]*)$/is;
+    const sle_re = /^dashboard\/(?<detail>serviceLevels|wiredserviceLevels|wanServiceLevels|juniperGateway|applicationServiceLevels)(\/(?<scope>org|site|device|client|juniperSwitch|juniperGateway))?(\/(?<scope_id>[a-f0-9-]*))?(\/(?<period>[0-9a-z-]*))?(\/(?<start>[0-9]*))?(\/(?<stop>[0-9]*))?\/(?<site_id>[a-f0-9-]*)(\?app=(?<app>[a-zA-Z]*))?$/is;
+    const insights_re = /^dashboard\/(?<detail>insights|insights-full-stack)\/((?<obj>[a-z]+)\/)?((?<obj_id>[a-z0-9-]+)\/)?((?<period>[a-z0-9]+)\/)?((?<start>[0-9]*)\/)?((?<stop>[0-9]*)\/)?(?<site_id>[0-9a-f-]{36})?$/is;
+    const alarm_re = /^alerts\/?(?<site_id>[0-9a-z-]*)\??(?<query_param>.*)?$/is;
+    const events_re = /^marvis\/?(?<site_id>[0-9a-z-]*)\??(?<query_param>.*)?$/is;
+    const floorplans_re = /^(cliLocation|liveView)\/(?<detail>view|config|validationPath|wayfinding)?\/?(?<uuid>[0-9a-f-]{36})\/?(floorplan|beaconsAndZones)?\/?(?<site_id>[0-9a-f-]{36})?$/is;
+    const site_evpn_re = /^evpn\/site\/?([0-9]\/)?(?<site_id>[0-9a-z_-]*)?(\/(?<topology_id>[0-9a-f-]{36}))?$/is;
+    const site_wlan_template_re = /^wlan\/orgWlanDetail\/(?<template_id>[0-9a-z_-]*)\/(?<wlan_id>[0-9a-f-]{36})\/(?<site_id>[0-9a-f-]{36})/is;
+    const site_common_re = /^(?<obj>[a-z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view|band|list)\/)?(?<inter>[0-9]*\/)?((?<obj_id>[0-9a-z_-]*)\/)?(?<site_id>[0-9a-f-]{36})?$/is;
+    const site_common_objs = new Set(["ap", "gateway", "switch", "assets", "wlan", "tags", "psk", "tunnels", "clients", "guestclients", "sdkclients", "wiredclients", "zigbeeclients", "wxlan", "security", "switchconfig", "pcap", "siteedge", "cellularedges", "rrm"]);
+    const org_evpn_re = /^evpn\/org(\/(?<topology_id>[0-9a-f-]{36}))?$/is;
+    const org_inventory = /^apinventory\/?(?<detail>aps|switches|wan_edges|mist_edges)?\/?(?<site_id>[0-9a-z_-]*)$/is;
+    const org_identityProviders = /^nacIdentityProviders(\/oauth\/(?<provider>[a-z]+)\/(?<obj_id>[0-9a-z_-]+))?$/is;
+    const org_upgrade = /^upgrade\/?(?<device_type>ap|switch|gateway|mxedge)?$/is;
+    const org_common_re = /^(?<obj>[a-zA-Z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view|template|rfTemplate|provider|nacportals|pskportals)\/)?([0-9]\/)?(?<obj_id>[0-9a-z_-]*)\??(?<query_params>[0-9a-z_=&-]*)?$/is;
+    const org_common_objs = new Set(["orgtags", "misttunnels", "templates", "switchtemplate", "gatewaytemplates", "hubs", "deviceprofiles", "org", "orgpsk", "configuration", "auditlogs", "adminconfig", "subscription", "edge", "vpns", "template", "rftemplates", "services", "networks", "applicationpolicy", "authpolicylabels", "naccertificates", "nacpolicy", "onboardingworkflow", "sdk", "premiumanalytics", "private5g", "securityevents", "nacclients", "nacendpoints", "sitetemplates"]);
+
+    this.dispatchRoute(parsed, [
+      { re: minis_re, handler: this.MarvisMinisUrl.bind(this) },
+      { re: minis_sle_re, handler: this.MarvisMinisSLEUrl.bind(this) },
+      { re: orginsights_re, handler: this.orgInsightUrl.bind(this) },
+      { re: orgsle_re, handler: this.orgSleUrl.bind(this) },
+      { re: sle_details_re, handler: this.sleDetailsUrl.bind(this) },
+      { re: sle_re, handler: this.sleUrl.bind(this) },
+      { re: insights_re, handler: this.insightsUrl.bind(this) },
+      { re: alarm_re, handler: this.alarmUrl.bind(this) },
+      { re: events_re, handler: this.eventsUrl.bind(this) },
+      { re: floorplans_re, handler: this.floorplansUrl.bind(this) },
+      { re: site_evpn_re, handler: this.siteEvpnUrl.bind(this) },
+      { re: org_evpn_re, handler: this.orgEvpnUrl.bind(this) },
+      { re: site_wlan_template_re, handler: this.siteWlanTemplateUrl.bind(this) },
+      { re: org_inventory, handler: this.orgInventoryUrl.bind(this) },
+      { re: org_identityProviders, handler: this.orgNacIdentityProvidersUrl.bind(this) },
+      { re: org_upgrade, handler: this.orgUpgradeUrl.bind(this) }, {
+        re: site_common_re,
+        handler: this.commonSiteUrl.bind(this),
+        accept: match => !!match.groups?.obj && site_common_objs.has(match.groups.obj.toLowerCase()),
+      },
+      {
+        re: org_common_re,
+        handler: this.commonOrgUrl.bind(this),
+        accept: match => !!match.groups?.obj && org_common_objs.has(match.groups.obj.toLowerCase()),
+      },
+    ]);
     this._cd.detectChanges()
   }
 
@@ -157,12 +205,12 @@ export class ApiManageComponent implements OnInit {
 
 
   ////////////////////// MAC 
-  getMac(uuid: string): string {
+  private getMac(uuid: string): string {
     const splitted_uuid = uuid.split("-");
     return splitted_uuid[splitted_uuid.length - 1];
   }
 
-  setName(obj_name: string = "", detail: string | undefined) {
+  private setName(obj_name: string = "", detail: string | undefined) {
     obj_name = obj_name.toLowerCase();
     if (detail && !this.not_detail.includes(detail)) {
       this.obj_name = obj_name
@@ -179,7 +227,7 @@ export class ApiManageComponent implements OnInit {
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// COMMON ORG FUNCTIONS
-  forgeOrgObject(obj_name: string, host: string, detail: string | undefined, extra_param: string | undefined = undefined, ui_name: string | undefined = undefined): void {
+  private forgeOrgObject(obj_name: string, host: string, detail: string | undefined, extra_param: string | undefined = undefined, ui_name: string | undefined = undefined): void {
     let url = "";
     if (!ui_name) {
       ui_name = this.obj_name;
@@ -197,7 +245,7 @@ export class ApiManageComponent implements OnInit {
     }
   }
 
-  forgeOrgObjectStats(obj_name: string, host: string, detail: string, extra_param: string | undefined = undefined): void {
+  private forgeOrgObjectStats(obj_name: string, host: string, detail: string, extra_param: string | undefined = undefined): void {
     let url = "";
     if (detail && !this.not_detail.includes(detail)) {
       // set QUICK LINK
@@ -208,7 +256,7 @@ export class ApiManageComponent implements OnInit {
   }
 
 
-  forgeOrgObjectEvents(obj_name: string, host: string, detail: string, extra_param: string | undefined = undefined): void {
+  private forgeOrgObjectEvents(obj_name: string, host: string, detail: string, extra_param: string | undefined = undefined): void {
     let url = "";
     let filter = "";
     if (detail && !this.not_detail.includes(detail) && this.obj_id) {
@@ -255,7 +303,7 @@ export class ApiManageComponent implements OnInit {
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// COMMON SITE FUNCTIONS
-  forgeSiteObject(obj_name: string, host: string | undefined, detail: string | undefined, extra_param: string | undefined = undefined): void {
+  private forgeSiteObject(obj_name: string, host: string | undefined, detail: string | undefined, extra_param: string | undefined = undefined): void {
     let url = "";
     if (detail && !this.not_detail.includes(detail)) {
       // set QUICK LINK
@@ -273,7 +321,7 @@ export class ApiManageComponent implements OnInit {
     }
   }
 
-  forgeSiteOtherDevices(host: string | undefined, detail: string | undefined, extra_param: string | undefined = undefined): void {
+  private forgeSiteOtherDevices(host: string | undefined, detail: string | undefined, extra_param: string | undefined = undefined): void {
     let url = "";
     if (detail) {
       this.quick_links.push({
@@ -292,7 +340,7 @@ export class ApiManageComponent implements OnInit {
     }
   }
 
-  forgeSiteObjectSearch(obj_name: string, host: string, detail: string | null, extra_param: string | undefined = undefined, ui_name: string | undefined = undefined): void {
+  private forgeSiteObjectSearch(obj_name: string, host: string, detail: string | null, extra_param: string | undefined = undefined, ui_name: string | undefined = undefined): void {
     let url = "";
     if (!ui_name) {
       ui_name = obj_name.replace(/_/g, " ");
@@ -309,7 +357,7 @@ export class ApiManageComponent implements OnInit {
     }
   }
 
-  forgeOrgObjectStatsSearch(obj_name: string, host: string, extra_param: string | undefined = undefined, ui_name: string | undefined = undefined): void {
+  private forgeOrgObjectStatsSearch(obj_name: string, host: string, extra_param: string | undefined = undefined, ui_name: string | undefined = undefined): void {
     let url = "";
     if (!ui_name) {
       ui_name = obj_name.replace(/_/g, " ");
@@ -319,7 +367,7 @@ export class ApiManageComponent implements OnInit {
     this.quick_links.push({ url: url, name: ui_name + " STATS" });
   }
 
-  forgeSiteObjectStats(obj_name: string, host: string, detail: string, extra_param: string | undefined = undefined): void {
+  private forgeSiteObjectStats(obj_name: string, host: string, detail: string, extra_param: string | undefined = undefined): void {
     let url = "";
     if (detail && !this.not_detail.includes(detail)) {
       // set QUICK LINK
@@ -334,7 +382,7 @@ export class ApiManageComponent implements OnInit {
     }
   }
 
-  forgeSiteObjectEvents(obj_name: string, device_type: string | undefined, host: string, detail: string, extra_param: string | undefined = undefined): void {
+  private forgeSiteObjectEvents(obj_name: string, device_type: string | undefined, host: string, detail: string, extra_param: string | undefined = undefined): void {
     let url = "";
     if (detail && !this.not_detail.includes(detail) && this.obj_id) {
       // MAC
@@ -361,7 +409,7 @@ export class ApiManageComponent implements OnInit {
     }
   }
 
-  forgeSiteObjectAlarms(_: string, device_type: string | undefined, host: string, detail: string, extra_param: string | undefined = undefined): void {
+  private forgeSiteObjectAlarms(_: string, device_type: string | undefined, host: string, detail: string, extra_param: string | undefined = undefined): void {
     let url = "";
     let filter = "";
     if (device_type == "ap") filter = "&aps=";
@@ -391,7 +439,7 @@ export class ApiManageComponent implements OnInit {
     }
   }
 
-  forgeClientCalls(obj_name: string, device_type: string | undefined, host: string, detail: string, extra_param: string | undefined = undefined): void {
+  private forgeClientCalls(obj_name: string, device_type: string | undefined, host: string, detail: string, extra_param: string | undefined = undefined): void {
     this.quick_links.push({
       url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/stats/calls/search?interval=3600&mac=" + this.obj_id + "&" + extra_param, //&app=teams&wired=false",
       name: obj_name + " Calls List"
@@ -404,7 +452,7 @@ export class ApiManageComponent implements OnInit {
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// SITE SECURITY FUNCTION
-  forgeSiteSecurity(host: string): void {
+  private forgeSiteSecurity(host: string): void {
     this.quick_links.push({
       url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/rogues/events/search?limit=100&duration=1d",
       name: "rogues events"
@@ -431,7 +479,7 @@ export class ApiManageComponent implements OnInit {
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// NAC POLICIES FUNCTION
-  forgeNacPolicies(host: string): void {
+  private forgeNacPolicies(host: string): void {
     this.quick_links.push({
       url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/nac_clients/search",
       name: "NAC Clients"
@@ -446,7 +494,7 @@ export class ApiManageComponent implements OnInit {
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// SITE SWITCH CONF FUNCTION
-  forgeSiteSwitchConfig(host: string): void {
+  private forgeSiteSwitchConfig(host: string): void {
     this.quick_links.push({
       url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/setting/derived",
       name: "switchconfig"
@@ -455,7 +503,7 @@ export class ApiManageComponent implements OnInit {
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// SITE DEVICE LAST CONFIG FUNCTION
-  forgeSiteApLastConfig(detail: string | undefined, host: string, device_type: string): void {
+  private forgeSiteApLastConfig(detail: string | undefined, host: string, device_type: string): void {
     if (detail && this.obj_id) {
       const mac = this.getMac(this.obj_id)
       if (device_type == "ap" && mac) {
@@ -466,7 +514,7 @@ export class ApiManageComponent implements OnInit {
       }
     }
   }
-  forgeSiteDeviceSyntheticTest(detail: string | undefined, host: string, device_type: string): void {
+  private forgeSiteDeviceSyntheticTest(detail: string | undefined, host: string, device_type: string): void {
     if (detail && this.obj_id) {
       const mac = this.getMac(this.obj_id)
       if (mac) {
@@ -477,7 +525,7 @@ export class ApiManageComponent implements OnInit {
       }
     }
   }
-  forgeSiteSyntheticTest(host: string, extra_param: string): void {
+  private forgeSiteSyntheticTest(host: string, extra_param: string): void {
     this.quick_links.push({
       url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/synthetic_test/search?" + extra_param,
       name: "Marvis Minis Test Results"
@@ -485,7 +533,7 @@ export class ApiManageComponent implements OnInit {
   }
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// ORG OBJ FUNCTION
-  forgeOrg(host: string) {
+  private forgeOrg(host: string) {
     this.quick_links.push({
       url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/setting",
       name: "org setting"
@@ -513,14 +561,14 @@ export class ApiManageComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// SITE ASSETS FUNCTION
 
-  forgeAsset(host: string, mac: string | undefined): void {
+  private forgeAsset(host: string, mac: string | undefined): void {
     if (mac) this.quick_links.push({
       url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/zones/visits/search?duration=1d&interval=3600&user_type=asset&scope=zone&user=" + mac,
       name: "asset zones visits"
     })
   }
 
-  forgeSiteAssetStats(obj_name: string, host: string, detail: string, extra_param: string | undefined = undefined): void {
+  private forgeSiteAssetStats(obj_name: string, host: string, detail: string, extra_param: string | undefined = undefined): void {
     let url = "";
     if (detail && !this.not_detail.includes(detail)) {
       // set QUICK LINK
@@ -540,7 +588,7 @@ export class ApiManageComponent implements OnInit {
   }
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// SITE OBJ FUNCTION
-  forgeSite(host: string, detail: string, extra_params: string | undefined = undefined): void {
+  private forgeSite(host: string, detail: string, extra_params: string | undefined = undefined): void {
     if (extra_params) {
       extra_params = "?" + extra_params;
     } else {
@@ -583,7 +631,7 @@ export class ApiManageComponent implements OnInit {
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// MIST EDGE FUNCTION
-  forgeEdge(host: string, detail: string): void {
+  private forgeEdge(host: string, detail: string): void {
     if (detail == "edgedetail") {
       this.obj_name = "mxedge";
       this.forgeOrgObject("mxedges", host, detail);
@@ -609,14 +657,14 @@ export class ApiManageComponent implements OnInit {
     }
   }
 
-  forgeMxTunnel(host: string, detail: string): void {
+  private forgeMxTunnel(host: string, detail: string): void {
     this.obj_name = "mx tunnel";
     this.forgeOrgObject("mxtunnels", host, detail);
   }
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// HUB PROFILE FUNCTION
-  forgeHubProfile(host: string, detail: string): void {
+  private forgeHubProfile(host: string, detail: string): void {
     if (detail == "detail") {
       this.obj_name = "hubprofile";
       this.forgeOrgObject("deviceprofiles", host, detail);
@@ -634,7 +682,7 @@ export class ApiManageComponent implements OnInit {
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// DISCOVERED SWITCHES FUNCTION
-  forgeSiteDiscoveredSwitchUrl(host: string, mac: string | undefined = undefined): void {
+  private forgeSiteDiscoveredSwitchUrl(host: string, mac: string | undefined = undefined): void {
     if (mac) {
       this.quick_links.push({
         url: "https://api." + host + "/api/v1/sites/" + this.site_id + "/stats/discovered_switches/search?system_name=" + mac,
@@ -650,7 +698,7 @@ export class ApiManageComponent implements OnInit {
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// ORG SLE FUNCTION
-  forgeOrgSlehUrl(host: string, scope: string, sle: string, worstsle: string | undefined = undefined, extra_params: string | undefined = undefined): void {
+  private forgeOrgSlehUrl(host: string, scope: string, sle: string, worstsle: string | undefined = undefined, extra_params: string | undefined = undefined): void {
     /*
     host: mist.com, eu.mist.com, gc1.mist.com
     scope: wifi, wire, wan
@@ -667,7 +715,7 @@ export class ApiManageComponent implements OnInit {
 
   ////////////////////////////////////////////////////////////////////////////////////
   //////////////////////  SLE DETAILS FUNCTION
-  forgeSleDetailshUrl(host: string, scope: string | undefined, site_id: string, scope_id: string, sle: string, impacted_entities: string[] = [], extra_params: string | null = null): void {
+  private forgeSleDetailshUrl(host: string, scope: string | undefined, site_id: string, scope_id: string, sle: string, impacted_entities: string[] = [], extra_params: string | null = null): void {
     /*
     host: mist.com, eu.mist.com, gc1.mist.com
     scope: wifi, wire, wan
@@ -700,7 +748,7 @@ export class ApiManageComponent implements OnInit {
   }
   ////////////////////////////////////////////////////////////////////////////////////
   //////////////////////  SLE FUNCTION
-  forgeSlehUrl(host: string, scope: string | undefined, site_id: string, scope_id: string, sles: string[], extra_params: string | null = null): void {
+  private forgeSlehUrl(host: string, scope: string | undefined, site_id: string, scope_id: string, sles: string[], extra_params: string | null = null): void {
     /*
     host: mist.com, eu.mist.com, gc1.mist.com
     scope: wifi, wire, wan
@@ -712,7 +760,7 @@ export class ApiManageComponent implements OnInit {
       });
     })
   }
-  forgeApplicationSlehUrl(host: string, scope: string | undefined, site_id: string, scope_id: string, app: string | null = "Apps", extra_params: string | null = null): void {
+  private forgeApplicationSlehUrl(host: string, scope: string | undefined, site_id: string, scope_id: string, app: string | null = "Apps", extra_params: string | null = null): void {
     /*
     host: mist.com, eu.mist.com, gc1.mist.com
     scope: wifi, wire, wan
@@ -763,18 +811,11 @@ export class ApiManageComponent implements OnInit {
       );
     }
   }
-  ////////////////////////////////////////////////////////////////////////////////////
-  ////////////////////////////////////////////////////////////////////////////////////
-  ////////////////////// BASE URL FUNCTION DISPATCHER
-
-  baseUrl(res: RegExpExecArray): void {
-    this.org_id = res?.groups?.org_id;
-  }
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// ORG WLANS FUNCTION DISPATCHER FOR SITE URLS
-  siteWlanTemplateUrl(res: RegExpExecArray): void {
+  private siteWlanTemplateUrl(res: RegExpExecArray): void {
     this.org_id = res?.groups?.org_id;
     this.site_id = res?.groups?.site_id;
     this.obj_id = res?.groups?.wlan_id;
@@ -792,7 +833,7 @@ export class ApiManageComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// COMMON URL FUNCTION DISPATCHER FOR SITE URLS
-  commonSiteUrl(res: RegExpExecArray): void {
+  private commonSiteUrl(res: RegExpExecArray): void {
     this.org_id = res?.groups?.org_id;
     let extra_params: string | undefined;
     var stats_filter: string | undefined;
@@ -914,6 +955,10 @@ export class ApiManageComponent implements OnInit {
           this.setName(res?.groups?.obj.substr(0, res?.groups?.obj.length - 1), res?.groups?.detail);
           this.forgeSiteObjectSearch("wired_clients", res?.groups?.host, res?.groups?.detail);
           break;
+        case "zigbeeclients":
+          this.setName(res?.groups?.obj.substr(0, res?.groups?.obj.length - 1), res?.groups?.detail);
+          this.forgeSiteObjectSearch("iotendpoints", res?.groups?.host, res?.groups?.detail);
+          break;
         case "wxlan":
           this.setName("wxrule", res?.groups?.detail);
           this.forgeSiteObject("wxrules", res?.groups?.host, res?.groups?.detail);
@@ -957,7 +1002,7 @@ export class ApiManageComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// COMMON URL FUNCTION DISPATCHER FOR ORG URLS
-  process_time_interval(end: number | null, timeInterval: string): string | null {
+  private process_time_interval(end: number | null, timeInterval: string): string | null {
     switch (timeInterval) {
       case "today":
       case "thisWeek":
@@ -979,7 +1024,7 @@ export class ApiManageComponent implements OnInit {
     else return null;
   }
 
-  process_query_params(res: RegExpExecArray): RegExpExecArray {
+  private process_query_params(res: RegExpExecArray): RegExpExecArray {
     let query_params = res?.groups?.query_params;
     let end, timeInterval;
     if (query_params) {
@@ -1012,7 +1057,7 @@ export class ApiManageComponent implements OnInit {
     return res;
   }
 
-  orgInventoryUrl(res: RegExpExecArray): void {
+  private orgInventoryUrl(res: RegExpExecArray): void {
     res = this.process_query_params(res);
     this.org_id = res?.groups?.org_id;
     this.site_id = res?.groups?.site_id ? res?.groups?.site_id : null;
@@ -1033,13 +1078,13 @@ export class ApiManageComponent implements OnInit {
 
 
 
-  orgNacIdentityProvidersUrl(res: RegExpExecArray): void {
+  private orgNacIdentityProvidersUrl(res: RegExpExecArray): void {
     res = this.process_query_params(res);
     this.org_id = res?.groups?.org_id;
     this.site_id = res?.groups?.site_id ? res?.groups?.site_id : null;
     const url = "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/inventory";
     if (res?.groups?.host && this.org_id && res?.groups?.provider) {
-      this.quick_links.push({ url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/setting/"+res?.groups?.provider+"/link_accounts", name: "NAC "+res?.groups?.provider+" MDM" });
+      this.quick_links.push({ url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/setting/" + res?.groups?.provider + "/link_accounts", name: "NAC " + res?.groups?.provider + " MDM" });
     } else if (res?.groups?.host && this.org_id) {
       this.quick_links.push({ url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/ssos", name: "NAC IDPS" });
       this.quick_links.push({ url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/setting/intune/link_accounts", name: "NAC INTUNE MDM" });
@@ -1051,7 +1096,7 @@ export class ApiManageComponent implements OnInit {
 
 
 
-  commonOrgUrl(res: RegExpExecArray): void {
+  private commonOrgUrl(res: RegExpExecArray): void {
     res = this.process_query_params(res);
     this.org_id = res?.groups?.org_id;
     const uuid_re = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/
@@ -1214,7 +1259,7 @@ export class ApiManageComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// ALARM URL FUNCTION DISPATCHER
-  alarmUrl(res: RegExpExecArray): void {
+  private alarmUrl(res: RegExpExecArray): void {
     this.org_id = res?.groups?.org_id;
     let extra_params = "";
     let extra_params_array: string[] = [];
@@ -1266,7 +1311,7 @@ export class ApiManageComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// EVPN URL FUNCTION DISPATCHER
-  siteEvpnUrl(res: RegExpExecArray): void {
+  private siteEvpnUrl(res: RegExpExecArray): void {
     console.log(res?.groups)
     this.org_id = res?.groups?.org_id;
     this.site_id = res?.groups?.site_id;
@@ -1295,7 +1340,7 @@ export class ApiManageComponent implements OnInit {
     }
   }
 
-  orgNacUrl(res: RegExpExecArray): void {
+  private orgNacUrl(res: RegExpExecArray): void {
     this.org_id = res?.groups?.org_id;
     this.site_id = res?.groups?.site_id;
     let query_params = [];
@@ -1323,7 +1368,7 @@ export class ApiManageComponent implements OnInit {
       })
     }
   }
-  orgEvpnUrl(res: RegExpExecArray): void {
+  private orgEvpnUrl(res: RegExpExecArray): void {
     this.org_id = res?.groups?.org_id;
     let extra_params = "";
     if (res?.groups?.topology_id) {
@@ -1350,7 +1395,7 @@ export class ApiManageComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// EVENTS URL FUNCTION DISPATCHER
-  eventsUrl(res: RegExpExecArray): void {
+  private eventsUrl(res: RegExpExecArray): void {
     this.org_id = res?.groups?.org_id;
     let extra_params: string = "";
     let extra_params_array: string[] = [];
@@ -1390,24 +1435,25 @@ export class ApiManageComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// EVENTS URL FUNCTION DISPATCHER
-  orgUpgradeUrl(res: RegExpExecArray): void {
+  private orgUpgradeUrl(res: RegExpExecArray): void {
     this.org_id = res?.groups?.org_id;
-    var device_type = "ap";
-    if (res?.groups?.device_type) device_type = res?.groups?.device_type;
+    var device_types = ["ap", "switch", "gateway"];
+    device_types.forEach(device_type => {
       this.quick_links.push({
-        url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/devices/upgrade?device_type="+device_type+"&duration=30d",
-        name: device_type+ " Upgrades"
+        url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/devices/upgrade?device_type=" + device_type + "&duration=30d",
+        name: device_type + " Upgrades"
       })
       this.quick_links.push({
-        url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/devices/versions?type="+device_type,
-        name: device_type+ " Versions"
+        url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/devices/versions?type=" + device_type,
+        name: device_type + " Versions"
       })
-      }
+    })
+  }
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// EVENTS URL FUNCTION DISPATCHER
-  floorplansUrl(res: RegExpExecArray): void {
+  private floorplansUrl(res: RegExpExecArray): void {
     this.org_id = res?.groups?.org_id;
     if (res?.groups?.site_id) {
       this.site_id = res?.groups?.site_id;
@@ -1429,7 +1475,7 @@ export class ApiManageComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// INSIGHTS URL FUNCTION DISPATCHER
-  insightsUrl(res: RegExpExecArray): void {
+  private insightsUrl(res: RegExpExecArray): void {
     this.org_id = res?.groups?.org_id;
     this.site_id = res?.groups?.site_id;
     if (res?.groups?.obj_id != this.org_id && res?.groups?.obj_id != this.site_id) {
@@ -1509,12 +1555,12 @@ export class ApiManageComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// MARVIS MINIS
-  MarvisMinisUrl(res: RegExpExecArray): void {
+  private MarvisMinisUrl(res: RegExpExecArray): void {
     this.org_id = res?.groups?.org_id;
     let extra_params: string | undefined = undefined;
     let e_params = [];
-    if (res?.groups?.q_param) {
-      res?.groups?.q_param.split("&").forEach(param => {
+    if (res?.groups?.query_params) {
+      res?.groups?.query_params.split("&").forEach(param => {
         let splitted_param = param.split("=");
         if (splitted_param.length == 2) {
           let key = splitted_param[0];
@@ -1538,11 +1584,66 @@ export class ApiManageComponent implements OnInit {
 
   }
 
+  ////////////////////// MARVIS MINIS SLE
+  private MarvisMinisSLEUrl(res: RegExpExecArray): void {
+    this.org_id = res?.groups?.org_id;
+    const host = res?.groups?.host;
+    const org_id = res?.groups?.org_id;
+    let extra_params: string | undefined = undefined;
+    let e_params = [];
+    let scopeType = "org";
+    let scopeId: string = this.org_id;
+    if (res?.groups?.query_params) {
+      res?.groups?.query_params.split("&").forEach(param => {
+        let splitted_param = param.split("=");
+        if (splitted_param.length == 2) {
+          let key = splitted_param[0];
+          let val = splitted_param[1];
+          switch (key) {
+            case "scopeType":
+              scopeType = val;
+              break;
+            case "scopeId":
+              scopeId = val;
+              break;
+            case "start":
+            case "end":
+            case "metric":
+              e_params.push(param);
+              break
+          }
+        }
+      })
+
+      if (scopeType == "site" && scopeId) {
+        this.site_id = scopeId;
+      }
+
+      extra_params = e_params.join("&");
+      const metrics = ["network-services", "application"]
+      metrics.forEach(metric => {
+        this.quick_links.push(
+          {
+            url: "https://" + host + "/api/v1/orgs/" + org_id + "/sle/org/" + org_id + "/metric/" + metric + "/summary-trend?" + extra_params,
+            name: metric + " Trend Summary"
+          }
+        )
+      })
+      this.quick_links.push(
+        {
+          url: "https://" + host + "/api/v1/orgs/" + org_id + "/insights/minis-top-probes?" + extra_params,
+          name: "minis top probes"
+        }
+      )
+
+    }
+  }
+
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// ORG SLE URL FUNCTION DISPATCHER
 
-  orgInsightUrl(res: RegExpExecArray): void {
+  private orgInsightUrl(res: RegExpExecArray): void {
     this.org_id = res?.groups?.org_id;
     let query_params = res?.groups?.query_params;
     if (res?.groups?.host && res?.groups?.org_id) {
@@ -1612,7 +1713,7 @@ export class ApiManageComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// ORG SLE URL FUNCTION DISPATCHER
 
-  orgSleUrl(res: RegExpExecArray): void {
+  private orgSleUrl(res: RegExpExecArray): void {
     this.org_id = res?.groups?.org_id;
     let extra_params: string | undefined = undefined;
     if (res?.groups?.start && res?.groups?.stop) {
@@ -1638,11 +1739,8 @@ export class ApiManageComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// SLE URL FUNCTION DISPATCHER
-  applicationSleUrl(): void {
 
-  }
-
-  sleUrl(res: RegExpExecArray): void {
+  private sleUrl(res: RegExpExecArray): void {
     this.org_id = res?.groups?.org_id;
     this.site_id = res?.groups?.site_id;
     let extra_params: string | null = null;
@@ -1723,7 +1821,7 @@ export class ApiManageComponent implements OnInit {
   // <site_id>[a-f0-9-]*
 
 
-  sleDetailsUrl(res: RegExpExecArray): void {
+  private sleDetailsUrl(res: RegExpExecArray): void {
     this.org_id = res?.groups?.org_id;
     this.site_id = res?.groups?.site_id;
     let extra_params: string | null = null;
@@ -1787,7 +1885,7 @@ export class ApiManageComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// COMMON URL FUNCTION DISPATCHER FOR SITE URLS
-  commonMspUrl(res: RegExpExecArray): void {
+  private commonMspUrl(res: RegExpExecArray): void {
     this.msp_id = res?.groups?.msp_id;
     if (res?.groups?.host && res?.groups?.msp_id && res?.groups?.obj) {
       this.obj_id = res?.groups?.obj_id;
