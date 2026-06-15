@@ -164,7 +164,7 @@ export class ApiManageComponent implements OnInit {
     const org_inventory = /^apinventory\/?(?<detail>aps|switches|wan_edges|mist_edges)?\/?(?<site_id>[0-9a-z_-]*)$/is;
     const org_identityProviders = /^nacIdentityProviders(\/oauth\/(?<provider>[a-z]+)\/(?<obj_id>[0-9a-z_-]+))?$/is;
     const org_upgrade = /^upgrade\/?(?<device_type>ap|switch|gateway|mxedge)?$/is;
-    const org_common_re = /^(?<obj>[a-zA-Z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view|template|rfTemplate|provider|nacportals|pskportals)\/)?([0-9]\/)?(?<obj_id>[0-9a-z_-]*)\??(?<query_params>[0-9a-z_=&-]*)?$/is;
+    const org_common_re = /^(?<obj>[a-zA-Z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view|template|rfTemplate|provider|nacportals|pskportals)\/)?([0-9]\/)?(?<obj_id>[0-9a-z_-]*)(\/(?<site_id>[0-9a-f-]{36}))?\??(?<query_params>[0-9a-z_=&-]*)?$/is;
     const org_common_objs = new Set(["orgtags", "misttunnels", "templates", "switchtemplate", "gatewaytemplates", "hubs", "deviceprofiles", "org", "orgpsk", "configuration", "auditlogs", "adminconfig", "subscription", "edge", "vpns", "template", "rftemplates", "services", "networks", "applicationpolicy", "authpolicylabels", "naccertificates", "nacpolicy", "onboardingworkflow", "sdk", "premiumanalytics", "private5g", "securityevents", "nacclients", "nacendpoints", "sitetemplates"]);
 
     this.dispatchRoute(parsed, [
