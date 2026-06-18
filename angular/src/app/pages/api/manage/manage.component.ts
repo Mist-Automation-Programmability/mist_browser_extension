@@ -146,24 +146,24 @@ export class ApiManageComponent implements OnInit {
 
   private parseOrgUrl(parsed: ManageUrlParts): void {
 
-    const minis_re = /^marvisMini\??(?<query_params>.*)$/is;
-    const minis_sle_re = /^marvisMiniSLE\??(?<query_params>.*)$/is;
+    const minis_re = /^marvisMini\??(?<query_params>.*)?$/is;
+    const minis_sle_re = /^marvisMiniSLE\??(?<query_params>.*)?$/is;
     const orginsights_re = /^orgInsights\??(?<query_params>.*)?$/is;
-    const orgsle_re = /^dashboard\/(?<scope>siteComparison|wiredSiteComparison|wanSiteComparison)\/(?<sle>[a-z-]*)\/(?<worstsle>[a-z-]*)\/([a-z-_]*)\/(?<period>[0-9a-z-]*)\/(?<start>[0-9]*)\/(?<stop>[0-9]*)$/is;
-    const sle_details_re = /^dashboard\/(?<detail>serviceLevels|wiredserviceLevels|wanServiceLevels|juniperGateway)\/page2\/(stats|timeline)\/[a-zA-Z-]+\/[a-zA-Z-]+\/(?<scope>site|device|client|juniperSwitch|juniperGateway)\/(?<scope_id>[a-f0-9-]*)\/(?<sle_name>[a-z-]*)\/(?<sle_sub_1>[a-zA-Z-]+)\/(?<sle_sub_2>[a-zA-Z-]+)(\/(?<period>[0-9a-z]*))?(\/(?<start>[0-9]*))?(\/(?<stop>[0-9]*))?\/(?<site_id>[a-f0-9-]*)$/is;
-    const sle_re = /^dashboard\/(?<detail>serviceLevels|wiredserviceLevels|wanServiceLevels|juniperGateway|applicationServiceLevels)(\/(?<scope>org|site|device|client|juniperSwitch|juniperGateway))?(\/(?<scope_id>[a-f0-9-]*))?(\/(?<period>[0-9a-z-]*))?(\/(?<start>[0-9]*))?(\/(?<stop>[0-9]*))?\/(?<site_id>[a-f0-9-]*)(\?app=(?<app>[a-zA-Z]*))?$/is;
-    const insights_re = /^dashboard\/(?<detail>insights|insights-full-stack)\/((?<obj>[a-z]+)\/)?((?<obj_id>[a-z0-9-]+)\/)?((?<period>[a-z0-9]+)\/)?((?<start>[0-9]*)\/)?((?<stop>[0-9]*)\/)?(?<site_id>[0-9a-f-]{36})?$/is;
-    const alarm_re = /^alerts\/?(?<site_id>[0-9a-z-]*)\??(?<query_param>.*)?$/is;
-    const events_re = /^marvis\/?(?<site_id>[0-9a-z-]*)\??(?<query_param>.*)?$/is;
-    const floorplans_re = /^(cliLocation|liveView)\/(?<detail>view|config|validationPath|wayfinding)?\/?(?<uuid>[0-9a-f-]{36})\/?(floorplan|beaconsAndZones)?\/?(?<site_id>[0-9a-f-]{36})?$/is;
-    const site_evpn_re = /^evpn\/site\/?([0-9]\/)?(?<site_id>[0-9a-z_-]*)?(\/(?<topology_id>[0-9a-f-]{36}))?$/is;
-    const site_wlan_template_re = /^wlan\/orgWlanDetail\/(?<template_id>[0-9a-z_-]*)\/(?<wlan_id>[0-9a-f-]{36})\/(?<site_id>[0-9a-f-]{36})/is;
-    const site_common_re = /^(?<obj>[a-z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view|band|list)\/)?(?<inter>[0-9]*\/)?((?<obj_id>[0-9a-z_-]*)\/)?(?<site_id>[0-9a-f-]{36})?$/is;
+    const orgsle_re = /^dashboard\/(?<scope>siteComparison|wiredSiteComparison|wanSiteComparison)\/(?<sle>[a-z-]*)\/(?<worstsle>[a-z-]*)\/([a-z-_]*)\/(?<period>[0-9a-z-]*)\/(?<start>[0-9]*)\/(?<stop>[0-9]*)\??(?<query_params>.*)?$/is;
+    const sle_details_re = /^dashboard\/(?<detail>serviceLevels|wiredserviceLevels|wanServiceLevels|juniperGateway)\/page2\/(stats|timeline)\/[a-zA-Z-]+\/[a-zA-Z-]+\/(?<scope>site|device|client|juniperSwitch|juniperGateway)\/(?<scope_id>[a-f0-9-]*)\/(?<sle_name>[a-z-]*)\/(?<sle_sub_1>[a-zA-Z-]+)\/(?<sle_sub_2>[a-zA-Z-]+)(\/(?<period>[0-9a-z]*))?(\/(?<start>[0-9]*))?(\/(?<stop>[0-9]*))?\/(?<site_id>[a-f0-9-]*)\??(?<query_params>.*)?$/is;
+    const sle_re = /^dashboard\/(?<detail>serviceLevels|wiredserviceLevels|wanServiceLevels|juniperGateway|applicationServiceLevels)(\/(?<scope>org|site|device|client|juniperSwitch|juniperGateway))?(\/(?<scope_id>[a-f0-9-]*))?(\/(?<period>[0-9a-z-]*))?(\/(?<start>[0-9]*))?(\/(?<stop>[0-9]*))?\/(?<site_id>[a-f0-9-]*)\??(?<query_params>.*)?$/is;
+    const insights_re = /^dashboard\/(?<detail>insights|insights-full-stack)\/((?<obj>[a-z]+)\/)?((?<obj_id>[a-z0-9-]+)\/)?((?<period>[a-z0-9]+)\/)?((?<start>[0-9]*)\/)?((?<stop>[0-9]*)\/)?(?<site_id>[0-9a-f-]{36})?\??(?<query_params>.*)?$/is;
+    const alarm_re = /^alerts\/?(?<site_id>[0-9a-z-]*)\??(?<query_params>.*)?$/is;
+    const events_re = /^marvis\/?(?<site_id>[0-9a-z-]*)\??(?<query_params>.*)?$/is;
+    const floorplans_re = /^(cliLocation|liveView)\/(?<detail>view|config|validationPath|wayfinding)?\/?(?<uuid>[0-9a-f-]{36})\/?(floorplan|beaconsAndZones)?\/?(?<site_id>[0-9a-f-]{36})?\??(?<query_params>.*)?$/is;
+    const site_evpn_re = /^evpn\/site\/?([0-9]\/)?(?<site_id>[0-9a-z_-]*)?(\/(?<topology_id>[0-9a-f-]{36}))?\??(?<query_params>.*)?$/is;
+    const site_wlan_template_re = /^wlan\/orgWlanDetail\/(?<template_id>[0-9a-z_-]*)\/(?<wlan_id>[0-9a-f-]{36})\/(?<site_id>[0-9a-f-]{36})\??(?<query_params>.*)?$/is;
+    const site_common_re = /^(?<obj>[a-z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view|band|list)\/)?(?<inter>[0-9]*\/)?((?<obj_id>[0-9a-z_-]*)\/)?(?<site_id>[0-9a-f-]{36})?\??(?<query_params>.*)?$/is;
     const site_common_objs = new Set(["ap", "gateway", "switch", "assets", "wlan", "tags", "psk", "tunnels", "clients", "guestclients", "sdkclients", "wiredclients", "zigbeeclients", "wxlan", "security", "switchconfig", "pcap", "siteedge", "cellularedges", "rrm"]);
-    const org_evpn_re = /^evpn\/org(\/(?<topology_id>[0-9a-f-]{36}))?$/is;
-    const org_inventory = /^apinventory\/?(?<detail>aps|switches|wan_edges|mist_edges)?\/?(?<site_id>[0-9a-z_-]*)$/is;
-    const org_identityProviders = /^nacIdentityProviders(\/oauth\/(?<provider>[a-z]+)\/(?<obj_id>[0-9a-z_-]+))?$/is;
-    const org_upgrade = /^upgrade\/?(?<device_type>ap|switch|gateway|mxedge)?$/is;
+    const org_evpn_re = /^evpn\/org(\/(?<topology_id>[0-9a-f-]{36}))?\??(?<query_params>.*)?$/is;
+    const org_inventory = /^apinventory\/?(?<detail>aps|switches|wan_edges|mist_edges)?\/?(?<site_id>[0-9a-z_-]*)\??(?<query_params>.*)?$/is;
+    const org_identityProviders = /^nacIdentityProviders(\/oauth\/(?<provider>[a-z]+)\/(?<obj_id>[0-9a-z_-]+))?\??(?<query_params>.*)?$/is;
+    const org_upgrade = /^upgrade\/?(?<device_type>ap|switch|gateway|mxedge)?\??(?<query_params>.*)?$/is;
     const org_common_re = /^(?<obj>[a-zA-Z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view|template|rfTemplate|provider|nacportals|pskportals)\/)?([0-9]\/)?(?<obj_id>[0-9a-z_-]*)(\/(?<site_id>[0-9a-f-]{36}))?\??(?<query_params>[0-9a-z_=&-]*)?$/is;
     const org_common_objs = new Set(["orgtags", "misttunnels", "templates", "switchtemplate", "gatewaytemplates", "hubs", "deviceprofiles", "org", "orgpsk", "configuration", "auditlogs", "adminconfig", "subscription", "edge", "vpns", "template", "rftemplates", "services", "networks", "applicationpolicy", "authpolicylabels", "naccertificates", "nacpolicy", "onboardingworkflow", "sdk", "premiumanalytics", "private5g", "securityevents", "nacclients", "nacendpoints", "sitetemplates"]);
 
@@ -760,12 +760,15 @@ export class ApiManageComponent implements OnInit {
       });
     })
   }
-  private forgeApplicationSlehUrl(host: string, scope: string | undefined, site_id: string, scope_id: string, app: string | null = "Apps", extra_params: string | null = null): void {
+  private forgeApplicationSlehUrl(host: string, scope: string | undefined, site_id: string, scope_id: string, query_params: string, extra_params: string | null = null): void {
     /*
     host: mist.com, eu.mist.com, gc1.mist.com
     scope: wifi, wire, wan
     */
-    var ep = [extra_params]
+   var ep = [extra_params]
+   console.log(query_params)
+    const params = new URLSearchParams(query_params);
+    let app = params.get("app") || "all";
     if (app == "all") {
       app = "Apps";
     }
@@ -1278,8 +1281,8 @@ export class ApiManageComponent implements OnInit {
       scope_id = res?.groups?.org_id;
     }
 
-    if (res?.groups?.query_param) {
-      res?.groups?.query_param.split("&").forEach(param => {
+    if (res?.groups?.query_params) {
+      res?.groups?.query_params.split("&").forEach(param => {
         let key = param.split("=")[0];
         let value = param.split("=")[1];
         switch (key.toLowerCase()) {
@@ -1400,8 +1403,8 @@ export class ApiManageComponent implements OnInit {
     let extra_params: string = "";
     let extra_params_array: string[] = [];
 
-    if (res?.groups?.query_param) {
-      res?.groups?.query_param.split("&").forEach(param => {
+    if (res?.groups?.query_params) {
+      res?.groups?.query_params.split("&").forEach(param => {
         let key = param.split("=")[0];
         let value = param.split("=")[1];
         switch (key.toLowerCase()) {
@@ -1798,7 +1801,7 @@ export class ApiManageComponent implements OnInit {
           this.forgeSlehUrl(res?.groups?.host, scope, res?.groups?.site_id, res?.groups?.scope_id, sles, extra_params)
           break;
         case "applicationServiceLevels":
-          this.forgeApplicationSlehUrl(res?.groups?.host, scope, res?.groups?.site_id, res?.groups?.scope_id, res?.groups?.app, extra_params)
+          this.forgeApplicationSlehUrl(res?.groups?.host, scope, res?.groups?.site_id, res?.groups?.scope_id, res?.groups?.query_params, extra_params)
           break;
       }
     }
