@@ -1,22 +1,41 @@
+console.log("[mist-sw] service worker file loaded at", new Date().toISOString());
 
+var extensionApi = typeof browser !== "undefined" ? browser : chrome;
+var browser_name = typeof browser !== "undefined" ? "browser" : "chrome";
+var extensionAction = extensionApi.action || extensionApi.browserAction;
+console.log("[mist-sw] browser global =", browser_name);
 
-var browser_name = "ffx";
-if (typeof browser === "undefined") {
-    var browser = chrome;
-    browser_name = "chrome";
+function callApi(apiFunction, args) {
+    if (typeof browser !== "undefined") {
+        return Promise.resolve(apiFunction.apply(null, args));
+    }
+
+    return new Promise((resolve, reject) => {
+        apiFunction.apply(null, [
+            ...args,
+            response => {
+                const runtimeError = extensionApi.runtime && extensionApi.runtime.lastError;
+                if (runtimeError) {
+                    reject(runtimeError);
+                } else {
+                    resolve(response);
+                }
+            }
+        ]);
+    });
 }
 
-browser.tabs.onActivated.addListener(info => {
+extensionApi.tabs.onActivated.addListener(info => {
     getUrl(info.tabId);
 })
 
-browser.tabs.onUpdated.addListener((tab) => {
-    getUrl(tab);
+extensionApi.tabs.onUpdated.addListener(tabId => {
+    getUrl(tabId);
 })
 
 function getUrl(tabId) {
     setTimeout(() => {
-        browser.tabs.get(tabId)
+        callApi(extensionApi.tabs.get, [tabId])
             .then(tab => {
                 if (tab) {
                     checkUrl(tab.url);
@@ -51,11 +70,30 @@ function checkUrl(tabUrl) {
 
 function apiBadge(color) {
     if (color) {
-        browser.action.setBadgeBackgroundColor({ color: color })
-        browser.action.setBadgeText({ "text": "\u2713" });
+        extensionAction.setBadgeBackgroundColor({ color: color })
+        extensionAction.setBadgeText({ "text": "\u2713" });
     } else {
-        browser.action.setBadgeText({ "text": "" });
+        extensionAction.setBadgeText({ "text": "" });
     }
 }
+
+extensionApi.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message && message.type === "getCookies") {
+        const urls = Array.isArray(message.urls) ? message.urls : [];
+        Promise.all(
+            urls.map(url =>
+                callApi(extensionApi.cookies.getAll, [{ url }]).catch(err => {
+                    console.warn("cookies.getAll failed for", url, err);
+                    return [];
+                })
+            )
+        ).then(results => {
+            const cookies = [].concat(...results);
+            console.log("serviceWorker.getCookies:", cookies.length, "cookies across", urls.length, "URLs");
+            sendResponse({ cookies });
+        });
+        return true;
+    }
+});
 
 

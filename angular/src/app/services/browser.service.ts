@@ -168,14 +168,34 @@ export class BrowserService {
 
     getCookies(cb: () => void): void {
         this.sessionsSource.next([]);
-        browser.cookies.getAll({})
+        const urls: string[] = [
+            ...this.host_manage.map(h => `https://${h}/`),
+            ...this.host_api.map(h => `https://${h}/`),
+        ];
+        browser.runtime.sendMessage({ type: "getCookies", urls })
+            .then((response: { cookies: browser.Cookies.Cookie[] }) => response?.cookies || [])
+            .catch(err => {
+                console.warn("sendMessage(getCookies) failed, falling back to direct cookies API:", err);
+                return this._getCookiesFromUrls(urls);
+            })
             .then((cookies: browser.Cookies.Cookie[]) => {
                 cookies.forEach((cookie) => {
                     this._processCookie(cookie);
-                })
+                });
                 cb();
             })
-            .catch(err => console.log(err));
+            .catch(err => console.error("getCookies failed:", err));
+    }
+
+    private _getCookiesFromUrls(urls: string[]): Promise<browser.Cookies.Cookie[]> {
+        return Promise.all(
+            urls.map(url =>
+                browser.cookies.getAll({ url }).catch(err => {
+                    console.warn("cookies.getAll failed for", url, err);
+                    return [];
+                })
+            )
+        ).then(results => results.reduce((cookies, result) => cookies.concat(result), []));
     }
 
     setStorage(k:string, v:string):void{
