@@ -765,8 +765,9 @@ export class ApiManageComponent implements OnInit {
     host: mist.com, eu.mist.com, gc1.mist.com
     scope: wifi, wire, wan
     */
-   var ep = [extra_params]
-   console.log(query_params)
+    const ep: string[] = [];
+    if (extra_params) ep.push(extra_params);
+
     const params = new URLSearchParams(query_params);
     let app = params.get("app") || "all";
     if (app == "all") {
