@@ -985,7 +985,6 @@ export class ApiManageComponent implements OnInit {
           this.forgeSiteOtherDevices(res?.groups?.host, res?.groups?.detail);
           break;
         case "rrm":
-          console.log(res?.groups)
           var band = (res.groups.inter || "5").replace("/", "");
           var band_text = band;
           if (band_text == "24") band_text = "2.4";
@@ -1161,7 +1160,6 @@ export class ApiManageComponent implements OnInit {
           this.forgeOrgObject("licenses", res?.groups?.host, res?.groups?.detail);
           break;
         case "edge":
-          console.log(res?.groups)
           this.setName("mxedge", res?.groups?.detail);
           this.forgeEdge(res?.groups?.host, res?.groups?.detail)
           break;
@@ -1215,7 +1213,6 @@ export class ApiManageComponent implements OnInit {
           this.forgeNacPolicies(res?.groups?.host);
           break;
         case "onboardingworkflow":
-          console.log(res?.groups)
           switch (res?.groups?.detail) {
             case "nacportals":
               this.setName("NAC Portal", res?.groups?.detail);
@@ -1316,7 +1313,6 @@ export class ApiManageComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////// EVPN URL FUNCTION DISPATCHER
   private siteEvpnUrl(res: RegExpExecArray): void {
-    console.log(res?.groups)
     this.org_id = res?.groups?.org_id;
     this.site_id = res?.groups?.site_id;
     let extra_params = "";
