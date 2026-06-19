@@ -45,17 +45,57 @@ export class AccountComponent implements OnInit {
   sessions: SessionElement[] = [];
   has_active_sessions: boolean = false;
   is_working = true;
+  can_request_cookie_permissions = false;
 
   ngOnInit() {
     this._browser.sessions.subscribe(s => this.sessions = s);
     this.is_working = true;
-    this._browser.getCookies(() => this.getSelf())
+    this._browser.hasCookieHostPermissions()
+      .then(granted => {
+        this.can_request_cookie_permissions = !granted;
+        if (!granted) {
+          this.is_working = false;
+          this._cd.detectChanges();
+          return;
+        }
+        this.loadSessions();
+      })
+      .catch(() => this.loadSessions());
+  }
+
+  loadSessions(): void {
+    this.is_working = true;
+    this._cd.detectChanges();
+    this._browser.getCookies(() => {
+      this.getSelf();
+      this._cd.detectChanges();
+    })
+  }
+
+  requestCookiePermissions(): void {
+    this._browser.requestCookieHostPermissions()
+      .then(granted => {
+        this.can_request_cookie_permissions = !granted;
+        if (granted) {
+          this.loadSessions();
+        } else {
+          this.is_working = false;
+        }
+        this._cd.detectChanges();
+      })
+      .catch(err => console.error("requestCookiePermissions failed:", err));
   }
 
 
   getSelf() {
-    this.sessions.forEach(session => {
-      if (session.has_sessionid && session.csrftoken) {
+    const activeSessions = this.sessions.filter(session => session.has_sessionid && session.csrftoken);
+    if (!activeSessions.length) {
+      this.is_working = false;
+      this._cd.detectChanges();
+      return;
+    }
+
+    activeSessions.forEach(session => {
         this._http.get("https://" + session.api_host + "/api/v1/self", { observe: 'response' }).subscribe((data) => {
           if (data.status == 200) {
             session.email = data.body["email"];
@@ -84,7 +124,6 @@ export class AccountComponent implements OnInit {
           }
           this._cd.detectChanges()
         })
-      }
     })
     this.sessions.sort((a, b) => {
       if (a.cloud_host.toLowerCase() > b.cloud_host.toLowerCase()) return 1;

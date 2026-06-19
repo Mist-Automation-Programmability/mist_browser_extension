@@ -62,6 +62,7 @@ export class ApiManageComponent implements OnInit {
   ngOnInit() {
     this._browser.getUrl
       .then(tabUrl => {
+        if (!tabUrl) return;
         this.parseMistUrl(tabUrl);
       })
       //   .error(error => { console.log(error) })
@@ -69,6 +70,7 @@ export class ApiManageComponent implements OnInit {
 
     this._browser.getUrl
       .then(tabUrl => {
+        if (!tabUrl) return;
         let domain: string = "." + tabUrl.replace("https://", "").split("/")[0].split(".").slice(1).join(".");
         this._browser.getCookies(() => {
           this._browser.sessions.subscribe(sessions => {

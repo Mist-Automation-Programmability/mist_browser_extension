@@ -121,6 +121,13 @@ export class BrowserService {
 
     private issue_url: string = "https://github.com/tmunzer/mist_browser_extension/issues/new";
 
+    private cookie_host_permissions: string[] = [
+        "https://*.mist.com/*",
+        "https://*.mistsys.com/*",
+        "https://*.mist-federal.com/*",
+        "https://*.ai.juniper.net/*",
+    ];
+
     constructor(
     ) { }
 
@@ -168,34 +175,118 @@ export class BrowserService {
 
     getCookies(cb: () => void): void {
         this.sessionsSource.next([]);
-        const urls: string[] = [
-            ...this.host_manage.map(h => `https://${h}/`),
-            ...this.host_api.map(h => `https://${h}/`),
-        ];
-        browser.runtime.sendMessage({ type: "getCookies", urls })
-            .then((response: { cookies: browser.Cookies.Cookie[] }) => response?.cookies || [])
+        if (this._isFirefox()) {
+            this._getFirefoxCookies()
+                .then((cookies: browser.Cookies.Cookie[]) => this._processCookies(cookies, cb))
+                .catch(err => console.error("getCookies failed:", err));
+            return;
+        }
+
+        this._getAllCookies()
+            .then((response: { cookies?: browser.Cookies.Cookie[] } | undefined) => {
+                if (Array.isArray(response?.cookies)) {
+                    return response.cookies;
+                }
+                console.warn("getCookies returned no cookies payload, falling back to direct cookies API");
+                return this._getAllCookiesDirectly();
+            })
             .catch(err => {
-                console.warn("sendMessage(getCookies) failed, falling back to direct cookies API:", err);
-                return this._getCookiesFromUrls(urls);
+                console.warn("getCookies failed, falling back to direct cookies API:", err);
+                return this._getAllCookiesDirectly();
             })
             .then((cookies: browser.Cookies.Cookie[]) => {
-                cookies.forEach((cookie) => {
-                    this._processCookie(cookie);
-                });
-                cb();
+                this._processCookies(cookies, cb);
             })
             .catch(err => console.error("getCookies failed:", err));
     }
 
-    private _getCookiesFromUrls(urls: string[]): Promise<browser.Cookies.Cookie[]> {
-        return Promise.all(
-            urls.map(url =>
-                browser.cookies.getAll({ url }).catch(err => {
-                    console.warn("cookies.getAll failed for", url, err);
-                    return [];
-                })
-            )
-        ).then(results => results.reduce((cookies, result) => cookies.concat(result), []));
+    hasCookieHostPermissions(): Promise<boolean> {
+        return browser.permissions.contains({ origins: this.cookie_host_permissions });
+    }
+
+    requestCookieHostPermissions(): Promise<boolean> {
+        return browser.permissions.request({ origins: this.cookie_host_permissions });
+    }
+
+    private _isFirefox(): boolean {
+        return browser.runtime.getURL("").startsWith("moz-extension://");
+    }
+
+    private _processCookies(cookies: browser.Cookies.Cookie[], cb: () => void): void {
+        console.log("BrowserService.getCookies:", (cookies || []).length, "cookies loaded");
+        (cookies || []).forEach((cookie) => {
+            if (!cookie || !cookie.domain) return;
+            this._processCookie(cookie);
+        });
+        cb();
+    }
+
+    private _getFirefoxCookies(): Promise<browser.Cookies.Cookie[]> {
+        return this.hasCookieHostPermissions()
+            .then(granted => console.log("BrowserService.getFirefoxCookies: host permissions granted =", granted))
+            .then(() => browser.cookies.getAllCookieStores())
+            .then(stores => stores.length ? stores.map(store => store.id) : [undefined])
+            .catch(err => {
+                console.warn("cookies.getAllCookieStores failed:", err);
+                return [undefined];
+            })
+            .then(storeIds => {
+                const queries: browser.Cookies.GetAllDetailsType[] = [];
+                storeIds.forEach(storeId => {
+                    const storeQuery = storeId ? { storeId } : {};
+                    queries.push(storeQuery);
+                    queries.push({ ...storeQuery, firstPartyDomain: null });
+                    queries.push({ ...storeQuery, partitionKey: {} });
+                    queries.push({ ...storeQuery, firstPartyDomain: null, partitionKey: {} });
+                });
+
+                console.log("BrowserService.getFirefoxCookies:", queries.length, "cookie queries");
+
+                return Promise.all(
+                    queries.map(query =>
+                        browser.cookies.getAll(query).catch(err => {
+                            console.warn("cookies.getAll failed for", query, err);
+                            return [];
+                        })
+                    )
+                );
+            })
+            .then(results => {
+                const cookiesByKey = new Map<string, browser.Cookies.Cookie>();
+                results.reduce((cookies, result) => cookies.concat(result), []).forEach(cookie => {
+                    const partitionKey = cookie.partitionKey ? JSON.stringify(cookie.partitionKey) : "";
+                    const key = [cookie.storeId, cookie.domain, cookie.path, cookie.name, cookie.firstPartyDomain, partitionKey].join("|");
+                    cookiesByKey.set(key, cookie);
+                });
+                return Array.from(cookiesByKey.values());
+            });
+    }
+
+    private _getAllCookies(): Promise<{ cookies?: browser.Cookies.Cookie[] } | undefined> {
+        return this._getAllCookiesDirectly()
+            .then(cookies => {
+                if (cookies.length) {
+                    return { cookies };
+                }
+                return this._getCookiesFromBackground();
+            })
+            .catch(err => {
+                console.warn("cookies.getAll({}) failed, falling back to background cookies API:", err);
+                return this._getCookiesFromBackground();
+            });
+    }
+
+    private _getAllCookiesDirectly(): Promise<browser.Cookies.Cookie[]> {
+        return browser.cookies.getAll({});
+    }
+
+    private _getCookiesFromBackground(): Promise<{ cookies?: browser.Cookies.Cookie[] } | undefined> {
+        const urls: string[] = [
+            ...this.host_manage.map(h => `https://${h}/`),
+            ...this.host_api.map(h => `https://${h}/`),
+        ];
+
+        return browser.runtime.sendMessage({ type: "getCookies", urls });
     }
 
     setStorage(k:string, v:string):void{

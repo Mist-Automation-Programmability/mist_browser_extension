@@ -25,6 +25,39 @@ function callApi(apiFunction, args) {
     });
 }
 
+function getCookieStoreQueries() {
+    if (!extensionApi.cookies.getAllCookieStores) {
+        return Promise.resolve([{}]);
+    }
+
+    return callApi(extensionApi.cookies.getAllCookieStores, [])
+        .then(stores => stores.length ? stores.map(store => ({ storeId: store.id })) : [{}])
+        .catch(err => {
+            console.warn("cookies.getAllCookieStores failed:", err);
+            return [{}];
+        });
+}
+
+function getCookiesFromUrls(urls) {
+    return getCookieStoreQueries().then(storeQueries => {
+        const queries = [];
+        urls.forEach(url => {
+            storeQueries.forEach(storeQuery => {
+                queries.push(Object.assign({ url }, storeQuery));
+            });
+        });
+
+        return Promise.all(
+            queries.map(query =>
+                callApi(extensionApi.cookies.getAll, [query]).catch(err => {
+                    console.warn("cookies.getAll failed for", query.url, query.storeId || "default", err);
+                    return [];
+                })
+            )
+        ).then(results => [].concat(...results));
+    });
+}
+
 extensionApi.tabs.onActivated.addListener(info => {
     getUrl(info.tabId);
 })
@@ -80,18 +113,19 @@ function apiBadge(color) {
 extensionApi.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message && message.type === "getCookies") {
         const urls = Array.isArray(message.urls) ? message.urls : [];
-        Promise.all(
-            urls.map(url =>
-                callApi(extensionApi.cookies.getAll, [{ url }]).catch(err => {
-                    console.warn("cookies.getAll failed for", url, err);
-                    return [];
-                })
-            )
-        ).then(results => {
-            const cookies = [].concat(...results);
+        const getCookiesPromise = getCookiesFromUrls(urls).then(cookies => {
             console.log("serviceWorker.getCookies:", cookies.length, "cookies across", urls.length, "URLs");
-            sendResponse({ cookies });
+            return { cookies };
+        }).catch(err => {
+            console.warn("serviceWorker.getCookies failed:", err);
+            return { cookies: [] };
         });
+
+        if (typeof browser !== "undefined") {
+            return getCookiesPromise;
+        }
+
+        getCookiesPromise.then(sendResponse);
         return true;
     }
 });
