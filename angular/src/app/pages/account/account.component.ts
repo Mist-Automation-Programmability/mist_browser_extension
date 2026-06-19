@@ -96,7 +96,7 @@ export class AccountComponent implements OnInit {
     }
 
     activeSessions.forEach(session => {
-        this._http.get("https://" + session.api_host + "/api/v1/self", { observe: 'response' }).subscribe((data) => {
+        this._http.get("https://" + session.api_host + "/api/v1/self", { observe: 'response', withCredentials: true }).subscribe((data) => {
           if (data.status == 200) {
             session.email = data.body["email"];
             session.privileges = data.body["privileges"];
@@ -123,6 +123,11 @@ export class AccountComponent implements OnInit {
             session.request_percentage = 100;
           }
           this._cd.detectChanges()
+        }, err => {
+          console.warn("getSelf failed for", session.api_host, err);
+          session.email = "request_failed";
+          this.is_working = false;
+          this._cd.detectChanges();
         })
     })
     this.sessions.sort((a, b) => {
@@ -136,12 +141,12 @@ export class AccountComponent implements OnInit {
 
   getApiUsage(session: SessionElement) {
     let url = "https://" + session.api_host + "/api/v1/self/usage";
-    this._http.get(url, { headers: { "X-CSRFTOKEN": session.csrftoken } }).subscribe((usage: UsageElement) => {
+    this._http.get(url, { headers: { "X-CSRFTOKEN": session.csrftoken }, withCredentials: true }).subscribe((usage: UsageElement) => {
       session.requests = usage.requests;
       session.request_limit = usage.request_limit;
       session.request_percentage = (usage.requests / usage.request_limit) * 100;
       this._cd.detectChanges();
-    })
+    }, err => console.warn("getApiUsage failed for", session.api_host, err))
   }
 
   openTab(cloud_host: string) {

@@ -182,17 +182,10 @@ export class BrowserService {
             return;
         }
 
-        this._getAllCookies()
-            .then((response: { cookies?: browser.Cookies.Cookie[] } | undefined) => {
-                if (Array.isArray(response?.cookies)) {
-                    return response.cookies;
-                }
-                console.warn("getCookies returned no cookies payload, falling back to direct cookies API");
-                return this._getAllCookiesDirectly();
-            })
+        this._getAllCookiesDirectly()
             .catch(err => {
                 console.warn("getCookies failed, falling back to direct cookies API:", err);
-                return this._getAllCookiesDirectly();
+                return this._getCookiesFromBackground();
             })
             .then((cookies: browser.Cookies.Cookie[]) => {
                 this._processCookies(cookies, cb);
@@ -215,9 +208,9 @@ export class BrowserService {
     private _processCookies(cookies: browser.Cookies.Cookie[], cb: () => void): void {
         console.log("BrowserService.getCookies:", (cookies || []).length, "cookies loaded");
         (cookies || []).forEach((cookie) => {
-            if (!cookie || !cookie.domain) return;
             this._processCookie(cookie);
         });
+        console.log("BrowserService.getCookies:", this.sessionsSource.getValue().length, "sessions parsed");
         cb();
     }
 
@@ -254,6 +247,7 @@ export class BrowserService {
             .then(results => {
                 const cookiesByKey = new Map<string, browser.Cookies.Cookie>();
                 results.reduce((cookies, result) => cookies.concat(result), []).forEach(cookie => {
+                    if (!cookie || !cookie.domain) return;
                     const partitionKey = cookie.partitionKey ? JSON.stringify(cookie.partitionKey) : "";
                     const key = [cookie.storeId, cookie.domain, cookie.path, cookie.name, cookie.firstPartyDomain, partitionKey].join("|");
                     cookiesByKey.set(key, cookie);
@@ -262,31 +256,26 @@ export class BrowserService {
             });
     }
 
-    private _getAllCookies(): Promise<{ cookies?: browser.Cookies.Cookie[] } | undefined> {
-        return this._getAllCookiesDirectly()
-            .then(cookies => {
-                if (cookies.length) {
-                    return { cookies };
-                }
-                return this._getCookiesFromBackground();
-            })
-            .catch(err => {
-                console.warn("cookies.getAll({}) failed, falling back to background cookies API:", err);
-                return this._getCookiesFromBackground();
-            });
-    }
-
     private _getAllCookiesDirectly(): Promise<browser.Cookies.Cookie[]> {
         return browser.cookies.getAll({});
     }
 
-    private _getCookiesFromBackground(): Promise<{ cookies?: browser.Cookies.Cookie[] } | undefined> {
+    private _getCookiesFromBackground(): Promise<browser.Cookies.Cookie[]> {
         const urls: string[] = [
             ...this.host_manage.map(h => `https://${h}/`),
             ...this.host_api.map(h => `https://${h}/`),
         ];
 
-        return browser.runtime.sendMessage({ type: "getCookies", urls });
+        return browser.runtime.sendMessage({ type: "getCookies", urls })
+            .then((response: { cookies?: browser.Cookies.Cookie[] } | browser.Cookies.Cookie[] | undefined) => {
+                if (Array.isArray(response)) {
+                    return response;
+                }
+                if (Array.isArray(response?.cookies)) {
+                    return response.cookies;
+                }
+                return [];
+            });
     }
 
     setStorage(k:string, v:string):void{
@@ -308,15 +297,20 @@ export class BrowserService {
     // SESSIONS
     ////////////
     private _processCookie(cookie: browser.Cookies.Cookie): void {
+        if (!cookie || !cookie.domain || !cookie.name) return;
+        const domain = this._getSessionDomain(cookie.domain);
+        if (!domain) return;
+        const expirationDate = this._getCookieExpiration(cookie);
+
         // check if it's part of our domains
-        if (this.domains.indexOf(cookie.domain) > -1) {
+        if (this.domains.indexOf(domain) > -1) {
             // check if the cookie is still valid
-            if (cookie.expirationDate > (Date.now() / 1000)) {
+            if (expirationDate > (Date.now() / 1000)) {
                 let i: number = -1;
                 // try to find this domain in the list of sessions
                 const sessions: SessionElement[] = this.sessionsSource.getValue();
                 sessions.forEach((session, index) => {
-                    if (session.domain == cookie.domain) {
+                    if (session.domain == domain) {
                         i = index;
                     }
                 })
@@ -325,21 +319,35 @@ export class BrowserService {
                     if (cookie.name.startsWith("csrftoken")) sessions[i].csrftoken = cookie.value;
                     else if (cookie.name.startsWith("sessionid")) sessions[i].has_sessionid = true;
                     // if the current cookie has a shorter lifetime than the previous one, use its expirationDate instead
-                    if (sessions[i].expires_at > cookie.expirationDate) sessions[i].expires_at = cookie.expirationDate
+                    if (sessions[i].expires_at > expirationDate) sessions[i].expires_at = expirationDate
                     // otherwise, add a new entry in the list
                 } else {
-                    let domain = cookie.domain;
                     if (domain.includes("ai.juniper.net")) {
-                        this.addSession(cookie, domain, "jsi", "jsi", ["dc"+domain, "jsi"+domain, "routing"+domain])
+                        this.addSession(cookie, domain, expirationDate, "jsi", "jsi", ["dc"+domain, "jsi"+domain, "routing"+domain])
                     } else {
-                        this.addSession(cookie, domain, "manage", "api", ["manage"+domain])
+                        this.addSession(cookie, domain, expirationDate, "manage", "api", ["manage"+domain])
                     }
                 }
             }
         }
     }
 
-    private addSession(cookie: browser.Cookies.Cookie, domain: string, cloud: string, api: string, additional_cloud_hosts: string[]): void {
+    private _getSessionDomain(cookieDomain: string): string | null {
+        const host = cookieDomain.replace(/^\./, "").toLowerCase();
+        const domains = this.domains
+            .slice()
+            .sort((a, b) => b.length - a.length);
+        return domains.find(domain => {
+            const cleanDomain = domain.replace(/^\./, "").toLowerCase();
+            return host === cleanDomain || host.endsWith(domain.toLowerCase());
+        }) || null;
+    }
+
+    private _getCookieExpiration(cookie: browser.Cookies.Cookie): number {
+        return cookie.expirationDate || ((Date.now() / 1000) + 86400);
+    }
+
+    private addSession(cookie: browser.Cookies.Cookie, domain: string, expirationDate: number, cloud: string, api: string, additional_cloud_hosts: string[]): void {
         var tmp = this.sessionsSource.getValue();
 
         if (cookie.name.startsWith("csrftoken")) tmp.push({
@@ -350,7 +358,7 @@ export class BrowserService {
             two_factor_passed: false,
             csrftoken: cookie.value,
             has_sessionid: false,
-            expires_at: cookie.expirationDate,
+            expires_at: expirationDate,
             privileges: [],
             additional_cloud_hosts: additional_cloud_hosts,
             requests: -1,
@@ -366,7 +374,7 @@ export class BrowserService {
             two_factor_passed: false,
             csrftoken: null,
             has_sessionid: true,
-            expires_at: cookie.expirationDate,
+            expires_at: expirationDate,
             privileges: [],
             additional_cloud_hosts: additional_cloud_hosts,
             requests: -1,

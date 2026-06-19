@@ -3,6 +3,7 @@ console.log("[mist-sw] service worker file loaded at", new Date().toISOString())
 var extensionApi = typeof browser !== "undefined" ? browser : chrome;
 var browser_name = typeof browser !== "undefined" ? "browser" : "chrome";
 var extensionAction = extensionApi.action || extensionApi.browserAction;
+var isFirefox = typeof navigator !== "undefined" && /Firefox\//.test(navigator.userAgent);
 console.log("[mist-sw] browser global =", browser_name);
 
 function callApi(apiFunction, args) {
@@ -41,6 +42,7 @@ function getCookieStoreQueries() {
 function getCookiesFromUrls(urls) {
     return getCookieStoreQueries().then(storeQueries => {
         const queries = [];
+        const errors = [];
         urls.forEach(url => {
             storeQueries.forEach(storeQuery => {
                 queries.push(Object.assign({ url }, storeQuery));
@@ -49,12 +51,31 @@ function getCookiesFromUrls(urls) {
 
         return Promise.all(
             queries.map(query =>
-                callApi(extensionApi.cookies.getAll, [query]).catch(err => {
-                    console.warn("cookies.getAll failed for", query.url, query.storeId || "default", err);
-                    return [];
-                })
+                callApi(extensionApi.cookies.getAll, [query])
+                    .then(cookies => cookies.map(cookie => {
+                        if (cookie && !cookie.domain) {
+                            return Object.assign({}, cookie, { domain: new URL(query.url).hostname });
+                        }
+                        return cookie;
+                    }))
+                    .catch(err => {
+                        const errorMessage = err && err.message ? err.message : String(err);
+                        errors.push({ url: query.url, storeId: query.storeId || "default", message: errorMessage });
+                        console.warn("cookies.getAll failed for", query.url, query.storeId || "default", err);
+                        return [];
+                    })
             )
-        ).then(results => [].concat(...results));
+        ).then(results => ({
+            cookies: [].concat(...results),
+            debug: {
+                urls: urls.length,
+                queries: queries.length,
+                stores: storeQueries.map(storeQuery => storeQuery.storeId || "default"),
+                emptyQueries: results.filter(cookies => !cookies.length).length,
+                errorCount: errors.length,
+                errors: errors.slice(0, 10),
+            }
+        }));
     });
 }
 
@@ -113,15 +134,15 @@ function apiBadge(color) {
 extensionApi.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message && message.type === "getCookies") {
         const urls = Array.isArray(message.urls) ? message.urls : [];
-        const getCookiesPromise = getCookiesFromUrls(urls).then(cookies => {
-            console.log("serviceWorker.getCookies:", cookies.length, "cookies across", urls.length, "URLs");
-            return { cookies };
+        const getCookiesPromise = getCookiesFromUrls(urls).then(response => {
+            console.log("serviceWorker.getCookies:", response.cookies.length, "cookies across", urls.length, "URLs", response.debug);
+            return response;
         }).catch(err => {
             console.warn("serviceWorker.getCookies failed:", err);
-            return { cookies: [] };
+            return { cookies: [], debug: { urls: urls.length, queries: 0, stores: [], emptyQueries: 0, errorCount: 1, errors: [{ message: err && err.message ? err.message : String(err) }] } };
         });
 
-        if (typeof browser !== "undefined") {
+        if (isFirefox) {
             return getCookiesPromise;
         }
 
