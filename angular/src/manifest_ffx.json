@@ -57,5 +57,11 @@
     "https://*.mistsys.com/*",
     "https://*.mist-federal.com/*",
     "https://*.ai.juniper.net/*"
+  ],
+  "optional_host_permissions": [
+    "https://*.mist.com/*",
+    "https://*.mistsys.com/*",
+    "https://*.mist-federal.com/*",
+    "https://*.ai.juniper.net/*"
   ]
 }
