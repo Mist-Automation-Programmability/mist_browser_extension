@@ -56,19 +56,21 @@
                                 if (!backfillMissingDomain) {
                                     return cookies;
                                 }
-                                return cookies.map(cookie => {
-                                    if (cookie && !cookie.domain) {
-                                        return Object.assign({}, cookie, { domain: new URL(query.url).hostname });
-                                    }
-                                    return cookie;
-                                });
+                                return cookies
+                                    .filter(Boolean)
+                                    .map(cookie => {
+                                        if (!cookie.domain) {
+                                            return Object.assign({}, cookie, { domain: new URL(query.url).hostname });
+                                        }
+                                        return cookie;
+                                    });
                             })
                             .catch(err => {
                                 console.warn("cookies.getAll failed for", query.url, query.storeId || "default", err);
                                 return [];
                             })
                     )
-                ).then(results => [].concat(...results));
+                ).then(results => [].concat(...results).filter(Boolean));
             });
         }
 
