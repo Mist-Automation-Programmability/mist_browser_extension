@@ -99,14 +99,8 @@ export class AccountCreateOrgComponent implements OnInit {
     }
     if (this.do_create && this.org_id != "none") {
       let url = "https://" + this.session.api_host + "/api/v1/orgs/" + this.org_id + "/apitokens"
-      this.createTokenBackup(url, body);
+      this._browser.openApiAction("POST", url, body);
     }
-  }
-
-  private createTokenBackup(url: string, body): void {
-    this._browser.setStorage("post", JSON.stringify({ url: url, payload: body, ts: Date.now() }))
-      .then(() => this._browser.tabOpen(url))
-      .catch(() => this._browser.tabOpen(url));
   }
 
   close(): void {

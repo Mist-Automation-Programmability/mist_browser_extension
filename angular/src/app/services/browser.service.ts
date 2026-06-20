@@ -80,6 +80,21 @@ export class BrowserService {
         browser.tabs.create({ url: url });
     }
 
+    openApiAction(method: string, url: string, payload: any = undefined): void {
+        const action: any = {
+            method: method.toUpperCase(),
+            url: url,
+            ts: Date.now(),
+        };
+        if (payload !== undefined) {
+            action.payload = payload;
+        }
+        browser.storage.local.remove(["post", "delete"]).catch(err => console.log(err))
+            .then(() => this.setStorage("api_action", JSON.stringify(action)))
+            .then(() => this.tabOpen(url))
+            .catch(() => this.tabOpen(url));
+    }
+
     tabOpenDoc(url: string): void {
         browser.tabs.create({ url: url });
     }

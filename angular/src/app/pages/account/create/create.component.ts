@@ -67,14 +67,8 @@ export class AccountCreateComponent implements OnInit {
   createToken(): void {
     if (this.do_create) {
       let url = "https://" + this.session.api_host + "/api/v1/self/apitokens";
-      this.createTokenBackup(url);
+      this._browser.openApiAction("POST", url, { name: this.token_name });
     }
-  }
-
-  private createTokenBackup(url: string): void {
-    this._browser.setStorage("post", JSON.stringify({ url: url, payload: { name: this.token_name }, ts: Date.now() }))
-      .then(() => this._browser.tabOpen(url))
-      .catch(() => this._browser.tabOpen(url));
   }
 
 

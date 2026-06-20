@@ -96,13 +96,7 @@ export class AccountManageComponent {
 
   private deleteToken(token: TokenElement): void {
     let url = "https://" + this.session.api_host + "/api/v1/self/apitokens/" + token.id
-    this.deleteTokenBackup(url);
-  }
-
-  private deleteTokenBackup(url: string): void {
-    this._browser.setStorage("delete", JSON.stringify({ url: url, ts: Date.now() }))
-      .then(() => this._browser.tabOpen(url))
-      .catch(() => this._browser.tabOpen(url));
+    this._browser.openApiAction("DELETE", url);
   }
 
   private getTokensBackup(url: string): void {

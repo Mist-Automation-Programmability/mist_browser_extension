@@ -122,13 +122,7 @@ export class AccountManageOrgComponent implements OnInit {
 
   private deleteToken(token: TokenElement): void {
     let url = "https://" + this.session.api_host + "/api/v1/orgs/" + this.org_id + "/apitokens/" + token.id
-    this.deleteTokenBackup(url);
-  }
-
-  private deleteTokenBackup(url: string): void {
-    this._browser.setStorage("delete", JSON.stringify({ url: url, ts: Date.now() }))
-      .then(() => this._browser.tabOpen(url))
-      .catch(() => this._browser.tabOpen(url));
+    this._browser.openApiAction("DELETE", url);
   }
 
   close(): void {

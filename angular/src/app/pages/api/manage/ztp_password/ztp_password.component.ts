@@ -70,15 +70,8 @@ export class ZtpPasswordComponent implements OnInit {
   retrieve_ztp_password(): void {
     if (this.site_id && this.device_id) {
       let url = "https://api" + this.session.domain + "/api/v1/sites/" + this.site_id + "/devices/" + this.device_id + "/request_ztp_password";
-      this.retrieve_ztp_password_backup(url);
+      this._browser.openApiAction("POST", url);
     }
-  }
-
-  retrieve_ztp_password_backup(url: string): void {
-    this._browser.setStorage("post", JSON.stringify({ url: url, ts: Date.now() }));
-    setTimeout(() => {
-      this._browser.tabOpen(url);
-    }, 10);
   }
 
 

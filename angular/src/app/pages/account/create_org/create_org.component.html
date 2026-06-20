@@ -5,7 +5,7 @@
         </label>
         <div class="cloud">manage{{session.domain}}</div>
         <div class="token-name">
-            <input type="text" [(ngModel)]="token_name" placeholder="Token Name (optional)"/>
+            <input type="text" [(ngModel)]="token_name" placeholder="Token Name (optional)" style="padding: 1em"/>
         </div>
         <div class="scope-selection">
             <div *ngIf="displayed_msps.length > 0" >
@@ -18,7 +18,7 @@
                     </option>
                 </select>
             </div>
-            <select name=org_id [(ngModel)]="org_id">
+            <select name=org_id [(ngModel)]="org_id" style="height: 37px;">
                 <option class="none" value="none">
                     <div style="width: 100%; text-align: center;">-- Please Select an Org --</div>
                 </option>
@@ -26,12 +26,12 @@
                     <div>{{org.name}}</div>
                 </option>
             </select>
-            <select name="role" [(ngModel)]="role">
+            <select name="role" [(ngModel)]="role" style="height: 37px;">
                 <option value="admin">Super User</option>
                 <option value="write">Network Admin</option>
                 <option value="read">Observer</option>
             </select>
-            <select name="scope" [(ngModel)]="scope" *ngIf="false">
+            <select name="scope" [(ngModel)]="scope" style="height: 37px;" *ngIf="false">
                 <option value="org">Org</option>
                 <option value="site" disabled>Site</option>
                 <option value="sitegroup" disabled>SiteGroup</option>
@@ -48,15 +48,9 @@
                 </option>
             </select>
         </div>
-        <div style="width: 100%;">
-            <button (click)="createToken()" class="secondary xlarge">Create</button>
-        </div>
-        <div class="textarea">
-            <textarea type="text" readonly rows="3" [ngClass]="focused == 'token'? 'focused' : ''" id="token" #org_token_input>{{token.key}}</textarea>
-            <button class="copy" name="copy" (click)="copyToken(org_token_input)" [disabled]="token.key==''">
-                <img class="copy" src="assets/copy.svg" alt="copy">
-            </button>
-        </div>
     </div>
-    <button (click)="close()" class="xlarge">CLOSE</button>
+    <div class="popup-footer">
+        <button (click)="close()" class="xlarge">CLOSE</button>
+        <button (click)="createToken()" class="secondary xlarge">Create</button>
+    </div>
 </div>
