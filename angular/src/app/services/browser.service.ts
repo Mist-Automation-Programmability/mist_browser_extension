@@ -20,7 +20,7 @@ export interface SessionElement {
     email: string | null,
     two_factor_passed: boolean,
     has_sessionid: boolean,
-    expires_at: number,
+    expires_at: number | null,
     privileges: [],
     cloud_host: string,
     api_host: string,
@@ -183,7 +183,7 @@ export class BrowserService {
         if (!domain) return;
         const expirationDate = this._getCookieExpiration(cookie);
         if (this.domains.indexOf(domain) === -1) return;
-        if (expirationDate <= (Date.now() / 1000)) return;
+        if (expirationDate !== null && expirationDate <= (Date.now() / 1000)) return;
 
         const sessions: SessionElement[] = this.sessionsSource.getValue();
         const existingIndex = sessions.findIndex(s => s.domain == domain);
@@ -191,8 +191,7 @@ export class BrowserService {
         if (existingIndex > -1) {
             if (cookie.name.startsWith("csrftoken")) sessions[existingIndex].csrftoken = cookie.value;
             else if (cookie.name.startsWith("sessionid")) sessions[existingIndex].has_sessionid = true;
-            // if the current cookie has a shorter lifetime than the previous one, use its expirationDate instead
-            if (sessions[existingIndex].expires_at > expirationDate) sessions[existingIndex].expires_at = expirationDate;
+            this.updateSessionExpiration(sessions[existingIndex], expirationDate);
             return;
         }
 
@@ -201,11 +200,19 @@ export class BrowserService {
         this.addSession(cookie, expirationDate, hosts);
     }
 
-    private _getCookieExpiration(cookie: browser.Cookies.Cookie): number {
-        return cookie.expirationDate ?? ((Date.now() / 1000) + 86400);
+    private _getCookieExpiration(cookie: browser.Cookies.Cookie): number | null {
+        return cookie.expirationDate ?? null;
     }
 
-    private addSession(cookie: browser.Cookies.Cookie, expirationDate: number, hosts: MistHostConfig): void {
+    private updateSessionExpiration(session: SessionElement, expirationDate: number | null): void {
+        if (expirationDate === null) {
+            session.expires_at = null;
+        } else if (session.expires_at !== null && session.expires_at > expirationDate) {
+            session.expires_at = expirationDate;
+        }
+    }
+
+    private addSession(cookie: browser.Cookies.Cookie, expirationDate: number | null, hosts: MistHostConfig): void {
         var tmp = this.sessionsSource.getValue();
 
         if (cookie.name.startsWith("csrftoken")) tmp.push({

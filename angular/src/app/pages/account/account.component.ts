@@ -178,7 +178,7 @@ export class AccountComponent implements OnInit {
         debugLog('AccountComponent.handleGetSelfSuccess: set request_limit=', session.request_limit);
       }
       if (session.requests > -1 && session.request_limit > 0) {
-        session.request_percentage = getRequestPercentage(session.requests, session.request_limit);
+        session.request_percentage = getRequestPercentage(session.requests, session.request_limit, true);
       }
       if (
         data.body.hasOwnProperty("two_factor_required") &&
@@ -219,7 +219,7 @@ export class AccountComponent implements OnInit {
         debugLog('AccountComponent.getApiUsage: response=', usage);
         session.requests = usage.requests;
         session.request_limit = usage.request_limit;
-        session.request_percentage = getRequestPercentage(usage.requests, usage.request_limit);
+        session.request_percentage = getRequestPercentage(usage.requests, usage.request_limit, true);
         this._cd.detectChanges();
       },
       err => {

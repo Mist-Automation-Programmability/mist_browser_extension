@@ -99,11 +99,15 @@ export function isMistManageUrl(url: string): boolean {
 }
 
 export function extractMistManageDomainFromUrl(url: string, allowedDomains: string[] | null = null): string | null {
-    if (!url || !url.startsWith("https://")) {
+    if (!url) {
         return null;
     }
     try {
-        const host = new URL(url).hostname.toLowerCase();
+        const parsedUrl = new URL(url);
+        if (parsedUrl.protocol !== "https:") {
+            return null;
+        }
+        const host = parsedUrl.hostname.toLowerCase();
         const labels = host.split(".");
         const prefix = labels[0] || "";
 

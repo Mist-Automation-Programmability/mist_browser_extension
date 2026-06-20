@@ -19,7 +19,8 @@
                     <div class="error"><span *ngIf="!session.two_factor_passed">2FA not passed</span></div>
                     <div *ngIf="session.api_threshold_reached" class="text-cloud first"><b style="margin-left: 2px;">API Usage Threshold Reached</b></div>
                     <div *ngIf="!session.api_threshold_reached" class="text-cloud first">Logged in as <b style="margin-left: 2px;">{{session.email}}</b></div>
-                    <div class="text-cloud">Session expires at <b style="margin-left: 2px;">{{(session.expires_at * 1000) | date:'yyyy-MM-dd HH:mm:ss'}}</b></div>
+                    <div *ngIf="session.expires_at !== null" class="text-cloud">Session expires at <b style="margin-left: 2px;">{{(session.expires_at * 1000) | date:'yyyy-MM-dd HH:mm:ss'}}</b></div>
+                    <div *ngIf="session.expires_at === null" class="text-cloud">Session expires with <b style="margin-left: 2px;">browser session</b></div>
                 </div>
             </div>
             <div class="box-cloud-info-right">
