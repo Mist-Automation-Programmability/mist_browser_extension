@@ -1,6 +1,6 @@
 import browser from "webextension-polyfill";
 import type { SessionElement } from "./browser.service";
-import { loadSafariSessions } from "./browser.safari";
+import { loadChromeSessions } from "./browser.chrome";
 
 export interface BrowserSessionContext {
     domains: string[];
@@ -13,5 +13,5 @@ export interface BrowserSessionContext {
 }
 
 export function loadSessions(context: BrowserSessionContext, cb: () => void): void {
-    loadSafariSessions(context, cb);
+    loadChromeSessions(context, cb);
 }

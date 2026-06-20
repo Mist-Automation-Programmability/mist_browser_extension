@@ -85,8 +85,8 @@
     </div>
 </div>
 <div *ngIf="can_request_cookie_permissions && !has_active_sessions && !is_working" class="notice-text" style="margin: 0;">
-    <div>Firefox needs permission to read Mist session cookies.</div>
-    <div>Allow Mist site access, then reopen this panel if Firefox asks you to.</div>
+    <div>The extension needs permission to read Mist session cookies.</div>
+    <div>Allow Mist site access, then reopen this panel if your browser asks you to.</div>
     <button class="primary" (click)="requestCookiePermissions()" style="margin: 20px 0">Allow Mist site access</button>
 </div>
 <div *ngIf="!can_request_cookie_permissions && !has_active_sessions && !is_working" class="notice-text" style="margin: 0;">

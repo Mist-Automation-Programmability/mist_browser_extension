@@ -2,6 +2,13 @@ import browser from "webextension-polyfill";
 import type { SessionElement } from "./browser.service";
 import { getCookiesFromBackground } from "./browser.background";
 
+const DEBUG = false;
+function debugLog(...args: any[]): void {
+    if (DEBUG) {
+        console.log(...args);
+    }
+}
+
 export interface SafariSessionLoaderContext {
     domains: string[];
     hostManage: string[];
@@ -14,13 +21,13 @@ export interface SafariSessionLoaderContext {
 export function loadSafariSessions(context: SafariSessionLoaderContext, cb: () => void): void {
     getCookiesFromBackground(context.hostManage, context.hostApi)
         .then(cookies => {
-            console.log("BrowserService.Safari: SW returned", (cookies || []).length, "cookies");
+            debugLog("BrowserService.Safari: SW returned", (cookies || []).length, "cookies");
             context.processCookies(cookies || []);
             return context.getParsedSessionCount();
         })
         .then(parsedCount => {
             if (parsedCount > 0) {
-                console.log("BrowserService.Safari:", parsedCount, "session(s) parsed from cookies");
+                debugLog("BrowserService.Safari:", parsedCount, "session(s) parsed from cookies");
                 cb();
                 return Promise.resolve();
             }
@@ -28,7 +35,7 @@ export function loadSafariSessions(context: SafariSessionLoaderContext, cb: () =
             return probeSafariSessionsFromTabs().then(tabProbe => {
                 if (tabProbe.sessions.length > 0) {
                     context.setSessions(tabProbe.sessions);
-                    console.log("BrowserService.Safari:", tabProbe.sessions.length, "active session(s) detected via tab probe");
+                    debugLog("BrowserService.Safari:", tabProbe.sessions.length, "active session(s) detected via tab probe");
                     cb();
                     return Promise.resolve();
                 }
@@ -41,11 +48,11 @@ export function loadSafariSessions(context: SafariSessionLoaderContext, cb: () =
                 }
 
                 return getMistDomainsFromOpenTabs(context.domains).then(candidateDomains => {
-                    console.log("BrowserService.Safari: no parseable cookie sessions, probing /api/v1/self for", candidateDomains.length, "candidate domain(s)");
+                    debugLog("BrowserService.Safari: no parseable cookie sessions, probing /api/v1/self for", candidateDomains.length, "candidate domain(s)");
                     return probeSafariSessionsByApi(candidateDomains)
                         .then(sessions => {
                             context.setSessions(sessions);
-                            console.log("BrowserService.Safari:", sessions.length, "active session(s) detected via /self probe");
+                            debugLog("BrowserService.Safari:", sessions.length, "active session(s) detected via /self probe");
                             cb();
                         });
                 });
@@ -67,7 +74,7 @@ function probeSafariSessionsFromTabs(): Promise<SafariTabProbeResult> {
     return browser.tabs.query({})
         .then(tabs => tabs.filter(tab => typeof tab.id === "number" && isMistManageUrl(tab.url || "")))
         .then(tabs => {
-            console.log("BrowserService.Safari: tab probe found", tabs.length, "matching tab(s)");
+            debugLog("BrowserService.Safari: tab probe found", tabs.length, "matching tab(s)");
             return Promise.all(
                 tabs.map(tab =>
                     browser.tabs.sendMessage(tab.id as number, { type: "mist_get_session" })
@@ -93,7 +100,7 @@ function probeSafariSessionsFromTabs(): Promise<SafariTabProbeResult> {
                 .filter((res: any) => !res || !res.ok)
                 .slice(0, 5);
             if (failures.length > 0) {
-                console.log("BrowserService.Safari: tab probe failures", failures);
+                debugLog("BrowserService.Safari: tab probe failures", failures);
             }
 
             const sessions = entries
@@ -234,6 +241,13 @@ function buildSafariSession(
 ): SessionElement {
     const twoFactorRequired = !!body?.two_factor_required;
     const twoFactorPassed = !!body?.two_factor_passed;
+    const requests = body?.api_request_count ?? -1;
+    const request_limit = body?.api_request_limit ?? -1;
+    debugLog('browser.safari.buildSafariSession:', domain,
+        'api_request_count=', body?.api_request_count,
+        'api_request_limit=', body?.api_request_limit,
+        '=> requests=', requests, 'request_limit=', request_limit);
+    const request_percentage = request_limit > 0 ? Math.round((requests / request_limit) * 100) : 0;
     return {
         domain,
         cloud_host: cloudHost,
@@ -245,9 +259,9 @@ function buildSafariSession(
         expires_at: (Date.now() / 1000) + 86400,
         privileges: body?.privileges ?? [],
         additional_cloud_hosts: additionalCloudHosts,
-        requests: -1,
-        request_limit: -1,
-        request_percentage: 0,
+        requests,
+        request_limit,
+        request_percentage,
         api_threshold_reached: false,
     };
 }

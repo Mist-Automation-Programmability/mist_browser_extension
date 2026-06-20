@@ -186,10 +186,10 @@ export class BrowserService {
     // ========================================================================
     // Storage (common)
     // ========================================================================
-    setStorage(k: string, v: string): void {
+    setStorage(k: string, v: string): Promise<void> {
         var storage_key = {}
         storage_key[k] = v
-        browser.storage.local.set(storage_key).catch(err => console.log(err))
+        return browser.storage.local.set(storage_key).catch(err => console.log(err))
     }
 
     getStorage(key: string, cb: (res) => void) {
@@ -277,7 +277,7 @@ export class BrowserService {
     }
 
     private _getCookieExpiration(cookie: browser.Cookies.Cookie): number {
-        return cookie.expirationDate || ((Date.now() / 1000) + 86400);
+        return cookie.expirationDate ?? ((Date.now() / 1000) + 86400);
     }
 
     private addSession(cookie: browser.Cookies.Cookie, domain: string, expirationDate: number, cloud: string, api: string, additional_cloud_hosts: string[]): void {
