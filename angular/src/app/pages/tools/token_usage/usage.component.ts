@@ -1,5 +1,6 @@
 import { Component, Input, Output, ChangeDetectionStrategy, ChangeDetectorRef, EventEmitter, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { cleanHeaders } from "../../../services/http.utils";
 import { BrowserService } from "../../../services/browser.service"
 
 export interface TokenUsageElement {
@@ -69,7 +70,7 @@ export class TokenUsageComponent implements OnInit {
     if (this.check_index < api_hosts.length) {
       this._http.get(
         "https://" + api_hosts[this.check_index] + "/api/v1/self/usage",
-        { headers: { "Authorization": "Token " + this.api_token }, observe: 'response' }
+        { headers: cleanHeaders({ "Authorization": "Token " + this.api_token }), observe: 'response', withCredentials: true }
       ).subscribe({
         next: data => {
           if (data.status == 200) {

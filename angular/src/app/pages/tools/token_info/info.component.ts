@@ -1,5 +1,6 @@
 import { Component, Output, ChangeDetectionStrategy, ChangeDetectorRef, EventEmitter, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { cleanHeaders } from "../../../services/http.utils";
 import { BrowserService } from "../../../services/browser.service"
 
 export interface PrivilegeElement {
@@ -88,7 +89,7 @@ export class TokenInfoComponent implements OnInit {
     this._cd.detectChanges()
     if (this.check_index < api_hosts.length) {
       this._http.get(
-        "https://" + api_hosts[this.check_index] + "/api/v1/self", { headers: { "Authorization": "Token " + this.api_token }, observe: 'response' })
+        "https://" + api_hosts[this.check_index] + "/api/v1/self", { headers: cleanHeaders({ "Authorization": "Token " + this.api_token }), observe: 'response', withCredentials: true })
         .subscribe({
           next: data => {
             if (data.status == 200) {

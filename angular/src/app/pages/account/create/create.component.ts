@@ -1,5 +1,7 @@
 import { Component, Input, Output, ChangeDetectionStrategy, ChangeDetectorRef, EventEmitter, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { cleanHeaders } from "../../../services/http.utils";
+import { BrowserHttpApiService } from "../../../services/http.browser.api";
 import { Observable } from 'rxjs';
 import { BrowserService, SessionElement } from "../../../services/browser.service"
 
@@ -42,6 +44,7 @@ export class AccountCreateComponent implements OnInit {
     private _cd: ChangeDetectorRef,
     private _http: HttpClient,
     private _browser: BrowserService,
+    private _httpApi: BrowserHttpApiService,
   ) { }
 
   token_name: string = "";
@@ -69,15 +72,24 @@ export class AccountCreateComponent implements OnInit {
   createToken(): void {
     if (this.do_create) {
       let url = "https://" + this.session.api_host + "/api/v1/self/apitokens";
-      this._http
-        .post<TokenElement>(url, { name: this.token_name }, { headers: { "X-CSRFTOKEN": this.session.csrftoken } })
+      this._httpApi
+        .requestWithCredentialFallback<TokenElement>(
+          () => this._http.post<TokenElement>(url, { name: this.token_name }, { headers: cleanHeaders({ "X-CSRFTOKEN": this.session.csrftoken }), withCredentials: true }),
+          url,
+          {
+            method: 'POST',
+            headers: cleanHeaders({ "X-CSRFTOKEN": this.session.csrftoken }),
+            body: { name: this.token_name }
+          }
+        )
         .subscribe({
           next: (data) => {
             this.token = data;
             this.session.requests += 1;
             this._cd.detectChanges();
           },
-          error: (e) => {
+          error: (err) => {
+            console.error('AccountCreateComponent: createToken failed:', err);
             this.createTokenBackup(url);
           }
         })
@@ -85,10 +97,9 @@ export class AccountCreateComponent implements OnInit {
   }
 
   private createTokenBackup(url: string): void {
-    this._browser.setStorage("post", JSON.stringify({ url: url, payload: { name: this.token_name }, ts: Date.now() }));
-    setTimeout(() => {
-      this._browser.tabOpen(url);
-    }, 10);
+    this._browser.setStorage("post", JSON.stringify({ url: url, payload: { name: this.token_name }, ts: Date.now() }))
+      .then(() => this._browser.tabOpen(url))
+      .catch(() => this._browser.tabOpen(url));
   }
 
 

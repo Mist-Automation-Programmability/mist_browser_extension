@@ -1,5 +1,7 @@
 import { Component, Input, Output, ChangeDetectionStrategy, ChangeDetectorRef, EventEmitter, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { cleanHeaders } from "../../../services/http.utils";
+import { BrowserHttpApiService } from "../../../services/http.browser.api";
 import { Observable } from 'rxjs';
 import { BrowserService, SessionElement } from '../../../services/browser.service';
 import { PrivilegeService, OrgElement, MspElement } from "../../../services/privileges.service"
@@ -39,6 +41,7 @@ export class AccountCreateOrgComponent implements OnInit {
     private _http: HttpClient,
     private _privilege: PrivilegeService,
     private _browser: BrowserService,
+    private _httpApi: BrowserHttpApiService,
   ) { }
 
   token: TokenElement;
@@ -101,15 +104,24 @@ export class AccountCreateOrgComponent implements OnInit {
     }
     if (this.do_create && this.org_id != "none") {
       let url = "https://" + this.session.api_host + "/api/v1/orgs/" + this.org_id + "/apitokens"
-      this._http
-        .post<TokenElement>(url, body, { headers: { "X-CSRFTOKEN": this.session.csrftoken } })
+      this._httpApi
+        .requestWithCredentialFallback<TokenElement>(
+          () => this._http.post<TokenElement>(url, body, { headers: cleanHeaders({ "X-CSRFTOKEN": this.session.csrftoken }), withCredentials: true }),
+          url,
+          {
+            method: 'POST',
+            headers: cleanHeaders({ "X-CSRFTOKEN": this.session.csrftoken }),
+            body: body
+          }
+        )
         .subscribe({
           next: (data) => {
             this.token = data;
             this.session.requests += 1;
             this._cd.detectChanges();
           },
-          error: (e) => {
+          error: (err) => {
+            console.error('AccountCreateOrgComponent: createToken failed:', err);
             this.createTokenBackup(url, body);
           }
         })
@@ -117,10 +129,9 @@ export class AccountCreateOrgComponent implements OnInit {
   }
 
   private createTokenBackup(url: string, body): void {
-    this._browser.setStorage("post", JSON.stringify({ url: url, payload: body, ts: Date.now() }));
-    setTimeout(() => {
-      this._browser.tabOpen(url);
-    }, 10);
+    this._browser.setStorage("post", JSON.stringify({ url: url, payload: body, ts: Date.now() }))
+      .then(() => this._browser.tabOpen(url))
+      .catch(() => this._browser.tabOpen(url));
   }
 
   close(): void {
