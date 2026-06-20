@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Observable, defer, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { SafariHttpApiService } from './http.safari.api';
+import { ContentScriptApiService } from './http.content.api';
 
 export interface BrowserHttpFallbackOptions {
   method?: string;
   headers?: { [key: string]: string };
-  body?: any;
   observe?: 'body' | 'response';
 }
 
@@ -14,8 +13,14 @@ export interface BrowserHttpFallbackOptions {
   providedIn: 'root'
 })
 export class BrowserHttpApiService {
-  constructor(private _safariApi: SafariHttpApiService) { }
+  constructor(private _content: ContentScriptApiService) { }
 
+  /**
+   * Reads (GET): try the popup's direct request first. On Chrome/Firefox this
+   * works (GET is CSRF-exempt and host permissions send cookies). On Safari the
+   * popup can't send cross-site cookies, so fall back to a manage-tab content
+   * script that fetches in the page's first-party context.
+   */
   requestWithCredentialFallback<T>(
     directRequest: () => Observable<T>,
     url: string,
@@ -23,10 +28,10 @@ export class BrowserHttpApiService {
   ): Observable<T> {
     return defer(() => directRequest()).pipe(
       catchError((directErr: any) => {
-        if (!this._safariApi.isAvailable()) {
+        if (!this._content.isSafari()) {
           return throwError(() => directErr);
         }
-        return this._safariApi.fetchThroughContentScript(url, fallbackOptions);
+        return this._content.fetchThroughContentScript(url, fallbackOptions);
       })
     );
   }

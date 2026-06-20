@@ -1,7 +1,4 @@
 import { Component, Input, Output, ChangeDetectionStrategy, ChangeDetectorRef, EventEmitter, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { cleanHeaders } from "../../../services/http.utils";
-import { BrowserHttpApiService } from "../../../services/http.browser.api";
 import { Observable } from 'rxjs';
 import { BrowserService, SessionElement } from '../../../services/browser.service';
 import { PrivilegeService, OrgElement, MspElement } from "../../../services/privileges.service"
@@ -38,10 +35,8 @@ export class AccountCreateOrgComponent implements OnInit {
   focused: string = "";
   constructor(
     private _cd: ChangeDetectorRef,
-    private _http: HttpClient,
     private _privilege: PrivilegeService,
     private _browser: BrowserService,
-    private _httpApi: BrowserHttpApiService,
   ) { }
 
   token: TokenElement;
@@ -104,27 +99,7 @@ export class AccountCreateOrgComponent implements OnInit {
     }
     if (this.do_create && this.org_id != "none") {
       let url = "https://" + this.session.api_host + "/api/v1/orgs/" + this.org_id + "/apitokens"
-      this._httpApi
-        .requestWithCredentialFallback<TokenElement>(
-          () => this._http.post<TokenElement>(url, body, { headers: cleanHeaders({ "X-CSRFTOKEN": this.session.csrftoken }), withCredentials: true }),
-          url,
-          {
-            method: 'POST',
-            headers: cleanHeaders({ "X-CSRFTOKEN": this.session.csrftoken }),
-            body: body
-          }
-        )
-        .subscribe({
-          next: (data) => {
-            this.token = data;
-            this.session.requests += 1;
-            this._cd.detectChanges();
-          },
-          error: (err) => {
-            console.error('AccountCreateOrgComponent: createToken failed:', err);
-            this.createTokenBackup(url, body);
-          }
-        })
+      this.createTokenBackup(url, body);
     }
   }
 

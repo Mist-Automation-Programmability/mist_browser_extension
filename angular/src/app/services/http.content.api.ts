@@ -1,49 +1,51 @@
 import { Injectable } from '@angular/core';
-import { Observable, from } from 'rxjs';
+import { Observable, from, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
+import browser from 'webextension-polyfill';
 import { getCloudDomainFromHost, isMistManageUrl } from './mist.hosts';
 import { debugLog } from './debug';
 
-declare const browser: any;
-declare const globalThis: any;
-
+/**
+ * Bridges Safari read fallbacks through an open Mist manage tab's content
+ * script. Unsafe writes are intentionally not supported here; callers should
+ * use the API-tab automation flow for POST/PUT/PATCH/DELETE.
+ */
 @Injectable({
   providedIn: 'root'
 })
-export class SafariHttpApiService {
+export class ContentScriptApiService {
   constructor() {}
 
   /**
-   * Check if running in Safari extension context
+   * True on Safari, where the popup can't make credentialed cross-site reads
+   * itself and must fall back to a content-script fetch. Chrome/Firefox read
+   * directly from the popup (host permissions send cookies, GET is CSRF-exempt).
    */
-  isAvailable(): boolean {
+  isSafari(): boolean {
     try {
-      if (typeof browser === 'undefined' || !browser || !browser.runtime || !browser.runtime.getURL) {
+      if (!browser || !browser.runtime || !browser.runtime.getURL) {
         return false;
       }
-      const extensionUrl = browser.runtime.getURL('');
-      return extensionUrl.startsWith('safari-web-extension://');
+      return browser.runtime.getURL('').startsWith('safari-web-extension://');
     } catch (e) {
       return false;
     }
   }
 
   /**
-   * Fetch an API endpoint through a manage tab content script (Safari only)
-   * This ensures credentials (cookies) are included in the request
+   * Run a GET from inside an open Mist manage tab's content script.
    */
   fetchThroughContentScript(url: string, options?: {
     method?: string;
     headers?: { [key: string]: string };
-    body?: any;
     observe?: 'body' | 'response';
   }): Observable<any> {
-    if (!this.isAvailable()) {
-      throw new Error('SafariHttpApiService only works in Safari context');
-    }
-
-    const method = options?.method || 'GET';
+    const method = (options?.method || 'GET').toUpperCase();
     const headers = options?.headers || {};
+
+    if (method !== 'GET') {
+      return throwError(() => new Error('ContentScriptApiService only supports GET; open the API tab for writes'));
+    }
 
     // Query for manage tabs using proper WebExtension URL patterns
     return from(
@@ -81,14 +83,11 @@ export class SafariHttpApiService {
           throw new Error('No same-cloud manage tab found for API request');
         }
 
-        debugLog('SafariHttpApiService: routing through tab', manageTab.id, 'url:', manageTab.url);
-
         return browser.tabs.sendMessage(manageTab.id, {
           type: 'mist_api_request',
           method: method,
           url: url,
           headers: headers,
-          body: options?.body,
         });
       })
     ).pipe(
@@ -110,7 +109,7 @@ export class SafariHttpApiService {
             data: response.data,
           };
         }
-        debugLog('SafariHttpApiService: received response status', response.status, 'for', url);
+        debugLog('ContentScriptApiService: received response status', response.status, 'for', url);
         if (options?.observe === 'response') {
           return {
             status: response.status || 200,
@@ -121,7 +120,13 @@ export class SafariHttpApiService {
         return response.data;
       }),
       catchError((err: any) => {
-        console.error('SafariHttpApiService: error', err && err.message ? err.message : String(err));
+        const message = err && err.message ? err.message : String(err);
+        // Thrown when the matched manage tab has no content script (it was open
+        // before the extension was installed/updated) — reloading that tab fixes it.
+        if (/Receiving end does not exist|Could not establish connection/i.test(message)) {
+          console.warn('ContentScriptApiService: the Mist tab has no content script loaded - reload the Mist tab after updating the extension');
+        }
+        console.error('ContentScriptApiService: error', message);
         throw err;
       })
     );

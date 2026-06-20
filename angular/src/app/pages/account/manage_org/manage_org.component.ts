@@ -55,8 +55,6 @@ export class AccountManageOrgComponent implements OnInit {
   org_loading: boolean = false;
   org_id: string;
   do_manage: boolean = false;
-  success: boolean = false;
-  error: boolean = false;
   view: string = "";
 
   ngOnInit() {
@@ -124,53 +122,13 @@ export class AccountManageOrgComponent implements OnInit {
 
   private deleteToken(token: TokenElement): void {
     let url = "https://" + this.session.api_host + "/api/v1/orgs/" + this.org_id + "/apitokens/" + token.id
-    this._httpApi
-      .requestWithCredentialFallback<any>(
-        () => this._http.delete(url, { headers: cleanHeaders({ "X-CSRFTOKEN": this.session.csrftoken }), withCredentials: true }),
-        url,
-        {
-          method: 'DELETE',
-          headers: cleanHeaders({ "X-CSRFTOKEN": this.session.csrftoken })
-        }
-      )
-      .subscribe({
-        next: data => {
-          this.delete_success(token);
-        },
-        error: err => {
-          console.error('AccountManageOrgComponent: deleteToken failed:', err);
-          this.deleteTokenBackup(url);
-        }
-      })
+    this.deleteTokenBackup(url);
   }
 
   private deleteTokenBackup(url: string): void {
     this._browser.setStorage("delete", JSON.stringify({ url: url, ts: Date.now() }))
       .then(() => this._browser.tabOpen(url))
       .catch(() => this._browser.tabOpen(url));
-  }
-
-
-  private delete_success(token: TokenElement) {
-    this.session.requests += 1;
-    token.deleted = true;
-    this.success = true;
-    this._cd.detectChanges()
-    setTimeout(() => {
-      this.success = false;
-      this._cd.detectChanges()
-    }, 2000);
-  }
-
-  private delete_error(err: any) {
-    this.session.requests += 1;
-    console.log(err);
-    this.error = true;
-    this._cd.detectChanges()
-    setTimeout(() => {
-      this.error = false;
-      this._cd.detectChanges()
-    }, 3000);
   }
 
   close(): void {

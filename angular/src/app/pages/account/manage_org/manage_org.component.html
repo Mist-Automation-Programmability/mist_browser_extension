@@ -82,15 +82,6 @@
         <button (click)="close()" class="xlarge">CLOSE</button>
     </div>
 </div>
-<div class="message-container">
-    <div class="message success" [ngClass]="success == true ? 'show' : ''">
-        API Token Deleted
-    </div>
-    <div class="message error" [ngClass]="error == true ? 'show' : ''">
-        Unable to delete the API Token
-    </div>
-</div>
-
 <app-token-delete-warning 
     [ngClass]="{hidden: view != 'warning'}"
     class="popup transparent"

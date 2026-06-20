@@ -1,5 +1,4 @@
 import { Component, Input, Output, ChangeDetectionStrategy, ChangeDetectorRef, EventEmitter, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BrowserService, SessionElement } from "../../../../services/browser.service"
 
@@ -30,7 +29,6 @@ export class ZtpPasswordComponent implements OnInit {
   focused: string = "";
   constructor(
     private _cd: ChangeDetectorRef,
-    private _http: HttpClient,
     private _browser: BrowserService
   ) { }
 
@@ -72,20 +70,7 @@ export class ZtpPasswordComponent implements OnInit {
   retrieve_ztp_password(): void {
     if (this.site_id && this.device_id) {
       let url = "https://api" + this.session.domain + "/api/v1/sites/" + this.site_id + "/devices/" + this.device_id + "/request_ztp_password";
-      this._http
-        .post<ZtpResponseElement>(url, {}, { headers: { "X-CSRFTOKEN": this.session.csrftoken } })
-        .subscribe({
-          next: data => {
-            if (data.root_password == "") {
-              this.ztp_password_failed();
-            } else {
-              this.ztp_password_success(data);
-            }
-          },
-          error: e => {
-            this.retrieve_ztp_password_backup(url);
-          }
-        })
+      this.retrieve_ztp_password_backup(url);
     }
   }
 
