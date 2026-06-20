@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import browser from "webextension-polyfill";
+import { loadSafariSessions } from "./browser.safari";
+import { loadFirefoxSessions } from "./browser.firefox";
+import { loadChromeSessions } from "./browser.chrome";
+import { detectBrowserKind } from "./browser.detect";
 
 
 export interface SessionElement {
@@ -102,7 +106,7 @@ export class BrowserService {
         "api.staging.mist-federal.com",
     ]
 
-    private cloud_name: { [id: string] : string; } = {
+    private cloud_name: { [id: string]: string; } = {
         "mist.com": "Global 01",
         "gc1.mist.com": "Global 02",
         "ac2.mist.com": "Global 03",
@@ -128,9 +132,11 @@ export class BrowserService {
         "https://*.ai.juniper.net/*",
     ];
 
-    constructor(
-    ) { }
+    constructor() { }
 
+    // ========================================================================
+    // Tabs / navigation (common)
+    // ========================================================================
     tabUpdate(url: string): void {
         browser.tabs.update({ url: url });
     }
@@ -138,14 +144,24 @@ export class BrowserService {
     tabOpen(url: string): void {
         browser.tabs.create({ url: url });
     }
+
     tabOpenDoc(url: string): void {
-        browser.tabs.create({ url: url })
+        browser.tabs.create({ url: url });
     }
 
     issueOpen(): void {
-        browser.tabs.create({ url: this.issue_url })
+        browser.tabs.create({ url: this.issue_url });
     }
 
+    getUrl = browser.tabs.query({ currentWindow: true, active: true })
+        .then((tabs) => {
+            const url: string = tabs[0].url;
+            return url;
+        }).catch(e => { console.log(e); return "" })
+
+    // ========================================================================
+    // Config / manifest getters (common)
+    // ========================================================================
     getVersion(): string {
         return browser.runtime.getManifest().version;
     }
@@ -153,46 +169,44 @@ export class BrowserService {
     getDomains(): string[] {
         return this.domains;
     }
+
     getHostManage(): string[] {
         return this.host_manage;
     }
+
     getHostApi(): string[] {
         return this.host_api;
     }
-    getCloud(host:string): string {
+
+    getCloud(host: string): string {
         var host_cleansed = host.replace("api.", "").replace("manage.", "");
         if (this.cloud_name.hasOwnProperty(host_cleansed)) {
             return this.cloud_name[host_cleansed]
-        } 
+        }
         return null
     }
-    
-    getUrl = browser.tabs.query({ currentWindow: true, active: true })
-        .then((tabs) => {
-            const url: string = tabs[0].url;
-            return url;
-        }).catch(e => { console.log(e); return "" })
 
-    getCookies(cb: () => void): void {
-        this.sessionsSource.next([]);
-        if (this._isFirefox()) {
-            this._getFirefoxCookies()
-                .then((cookies: browser.Cookies.Cookie[]) => this._processCookies(cookies, cb))
-                .catch(err => console.error("getCookies failed:", err));
-            return;
-        }
-
-        this._getAllCookiesDirectly()
-            .catch(err => {
-                console.warn("getCookies failed, falling back to direct cookies API:", err);
-                return this._getCookiesFromBackground();
-            })
-            .then((cookies: browser.Cookies.Cookie[]) => {
-                this._processCookies(cookies, cb);
-            })
-            .catch(err => console.error("getCookies failed:", err));
+    // ========================================================================
+    // Storage (common)
+    // ========================================================================
+    setStorage(k: string, v: string): void {
+        var storage_key = {}
+        storage_key[k] = v
+        browser.storage.local.set(storage_key).catch(err => console.log(err))
     }
 
+    getStorage(key: string, cb: (res) => void) {
+        browser.storage.local.get(key).then(
+            data => {
+                cb(data);
+            }, err => {
+                console.log(err)
+            });
+    }
+
+    // ========================================================================
+    // Permissions (common)
+    // ========================================================================
     hasCookieHostPermissions(): Promise<boolean> {
         return browser.permissions.contains({ origins: this.cookie_host_permissions });
     }
@@ -201,59 +215,29 @@ export class BrowserService {
         return browser.permissions.request({ origins: this.cookie_host_permissions });
     }
 
-    private _isFirefox(): boolean {
-        return browser.runtime.getURL("").startsWith("moz-extension://");
-    }
-
-    private _processCookies(cookies: browser.Cookies.Cookie[], cb: () => void): void {
-        console.log("BrowserService.getCookies:", (cookies || []).length, "cookies loaded");
-        (cookies || []).forEach((cookie) => {
-            this._processCookie(cookie);
-        });
-        console.log("BrowserService.getCookies:", this.sessionsSource.getValue().length, "sessions parsed");
-        cb();
-    }
-
-    private _getFirefoxCookies(): Promise<browser.Cookies.Cookie[]> {
-        return this.hasCookieHostPermissions()
-            .then(granted => console.log("BrowserService.getFirefoxCookies: host permissions granted =", granted))
-            .then(() => browser.cookies.getAllCookieStores())
-            .then(stores => stores.length ? stores.map(store => store.id) : [undefined])
-            .catch(err => {
-                console.warn("cookies.getAllCookieStores failed:", err);
-                return [undefined];
-            })
-            .then(storeIds => {
-                const queries: browser.Cookies.GetAllDetailsType[] = [];
-                storeIds.forEach(storeId => {
-                    const storeQuery = storeId ? { storeId } : {};
-                    queries.push(storeQuery);
-                    queries.push({ ...storeQuery, firstPartyDomain: null });
-                    queries.push({ ...storeQuery, partitionKey: {} });
-                    queries.push({ ...storeQuery, firstPartyDomain: null, partitionKey: {} });
-                });
-
-                console.log("BrowserService.getFirefoxCookies:", queries.length, "cookie queries");
-
-                return Promise.all(
-                    queries.map(query =>
-                        browser.cookies.getAll(query).catch(err => {
-                            console.warn("cookies.getAll failed for", query, err);
-                            return [];
-                        })
-                    )
-                );
-            })
-            .then(results => {
-                const cookiesByKey = new Map<string, browser.Cookies.Cookie>();
-                results.reduce((cookies, result) => cookies.concat(result), []).forEach(cookie => {
-                    if (!cookie || !cookie.domain) return;
-                    const partitionKey = cookie.partitionKey ? JSON.stringify(cookie.partitionKey) : "";
-                    const key = [cookie.storeId, cookie.domain, cookie.path, cookie.name, cookie.firstPartyDomain, partitionKey].join("|");
-                    cookiesByKey.set(key, cookie);
-                });
-                return Array.from(cookiesByKey.values());
-            });
+    // ========================================================================
+    // Sessions entry point
+    // ========================================================================
+    // Keeps the historical `getCookies` name so callers don't change, but the
+    // Safari path doesn't actually read cookies — Safari sandboxes the cookie
+    // jar away from this extension, so it probes /api/v1/self instead.
+    getCookies(cb: () => void): void {
+        this.sessionsSource.next([]);
+        const browserKind = detectBrowserKind();
+        if (browserKind === "firefox") {
+            loadFirefoxSessions({
+                hasCookieHostPermissions: () => this.hasCookieHostPermissions(),
+                processCookies: (cookies) => this._processCookies(cookies, () => { }),
+            }, cb);
+        } else if (browserKind === "safari") {
+            this._loadSessionsSafari(cb);
+        } else {
+            loadChromeSessions({
+                getAllCookiesDirectly: () => this._getAllCookiesDirectly(),
+                getCookiesFromBackground: () => this._getCookiesFromBackground(),
+                processCookies: (cookies) => this._processCookies(cookies, () => { }),
+            }, cb);
+        }
     }
 
     private _getAllCookiesDirectly(): Promise<browser.Cookies.Cookie[]> {
@@ -266,69 +250,74 @@ export class BrowserService {
             ...this.host_api.map(h => `https://${h}/`),
         ];
 
+        console.log("BrowserService.Bg: sending to SW for", urls.length, "URLs");
         return browser.runtime.sendMessage({ type: "getCookies", urls })
-            .then((response: { cookies?: browser.Cookies.Cookie[] } | browser.Cookies.Cookie[] | undefined) => {
+            .then((response: { cookies?: browser.Cookies.Cookie[], debug?: any } | browser.Cookies.Cookie[] | undefined) => {
                 if (Array.isArray(response)) {
                     return response;
                 }
                 if (Array.isArray(response?.cookies)) {
                     return response.cookies;
                 }
+                console.warn("BrowserService.Bg: unexpected SW response shape");
+                return [];
+            })
+            .catch(err => {
+                console.error("BrowserService.Bg: SW sendMessage failed:", err);
                 return [];
             });
     }
 
-    setStorage(k:string, v:string):void{
-        var storage_key = {}
-        storage_key[k]=v
-        browser.storage.local.set(storage_key).catch(err => console.log(err))
+    // ========================================================================
+    // Safari: the cookies API returns nothing because Safari sandboxes the
+    // extension off from the main cookie jar in some contexts.
+    // Strategy:
+    // 1) Try SW-side cookie collection/parsing first (same model as Chrome).
+    // 2) If no session is parsed, fall back to /api/v1/self probing.
+    // ========================================================================
+    private _loadSessionsSafari(cb: () => void): void {
+        loadSafariSessions({
+            domains: this.domains,
+            getCookiesFromBackground: () => this._getCookiesFromBackground(),
+            processCookies: (cookies) => this._processCookies(cookies as browser.Cookies.Cookie[], () => { }),
+            getParsedSessionCount: () => this.sessionsSource.getValue().length,
+            setSessions: (sessions) => this.sessionsSource.next(sessions),
+        }, cb);
     }
 
-    getStorage(key:string, cb:(res)=>void) {
-        browser.storage.local.get(key).then(
-            data => {
-            cb(data);
-        }, err => {
-            console.log(err)
-        });
+    // ========================================================================
+    // Cookie -> session translation (Firefox / Chrome)
+    // ========================================================================
+    private _processCookies(cookies: browser.Cookies.Cookie[], cb: () => void): void {
+        console.log("BrowserService:", (cookies || []).length, "cookies loaded");
+        (cookies || []).forEach(cookie => this._processCookie(cookie));
+        console.log("BrowserService:", this.sessionsSource.getValue().length, "sessions parsed");
+        cb();
     }
 
-    ////////////
-    // SESSIONS
-    ////////////
     private _processCookie(cookie: browser.Cookies.Cookie): void {
         if (!cookie || !cookie.domain || !cookie.name) return;
         const domain = this._getSessionDomain(cookie.domain);
         if (!domain) return;
         const expirationDate = this._getCookieExpiration(cookie);
+        if (this.domains.indexOf(domain) === -1) return;
+        if (expirationDate <= (Date.now() / 1000)) return;
 
-        // check if it's part of our domains
-        if (this.domains.indexOf(domain) > -1) {
-            // check if the cookie is still valid
-            if (expirationDate > (Date.now() / 1000)) {
-                let i: number = -1;
-                // try to find this domain in the list of sessions
-                const sessions: SessionElement[] = this.sessionsSource.getValue();
-                sessions.forEach((session, index) => {
-                    if (session.domain == domain) {
-                        i = index;
-                    }
-                })
-                // if the session already exists in the list, update it with the current cookie
-                if (i > -1) {
-                    if (cookie.name.startsWith("csrftoken")) sessions[i].csrftoken = cookie.value;
-                    else if (cookie.name.startsWith("sessionid")) sessions[i].has_sessionid = true;
-                    // if the current cookie has a shorter lifetime than the previous one, use its expirationDate instead
-                    if (sessions[i].expires_at > expirationDate) sessions[i].expires_at = expirationDate
-                    // otherwise, add a new entry in the list
-                } else {
-                    if (domain.includes("ai.juniper.net")) {
-                        this.addSession(cookie, domain, expirationDate, "jsi", "jsi", ["dc"+domain, "jsi"+domain, "routing"+domain])
-                    } else {
-                        this.addSession(cookie, domain, expirationDate, "manage", "api", ["manage"+domain])
-                    }
-                }
-            }
+        const sessions: SessionElement[] = this.sessionsSource.getValue();
+        const existingIndex = sessions.findIndex(s => s.domain == domain);
+
+        if (existingIndex > -1) {
+            if (cookie.name.startsWith("csrftoken")) sessions[existingIndex].csrftoken = cookie.value;
+            else if (cookie.name.startsWith("sessionid")) sessions[existingIndex].has_sessionid = true;
+            // if the current cookie has a shorter lifetime than the previous one, use its expirationDate instead
+            if (sessions[existingIndex].expires_at > expirationDate) sessions[existingIndex].expires_at = expirationDate;
+            return;
+        }
+
+        if (domain.includes("ai.juniper.net")) {
+            this.addSession(cookie, domain, expirationDate, "jsi", "jsi", ["dc" + domain, "jsi" + domain, "routing" + domain]);
+        } else {
+            this.addSession(cookie, domain, expirationDate, "manage", "api", ["manage" + domain]);
         }
     }
 
