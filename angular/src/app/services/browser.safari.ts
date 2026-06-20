@@ -1,15 +1,18 @@
+import browser from "webextension-polyfill";
 import type { SessionElement } from "./browser.service";
+import { getCookiesFromBackground } from "./browser.background";
 
 export interface SafariSessionLoaderContext {
     domains: string[];
-    getCookiesFromBackground: () => Promise<any[]>;
-    processCookies: (cookies: any[]) => void;
+    hostManage: string[];
+    hostApi: string[];
+    processCookies: (cookies: browser.Cookies.Cookie[]) => void;
     getParsedSessionCount: () => number;
     setSessions: (sessions: SessionElement[]) => void;
 }
 
 export function loadSafariSessions(context: SafariSessionLoaderContext, cb: () => void): void {
-    context.getCookiesFromBackground()
+    getCookiesFromBackground(context.hostManage, context.hostApi)
         .then(cookies => {
             console.log("BrowserService.Safari: SW returned", (cookies || []).length, "cookies");
             context.processCookies(cookies || []);

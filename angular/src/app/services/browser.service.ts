@@ -230,59 +230,21 @@ export class BrowserService {
                 processCookies: (cookies) => this._processCookies(cookies, () => { }),
             }, cb);
         } else if (browserKind === "safari") {
-            this._loadSessionsSafari(cb);
+            loadSafariSessions({
+                domains: this.domains,
+                hostManage: this.host_manage,
+                hostApi: this.host_api,
+                processCookies: (cookies) => this._processCookies(cookies, () => { }),
+                getParsedSessionCount: () => this.sessionsSource.getValue().length,
+                setSessions: (sessions) => this.sessionsSource.next(sessions),
+            }, cb);
         } else {
             loadChromeSessions({
-                getAllCookiesDirectly: () => this._getAllCookiesDirectly(),
-                getCookiesFromBackground: () => this._getCookiesFromBackground(),
+                hostManage: this.host_manage,
+                hostApi: this.host_api,
                 processCookies: (cookies) => this._processCookies(cookies, () => { }),
             }, cb);
         }
-    }
-
-    private _getAllCookiesDirectly(): Promise<browser.Cookies.Cookie[]> {
-        return browser.cookies.getAll({});
-    }
-
-    private _getCookiesFromBackground(): Promise<browser.Cookies.Cookie[]> {
-        const urls: string[] = [
-            ...this.host_manage.map(h => `https://${h}/`),
-            ...this.host_api.map(h => `https://${h}/`),
-        ];
-
-        console.log("BrowserService.Bg: sending to SW for", urls.length, "URLs");
-        return browser.runtime.sendMessage({ type: "getCookies", urls })
-            .then((response: { cookies?: browser.Cookies.Cookie[], debug?: any } | browser.Cookies.Cookie[] | undefined) => {
-                if (Array.isArray(response)) {
-                    return response;
-                }
-                if (Array.isArray(response?.cookies)) {
-                    return response.cookies;
-                }
-                console.warn("BrowserService.Bg: unexpected SW response shape");
-                return [];
-            })
-            .catch(err => {
-                console.error("BrowserService.Bg: SW sendMessage failed:", err);
-                return [];
-            });
-    }
-
-    // ========================================================================
-    // Safari: the cookies API returns nothing because Safari sandboxes the
-    // extension off from the main cookie jar in some contexts.
-    // Strategy:
-    // 1) Try SW-side cookie collection/parsing first (same model as Chrome).
-    // 2) If no session is parsed, fall back to /api/v1/self probing.
-    // ========================================================================
-    private _loadSessionsSafari(cb: () => void): void {
-        loadSafariSessions({
-            domains: this.domains,
-            getCookiesFromBackground: () => this._getCookiesFromBackground(),
-            processCookies: (cookies) => this._processCookies(cookies as browser.Cookies.Cookie[], () => { }),
-            getParsedSessionCount: () => this.sessionsSource.getValue().length,
-            setSessions: (sessions) => this.sessionsSource.next(sessions),
-        }, cb);
     }
 
     // ========================================================================
