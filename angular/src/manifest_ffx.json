@@ -41,7 +41,8 @@
   ],
   "background": {
     "scripts": [
-      "assets/js/serviceWorker.js"
+      "assets/js/bg-common.js",
+      "assets/js/bg-firefox.js"
     ]
   },
   "content_security_policy": {
