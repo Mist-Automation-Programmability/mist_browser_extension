@@ -90,10 +90,10 @@ webext-safari: ## Build the Safari web extension package
 	$(call BUILD_EXTENSION,safari)
 	## Convert to Safari format using xcrun
 	@cd ./angular && \
-		xcrun safari-web-extension-converter ./dist \
+		xcrun safari-web-extension-converter ./web-ext-artifacts/mist_extension-safari \
 			--project-location . \
 			--app-name "Mist Extension" \
-			--bundle-identifier com.yourCompany.Mist-Extension \
+			--bundle-identifier fr.mist-lab.Mist-Extension \
 			--swift \
 			--copy-resources \
 			--no-open \
