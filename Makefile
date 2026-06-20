@@ -8,21 +8,24 @@ define BUILD_EXTENSION
 	@cd ./angular && \
 		echo "Using manifest_$(1).json" && \
 		cp ./src/manifest_$(1).json ./src/manifest.json
+	## Copy the browser-specific session loader
+	@cd ./angular && \
+		echo "Using browser.loader.$(1).ts" && \
+		cp ./src/app/services/browser.loader.$(1).ts ./src/app/services/browser.loader.ts
 	## Build the Angular app in production mode
 	@cd ./angular && npm run build:prod
 	## Build the web extension package
 	@cd ./angular && npx web-ext build -s ./dist -o
-	## Extract version from manifest
-	@cd ./angular &&  VERSION=$$(jq -r '.version' ./src/manifest.json) 
-	## Rename the zip file based on browser type
-	@cd ./angular/web-ext-artifacts/ && mv mist_extension-$$VERSION.zip mist_extension-$(1)-$$VERSION.zip
-	## Remove any existing directory
-	@cd ./angular/web-ext-artifacts/ && rm -rf mist_extension-$(1) 
-	## Unzip the package into a directory
-	@cd ./angular/web-ext-artifacts/ && unzip -q mist_extension-$(1)-$$VERSION.zip -d mist_extension-$(1)			
+	## Rename and unpack the zip file based on browser type
+	@cd ./angular && \
+		VERSION=$$(jq -r '.version' ./src/manifest.json) && \
+		cd ./web-ext-artifacts && \
+		mv mist_extension-$$VERSION.zip mist_extension-$(1)-$$VERSION.zip && \
+		rm -rf mist_extension-$(1) && \
+		unzip -q mist_extension-$(1)-$$VERSION.zip -d mist_extension-$(1)
 endef
 
-.PHONY: help init-openapi init-angular init update-openapi run build webext-ffx webext-chrome webext-all
+.PHONY: help init-openapi init-angular init update-openapi run build webext-ffx webext-chrome webext-safari webext-all
 
 # Use bash as shell
 SHELL := /bin/bash
@@ -79,9 +82,23 @@ update-version: ## Update the version in package.json and manifest.json
 	@sed -i '' 's/"version": "[^"]*"/"version": "$(VERSION)"/' ./angular/package.json
 	@sed -i '' 's/"version": "[^"]*"/"version": "$(VERSION)"/' ./angular/src/manifest_ffx.json
 	@sed -i '' 's/"version": "[^"]*"/"version": "$(VERSION)"/' ./angular/src/manifest_chrome.json
+	@sed -i '' 's/"version": "[^"]*"/"version": "$(VERSION)"/' ./angular/src/manifest_safari.json
 	@echo "Version updated to $(VERSION)."
 
-
+webext-safari: ## Build the Safari web extension package
+	@echo "Building Safari web extension package..."
+	$(call BUILD_EXTENSION,safari)
+	## Convert to Safari format using xcrun
+	@cd ./angular && \
+		xcrun safari-web-extension-converter ./dist \
+			--project-location . \
+			--app-name "Mist Extension" \
+			--bundle-identifier com.yourCompany.Mist-Extension \
+			--swift \
+			--copy-resources \
+			--no-open \
+			--no-prompt \
+			--force
 
 webext-ffx: ## Build the Firefox web extension package
 	@echo "Building Firefox web extension package..."
@@ -91,7 +108,7 @@ webext-chrome: ## Build the Chrome web extension package
 	@echo "Building Chrome web extension package..."
 	$(call BUILD_EXTENSION,chrome) 
 
-webext-all: webext-ffx webext-chrome ## Build all web extension packages
+webext-all: webext-ffx webext-chrome webext-safari ## Build all web extension packages
 
 
 build: ## Build the project

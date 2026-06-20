@@ -1,10 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import browser from "webextension-polyfill";
-import { loadSafariSessions } from "./browser.safari";
-import { loadFirefoxSessions } from "./browser.firefox";
-import { loadChromeSessions } from "./browser.chrome";
-import { detectBrowserKind } from "./browser.detect";
+import { loadSessions, BrowserSessionContext } from "./browser.loader";
 
 
 export interface SessionElement {
@@ -218,33 +215,18 @@ export class BrowserService {
     // ========================================================================
     // Sessions entry point
     // ========================================================================
-    // Keeps the historical `getCookies` name so callers don't change, but the
-    // Safari path doesn't actually read cookies — Safari sandboxes the cookie
-    // jar away from this extension, so it probes /api/v1/self instead.
     getCookies(cb: () => void): void {
         this.sessionsSource.next([]);
-        const browserKind = detectBrowserKind();
-        if (browserKind === "firefox") {
-            loadFirefoxSessions({
-                hasCookieHostPermissions: () => this.hasCookieHostPermissions(),
-                processCookies: (cookies) => this._processCookies(cookies, () => { }),
-            }, cb);
-        } else if (browserKind === "safari") {
-            loadSafariSessions({
-                domains: this.domains,
-                hostManage: this.host_manage,
-                hostApi: this.host_api,
-                processCookies: (cookies) => this._processCookies(cookies, () => { }),
-                getParsedSessionCount: () => this.sessionsSource.getValue().length,
-                setSessions: (sessions) => this.sessionsSource.next(sessions),
-            }, cb);
-        } else {
-            loadChromeSessions({
-                hostManage: this.host_manage,
-                hostApi: this.host_api,
-                processCookies: (cookies) => this._processCookies(cookies, () => { }),
-            }, cb);
-        }
+        const context: BrowserSessionContext = {
+            domains: this.domains,
+            hostManage: this.host_manage,
+            hostApi: this.host_api,
+            hasCookieHostPermissions: () => this.hasCookieHostPermissions(),
+            processCookies: (cookies) => this._processCookies(cookies, () => { }),
+            getParsedSessionCount: () => this.sessionsSource.getValue().length,
+            setSessions: (sessions) => this.sessionsSource.next(sessions),
+        };
+        loadSessions(context, cb);
     }
 
     // ========================================================================

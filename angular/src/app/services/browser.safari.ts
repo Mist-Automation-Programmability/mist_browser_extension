@@ -25,18 +25,170 @@ export function loadSafariSessions(context: SafariSessionLoaderContext, cb: () =
                 return Promise.resolve();
             }
 
-            console.log("BrowserService.Safari: no parseable cookie sessions, probing /api/v1/self per cloud");
-            return probeSafariSessionsByApi(context.domains)
-                .then(sessions => {
-                    context.setSessions(sessions);
-                    console.log("BrowserService.Safari:", sessions.length, "active session(s) detected via /self probe");
+            return probeSafariSessionsFromTabs().then(tabProbe => {
+                if (tabProbe.sessions.length > 0) {
+                    context.setSessions(tabProbe.sessions);
+                    console.log("BrowserService.Safari:", tabProbe.sessions.length, "active session(s) detected via tab probe");
                     cb();
+                    return Promise.resolve();
+                }
+
+                if (tabProbe.matchingTabs > 0 && tabProbe.noResponseCount === tabProbe.matchingTabs) {
+                    console.warn("BrowserService.Safari: no responses from content scripts on", tabProbe.matchingTabs, "matching tab(s). Safari website access is likely not granted for this site/profile. Use Safari > Settings > Extensions > Mist Extension > Websites and set this site to Allow.");
+                    context.setSessions([]);
+                    cb();
+                    return Promise.resolve();
+                }
+
+                return getMistDomainsFromOpenTabs(context.domains).then(candidateDomains => {
+                    console.log("BrowserService.Safari: no parseable cookie sessions, probing /api/v1/self for", candidateDomains.length, "candidate domain(s)");
+                    return probeSafariSessionsByApi(candidateDomains)
+                        .then(sessions => {
+                            context.setSessions(sessions);
+                            console.log("BrowserService.Safari:", sessions.length, "active session(s) detected via /self probe");
+                            cb();
+                        });
                 });
+            });
         })
         .catch(err => {
             console.error("BrowserService.Safari: session load failed:", err);
             cb();
         });
+}
+
+interface SafariTabProbeResult {
+    sessions: SessionElement[];
+    matchingTabs: number;
+    noResponseCount: number;
+}
+
+function probeSafariSessionsFromTabs(): Promise<SafariTabProbeResult> {
+    return browser.tabs.query({})
+        .then(tabs => tabs.filter(tab => typeof tab.id === "number" && isMistManageUrl(tab.url || "")))
+        .then(tabs => {
+            console.log("BrowserService.Safari: tab probe found", tabs.length, "matching tab(s)");
+            return Promise.all(
+                tabs.map(tab =>
+                    browser.tabs.sendMessage(tab.id as number, { type: "mist_get_session" })
+                        .then(res => ({
+                            tabId: tab.id,
+                            res: res === undefined
+                                ? { ok: false, error: "no_response" }
+                                : res
+                        }))
+                        .catch(err => ({
+                            tabId: tab.id,
+                            res: {
+                                ok: false,
+                                error: err && err.message ? err.message : String(err),
+                            }
+                        }))
+                )
+            );
+        })
+        .then(entries => {
+            const failures = entries
+                .map(entry => entry.res)
+                .filter((res: any) => !res || !res.ok)
+                .slice(0, 5);
+            if (failures.length > 0) {
+                console.log("BrowserService.Safari: tab probe failures", failures);
+            }
+
+            const sessions = entries
+                .map(entry => entry.res as any)
+                .map((res: any) => res?.session as SessionElement | undefined)
+                .filter((session): session is SessionElement => !!session && !!session.domain);
+            const byDomain = new Map<string, SessionElement>();
+            sessions.forEach(session => byDomain.set(session.domain, session));
+            const noResponseCount = entries
+                .map(entry => entry.res as any)
+                .filter((res: any) => res && res.error === "no_response")
+                .length;
+            return {
+                sessions: Array.from(byDomain.values()),
+                matchingTabs: entries.length,
+                noResponseCount,
+            };
+        })
+        .catch(err => {
+            console.warn("BrowserService.Safari: tab probe failed:", err);
+            return {
+                sessions: [],
+                matchingTabs: 0,
+                noResponseCount: 0,
+            };
+        });
+}
+
+function isMistManageUrl(url: string): boolean {
+    if (!url || !url.startsWith("https://")) {
+        return false;
+    }
+    try {
+        const host = new URL(url).hostname.toLowerCase();
+        if (host.endsWith(".ai.juniper.net")) {
+            return host.startsWith("dc.") || host.startsWith("jsi.") || host.startsWith("routing.");
+        }
+        return host.startsWith("manage.")
+            || host.startsWith("integration.")
+            || host.startsWith("manage-staging.");
+    } catch (e) {
+        return false;
+    }
+}
+
+function getMistDomainsFromOpenTabs(fallbackDomains: string[]): Promise<string[]> {
+    const allowedDomains = new Set(fallbackDomains);
+    return browser.tabs.query({})
+        .then(tabs => {
+            const domains = new Set<string>();
+            tabs.forEach(tab => {
+                const domain = extractMistDomain(tab.url || "", allowedDomains);
+                if (domain && allowedDomains.has(domain)) {
+                    domains.add(domain);
+                }
+            });
+            const resolved = Array.from(domains.values());
+            return resolved.length > 0 ? resolved : fallbackDomains;
+        })
+        .catch(() => fallbackDomains);
+}
+
+function extractMistDomain(url: string, allowedDomains: Set<string>): string | null {
+    if (!url || !url.startsWith("https://")) {
+        return null;
+    }
+    try {
+        const host = new URL(url).hostname.toLowerCase();
+        const labels = host.split(".");
+        const prefix = labels[0] || "";
+
+        if (host.endsWith(".ai.juniper.net")) {
+            if (!(host.startsWith("dc.") || host.startsWith("jsi.") || host.startsWith("routing."))) {
+                return null;
+            }
+            const domain = host.includes(".stage.ai.juniper.net") ? ".stage.ai.juniper.net" : ".ai.juniper.net";
+            return allowedDomains.has(domain) ? domain : null;
+        }
+
+        // Do not derive domains from API tabs.
+        if (!["manage", "integration", "manage-staging"].includes(prefix)) {
+            return null;
+        }
+
+        if (labels.length < 3) {
+            return null;
+        }
+        const domain = "." + labels.slice(1).join(".");
+        if ((domain.endsWith(".mist.com") || domain.endsWith(".mistsys.com") || domain.endsWith(".mist-federal.com")) && allowedDomains.has(domain)) {
+            return domain;
+        }
+        return null;
+    } catch (e) {
+        return null;
+    }
 }
 
 function probeSafariSessionsByApi(domains: string[]): Promise<SessionElement[]> {
