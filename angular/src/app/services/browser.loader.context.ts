@@ -1,6 +1,5 @@
 import browser from "webextension-polyfill";
 import type { SessionElement } from "./browser.service";
-import { loadFirefoxSessions } from "./browser.firefox";
 
 export interface BrowserSessionContext {
     domains: string[];
@@ -10,8 +9,4 @@ export interface BrowserSessionContext {
     processCookies: (cookies: browser.Cookies.Cookie[]) => void;
     getParsedSessionCount: () => number;
     setSessions: (sessions: SessionElement[]) => void;
-}
-
-export function loadSessions(context: BrowserSessionContext, cb: () => void): void {
-    loadFirefoxSessions(context, cb);
 }

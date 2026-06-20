@@ -67,15 +67,20 @@ export class AccountManageComponent {
   getTokens(): void {
     if (this.do_manage) {
       let url = "https://" + this.session.api_host + "/api/v1/self/apitokens"
-      this._httpApi.requestWithCredentialFallback<[TokenElement]>(
-        () => this._http.get<[TokenElement]>(url, { headers: cleanHeaders({ "X-CSRFTOKEN": this.session.csrftoken }), withCredentials: true }),
+      this._httpApi.requestWithCredentialFallback<TokenElement[]>(
+        () => this._http.get<TokenElement[]>(url, { headers: cleanHeaders({ "X-CSRFTOKEN": this.session.csrftoken }), withCredentials: true }),
         url,
         {
           method: 'GET',
           headers: cleanHeaders({ "X-CSRFTOKEN": this.session.csrftoken })
         }
       ).subscribe({
-        next: (data: [TokenElement]) => {
+        next: (data: TokenElement[]) => {
+          if (!Array.isArray(data)) {
+            console.error('AccountManageComponent: getTokens returned a non-array response');
+            this.getTokensBackup(url);
+            return;
+          }
           this.tokens = data;
           this.tokens.sort((a, b) => {
             return a.created_time - b.created_time;
@@ -104,7 +109,6 @@ export class AccountManageComponent {
       )
       .subscribe({
         next: data => {
-          this.session.requests += 1;
           this.delete_success(token);
         },
         error: err => {

@@ -85,7 +85,12 @@ export class PrivilegeService {
 
     private getOrgsInMsp(session: SessionElement, msp_id: string, min_role: string, cb:CallableFunction): void {
         var orgs: OrgElement[] = [];
-        const msp_role = this.privilegeSource.value.find(p => p.msp_id == msp_id && p.scope == "msp").role;
+        const mspPrivilege = this.privilegeSource.value.find(p => p.msp_id == msp_id && p.scope == "msp");
+        if (!mspPrivilege) {
+            cb([]);
+            return;
+        }
+        const msp_role = mspPrivilege.role;
         let url = "https://" + session.api_host + "/api/v1/msps/" + msp_id + "/orgs"
         this._httpApi.requestWithCredentialFallback<any[]>(
             () => this._http.get<any[]>(url, { headers: cleanHeaders({ "X-CSRFTOKEN": session.csrftoken }), withCredentials: true }),
@@ -96,6 +101,10 @@ export class PrivilegeService {
             }
         ).subscribe({
             next: (orgs_from_mist: any[]) => {
+                if (!Array.isArray(orgs_from_mist)) {
+                    cb([]);
+                    return;
+                }
                 orgs_from_mist.forEach(org => {
                     var org_role = this.checkIfOrgOverride(org.id);
                     if (!org_role) org_role = msp_role;

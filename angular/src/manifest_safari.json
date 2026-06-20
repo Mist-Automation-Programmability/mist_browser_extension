@@ -23,6 +23,7 @@
       ],
       "js": [
         "assets/js/content.js",
+        "assets/js/mist_hosts.js",
         "assets/js/content_safari.js",
         "assets/js/django_links.js",
         "assets/js/django_automation.js",

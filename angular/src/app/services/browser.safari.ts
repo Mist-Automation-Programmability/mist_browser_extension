@@ -1,13 +1,9 @@
 import browser from "webextension-polyfill";
 import type { SessionElement } from "./browser.service";
 import { getCookiesFromBackground } from "./browser.background";
-
-const DEBUG = false;
-function debugLog(...args: any[]): void {
-    if (DEBUG) {
-        console.log(...args);
-    }
-}
+import { extractMistManageDomainFromUrl, isMistManageUrl, MIST_DOMAINS, resolveMistHostsFromDomain } from "./mist.hosts";
+import { buildSessionFromSelf, buildThrottledSession } from "./browser.session";
+import { debugLog } from "./debug";
 
 export interface SafariSessionLoaderContext {
     domains: string[];
@@ -129,30 +125,13 @@ function probeSafariSessionsFromTabs(): Promise<SafariTabProbeResult> {
         });
 }
 
-function isMistManageUrl(url: string): boolean {
-    if (!url || !url.startsWith("https://")) {
-        return false;
-    }
-    try {
-        const host = new URL(url).hostname.toLowerCase();
-        if (host.endsWith(".ai.juniper.net")) {
-            return host.startsWith("dc.") || host.startsWith("jsi.") || host.startsWith("routing.");
-        }
-        return host.startsWith("manage.")
-            || host.startsWith("integration.")
-            || host.startsWith("manage-staging.");
-    } catch (e) {
-        return false;
-    }
-}
-
 function getMistDomainsFromOpenTabs(fallbackDomains: string[]): Promise<string[]> {
     const allowedDomains = new Set(fallbackDomains);
     return browser.tabs.query({})
         .then(tabs => {
             const domains = new Set<string>();
             tabs.forEach(tab => {
-                const domain = extractMistDomain(tab.url || "", allowedDomains);
+                const domain = extractMistManageDomainFromUrl(tab.url || "", fallbackDomains);
                 if (domain && allowedDomains.has(domain)) {
                     domains.add(domain);
                 }
@@ -163,55 +142,18 @@ function getMistDomainsFromOpenTabs(fallbackDomains: string[]): Promise<string[]
         .catch(() => fallbackDomains);
 }
 
-function extractMistDomain(url: string, allowedDomains: Set<string>): string | null {
-    if (!url || !url.startsWith("https://")) {
-        return null;
-    }
-    try {
-        const host = new URL(url).hostname.toLowerCase();
-        const labels = host.split(".");
-        const prefix = labels[0] || "";
-
-        if (host.endsWith(".ai.juniper.net")) {
-            if (!(host.startsWith("dc.") || host.startsWith("jsi.") || host.startsWith("routing."))) {
-                return null;
-            }
-            const domain = host.includes(".stage.ai.juniper.net") ? ".stage.ai.juniper.net" : ".ai.juniper.net";
-            return allowedDomains.has(domain) ? domain : null;
-        }
-
-        // Do not derive domains from API tabs.
-        if (!["manage", "integration", "manage-staging"].includes(prefix)) {
-            return null;
-        }
-
-        if (labels.length < 3) {
-            return null;
-        }
-        const domain = "." + labels.slice(1).join(".");
-        if ((domain.endsWith(".mist.com") || domain.endsWith(".mistsys.com") || domain.endsWith(".mist-federal.com")) && allowedDomains.has(domain)) {
-            return domain;
-        }
-        return null;
-    } catch (e) {
-        return null;
-    }
-}
-
 function probeSafariSessionsByApi(domains: string[]): Promise<SessionElement[]> {
     return Promise.all(domains.map(domain => probeSafariCloud(domain)))
         .then(results => results.filter(s => s !== null) as SessionElement[]);
 }
 
 function probeSafariCloud(domain: string): Promise<SessionElement | null> {
-    const isAi = domain.includes("ai.juniper.net");
-    const apiHost = (isAi ? "jsi" : "api") + domain;
-    const cloudHost = (isAi ? "jsi" : "manage") + domain;
-    const additionalCloudHosts = isAi
-        ? ["dc" + domain, "jsi" + domain, "routing" + domain]
-        : ["manage" + domain];
+    const hosts = resolveMistHostsFromDomain(domain, MIST_DOMAINS);
+    if (!hosts) {
+        return Promise.resolve(null);
+    }
 
-    return fetch(`https://${apiHost}/api/v1/self`, {
+    return fetch(`https://${hosts.api_host}/api/v1/self`, {
         method: "GET",
         credentials: "include",
         mode: "cors",
@@ -219,73 +161,15 @@ function probeSafariCloud(domain: string): Promise<SessionElement | null> {
     })
         .then(res => {
             if (res.status === 200) {
-                return res.json().then(body => buildSafariSession(domain, apiHost, cloudHost, additionalCloudHosts, body));
+                return res.json().then(body => buildSessionFromSelf(hosts, body));
             }
             if (res.status === 429) {
-                return buildSafariThrottledSession(domain, apiHost, cloudHost, additionalCloudHosts);
+                return buildThrottledSession(hosts);
             }
             return null;
         })
         .catch(err => {
-            console.warn("BrowserService.Safari: probe failed for", apiHost, err && err.message ? err.message : err);
+            console.warn("BrowserService.Safari: probe failed for", hosts.api_host, err && err.message ? err.message : err);
             return null;
         });
-}
-
-function buildSafariSession(
-    domain: string,
-    apiHost: string,
-    cloudHost: string,
-    additionalCloudHosts: string[],
-    body: any,
-): SessionElement {
-    const twoFactorRequired = !!body?.two_factor_required;
-    const twoFactorPassed = !!body?.two_factor_passed;
-    const requests = body?.api_request_count ?? -1;
-    const request_limit = body?.api_request_limit ?? -1;
-    debugLog('browser.safari.buildSafariSession:', domain,
-        'api_request_count=', body?.api_request_count,
-        'api_request_limit=', body?.api_request_limit,
-        '=> requests=', requests, 'request_limit=', request_limit);
-    const request_percentage = request_limit > 0 ? Math.round((requests / request_limit) * 100) : 0;
-    return {
-        domain,
-        cloud_host: cloudHost,
-        api_host: apiHost,
-        email: body?.email ?? null,
-        two_factor_passed: twoFactorRequired ? twoFactorPassed : true,
-        csrftoken: null,
-        has_sessionid: true,
-        expires_at: (Date.now() / 1000) + 86400,
-        privileges: body?.privileges ?? [],
-        additional_cloud_hosts: additionalCloudHosts,
-        requests,
-        request_limit,
-        request_percentage,
-        api_threshold_reached: false,
-    };
-}
-
-function buildSafariThrottledSession(
-    domain: string,
-    apiHost: string,
-    cloudHost: string,
-    additionalCloudHosts: string[],
-): SessionElement {
-    return {
-        domain,
-        cloud_host: cloudHost,
-        api_host: apiHost,
-        email: "threshold_reached",
-        two_factor_passed: false,
-        csrftoken: null,
-        has_sessionid: true,
-        expires_at: (Date.now() / 1000) + 86400,
-        privileges: [],
-        additional_cloud_hosts: additionalCloudHosts,
-        requests: 5000,
-        request_limit: 5000,
-        request_percentage: 100,
-        api_threshold_reached: true,
-    };
 }

@@ -1,49 +1,17 @@
 import { Injectable } from '@angular/core';
 import { Observable, from } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
+import { getCloudDomainFromHost, isMistManageUrl } from './mist.hosts';
+import { debugLog } from './debug';
 
 declare const browser: any;
 declare const globalThis: any;
-
-const DEBUG = false;
-function debugLog(...args: any[]): void {
-  if (DEBUG) {
-    console.log(...args);
-  }
-}
 
 @Injectable({
   providedIn: 'root'
 })
 export class SafariHttpApiService {
   constructor() {}
-
-  private getHostDomain(host: string): string {
-    const parts = (host || '').toLowerCase().split('.');
-    if (parts.length < 3) {
-      return (host || '').toLowerCase();
-    }
-    return parts.slice(1).join('.');
-  }
-
-  private isMistManageUrl(url: string): boolean {
-    if (!url || !url.startsWith('https://')) {
-      return false;
-    }
-    try {
-      const host = new URL(url).hostname.toLowerCase();
-      if (host.endsWith('.ai.juniper.net')) {
-        return host.startsWith('dc.') || host.startsWith('jsi.') || host.startsWith('routing.');
-      }
-      const isMistDomain = host.endsWith('.mist.com') || host.endsWith('.mistsys.com') || host.endsWith('.mist-federal.com');
-      if (!isMistDomain) {
-        return false;
-      }
-      return host.startsWith('manage.') || host.startsWith('integration.') || host.startsWith('manage-staging.');
-    } catch (e) {
-      return false;
-    }
-  }
 
   /**
    * Check if running in Safari extension context
@@ -68,6 +36,7 @@ export class SafariHttpApiService {
     method?: string;
     headers?: { [key: string]: string };
     body?: any;
+    observe?: 'body' | 'response';
   }): Observable<any> {
     if (!this.isAvailable()) {
       throw new Error('SafariHttpApiService only works in Safari context');
@@ -85,31 +54,31 @@ export class SafariHttpApiService {
 
         let requestDomain = '';
         try {
-          requestDomain = this.getHostDomain(new URL(url).hostname);
+          requestDomain = getCloudDomainFromHost(new URL(url).hostname);
         } catch (e) {
           requestDomain = '';
         }
 
         // Prefer a manage/integration tab in the same cloud domain as the target API URL.
         const matchingTabs = tabs.filter((tab: any) => {
-          if (!this.isMistManageUrl(tab.url || '')) {
+          if (!isMistManageUrl(tab.url || '')) {
             return false;
           }
           if (!requestDomain) {
             return true;
           }
           try {
-            const tabDomain = this.getHostDomain(new URL(tab.url).hostname);
+            const tabDomain = getCloudDomainFromHost(new URL(tab.url).hostname);
             return tabDomain === requestDomain;
           } catch (e) {
             return false;
           }
         });
 
-        const manageTab = matchingTabs[0] || tabs.find((tab: any) => this.isMistManageUrl(tab.url || ''));
+        const manageTab = matchingTabs[0];
 
         if (!manageTab) {
-          throw new Error('No manage tab found for API request');
+          throw new Error('No same-cloud manage tab found for API request');
         }
 
         debugLog('SafariHttpApiService: routing through tab', manageTab.id, 'url:', manageTab.url);
@@ -142,6 +111,13 @@ export class SafariHttpApiService {
           };
         }
         debugLog('SafariHttpApiService: received response status', response.status, 'for', url);
+        if (options?.observe === 'response') {
+          return {
+            status: response.status || 200,
+            statusText: response.statusText || 'OK',
+            body: response.data,
+          };
+        }
         return response.data;
       }),
       catchError((err: any) => {

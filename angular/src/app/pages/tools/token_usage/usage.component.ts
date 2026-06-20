@@ -1,6 +1,7 @@
 import { Component, Input, Output, ChangeDetectionStrategy, ChangeDetectorRef, EventEmitter, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { cleanHeaders } from "../../../services/http.utils";
+import { getRequestPercentage } from "../../../services/browser.session";
 import { BrowserService } from "../../../services/browser.service"
 
 export interface TokenUsageElement {
@@ -70,7 +71,7 @@ export class TokenUsageComponent implements OnInit {
     if (this.check_index < api_hosts.length) {
       this._http.get(
         "https://" + api_hosts[this.check_index] + "/api/v1/self/usage",
-        { headers: cleanHeaders({ "Authorization": "Token " + this.api_token }), observe: 'response', withCredentials: true }
+        { headers: cleanHeaders({ "Authorization": "Token " + this.api_token }), observe: 'response' }
       ).subscribe({
         next: data => {
           if (data.status == 200) {
@@ -100,7 +101,7 @@ export class TokenUsageComponent implements OnInit {
   private set_success(api_host: string, data): void {
     this.usage.requests = data.body["requests"];
     this.usage.request_limit = data.body["request_limit"];
-    this.usage.request_percentage = (this.usage.requests / this.usage.request_limit) * 100;
+    this.usage.request_percentage = getRequestPercentage(this.usage.requests, this.usage.request_limit);
     this.usage.cloud = this._browser.getCloud(api_host);
     this.usage.host = api_host;
     this.working = false;

@@ -89,7 +89,7 @@ export class TokenInfoComponent implements OnInit {
     this._cd.detectChanges()
     if (this.check_index < api_hosts.length) {
       this._http.get(
-        "https://" + api_hosts[this.check_index] + "/api/v1/self", { headers: cleanHeaders({ "Authorization": "Token " + this.api_token }), observe: 'response', withCredentials: true })
+        "https://" + api_hosts[this.check_index] + "/api/v1/self", { headers: cleanHeaders({ "Authorization": "Token " + this.api_token }), observe: 'response' })
         .subscribe({
           next: data => {
             if (data.status == 200) {

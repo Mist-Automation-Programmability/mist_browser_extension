@@ -2,16 +2,11 @@ import { Component, OnInit, ViewChild, ChangeDetectionStrategy, ChangeDetectorRe
 import { HttpClient } from '@angular/common/http';
 import { cleanHeaders } from "../../services/http.utils";
 import { BrowserHttpApiService } from "../../services/http.browser.api";
+import { getRequestPercentage, markSessionThresholdReached } from "../../services/browser.session";
+import { debugLog } from "../../services/debug";
 import { AccountManageComponent } from './manage/manage.component';
 import { Subject } from 'rxjs';
 import { BrowserService, SessionElement } from "../../services/browser.service"
-
-const DEBUG = false;
-function debugLog(...args: any[]): void {
-  if (DEBUG) {
-    console.log(...args);
-  }
-}
 
 export interface UsageElement {
   requests: number,
@@ -137,12 +132,12 @@ export class AccountComponent implements OnInit {
           getSelfUrl,
           {
             method: 'GET',
-            headers: {}
+            headers: {},
+            observe: 'response'
           }
         ).subscribe(
           data => {
-            const response = data.status ? data : { status: 200, body: data };
-            this.handleGetSelfSuccess(session, response);
+            this.handleGetSelfSuccess(session, data);
           },
           err => {
             if (err && err.status === 429) {
@@ -183,7 +178,7 @@ export class AccountComponent implements OnInit {
         debugLog('AccountComponent.handleGetSelfSuccess: set request_limit=', session.request_limit);
       }
       if (session.requests > -1 && session.request_limit > 0) {
-        session.request_percentage = (session.requests / session.request_limit) * 100;
+        session.request_percentage = getRequestPercentage(session.requests, session.request_limit);
       }
       if (
         data.body.hasOwnProperty("two_factor_required") &&
@@ -202,13 +197,9 @@ export class AccountComponent implements OnInit {
       }
       this.is_working = false;
     } else if (data.status == 429) {
-      session.email = "threshold_reached"
-      session.api_threshold_reached = true
+      markSessionThresholdReached(session);
       this.has_active_sessions = true;
       this.is_working = false;
-      session.requests = 5000;
-      session.request_limit = 5000;
-      session.request_percentage = 100;
     }
     this._cd.detectChanges()
   }
@@ -228,7 +219,7 @@ export class AccountComponent implements OnInit {
         debugLog('AccountComponent.getApiUsage: response=', usage);
         session.requests = usage.requests;
         session.request_limit = usage.request_limit;
-        session.request_percentage = usage.request_limit > 0 ? (usage.requests / usage.request_limit) * 100 : 0;
+        session.request_percentage = getRequestPercentage(usage.requests, usage.request_limit);
         this._cd.detectChanges();
       },
       err => {

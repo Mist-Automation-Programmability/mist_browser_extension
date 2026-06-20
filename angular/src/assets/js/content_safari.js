@@ -11,71 +11,13 @@ function debugLog() {
 
 debugLog("Mist Safari content: content_safari.js loaded on", window.location.href);
 
-function inferMistHostsFromLocation(href) {
-    try {
-        const url = new URL(href);
-        const host = url.hostname.toLowerCase();
-        const labels = host.split(".");
-        const prefix = labels[0] || "";
-
-        if (host.endsWith(".ai.juniper.net")) {
-            const domain = host.includes(".stage.ai.juniper.net") ? ".stage.ai.juniper.net" : ".ai.juniper.net";
-            return {
-                domain: domain,
-                api_host: "jsi" + domain,
-                cloud_host: "jsi" + domain,
-                additional_cloud_hosts: ["dc" + domain, "jsi" + domain, "routing" + domain],
-            };
-        }
-
-        // Only use manage-like pages as identity sources; do not probe API tabs.
-        if (!["manage", "integration", "manage-staging"].includes(prefix)) {
-            debugLog("Mist Safari content: unsupported host prefix", prefix, "- not a manage tab, skipping");
-            return null;
-        }
-
-        if (labels.length < 3) return null;
-        const domain = "." + labels.slice(1).join(".");
-        if (!(domain.endsWith(".mist.com") || domain.endsWith(".mistsys.com") || domain.endsWith(".mist-federal.com"))) {
-            return null;
-        }
-        return {
-            domain: domain,
-            api_host: "api" + domain,
-            cloud_host: "manage" + domain,
-            additional_cloud_hosts: ["manage" + domain],
-        };
-    } catch (e) {
-        return null;
-    }
-}
-
-function buildSessionFromSelf(hosts, body) {
-    const twoFactorRequired = !!body?.two_factor_required;
-    const twoFactorPassed = !!body?.two_factor_passed;
-    const requests = body?.api_request_count ?? -1;
-    const request_limit = body?.api_request_limit ?? -1;
-    const request_percentage = request_limit > 0 ? Math.round((requests / request_limit) * 100) : 0;
-    return {
-        domain: hosts.domain,
-        cloud_host: hosts.cloud_host,
-        api_host: hosts.api_host,
-        email: body?.email || null,
-        two_factor_passed: twoFactorRequired ? twoFactorPassed : true,
-        csrftoken: null,
-        has_sessionid: true,
-        expires_at: (Date.now() / 1000) + 86400,
-        privileges: body?.privileges || [],
-        additional_cloud_hosts: hosts.additional_cloud_hosts,
-        requests,
-        request_limit,
-        request_percentage,
-        api_threshold_reached: false,
-    };
-}
-
 function getSessionFromPage() {
-    const hosts = inferMistHostsFromLocation(window.location.href);
+    if (!safariBrowser || !safariBrowser.runtime || !globalThis.MistHosts) {
+        console.warn("Mist Safari content: host helper unavailable");
+        return Promise.resolve({ ok: false, reason: "host_helper_unavailable" });
+    }
+
+    const hosts = globalThis.MistHosts.inferHostsFromLocation(window.location.href);
     if (!hosts) {
         debugLog("Mist Safari content: getSessionFromPage - unsupported host, skipping");
         return Promise.resolve({ ok: false, reason: "unsupported_host" });
@@ -92,27 +34,12 @@ function getSessionFromPage() {
         if (res.status === 200) {
             const body = await res.json();
             debugLog("Mist Safari content: session parsed for", hosts.domain, "email:", body?.email);
-            return { ok: true, session: buildSessionFromSelf(hosts, body) };
+            return { ok: true, session: globalThis.MistHosts.buildSessionFromSelf(hosts, body) };
         }
         if (res.status === 429) {
             return {
                 ok: true,
-                session: {
-                    domain: hosts.domain,
-                    cloud_host: hosts.cloud_host,
-                    api_host: hosts.api_host,
-                    email: "threshold_reached",
-                    two_factor_passed: false,
-                    csrftoken: null,
-                    has_sessionid: true,
-                    expires_at: (Date.now() / 1000) + 86400,
-                    privileges: [],
-                    additional_cloud_hosts: hosts.additional_cloud_hosts,
-                    requests: 5000,
-                    request_limit: 5000,
-                    request_percentage: 100,
-                    api_threshold_reached: true,
-                },
+                session: globalThis.MistHosts.buildThrottledSession(hosts),
             };
         }
         console.warn("Mist Safari content: /self failed with status", res.status);

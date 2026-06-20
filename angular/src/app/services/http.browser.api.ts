@@ -7,6 +7,7 @@ export interface BrowserHttpFallbackOptions {
   method?: string;
   headers?: { [key: string]: string };
   body?: any;
+  observe?: 'body' | 'response';
 }
 
 @Injectable({
@@ -25,9 +26,7 @@ export class BrowserHttpApiService {
         if (!this._safariApi.isAvailable()) {
           return throwError(() => directErr);
         }
-        return this._safariApi.fetchThroughContentScript(url, fallbackOptions).pipe(
-          catchError((fallbackErr: any) => throwError(() => fallbackErr))
-        );
+        return this._safariApi.fetchThroughContentScript(url, fallbackOptions);
       })
     );
   }
