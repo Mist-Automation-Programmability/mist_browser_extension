@@ -38,7 +38,8 @@
   "permissions": [
     "cookies",
     "tabs",
-    "storage"
+    "storage",
+    "clipboardWrite"
   ],
   "host_permissions": [
     "https://*.mist.com/*",
