@@ -1,13 +1,18 @@
+/*
+ * django_links.js — Django (DRF browsable API) page augmenter.
+ * Opt-in via Tools toggles (read from storage on load):
+ *   id_links  — turn known Mist IDs into API hyperlinks
+ *   ts_human  — annotate epoch timestamps with a human-readable date
+ *   copy_json — inject a "Copy JSON" button for the raw response
+ * Non-destructive node-level augmentation (no innerHTML rewrite); raw JSON
+ * cached before mutation.
+ * Dual-mode: content script auto-runs (guarded); Node exports pure functions.
+ */
 
-browser.storage.local
-    .get("id_links")
-    .then(
-        res => {
-            if (res && res.id_links == "true") process_ids();
-        }, err => {
-            console.log(err);
-        }
-    );
+// google-code-prettify token classes (confirmed via Task 1 captures):
+//   str = strings — keys AND values (quotes included in the text)
+//   lit = numbers (also wraps some non-numeric header values; the epoch check filters them)
+var TOK = { str: "str", lit: "lit" };
 
 var uuids = new Map();
 
@@ -162,78 +167,137 @@ function process_element(org_id, site_id, self, element, element_type, element_s
 
 }
 
-function process_ids() {
-    const domElements = document.getElementsByClassName("response-info")
-    var domElement;
-    try {
-        if (domElements.length > 0) {
-            domElement = domElements[0].getElementsByClassName("prettyprint");
-            if (domElement.length > 0) {
-                var baseUri = window.location.href.replace("/integration/", "/api/v1/").split("?")[0];;
-                var element_type = baseUri.split("/")[7];
-                var element_scope = baseUri.split("/")[5];
-                var stats = false;
-                var gen_self_id = true;
-                var cloneElements = domElement[0].cloneNode(true);
-                var site_id, org_id, self;
-                if (element_scope == "orgs") {
-                    org_id = baseUri.split("/")[6];
-                } else if (element_scope == "sites") {
-                    site_id = baseUri.split("/")[6];
-                } else if (element_scope == "self") {
-                    self = true;
-                    var element_type = baseUri.split("/")[6];
-                }
-                if (baseUri.includes("/events/search")) {
-                    gen_self_id = false;
-                } else if (baseUri.includes("/alarms/")) {
-                    gen_self_id = false;
-                } else if (baseUri.includes("/logs")) {
-                    gen_self_id = false;
-                } else if (baseUri.includes("/devices/upgrade")){
-                    element_type = "devices/upgrade"
-                }
-                switch (element_type) {
-                    case "inventory":
-                        element_scope = "sites";
-                        element_type = "devices";
-                        break;
-                    case "sites":
-                        element_scope = "";
-                        element_type = "sites";
-                        break;
-                    default:
-                        element_scope = baseUri.split("/")[5];
-                        if (element_type == "stats") {
-                            stats = true
-                            element_type = baseUri.split("/")[8];;
-                        }
-                        break;
-                }
-                cloneElements.removeChild(cloneElements.childNodes[0]);
-                var cloneElements_json = JSON.parse(cloneElements.innerHTML.replace(/<\/*span[^>]*>/gm, "").replace(/<\/*a[^>]*>/gm, ""));
-                if (Array.isArray(cloneElements_json)) {
-                    cloneElements_json.forEach(function (element) {
-                        process_element(org_id, site_id, self, element, element_type, element_scope, gen_self_id, stats);
-                    })
-                } else if (cloneElements_json.hasOwnProperty("results")) {
-                    cloneElements_json.results.forEach(function (element) {
-                        process_element(org_id, site_id, self, element, element_type, element_scope, gen_self_id, stats);
-                    })
-                    if (cloneElements_json.hasOwnProperty("next")) {
-                        uuids[cloneElements_json.next] = "https://" + window.location.host + cloneElements_json.next;
-                    }
-                } else {
-                    process_element(org_id, site_id, self, cloneElements_json, element_type, element_scope, false, stats);
-                }
-                for (const [key, value] of Object.entries(uuids)) {
-                    var cleanHTML = DOMPurify.sanitize("\"<a href=\"" + value + "\" style=\"text-decoration: underline;color: #D14;\">" + key + "</a>\"")
-                    domElement[0].innerHTML = domElement[0].innerHTML.replaceAll("\"" + key + "\"", cleanHTML);
-                }
-
-            }
-        }
-    } catch (e) {
-        console.warn("Error in process_ids: ", e);
+// Build the { idString: url } map from parsed JSON. Context derived from
+// window.location, exactly as the original process_ids did.
+function buildIdMap(rootJson) {
+    uuids = new Map();
+    var baseUri = window.location.href.replace("/integration/", "/api/v1/").split("?")[0];
+    var element_type = baseUri.split("/")[7];
+    var element_scope = baseUri.split("/")[5];
+    var stats = false;
+    var gen_self_id = true;
+    var site_id, org_id, self;
+    if (element_scope == "orgs") {
+        org_id = baseUri.split("/")[6];
+    } else if (element_scope == "sites") {
+        site_id = baseUri.split("/")[6];
+    } else if (element_scope == "self") {
+        self = true;
+        element_type = baseUri.split("/")[6];
     }
+    if (baseUri.includes("/events/search")) {
+        gen_self_id = false;
+    } else if (baseUri.includes("/alarms/")) {
+        gen_self_id = false;
+    } else if (baseUri.includes("/logs")) {
+        gen_self_id = false;
+    } else if (baseUri.includes("/devices/upgrade")) {
+        element_type = "devices/upgrade";
+    }
+    switch (element_type) {
+        case "inventory":
+            element_scope = "sites";
+            element_type = "devices";
+            break;
+        case "sites":
+            element_scope = "";
+            element_type = "sites";
+            break;
+        default:
+            element_scope = baseUri.split("/")[5];
+            if (element_type == "stats") {
+                stats = true;
+                element_type = baseUri.split("/")[8];
+            }
+            break;
+    }
+    if (Array.isArray(rootJson)) {
+        rootJson.forEach(function (element) {
+            process_element(org_id, site_id, self, element, element_type, element_scope, gen_self_id, stats);
+        });
+    } else if (rootJson && rootJson.hasOwnProperty("results")) {
+        rootJson.results.forEach(function (element) {
+            process_element(org_id, site_id, self, element, element_type, element_scope, gen_self_id, stats);
+        });
+        if (rootJson.hasOwnProperty("next")) {
+            uuids[rootJson.next] = "https://" + window.location.host + rootJson.next;
+        }
+    } else if (rootJson) {
+        process_element(org_id, site_id, self, rootJson, element_type, element_scope, false, stats);
+    }
+    return uuids;
+}
+
+function _tryParse(s) {
+    try { return { ok: true, value: JSON.parse(s) }; } catch (e) { return { ok: false }; }
+}
+
+// Parse the DRF response JSON from the .prettyprint element. Returns
+// { data, raw } or null. Handles a possible leading status/header prefix.
+function parseResponse(preEl) {
+    var text = (preEl.textContent || "");
+    var start = text.search(/[\[{]/);
+    var candidate = (start >= 0 ? text.slice(start) : text).trim();
+    var p = _tryParse(candidate);
+    if (p.ok) return { data: p.value, raw: candidate };
+    var whole = _tryParse(text.trim());
+    if (whole.ok) return { data: whole.value, raw: text.trim() };
+    return null;
+}
+
+// Wrap string tokens whose decoded value is in the id map. Keys are excluded
+// naturally — field names aren't in the map — so no key/value class split needed.
+function applyIdLinks(preEl, idMap) {
+    var doc = preEl.ownerDocument;
+    var spans = preEl.querySelectorAll("span." + TOK.str);
+    for (var i = 0; i < spans.length; i++) {
+        var span = spans[i];
+        if (span.dataset.mistLinked) continue;        // idempotent
+        if (span.closest("a")) continue;              // already linked
+        var decoded;
+        try { decoded = JSON.parse(span.textContent); } catch (e) { continue; }
+        if (typeof decoded !== "string") continue;
+        if (!Object.prototype.hasOwnProperty.call(idMap, decoded)) continue;
+        var a = doc.createElement("a");
+        a.href = idMap[decoded];
+        a.textContent = decoded;                      // textContent only — no innerHTML
+        a.style.textDecoration = "underline";
+        a.style.color = "#D14";
+        span.textContent = "";
+        span.appendChild(doc.createTextNode('"'));
+        span.appendChild(a);
+        span.appendChild(doc.createTextNode('"'));
+        span.dataset.mistLinked = "1";
+    }
+}
+
+function runAugment(opts) {
+    var info = document.querySelector(".response-info");
+    if (!info) return;
+    var pre = info.querySelector(".prettyprint");
+    if (!pre) return;
+    var parsed = parseResponse(pre);
+    if (!parsed) {
+        console.warn("django_links: could not parse response JSON; leaving page untouched");
+        return;
+    }
+    if (opts.id_links) {
+        try { applyIdLinks(pre, buildIdMap(parsed.data)); }
+        catch (e) { console.warn("django_links: id-link augmentation failed", e); }
+    }
+}
+
+if (typeof browser !== "undefined" && browser.storage && browser.storage.local) {
+    browser.storage.local.get(["id_links", "ts_human", "copy_json"]).then(function (res) {
+        var opts = {
+            id_links: !!res && res.id_links === "true",
+            ts_human: !!res && res.ts_human === "true",
+            copy_json: !!res && res.copy_json === "true",
+        };
+        if (opts.id_links || opts.ts_human || opts.copy_json) runAugment(opts);
+    }, function (err) { console.log(err); });
+}
+
+if (typeof module !== "undefined" && module.exports) {
+    module.exports = { TOK, parseResponse, buildIdMap, applyIdLinks, runAugment };
 }
