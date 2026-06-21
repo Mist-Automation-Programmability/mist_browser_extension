@@ -1,65 +1,75 @@
+<div class="mist-body">
 
-<div class="popup-content full-height">
-    <div class="container" style="height: 100%; display: flex; flex-direction: column; justify-content: flex-start;">
-        <div *ngIf="tokens.length == 0" style="height: 100%;display: flex;justify-content: center;flex-direction: column;text-align: center; font-weight: lighter; margin: 1em;">
-            <div style="margin: 1em;">This account doesn't have any API Token yet...</div>
-            <div style="margin: 0 2em;">You can go back and create a new API Token directly from this extension!</div>
-        </div>
-        <div class="token-container" *ngFor="let token of tokens" [ngClass]="token.deleted == true ? 'deleted' : ''">
-            <div class="token">
-                <table>
-                    <tr>
-                        <th>Name:</th>
-                        <td>
-                            <div class="name">{{token.name}}</div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Key:</th>
-                        <td>
-                            <div>{{token.key}}</div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Creation Time:</th>
-                        <td>
-                            <div>{{(token.created_time * 1000)| date:'yyyy-MM-dd HH:mm:ss' }}</div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Last Used Time:</th>
-                        <td>
-                            <div *ngIf="token.last_used" [ngStyle]="{'color': now - (token.last_used * 1000) > 7776000000  ? 'var(--warning)' : null}">{{(token.last_used * 1000)| date:'yyyy-MM-dd HH:mm:ss'}}</div>
-                            <div *ngIf="!token.last_used" style="color: var(--error);font-weight: 400;">Never</div>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <div class="delete">
-                <button (click)="confirmDeleteToken(token)">
-                    <img src="assets/delete.svg" alt="delete">
+    <div class="mist-subhead">
+        <button class="mist-back" (click)="close()" title="Back">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 6 9 12 15 18"></polyline>
+            </svg>
+        </button>
+        <div class="mist-subhead-title">User API Tokens</div>
+    </div>
+
+    <div class="mist-crumb" *ngIf="session">
+        <span class="mist-crumb-host">{{ session.cloud_host }}</span>
+        <span class="mist-crumb-scope">User</span>
+    </div>
+
+    <div class="mist-tklist" *ngIf="tokens.length > 0">
+        <div class="mist-tkitem" *ngFor="let token of tokens" [class.is-deleted]="token.deleted">
+            <div class="mist-tkitem-top">
+                <div class="mist-tkname">{{ token.name || 'Unnamed token' }}</div>
+                <button class="mist-del" (click)="confirmDeleteToken(token)" title="Delete token">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                        <path d="M10 11v6M14 11v6"></path>
+                        <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path>
+                    </svg>
                 </button>
             </div>
+            <div class="mist-tkkey">
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="8" cy="15" r="4"></circle>
+                    <path d="M10.8 12.2 21 2"></path>
+                    <path d="M18 5l3 3"></path>
+                    <path d="M15 8l3 3"></path>
+                </svg>
+                {{ token.key }}
+            </div>
+            <div class="mist-tkmeta">
+                <div class="mist-kv">
+                    <span class="mist-kv-label">Created</span>
+                    <span class="mist-kv-val">{{ (token.created_time * 1000) | date:'yyyy-MM-dd HH:mm' }}</span>
+                </div>
+                <div class="mist-kv">
+                    <span class="mist-kv-label">Last used</span>
+                    <span class="mist-kv-val" *ngIf="token.last_used"
+                        [class.stale]="now - (token.last_used * 1000) > 7776000000">{{ (token.last_used * 1000) | date:'yyyy-MM-dd HH:mm' }}</span>
+                    <span class="mist-kv-val never" *ngIf="!token.last_used">Never</span>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div style="display: flex;">
-        <button (click)="close()" class="xlarge">CLOSE</button>
+    <div class="mist-empty" *ngIf="tokens.length == 0">
+        <div class="mist-empty-icon">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="8" cy="15" r="4"></circle>
+                <path d="M10.8 12.2 21 2"></path>
+                <path d="M18 5l3 3"></path>
+                <path d="M15 8l3 3"></path>
+            </svg>
+        </div>
+        <div class="mist-empty-title">No API tokens yet</div>
+        <div class="mist-empty-body">This account doesn't have any API token. Create one with the New button on the
+            session card.</div>
     </div>
-</div>
-<div class="message-container">
-    <div class="message success" [ngClass]="success == true ? 'show' : ''">
-        API Token Deleted
-    </div>
-    <div class="message error" [ngClass]="error == true ? 'show' : ''">
-        Unable to delete the API Token
-    </div>
+
 </div>
 
-<app-token-delete-warning 
-    [ngClass]="{hidden: view != 'warning'}"
-    class="popup transparent"
-    (warningConfirm)="warningConfirm()"
-    (warningCancel)="warningCancel()"
->
-</app-token-delete-warning>
+<app-token-delete-warning [class.mist-hidden]="view != 'warning'" (warningConfirm)="warningConfirm()"
+    (warningCancel)="warningCancel()"></app-token-delete-warning>

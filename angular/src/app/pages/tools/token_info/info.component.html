@@ -1,117 +1,107 @@
-<div class="popup-content full-height">
-  <div class="rw-container">
-    <label for="token"> API TOKEN INFO </label>
-    <div class="input">
-      <input
-        type="text"
-        [(ngModel)]="api_token"
-        placeholder="API Token"
-        (ngModelChange)="token_updated()"
-        [ngStyle]="{'border': invalid ? '1px solid red' : ''}"
-        [readonly]="working"
-      />
-    </div>
-    <button
-      class="secondary xlarge"
-      [disabled]="!api_token || working || invalid"
-      (click)="check_info()"
-    >
-      <span *ngIf="!working && !invalid">Get Info</span>
-      <span *ngIf="invalid" class="error">Invalid Token</span>
-      <span *ngIf="working">Check {{ check_index }} / {{ check_total }} </span>
+<div class="mist-body">
+
+  <div class="mist-subhead">
+    <button class="mist-back" (click)="close()" title="Back">
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 6 9 12 15 18"></polyline>
+      </svg>
     </button>
+    <div class="mist-subhead-title">API Token Info</div>
   </div>
 
-  <div class="content info-container">
-      <div *ngIf="success">
-    <div class="header">
-      <div style="margin-bottom: 1em">
-        <span class="value">{{ info.type | uppercase }}</span>
-        <span class="cosm"> API Token on </span>
-        <span class="value">{{ info.host }}</span>
-        <span class="cosm"> (</span>
-        <span class="value">{{ info.cloud }}</span>
-        <span class="cosm"> )</span>
-      </div>
-      <div *ngIf="info.type == 'org'">
-        <span class="cosm">Token Name: </span
-        ><span class="value">{{ info.name }}</span>
-      </div>
-      <div *ngIf="info.type == 'user'">
-        <span class="cosm">User Name: </span
-        ><span class="value">{{ info.name }}</span>
-      </div>
-    </div>
-    <div class="usage_count">
-      <div class="text-container">
-        <div class="label">MSP Access</div>
-        <div class="value">{{ info.msp_count }}</div>
-      </div>
-      <div class="text-container">
-        <div class="label">Org Access</div>
-        <div class="value">{{ info.org_count }}</div>
-      </div>
-      <div class="text-container">
-        <div class="label">Site Access</div>
-        <div class="value">{{ info.site_count }}</div>
-      </div>
-    </div>
-    <div>
-    <div *ngFor="let p of info.privileges" class="privilege">
-        <div class="privilege-info-container column">
-            <div class="box-ids" *ngIf="p.msp_id">
-                <div class="box-ids-text" [ngClass]="focused == p.msp_id? 'focused' : ''">
-                    <label class="ids" for={{p.msp_id}}>MSP ID</label>
-                    <div class=box-ids-input>
-                        <input class="ids" type="text" readonly [value]="p.msp_id"  id={{p.msp_id}} #object_int>
-                    </div>
-                </div>
-                <button class="copy" name="copy" (click)="copyId(object_int)">
-                    <img class="copy" src="assets/copy.svg" alt="copy">
-                </button>
-            </div>
-            <div class="box-ids" *ngIf="p.org_id">
-                <div class="box-ids-text" [ngClass]="focused == p.org_id? 'focused' : ''">
-                    <label class="ids" for={{p.org_id}}>ORG ID</label>
-                    <div class=box-ids-input>
-                        <input class="ids" type="text" readonly [value]="p.org_id"  id={{p.org_id}} #object_int>
-                    </div>
-                </div>
-                <button class="copy" name="copy" (click)="copyId(object_int)">
-                    <img class="copy" src="assets/copy.svg" alt="copy">
-                </button>
-            </div>
-            <div class="box-ids" *ngIf="p.site_id">
-                <div class="box-ids-text" [ngClass]="focused == p.site_id? 'focused' : ''">
-                    <label class="ids" for={{p.site_id}}>SITE ID</label>
-                    <div class=box-ids-input>
-                        <input class="ids" type="text" readonly [value]="p.site_id"  id={{p.site_id}} #object_int>
-                    </div>
-                </div>
-                <button class="copy" name="copy" (click)="copyId(object_int)">
-                    <img class="copy" src="assets/copy.svg" alt="copy">
-                </button>
-            </div>
-        </div>
-          <div class="privilege-info row" style="justify-content: space-between;">
-              <div class="privilege-info-container">
-                <div class="label">Name</div>
-                <div class="value name">{{ p.name }}</div>
-              </div>
-              <div  class="privilege-info row">
-                <div class="privilege-info-container">
-                    <div class="label">Scope</div>
-                    <div class="value fixed">{{ p.scope | uppercase }}</div>
-                </div>
-                <div class="privilege-info-container">
-                    <div class="label">Role</div>
-                    <div class="value fixed">{{ p.role | uppercase }}</div>
-                </div>
-            </div>
-          </div>
-      </div>
+  <div class="mist-fieldset">
+    <div class="mist-field-label">API Token</div>
+    <div class="mist-token-row">
+      <input class="mist-token-input" type="text" [(ngModel)]="api_token" (ngModelChange)="token_updated()"
+        placeholder="Paste an API token" [readonly]="working" [class.is-invalid]="invalid" />
+      <button class="mist-getinfo" [disabled]="!api_token || working || invalid" (click)="check_info()">
+        <span *ngIf="!working && !invalid">Get Info</span>
+        <span *ngIf="invalid">Invalid</span>
+        <span *ngIf="working">{{ check_index }} / {{ check_total }}</span>
+      </button>
     </div>
   </div>
-</div>
-    <button (click)="close()" class="close">CLOSE</button>
+
+  <ng-container *ngIf="success">
+    <div class="mist-tokhead">
+      <div class="mist-tokhead-top">
+        <span class="mist-typebadge">{{ info.type | uppercase }}</span>
+        <span class="mist-tokhead-on">API token on</span>
+      </div>
+      <div class="mist-tokhead-host">{{ info.host }} · {{ info.cloud }}</div>
+      <div class="mist-tokhead-name" *ngIf="info.type == 'org'">Token name <b>{{ info.name }}</b></div>
+      <div class="mist-tokhead-name" *ngIf="info.type == 'user'">User name <b>{{ info.name }}</b></div>
+    </div>
+
+    <div class="mist-stats">
+      <div class="mist-stat">
+        <div class="mist-stat-val">{{ info.msp_count }}</div>
+        <div class="mist-stat-label">MSP Access</div>
+      </div>
+      <div class="mist-stat">
+        <div class="mist-stat-val">{{ info.org_count }}</div>
+        <div class="mist-stat-label">Org Access</div>
+      </div>
+      <div class="mist-stat">
+        <div class="mist-stat-val">{{ info.site_count }}</div>
+        <div class="mist-stat-label">Site Access</div>
+      </div>
+    </div>
+
+    <div class="mist-sec">
+      <div class="mist-sec-title"><span>Privileges</span><span class="count">{{ info.privileges.length }}</span></div>
+      <div class="mist-priv" *ngFor="let p of info.privileges">
+        <div class="mist-priv-top">
+          <div class="mist-priv-name">{{ p.name }}</div>
+          <div class="mist-priv-tags">
+            <span class="mist-tag">{{ p.scope | uppercase }}</span>
+            <span class="mist-tag role">{{ p.role | uppercase }}</span>
+          </div>
+        </div>
+        <div class="mist-ids" *ngIf="p.msp_id || p.org_id || p.site_id">
+          <button class="mist-idrow" *ngIf="p.msp_id" [class.copied]="focused == p.msp_id"
+            (click)="copyId(p.msp_id, p.msp_id)" title="Copy">
+            <div class="mist-idmain"><span class="mist-idlabel">MSP ID</span><span class="mist-idval">{{ p.msp_id }}</span></div>
+            <span class="mist-copied" *ngIf="focused == p.msp_id">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8"
+                stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+            <span class="mist-copy" *ngIf="focused != p.msp_id">
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect>
+                <path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg>
+            </span>
+          </button>
+          <button class="mist-idrow" *ngIf="p.org_id" [class.copied]="focused == p.org_id"
+            (click)="copyId(p.org_id, p.org_id)" title="Copy">
+            <div class="mist-idmain"><span class="mist-idlabel">ORG ID</span><span class="mist-idval">{{ p.org_id }}</span></div>
+            <span class="mist-copied" *ngIf="focused == p.org_id">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8"
+                stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+            <span class="mist-copy" *ngIf="focused != p.org_id">
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect>
+                <path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg>
+            </span>
+          </button>
+          <button class="mist-idrow" *ngIf="p.site_id" [class.copied]="focused == p.site_id"
+            (click)="copyId(p.site_id, p.site_id)" title="Copy">
+            <div class="mist-idmain"><span class="mist-idlabel">SITE ID</span><span class="mist-idval">{{ p.site_id }}</span></div>
+            <span class="mist-copied" *ngIf="focused == p.site_id">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8"
+                stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+            <span class="mist-copy" *ngIf="focused != p.site_id">
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect>
+                <path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg>
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
 </div>

@@ -1,5 +1,4 @@
 import { Component, Input, Output, ChangeDetectionStrategy, ChangeDetectorRef, EventEmitter, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BrowserService, SessionElement } from '../../../services/browser.service';
 import { PrivilegeService, OrgElement, MspElement } from "../../../services/privileges.service"
@@ -16,12 +15,7 @@ export interface TokenElement {
     selector: 'app-account-create-org',
     templateUrl: 'create_org.component.html',
     styleUrls: [
-        '../../../scss/button.component.scss',
-        '../../../scss/popup.component.scss',
-        '../../../scss/select.component.scss',
-        '../../../scss/textarea.component.scss',
         'create_org.component.scss',
-        '../create/create.component.scss',
     ],
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: false
@@ -36,7 +30,6 @@ export class AccountCreateOrgComponent implements OnInit {
   focused: string = "";
   constructor(
     private _cd: ChangeDetectorRef,
-    private _http: HttpClient,
     private _privilege: PrivilegeService,
     private _browser: BrowserService,
   ) { }
@@ -101,26 +94,8 @@ export class AccountCreateOrgComponent implements OnInit {
     }
     if (this.do_create && this.org_id != "none") {
       let url = "https://" + this.session.api_host + "/api/v1/orgs/" + this.org_id + "/apitokens"
-      this._http
-        .post<TokenElement>(url, body, { headers: { "X-CSRFTOKEN": this.session.csrftoken } })
-        .subscribe({
-          next: (data) => {
-            this.token = data;
-            this.session.requests += 1;
-            this._cd.detectChanges();
-          },
-          error: (e) => {
-            this.createTokenBackup(url, body);
-          }
-        })
+      this._browser.openApiAction("POST", url, body);
     }
-  }
-
-  private createTokenBackup(url: string, body): void {
-    this._browser.setStorage("post", JSON.stringify({ url: url, payload: body, ts: Date.now() }));
-    setTimeout(() => {
-      this._browser.tabOpen(url);
-    }, 10);
   }
 
   close(): void {

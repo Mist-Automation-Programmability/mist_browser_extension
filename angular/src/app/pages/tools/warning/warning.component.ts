@@ -5,8 +5,6 @@ import { Component, Output, Input, ChangeDetectionStrategy, EventEmitter, OnInit
     selector: 'app-tools-warning',
     templateUrl: 'warning.component.html',
     styleUrls: [
-        '../../../scss/popup.component.scss',
-        '../../../scss/button.component.scss',
         'warning.component.scss',
     ],
     changeDetection: ChangeDetectionStrategy.OnPush,

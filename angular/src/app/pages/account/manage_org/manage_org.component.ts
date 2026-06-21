@@ -1,5 +1,7 @@
 import { Component, Input, Output, ChangeDetectionStrategy, ChangeDetectorRef, EventEmitter, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { cleanHeaders } from "../../../services/http.utils";
+import { BrowserHttpApiService } from "../../../services/http.browser.api";
 import { Observable, Subject } from 'rxjs';
 import { BrowserService, SessionElement } from '../../../services/browser.service';
 import { PrivilegeService, OrgElement, MspElement } from "../../../services/privileges.service"
@@ -18,12 +20,7 @@ export interface TokenElement {
     selector: 'app-account-manage-org',
     templateUrl: 'manage_org.component.html',
     styleUrls: [
-        '../../../scss/button.component.scss',
-        '../../../scss/message.component.scss',
-        '../../../scss/popup.component.scss',
-        '../../../scss/select.component.scss',
         './manage_org.component.scss',
-        '../manage/manage.component.scss',
     ],
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: false
@@ -41,6 +38,7 @@ export class AccountManageOrgComponent implements OnInit {
     private _http: HttpClient,
     private _privilege: PrivilegeService,
     private _browser: BrowserService,
+    private _httpApi: BrowserHttpApiService,
   ) { }
 
   tokens = [];
@@ -52,8 +50,6 @@ export class AccountManageOrgComponent implements OnInit {
   org_loading: boolean = false;
   org_id: string;
   do_manage: boolean = false;
-  success: boolean = false;
-  error: boolean = false;
   view: string = "";
 
   ngOnInit() {
@@ -87,13 +83,31 @@ export class AccountManageOrgComponent implements OnInit {
   getTokens(): void {
     if (this.do_manage && this.org_id != 'none') {
       let url = "https://" + this.session.api_host + "/api/v1/orgs/" + this.org_id + "/apitokens"
-      this._http.get(url, { headers: { "X-CSRFTOKEN": this.session.csrftoken } }).subscribe((data: [TokenElement]) => {
-        this.tokens = data;
-        this.tokens.sort((a, b) => {
-          return a.created_time - b.created_time;
-        })
-        this.session.requests += 1;
-        this._cd.detectChanges();
+      this._httpApi.requestWithCredentialFallback<TokenElement[]>(
+        () => this._http.get<TokenElement[]>(url, { headers: cleanHeaders({ "X-CSRFTOKEN": this.session.csrftoken }), withCredentials: true }),
+        url,
+        {
+          method: 'GET',
+          headers: cleanHeaders({ "X-CSRFTOKEN": this.session.csrftoken })
+        }
+      ).subscribe({
+        next: (data: TokenElement[]) => {
+          if (!Array.isArray(data)) {
+            console.error('AccountManageOrgComponent: getTokens returned a non-array response');
+            this.tokens = [];
+            this._cd.detectChanges();
+            return;
+          }
+          this.tokens = data;
+          this.tokens.sort((a, b) => {
+            return a.created_time - b.created_time;
+          })
+          this.session.requests += 1;
+          this._cd.detectChanges();
+        },
+        error: (err) => {
+          console.error('AccountManageOrgComponent: getTokens failed:', err);
+        }
       })
     } else {
       this.tokens = [];
@@ -103,47 +117,7 @@ export class AccountManageOrgComponent implements OnInit {
 
   private deleteToken(token: TokenElement): void {
     let url = "https://" + this.session.api_host + "/api/v1/orgs/" + this.org_id + "/apitokens/" + token.id
-    this._http
-      .delete(url, { headers: { "X-CSRFTOKEN": this.session.csrftoken } })
-      .subscribe({
-        next: data => {
-          this.session.requests += 1;
-          this.delete_success(token);
-        },
-        error: err => {
-          this.deleteTokenBackup(url);
-        }
-      })
-  }
-
-  private deleteTokenBackup(url: string): void {
-    this._browser.setStorage("delete", JSON.stringify({ url: url, ts: Date.now() }));
-    setTimeout(() => {
-      this._browser.tabOpen(url);
-    }, 10);
-  }
-
-
-  private delete_success(token: TokenElement) {
-    this.session.requests += 1;
-    token.deleted = true;
-    this.success = true;
-    this._cd.detectChanges()
-    setTimeout(() => {
-      this.success = false;
-      this._cd.detectChanges()
-    }, 2000);
-  }
-
-  private delete_error(err: any) {
-    this.session.requests += 1;
-    console.log(err);
-    this.error = true;
-    this._cd.detectChanges()
-    setTimeout(() => {
-      this.error = false;
-      this._cd.detectChanges()
-    }, 3000);
+    this._browser.openApiAction("DELETE", url);
   }
 
   close(): void {

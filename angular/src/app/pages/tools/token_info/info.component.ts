@@ -1,5 +1,6 @@
 import { Component, Output, ChangeDetectionStrategy, ChangeDetectorRef, EventEmitter, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { cleanHeaders } from "../../../services/http.utils";
 import { BrowserService } from "../../../services/browser.service"
 
 export interface PrivilegeElement {
@@ -32,10 +33,6 @@ export interface TokenInfoElement {
     selector: 'app-tools-token-info',
     templateUrl: 'info.component.html',
     styleUrls: [
-        '../../../scss/popup.component.scss',
-        '../../../scss/button.component.scss',
-        '../../../scss/input.component.scss',
-        '../token.component.scss',
         'info.component.scss',
     ],
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -88,7 +85,7 @@ export class TokenInfoComponent implements OnInit {
     this._cd.detectChanges()
     if (this.check_index < api_hosts.length) {
       this._http.get(
-        "https://" + api_hosts[this.check_index] + "/api/v1/self", { headers: { "Authorization": "Token " + this.api_token }, observe: 'response' })
+        "https://" + api_hosts[this.check_index] + "/api/v1/self", { headers: cleanHeaders({ "Authorization": "Token " + this.api_token }), observe: 'response' })
         .subscribe({
           next: data => {
             if (data.status == 200) {
@@ -188,15 +185,21 @@ export class TokenInfoComponent implements OnInit {
     this.invalid = false;
   }
   // copy the id (org_id, site_id, ...) into the clipboard
-  copyId(inputElement: HTMLInputElement): void {
-    this.focused = inputElement.id;
-    inputElement.select();
-    document.execCommand('copy');
+  async copyId(value: string, key: string): Promise<void> {
+    try {
+      if (!navigator.clipboard?.writeText) return;
+      await navigator.clipboard.writeText(value);
+    } catch (e) {
+      console.warn("copyId failed:", e);
+      return;
+    }
+
+    this.focused = key;
+    this._cd.detectChanges();
     setTimeout(() => {
       this.focused = "";
-      this._cd.detectChanges()
-    }, 100);
-    inputElement.setSelectionRange(0, 0);
+      this._cd.detectChanges();
+    }, 1200);
   }
 
   close(): void {

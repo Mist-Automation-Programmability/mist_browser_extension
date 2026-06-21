@@ -11,8 +11,6 @@ export interface linkElement {
     selector: 'app-about',
     templateUrl: 'about.component.html',
     styleUrls: [
-        '../../scss/button.component.scss',
-        '../../scss/container.component.scss',
         'about.component.scss',
     ],
     standalone: false

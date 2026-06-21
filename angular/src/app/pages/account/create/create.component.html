@@ -1,21 +1,44 @@
-<div class="popup-content" *ngIf='session'>
-    <div class="box-token">
-        <label for="token">
-            NEW API TOKEN
-        </label>
-        <div class="cloud">manage{{session.domain}}</div>
-        <div class="token-name">
-            <input type="text" [(ngModel)]="token_name" placeholder="Token Name (optional)"/>
-        </div>
-        <div class="textarea" fxLayout="row">
-            <textarea class="token" type="text" readonly rows="3" [ngClass]="focused == 'token'? 'focused' : ''" id="token" #token_input>{{token.key}}</textarea>
-            <button class="copy" name="copy" (click)="copyToken(token_input)" [disabled]="token.key==''">
-                    <img class="copy" src="assets/copy.svg" alt="copy">
-                </button>
-        </div>
+<div class="mist-body" *ngIf="session">
+
+    <div class="mist-subhead">
+        <button class="mist-back" (click)="close()" title="Back">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 6 9 12 15 18"></polyline>
+            </svg>
+        </button>
+        <div class="mist-subhead-title">New API Token</div>
     </div>
-    <div class="popup-footer">
-        <button (click)="close()" class="xlarge">CLOSE</button>
-        <button (click)="createToken()" class="secondary xlarge">Create</button>
-        </div>
+
+    <div class="mist-crumb">
+        <span class="mist-crumb-host">{{ session.cloud_host }}</span>
+        <span class="mist-crumb-scope">User</span>
+    </div>
+
+    <div class="mist-cloud-line">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 12l2 2 4-4"></path>
+            <circle cx="12" cy="12" r="9"></circle>
+        </svg>
+        Bound to this session · <b>manage{{ session.domain }}</b>
+    </div>
+
+    <div class="mist-fieldset">
+        <div class="mist-field-label">Token name <span class="soft">(optional)</span></div>
+        <input class="mist-input" type="text" [(ngModel)]="token_name" placeholder="e.g. terraform-prod" />
+    </div>
+
+    <div class="mist-actions">
+        <button class="mist-btn mist-btn-ghost" (click)="close()">Cancel</button>
+        <button class="mist-btn mist-btn-primary" (click)="createToken()">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Create
+        </button>
+    </div>
+
 </div>

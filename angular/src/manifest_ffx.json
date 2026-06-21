@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Mist Extension",
   "short_name": "mist-extension",
-  "version": "5.6.2",
+  "version": "6.0.0",
   "description": "Web Browser Extension for Mist Developers to provide easier access to Mist APIs",
   "icons": {
     "16": "assets/favicon-16x16.png",
@@ -32,16 +32,17 @@
         "https://*.ai.juniper.net/*"
       ],
       "js": [
-        "/assets/js/content.js",
-        "/assets/js/django_links.js",
-        "/assets/js/django_automation.js",
-        "/assets/js/purify.min.js"
+        "assets/js/content.js",
+        "assets/js/django_links.js",
+        "assets/js/django_automation.js",
+        "assets/js/purify.min.js"
       ]
     }
   ],
   "background": {
     "scripts": [
-      "assets/js/serviceWorker.js"
+      "assets/js/bg-common.js",
+      "assets/js/bg-firefox.js"
     ]
   },
   "content_security_policy": {
@@ -50,9 +51,16 @@
   "permissions": [
     "cookies",
     "tabs",
-    "storage"
+    "storage",
+    "clipboardWrite"
   ],
   "host_permissions": [
+    "https://*.mist.com/*",
+    "https://*.mistsys.com/*",
+    "https://*.mist-federal.com/*",
+    "https://*.ai.juniper.net/*"
+  ],
+  "optional_host_permissions": [
     "https://*.mist.com/*",
     "https://*.mistsys.com/*",
     "https://*.mist-federal.com/*",

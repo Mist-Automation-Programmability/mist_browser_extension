@@ -1,13 +1,18 @@
+/*
+ * django_links.js — Django (DRF browsable API) page augmenter.
+ * Opt-in via Tools toggles (read from storage on load):
+ *   id_links  — turn known Mist IDs into API hyperlinks
+ *   ts_human  — annotate epoch timestamps with a human-readable date
+ *   copy_json — inject a "Copy JSON" button for the raw response
+ * Non-destructive node-level augmentation (no innerHTML rewrite); raw JSON
+ * cached before mutation.
+ * Dual-mode: content script auto-runs (guarded); Node exports pure functions.
+ */
 
-browser.storage.local
-    .get("id_links")
-    .then(
-        res => {
-            if (res && res.id_links == "true") process_ids();
-        }, err => {
-            console.log(err);
-        }
-    );
+// google-code-prettify token classes (confirmed via Task 1 captures):
+//   str = strings — keys AND values (quotes included in the text)
+//   lit = numbers (also wraps some non-numeric header values; the epoch check filters them)
+var TOK = { str: "str", lit: "lit" };
 
 var uuids = new Map();
 
@@ -162,78 +167,292 @@ function process_element(org_id, site_id, self, element, element_type, element_s
 
 }
 
-function process_ids() {
-    const domElements = document.getElementsByClassName("response-info")
-    var domElement;
-    try {
-        if (domElements.length > 0) {
-            domElement = domElements[0].getElementsByClassName("prettyprint");
-            if (domElement.length > 0) {
-                var baseUri = window.location.href.replace("/integration/", "/api/v1/").split("?")[0];;
-                var element_type = baseUri.split("/")[7];
-                var element_scope = baseUri.split("/")[5];
-                var stats = false;
-                var gen_self_id = true;
-                var cloneElements = domElement[0].cloneNode(true);
-                var site_id, org_id, self;
-                if (element_scope == "orgs") {
-                    org_id = baseUri.split("/")[6];
-                } else if (element_scope == "sites") {
-                    site_id = baseUri.split("/")[6];
-                } else if (element_scope == "self") {
-                    self = true;
-                    var element_type = baseUri.split("/")[6];
-                }
-                if (baseUri.includes("/events/search")) {
-                    gen_self_id = false;
-                } else if (baseUri.includes("/alarms/")) {
-                    gen_self_id = false;
-                } else if (baseUri.includes("/logs")) {
-                    gen_self_id = false;
-                } else if (baseUri.includes("/devices/upgrade")){
-                    element_type = "devices/upgrade"
-                }
-                switch (element_type) {
-                    case "inventory":
-                        element_scope = "sites";
-                        element_type = "devices";
-                        break;
-                    case "sites":
-                        element_scope = "";
-                        element_type = "sites";
-                        break;
-                    default:
-                        element_scope = baseUri.split("/")[5];
-                        if (element_type == "stats") {
-                            stats = true
-                            element_type = baseUri.split("/")[8];;
-                        }
-                        break;
-                }
-                cloneElements.removeChild(cloneElements.childNodes[0]);
-                var cloneElements_json = JSON.parse(cloneElements.innerHTML.replace(/<\/*span[^>]*>/gm, "").replace(/<\/*a[^>]*>/gm, ""));
-                if (Array.isArray(cloneElements_json)) {
-                    cloneElements_json.forEach(function (element) {
-                        process_element(org_id, site_id, self, element, element_type, element_scope, gen_self_id, stats);
-                    })
-                } else if (cloneElements_json.hasOwnProperty("results")) {
-                    cloneElements_json.results.forEach(function (element) {
-                        process_element(org_id, site_id, self, element, element_type, element_scope, gen_self_id, stats);
-                    })
-                    if (cloneElements_json.hasOwnProperty("next")) {
-                        uuids[cloneElements_json.next] = "https://" + window.location.host + cloneElements_json.next;
-                    }
-                } else {
-                    process_element(org_id, site_id, self, cloneElements_json, element_type, element_scope, false, stats);
-                }
-                for (const [key, value] of Object.entries(uuids)) {
-                    var cleanHTML = DOMPurify.sanitize("\"<a href=\"" + value + "\" style=\"text-decoration: underline;color: #D14;\">" + key + "</a>\"")
-                    domElement[0].innerHTML = domElement[0].innerHTML.replaceAll("\"" + key + "\"", cleanHTML);
-                }
-
-            }
-        }
-    } catch (e) {
-        console.warn("Error in process_ids: ", e);
+// Build the { idString: url } map from parsed JSON. Context derived from
+// window.location, exactly as the original process_ids did.
+function buildIdMap(rootJson) {
+    uuids = new Map();
+    var baseUri = window.location.href.replace("/integration/", "/api/v1/").split("?")[0];
+    var element_type = baseUri.split("/")[7];
+    var element_scope = baseUri.split("/")[5];
+    var stats = false;
+    var gen_self_id = true;
+    var site_id, org_id, self;
+    if (element_scope == "orgs") {
+        org_id = baseUri.split("/")[6];
+    } else if (element_scope == "sites") {
+        site_id = baseUri.split("/")[6];
+    } else if (element_scope == "self") {
+        self = true;
+        element_type = baseUri.split("/")[6];
     }
+    if (baseUri.includes("/events/search")) {
+        gen_self_id = false;
+    } else if (baseUri.includes("/alarms/")) {
+        gen_self_id = false;
+    } else if (baseUri.includes("/logs")) {
+        gen_self_id = false;
+    } else if (baseUri.includes("/devices/upgrade")) {
+        element_type = "devices/upgrade";
+    }
+    switch (element_type) {
+        case "inventory":
+            element_scope = "sites";
+            element_type = "devices";
+            break;
+        case "sites":
+            element_scope = "";
+            element_type = "sites";
+            break;
+        default:
+            element_scope = baseUri.split("/")[5];
+            if (element_type == "stats") {
+                stats = true;
+                element_type = baseUri.split("/")[8];
+            }
+            break;
+    }
+    if (Array.isArray(rootJson)) {
+        rootJson.forEach(function (element) {
+            process_element(org_id, site_id, self, element, element_type, element_scope, gen_self_id, stats);
+        });
+    } else if (rootJson && rootJson.hasOwnProperty("results")) {
+        rootJson.results.forEach(function (element) {
+            process_element(org_id, site_id, self, element, element_type, element_scope, gen_self_id, stats);
+        });
+        if (rootJson.hasOwnProperty("next")) {
+            uuids[rootJson.next] = "https://" + window.location.host + rootJson.next;
+        }
+    } else if (rootJson) {
+        process_element(org_id, site_id, self, rootJson, element_type, element_scope, false, stats);
+    }
+    return uuids;
+}
+
+function _tryParse(s) {
+    try { return { ok: true, value: JSON.parse(s) }; } catch (e) { return { ok: false }; }
+}
+
+// Parse the DRF response JSON from the .prettyprint element. Returns
+// { data, raw } or null. Handles a possible leading status/header prefix.
+function parseResponse(preEl) {
+    var text = (preEl.textContent || "");
+    var start = text.search(/[\[{]/);
+    var candidate = (start >= 0 ? text.slice(start) : text).trim();
+    var p = _tryParse(candidate);
+    if (p.ok) return { data: p.value, raw: candidate };
+    var whole = _tryParse(text.trim());
+    if (whole.ok) return { data: whole.value, raw: text.trim() };
+    return null;
+}
+
+// Wrap string tokens whose decoded value is in the id map. Keys are excluded
+// naturally — field names aren't in the map — so no key/value class split needed.
+function applyIdLinks(preEl, idMap) {
+    var doc = preEl.ownerDocument;
+    var spans = preEl.querySelectorAll("span." + TOK.str);
+    for (var i = 0; i < spans.length; i++) {
+        var span = spans[i];
+        if (span.dataset.mistLinked) continue;        // idempotent
+        if (span.closest("a")) continue;              // already linked
+        var decoded;
+        try { decoded = JSON.parse(span.textContent); } catch (e) { continue; }
+        if (typeof decoded !== "string") continue;
+        if (!Object.prototype.hasOwnProperty.call(idMap, decoded)) continue;
+        var a = doc.createElement("a");
+        a.href = idMap[decoded];
+        a.textContent = decoded;                      // textContent only — no innerHTML
+        a.style.textDecoration = "underline";
+        a.style.color = "#D14";
+        span.textContent = "";
+        span.appendChild(doc.createTextNode('"'));
+        span.appendChild(a);
+        span.appendChild(doc.createTextNode('"'));
+        span.dataset.mistLinked = "1";
+    }
+}
+
+var TS_KEY_OK = /(_time|_at)$|^expire|^(last_seen|last_used|last_flapped|timestamp)$/;
+var TS_KEY_EXCLUDE = /^uptime$|_timeout$|^duration$|^interval$|_age$/;
+var TS_MIN = 946684800;    // 2000-01-01
+var TS_MAX = 4102444800;   // 2100-01-01
+
+function isTimestampKey(key) {
+    return TS_KEY_OK.test(key) && !TS_KEY_EXCLUDE.test(key);
+}
+function isEpoch(n) {
+    return typeof n === "number" && isFinite(n) && n >= TS_MIN && n <= TS_MAX;
+}
+function _pad(n) { return (n < 10 ? "0" : "") + n; }
+function fmtLocal(d) {
+    return d.getFullYear() + "-" + _pad(d.getMonth() + 1) + "-" + _pad(d.getDate()) +
+        " " + _pad(d.getHours()) + ":" + _pad(d.getMinutes()) + ":" + _pad(d.getSeconds());
+}
+function precedingKey(numSpan) {
+    var el = numSpan.previousElementSibling, steps = 0;
+    while (el && steps < 6) {
+        if (el.classList && el.classList.contains(TOK.str)) {
+            try { return JSON.parse(el.textContent); }
+            catch (e) { return el.textContent.replace(/^"|"$/g, ""); }
+        }
+        el = el.previousElementSibling; steps++;
+    }
+    return null;
+}
+function applyTimestamps(preEl) {
+    var doc = preEl.ownerDocument;
+    var nodes = preEl.querySelectorAll("span." + TOK.lit);
+    for (var i = 0; i < nodes.length; i++) {
+        var num = nodes[i];
+        if (num.dataset.mistTs) continue;             // idempotent
+        var key = precedingKey(num);
+        if (!key || !isTimestampKey(key)) continue;
+        var val = Number(num.textContent);
+        if (!isEpoch(val)) continue;
+        var d = new Date(val * 1000);
+        var ann = doc.createElement("span");
+        ann.className = "mist-ts";
+        ann.textContent = " → " + fmtLocal(d);
+        ann.title = d.toISOString();                  // UTC
+        ann.style.opacity = "0.6";
+        num.insertAdjacentElement("afterend", ann);
+        num.dataset.mistTs = "1";
+    }
+}
+
+// "Copy JSON" button — the copy-code affordance developers know: icon-led,
+// anchored to the response block's top-right, quiet at rest, Mist-blue on hover,
+// green check on success. Styles ride an injected <style> since the DRF page has
+// no access to the extension's CSS.
+var COPY_STYLE_ID = "mist-copy-json-style";
+var SVG_NS = "http://www.w3.org/2000/svg";
+
+// Build an SVG icon from trusted static descriptors (no innerHTML / no page data).
+function _svgIcon(doc, cls, strokeWidth, children) {
+    var svg = doc.createElementNS(SVG_NS, "svg");
+    svg.setAttribute("class", cls);
+    svg.setAttribute("viewBox", "0 0 24 24");
+    svg.setAttribute("fill", "none");
+    svg.setAttribute("stroke", "currentColor");
+    svg.setAttribute("stroke-width", strokeWidth);
+    svg.setAttribute("stroke-linecap", "round");
+    svg.setAttribute("stroke-linejoin", "round");
+    svg.setAttribute("aria-hidden", "true");
+    for (var i = 0; i < children.length; i++) {
+        var el = doc.createElementNS(SVG_NS, children[i].tag);
+        var attrs = children[i].attrs;
+        for (var attr in attrs) { el.setAttribute(attr, attrs[attr]); }
+        svg.appendChild(el);
+    }
+    return svg;
+}
+
+function _injectCopyStyle(doc) {
+    if (doc.getElementById(COPY_STYLE_ID)) return;
+    var style = doc.createElement("style");
+    style.id = COPY_STYLE_ID;
+    // .is-copied / .is-error are declared after :hover so the success/error
+    // colour wins while the cursor is still on the just-clicked button.
+    style.textContent =
+        ".mist-copy-json{position:absolute;top:8px;right:8px;z-index:5;display:inline-flex;" +
+        "align-items:center;gap:6px;padding:5px 10px;border-radius:6px;cursor:pointer;" +
+        "font:500 12px/1 -apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;" +
+        "color:#5a6b7b;background:rgba(255,255,255,.92);border:1px solid #d4dae0;" +
+        "transition:color .15s ease,border-color .15s ease,background .15s ease;}" +
+        ".mist-copy-json:hover{color:#2b8fdb;border-color:#63b4ee;background:#f4faff;}" +
+        ".mist-copy-json:active{transform:translateY(1px);}" +
+        ".mist-copy-json:focus-visible{outline:2px solid rgba(99,180,238,.55);outline-offset:2px;}" +
+        ".mist-copy-json .mist-ico{width:13px;height:13px;flex:none;}" +
+        ".mist-copy-json .mist-ico-check{display:none;}" +
+        ".mist-copy-json.is-copied{color:#15a849;border-color:#41d27f;background:#f1fcf5;}" +
+        ".mist-copy-json.is-copied .mist-ico-copy{display:none;}" +
+        ".mist-copy-json.is-copied .mist-ico-check{display:inline;}" +
+        ".mist-copy-json.is-error{color:#d23f3f;border-color:#f0a3a3;background:#fdf3f3;}" +
+        "@media (prefers-reduced-motion:reduce){.mist-copy-json{transition:none;}}";
+    (doc.head || doc.documentElement).appendChild(style);
+}
+
+function setupCopyButton(preEl, rawJson, container) {
+    if (container.querySelector("button.mist-copy-json")) return;   // idempotent
+    var doc = preEl.ownerDocument;
+    _injectCopyStyle(doc);
+    // Anchor the button to the response block's top-right corner.
+    var view = doc.defaultView;
+    if (view && view.getComputedStyle(container).position === "static") {
+        container.style.position = "relative";
+    }
+    var btn = doc.createElement("button");
+    btn.className = "mist-copy-json";
+    btn.type = "button";
+    btn.setAttribute("aria-label", "Copy JSON response");
+    btn.appendChild(_svgIcon(doc, "mist-ico mist-ico-copy", "2", [
+        { tag: "rect", attrs: { x: "9", y: "9", width: "13", height: "13", rx: "2" } },
+        { tag: "path", attrs: { d: "M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" } }
+    ]));
+    btn.appendChild(_svgIcon(doc, "mist-ico mist-ico-check", "2.6", [
+        { tag: "polyline", attrs: { points: "20 6 9 17 4 12" } }
+    ]));
+    var label = doc.createElement("span");
+    label.className = "mist-copy-label";
+    label.textContent = "Copy JSON";
+    btn.appendChild(label);
+    var resetTimer = null;
+    function flash(stateClass, text) {
+        btn.classList.remove("is-copied", "is-error");
+        if (stateClass) { btn.classList.add(stateClass); }
+        label.textContent = text;
+        if (resetTimer) { clearTimeout(resetTimer); }
+        resetTimer = setTimeout(function () {
+            btn.classList.remove("is-copied", "is-error");
+            label.textContent = "Copy JSON";
+        }, 1400);
+    }
+    btn.addEventListener("click", function () {
+        if (typeof navigator !== "undefined" && navigator.clipboard) {
+            navigator.clipboard.writeText(rawJson).then(
+                function () { flash("is-copied", "Copied"); },
+                function () { flash("is-error", "Copy failed"); });
+        } else {
+            flash("is-error", "Copy failed");
+        }
+    });
+    container.insertBefore(btn, container.firstChild);
+}
+
+function runAugment(opts) {
+    var info = document.querySelector(".response-info");
+    if (!info) return;
+    var pre = info.querySelector(".prettyprint");
+    if (!pre) return;
+    var parsed = parseResponse(pre);
+    if (!parsed) {
+        console.warn("django_links: could not parse response JSON; leaving page untouched");
+        return;
+    }
+    if (opts.id_links) {
+        try { applyIdLinks(pre, buildIdMap(parsed.data)); }
+        catch (e) { console.warn("django_links: id-link augmentation failed", e); }
+    }
+    if (opts.ts_human) {
+        try { applyTimestamps(pre); }
+        catch (e) { console.warn("django_links: timestamp augmentation failed", e); }
+    }
+    if (opts.copy_json) {
+        try { setupCopyButton(pre, parsed.raw, info); }
+        catch (e) { console.warn("django_links: copy button failed", e); }
+    }
+}
+
+if (typeof browser !== "undefined" && browser.storage && browser.storage.local) {
+    browser.storage.local.get(["id_links", "ts_human", "copy_json"]).then(function (res) {
+        var opts = {
+            id_links: !!res && res.id_links === "true",
+            ts_human: !!res && res.ts_human === "true",
+            copy_json: !!res && res.copy_json === "true",
+        };
+        if (opts.id_links || opts.ts_human || opts.copy_json) runAugment(opts);
+    }, function (err) { console.log(err); });
+}
+
+if (typeof module !== "undefined" && module.exports) {
+    module.exports = { TOK, parseResponse, buildIdMap, applyIdLinks, applyTimestamps, isTimestampKey, isEpoch, fmtLocal, precedingKey, setupCopyButton, runAugment };
 }

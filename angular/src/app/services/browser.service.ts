@@ -1,6 +1,17 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import browser from "webextension-polyfill";
+import { loadSessions } from "./browser.loader";
+import type { BrowserSessionContext } from "./browser.loader.context";
+import {
+    getConfiguredMistDomainFromHost,
+    MIST_API_HOSTS,
+    MIST_COOKIE_HOST_PERMISSIONS,
+    MIST_DOMAINS,
+    MIST_MANAGE_HOSTS,
+    MistHostConfig,
+    resolveMistHostsFromDomain,
+} from "./mist.hosts";
 
 
 export interface SessionElement {
@@ -9,7 +20,7 @@ export interface SessionElement {
     email: string | null,
     two_factor_passed: boolean,
     has_sessionid: boolean,
-    expires_at: number,
+    expires_at: number | null,
     privileges: [],
     cloud_host: string,
     api_host: string,
@@ -31,78 +42,11 @@ export class BrowserService {
     private sessionsSource = new BehaviorSubject<SessionElement[]>([]);
     sessions = this.sessionsSource.asObservable();
 
-    private domains: string[] = [
-        ".mistsys.com",
-        ".mist.com",
-        ".eu.mist.com",
-        ".gc1.mist.com",
-        ".gc2.mist.com",
-        ".gc3.mist.com",
-        ".gc4.mist.com",
-        ".gc5.mist.com",
-        ".gc6.mist.com",
-        ".gc7.mist.com",
-        ".ac2.mist.com",
-        ".ac5.mist.com",
-        ".ac6.mist.com",
-        ".us.mist-federal.com",
-        ".staging.mist-federal.com",
-        ".ai.juniper.net",
-        ".stage.ai.juniper.net",
-    ]
+    private domains: string[] = MIST_DOMAINS;
+    private host_manage: string[] = MIST_MANAGE_HOSTS;
+    private host_api: string[] = MIST_API_HOSTS;
 
-    private host_manage: string[] = [
-        "manage-staging.mistsys.com",
-        "integration.mistsys.com",
-        "manage.mist.com",
-        "integration.mist.com",
-        "manage.eu.mist.com",
-        "manage.gc1.mist.com",
-        "integration.gc1.mist.com",
-        "manage.gc2.mist.com",
-        "manage.gc3.mist.com",
-        "manage.gc4.mist.com",
-        "manage.gc5.mist.com",
-        "manage.gc6.mist.com",
-        "manage.gc7.mist.com",
-        "manage.ac2.mist.com",
-        "manage.ac5.mist.com",
-        "manage.ac6.mist.com",
-        "manage.us.mist-federal.com",
-        "manage.staging.mist-federal.com",
-        "dc.ai.juniper.net",
-        "dc.stage.ai.juniper.net",
-        "jsi.ai.juniper.net",
-        "jsi.stage.ai.juniper.net",
-        "routing.ai.juniper.net",
-        "routing.stage.ai.juniper.net",
-    ]
-
-    private host_api: string[] = [
-        "api.mist.com",
-        "api.eu.mist.com",
-        "api.gc1.mist.com",
-        "api.gc2.mist.com",
-        "api.gc3.mist.com",
-        "api.gc4.mist.com",
-        "api.gc5.mist.com",
-        "api.gc6.mist.com",
-        "api.gc7.mist.com",
-        "api.ac2.mist.com",
-        "api.ac5.mist.com",
-        "api.ac6.mist.com",
-        "api.us.mist-federal.com",
-        "dc.ai.juniper.net",
-        "dc.stage.ai.juniper.net",
-        "jsi.ai.juniper.net",
-        "jsi.stage.ai.juniper.net",
-        "routing.ai.juniper.net",
-        "routing.stage.ai.juniper.net",
-        "api.mistsys.com",
-        "api.staging.mist-federal.com",
-    ]
-
-    private cloud_name: { [id: string] : string; } = {
+    private cloud_name: { [id: string]: string; } = {
         "mist.com": "Global 01",
         "gc1.mist.com": "Global 02",
         "ac2.mist.com": "Global 03",
@@ -121,9 +65,13 @@ export class BrowserService {
 
     private issue_url: string = "https://github.com/tmunzer/mist_browser_extension/issues/new";
 
-    constructor(
-    ) { }
+    private cookie_host_permissions: string[] = MIST_COOKIE_HOST_PERMISSIONS;
 
+    constructor() { }
+
+    // ========================================================================
+    // Tabs / navigation (common)
+    // ========================================================================
     tabUpdate(url: string): void {
         browser.tabs.update({ url: url });
     }
@@ -131,14 +79,39 @@ export class BrowserService {
     tabOpen(url: string): void {
         browser.tabs.create({ url: url });
     }
+
+    openApiAction(method: string, url: string, payload: any = undefined): void {
+        const action: any = {
+            method: method.toUpperCase(),
+            url: url,
+            ts: Date.now(),
+        };
+        if (payload !== undefined) {
+            action.payload = payload;
+        }
+        browser.storage.local.remove(["post", "delete"]).catch(err => console.log(err))
+            .then(() => this.setStorage("api_action", JSON.stringify(action)))
+            .then(() => this.tabOpen(url))
+            .catch(() => this.tabOpen(url));
+    }
+
     tabOpenDoc(url: string): void {
-        browser.tabs.create({ url: url })
+        browser.tabs.create({ url: url });
     }
 
     issueOpen(): void {
-        browser.tabs.create({ url: this.issue_url })
+        browser.tabs.create({ url: this.issue_url });
     }
 
+    getUrl = browser.tabs.query({ currentWindow: true, active: true })
+        .then((tabs) => {
+            const url: string = tabs[0].url;
+            return url;
+        }).catch(e => { console.log(e); return "" })
+
+    // ========================================================================
+    // Config / manifest getters (common)
+    // ========================================================================
     getVersion(): string {
         return browser.runtime.getManifest().version;
     }
@@ -146,118 +119,144 @@ export class BrowserService {
     getDomains(): string[] {
         return this.domains;
     }
+
     getHostManage(): string[] {
         return this.host_manage;
     }
+
     getHostApi(): string[] {
         return this.host_api;
     }
-    getCloud(host:string): string {
+
+    getCloud(host: string): string {
         var host_cleansed = host.replace("api.", "").replace("manage.", "");
         if (this.cloud_name.hasOwnProperty(host_cleansed)) {
             return this.cloud_name[host_cleansed]
-        } 
+        }
         return null
     }
-    
-    getUrl = browser.tabs.query({ currentWindow: true, active: true })
-        .then((tabs) => {
-            const url: string = tabs[0].url;
-            return url;
-        }).catch(e => { console.log(e); return "" })
 
-    getCookies(cb: () => void): void {
-        this.sessionsSource.next([]);
-        browser.cookies.getAll({})
-            .then((cookies: browser.Cookies.Cookie[]) => {
-                cookies.forEach((cookie) => {
-                    this._processCookie(cookie);
-                })
-                cb();
-            })
-            .catch(err => console.log(err));
-    }
-
-    setStorage(k:string, v:string):void{
+    // ========================================================================
+    // Storage (common)
+    // ========================================================================
+    setStorage(k: string, v: string): Promise<void> {
         var storage_key = {}
-        storage_key[k]=v
-        browser.storage.local.set(storage_key).catch(err => console.log(err))
+        storage_key[k] = v
+        return browser.storage.local.set(storage_key).catch(err => console.log(err))
     }
 
-    getStorage(key:string, cb:(res)=>void) {
+    getStorage(key: string, cb: (res) => void) {
         browser.storage.local.get(key).then(
             data => {
-            cb(data);
-        }, err => {
-            console.log(err)
-        });
+                cb(data);
+            }, err => {
+                console.log(err)
+            });
     }
 
-    ////////////
-    // SESSIONS
-    ////////////
+    // ========================================================================
+    // Permissions (common)
+    // ========================================================================
+    hasCookieHostPermissions(): Promise<boolean> {
+        return browser.permissions.contains({ origins: this.cookie_host_permissions });
+    }
+
+    requestCookieHostPermissions(): Promise<boolean> {
+        return browser.permissions.request({ origins: this.cookie_host_permissions });
+    }
+
+    // ========================================================================
+    // Sessions entry point
+    // ========================================================================
+    getCookies(cb: () => void): void {
+        this.sessionsSource.next([]);
+        const context: BrowserSessionContext = {
+            domains: this.domains,
+            hostManage: this.host_manage,
+            hostApi: this.host_api,
+            hasCookieHostPermissions: () => this.hasCookieHostPermissions(),
+            processCookies: (cookies) => this._processCookies(cookies, () => { }),
+            getParsedSessionCount: () => this.sessionsSource.getValue().length,
+            setSessions: (sessions) => this.sessionsSource.next(sessions),
+        };
+        loadSessions(context, cb);
+    }
+
+    // ========================================================================
+    // Cookie -> session translation (Firefox / Chrome)
+    // ========================================================================
+    private _processCookies(cookies: browser.Cookies.Cookie[], cb: () => void): void {
+        console.log("BrowserService:", (cookies || []).length, "cookies loaded");
+        (cookies || []).forEach(cookie => this._processCookie(cookie));
+        console.log("BrowserService:", this.sessionsSource.getValue().length, "sessions parsed");
+        cb();
+    }
+
     private _processCookie(cookie: browser.Cookies.Cookie): void {
-        // check if it's part of our domains
-        if (this.domains.indexOf(cookie.domain) > -1) {
-            // check if the cookie is still valid
-            if (cookie.expirationDate > (Date.now() / 1000)) {
-                let i: number = -1;
-                // try to find this domain in the list of sessions
-                const sessions: SessionElement[] = this.sessionsSource.getValue();
-                sessions.forEach((session, index) => {
-                    if (session.domain == cookie.domain) {
-                        i = index;
-                    }
-                })
-                // if the session already exists in the list, update it with the current cookie
-                if (i > -1) {
-                    if (cookie.name.startsWith("csrftoken")) sessions[i].csrftoken = cookie.value;
-                    else if (cookie.name.startsWith("sessionid")) sessions[i].has_sessionid = true;
-                    // if the current cookie has a shorter lifetime than the previous one, use its expirationDate instead
-                    if (sessions[i].expires_at > cookie.expirationDate) sessions[i].expires_at = cookie.expirationDate
-                    // otherwise, add a new entry in the list
-                } else {
-                    let domain = cookie.domain;
-                    if (domain.includes("ai.juniper.net")) {
-                        this.addSession(cookie, domain, "jsi", "jsi", ["dc"+domain, "jsi"+domain, "routing"+domain])
-                    } else {
-                        this.addSession(cookie, domain, "manage", "api", ["manage"+domain])
-                    }
-                }
-            }
+        if (!cookie || !cookie.domain || !cookie.name) return;
+        const domain = getConfiguredMistDomainFromHost(cookie.domain);
+        if (!domain) return;
+        const expirationDate = this._getCookieExpiration(cookie);
+        if (this.domains.indexOf(domain) === -1) return;
+        if (expirationDate !== null && expirationDate <= (Date.now() / 1000)) return;
+
+        const sessions: SessionElement[] = this.sessionsSource.getValue();
+        const existingIndex = sessions.findIndex(s => s.domain == domain);
+
+        if (existingIndex > -1) {
+            if (cookie.name.startsWith("csrftoken")) sessions[existingIndex].csrftoken = cookie.value;
+            else if (cookie.name.startsWith("sessionid")) sessions[existingIndex].has_sessionid = true;
+            this.updateSessionExpiration(sessions[existingIndex], expirationDate);
+            return;
+        }
+
+        const hosts = resolveMistHostsFromDomain(domain, this.domains);
+        if (!hosts) return;
+        this.addSession(cookie, expirationDate, hosts);
+    }
+
+    private _getCookieExpiration(cookie: browser.Cookies.Cookie): number | null {
+        return cookie.expirationDate ?? null;
+    }
+
+    private updateSessionExpiration(session: SessionElement, expirationDate: number | null): void {
+        if (expirationDate === null) {
+            session.expires_at = null;
+        } else if (session.expires_at !== null && session.expires_at > expirationDate) {
+            session.expires_at = expirationDate;
         }
     }
 
-    private addSession(cookie: browser.Cookies.Cookie, domain: string, cloud: string, api: string, additional_cloud_hosts: string[]): void {
+    private addSession(cookie: browser.Cookies.Cookie, expirationDate: number | null, hosts: MistHostConfig): void {
         var tmp = this.sessionsSource.getValue();
 
         if (cookie.name.startsWith("csrftoken")) tmp.push({
-            domain: domain,
-            cloud_host: cloud + domain,
-            api_host: api + domain,
+            domain: hosts.domain,
+            cloud_host: hosts.cloud_host,
+            api_host: hosts.api_host,
             email: null,
             two_factor_passed: false,
             csrftoken: cookie.value,
             has_sessionid: false,
-            expires_at: cookie.expirationDate,
+            expires_at: expirationDate,
             privileges: [],
-            additional_cloud_hosts: additional_cloud_hosts,
+            additional_cloud_hosts: hosts.additional_cloud_hosts,
             requests: -1,
             request_limit: -1,
             request_percentage: 0,
             api_threshold_reached: false,
         });
         else if (cookie.name.startsWith("sessionid")) tmp.push({
-            domain: domain,
-            cloud_host: cloud + domain,
-            api_host: api + domain,
+            domain: hosts.domain,
+            cloud_host: hosts.cloud_host,
+            api_host: hosts.api_host,
             email: null,
             two_factor_passed: false,
             csrftoken: null,
             has_sessionid: true,
-            expires_at: cookie.expirationDate,
+            expires_at: expirationDate,
             privileges: [],
-            additional_cloud_hosts: additional_cloud_hosts,
+            additional_cloud_hosts: hosts.additional_cloud_hosts,
             requests: -1,
             request_limit: -1,
             request_percentage: 0,

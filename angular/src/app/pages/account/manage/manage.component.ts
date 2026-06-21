@@ -2,6 +2,8 @@ import { Component, Input, Output, ChangeDetectionStrategy, ChangeDetectorRef, E
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
 import { BrowserService, SessionElement } from "../../../services/browser.service"
+import { BrowserHttpApiService } from "../../../services/http.browser.api";
+import { cleanHeaders } from "../../../services/http.utils";
 
 export interface TokenElement {
   name: string | null,
@@ -16,9 +18,6 @@ export interface TokenElement {
     selector: 'app-account-manage',
     templateUrl: 'manage.component.html',
     styleUrls: [
-        '../../../scss/button.component.scss',
-        '../../../scss/message.component.scss',
-        '../../../scss/popup.component.scss',
         'manage.component.scss',
     ],
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -36,14 +35,13 @@ export class AccountManageComponent {
     private _cd: ChangeDetectorRef,
     private _http: HttpClient,
     private _browser: BrowserService,
+    private _httpApi: BrowserHttpApiService,
   ) { }
 
   tokens = [];
   now: number;
   tokenToDelete: TokenElement;
   do_manage: boolean = false;
-  success: boolean = false;
-  error: boolean = false;
   view: string = "";
 
   ngOnInit() {
@@ -64,51 +62,43 @@ export class AccountManageComponent {
   getTokens(): void {
     if (this.do_manage) {
       let url = "https://" + this.session.api_host + "/api/v1/self/apitokens"
-      this._http.get(url, { headers: { "X-CSRFTOKEN": this.session.csrftoken } }).subscribe((data: [TokenElement]) => {
-        this.tokens = data;
-        this.tokens.sort((a, b) => {
-          return a.created_time - b.created_time;
-        })
-        this.session.requests += 1;
-        this._cd.detectChanges();
+      this._httpApi.requestWithCredentialFallback<TokenElement[]>(
+        () => this._http.get<TokenElement[]>(url, { headers: cleanHeaders({ "X-CSRFTOKEN": this.session.csrftoken }), withCredentials: true }),
+        url,
+        {
+          method: 'GET',
+          headers: cleanHeaders({ "X-CSRFTOKEN": this.session.csrftoken })
+        }
+      ).subscribe({
+        next: (data: TokenElement[]) => {
+          if (!Array.isArray(data)) {
+            console.error('AccountManageComponent: getTokens returned a non-array response');
+            this.getTokensBackup(url);
+            return;
+          }
+          this.tokens = data;
+          this.tokens.sort((a, b) => {
+            return a.created_time - b.created_time;
+          })
+          this.session.requests += 1;
+          this._cd.detectChanges();
+        },
+        error: (err) => {
+          console.error('AccountManageComponent: getTokens failed:', err);
+          this.getTokensBackup(url);
+        }
       })
     }
   }
 
   private deleteToken(token: TokenElement): void {
     let url = "https://" + this.session.api_host + "/api/v1/self/apitokens/" + token.id
-    this._http
-      .delete(url, { headers: { "X-CSRFTOKEN": this.session.csrftoken } })
-      .subscribe({
-        next: data => {
-          this.session.requests += 1;
-          this.delete_success(token);
-        },
-        error: err => {
-          this.deleteTokenBackup(url);
-        }
-      })
+    this._browser.openApiAction("DELETE", url);
   }
 
-  private deleteTokenBackup(url: string): void {
-    this._browser.setStorage("delete", JSON.stringify({ url: url, ts: Date.now() }));
-    setTimeout(() => {
-      this._browser.tabOpen(url);
-    }, 10);
+  private getTokensBackup(url: string): void {
+    this._browser.tabOpen(url);
   }
-
-
-  private delete_success(token: TokenElement) {
-    this.session.requests += 1;
-    token.deleted = true;
-    this.success = true;
-    this._cd.detectChanges()
-    setTimeout(() => {
-      this.success = false;
-      this._cd.detectChanges()
-    }, 2000);
-  }
-
 
   confirmDeleteToken(token: TokenElement): void {
       this.view = "warning";

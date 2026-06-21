@@ -25,11 +25,6 @@ type RouteHandler = {
   selector: 'app-api-juniper-manage',
   templateUrl: '../manage/manage.component.html',
   styleUrls: [
-    '../../../scss/button.component.scss',
-    '../../../scss/popup.component.scss',
-    '../../../scss/notice.component.scss',
-    '../../../scss/container.component.scss',
-    '../../../scss/input.component.scss',
     '../manage/manage.component.scss',
   ],
   standalone: false
@@ -53,6 +48,8 @@ export class ApiJuniperManageComponent implements OnInit {
   obj_name: string = "";
   focused: string | undefined = "";
   tabUrl: string;
+  detect_host: string = "";
+  detect_route: string = "";
   constructor(
     private _cd: ChangeDetectorRef,
     private _browser: BrowserService
@@ -91,6 +88,8 @@ export class ApiJuniperManageComponent implements OnInit {
     if (!hostMatch?.groups?.host) return;
 
     const route = url.hash.replace(/^#!/, "");
+    this.detect_host = url.hostname;
+    this.detect_route = url.hash || url.pathname;
 
     switch (url.pathname) {
       case "/admin/":
@@ -815,15 +814,21 @@ export class ApiJuniperManageComponent implements OnInit {
   }
 
   // copy the id (org_id, site_id, ...) into the clipboard
-  copyId(inputElement: HTMLInputElement): void {
-    this.focused = inputElement.id;
-    inputElement.select();
-    document.execCommand('copy');
+  async copyId(value: string, key: string): Promise<void> {
+    try {
+      if (!navigator.clipboard?.writeText) return;
+      await navigator.clipboard.writeText(value);
+    } catch (e) {
+      console.warn("copyId failed:", e);
+      return;
+    }
+
+    this.focused = key;
+    this._cd.detectChanges();
     setTimeout(() => {
       this.focused = "";
-      this._cd.detectChanges()
-    }, 100);
-    inputElement.setSelectionRange(0, 0);
+      this._cd.detectChanges();
+    }, 1200);
   }
 
 

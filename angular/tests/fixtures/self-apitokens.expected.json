@@ -1,0 +1,41 @@
+{
+  "url": "https://api.gc1.mist.com/api/v1/self/apitokens",
+  "links": [
+    {
+      "text": "47da2c72-3e37-49b4-ab33-035cc67e06cb",
+      "href": "https://api.gc1.mist.com/api/v1/self/apitokens/47da2c72-3e37-49b4-ab33-035cc67e06cb"
+    },
+    {
+      "text": "71f4791f-3973-4a3f-9cbd-9018ed24ef7c",
+      "href": "https://api.gc1.mist.com/api/v1/self/apitokens/71f4791f-3973-4a3f-9cbd-9018ed24ef7c"
+    },
+    {
+      "text": "9a3ece9e-5246-452c-b3af-23b2d1785cb7",
+      "href": "https://api.gc1.mist.com/api/v1/self/apitokens/9a3ece9e-5246-452c-b3af-23b2d1785cb7"
+    },
+    {
+      "text": "cfdc59b2-0315-4858-9feb-e740507d0b07",
+      "href": "https://api.gc1.mist.com/api/v1/self/apitokens/cfdc59b2-0315-4858-9feb-e740507d0b07"
+    },
+    {
+      "text": "8c7bd19f-336a-4033-845c-8097577d1152",
+      "href": "https://api.gc1.mist.com/api/v1/self/apitokens/8c7bd19f-336a-4033-845c-8097577d1152"
+    },
+    {
+      "text": "79b3ec4d-fa0f-4fc8-a4a8-70da3d0139b0",
+      "href": "https://api.gc1.mist.com/api/v1/self/apitokens/79b3ec4d-fa0f-4fc8-a4a8-70da3d0139b0"
+    },
+    {
+      "text": "dc5d806b-095d-421e-8f65-3e120536cd39",
+      "href": "https://api.gc1.mist.com/api/v1/self/apitokens/dc5d806b-095d-421e-8f65-3e120536cd39"
+    },
+    {
+      "text": "ee068fc0-08a0-4ca5-9678-43919226389e",
+      "href": "https://api.gc1.mist.com/api/v1/self/apitokens/ee068fc0-08a0-4ca5-9678-43919226389e"
+    },
+    {
+      "text": "73a6978b-e78d-4c42-bea1-ab43ca6019eb",
+      "href": "https://api.gc1.mist.com/api/v1/self/apitokens/73a6978b-e78d-4c42-bea1-ab43ca6019eb"
+    }
+  ]
+}

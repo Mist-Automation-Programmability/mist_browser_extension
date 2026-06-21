@@ -1,62 +1,78 @@
-<div class="popup-content" *ngIf="session">
-    <div class="box-token">
-        <label for="token">
-            NEW API TOKEN
-        </label>
-        <div class="cloud">manage{{session.domain}}</div>
-        <div class="token-name">
-            <input type="text" [(ngModel)]="token_name" placeholder="Token Name (optional)"/>
-        </div>
-        <div class="scope-selection">
-            <div *ngIf="displayed_msps.length > 0" >
-                <select name=msp_id [(ngModel)]="msp_id" (change)="mspSelected()">
-                    <option class="none" value="none">
-                        <div style="width: 100%; text-align: center;">-- MSP Account --</div>
-                    </option>
-                    <option *ngFor="let msp of displayed_msps" [value]="msp.msp_id">
-                        <div>{{msp.name}}</div>
-                    </option>
-                </select>
-            </div>
-            <select name=org_id [(ngModel)]="org_id">
-                <option class="none" value="none">
-                    <div style="width: 100%; text-align: center;">-- Please Select an Org --</div>
-                </option>
-                <option *ngFor="let org of displayed_orgs" [value]="org.org_id">
-                    <div>{{org.name}}</div>
-                </option>
+<div class="mist-body" *ngIf="session">
+
+    <div class="mist-subhead">
+        <button class="mist-back" (click)="close()" title="Back">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 6 9 12 15 18"></polyline>
+            </svg>
+        </button>
+        <div class="mist-subhead-title">New API Token</div>
+    </div>
+
+    <div class="mist-crumb">
+        <span class="mist-crumb-host">{{ session.cloud_host }}</span>
+        <span class="mist-crumb-scope">Org</span>
+    </div>
+
+    <div class="mist-fieldset" *ngIf="displayed_msps.length > 0">
+        <div class="mist-field-label">MSP Account</div>
+        <div class="mist-select-wrap">
+            <select class="mist-select" name="msp_id" [(ngModel)]="msp_id" (change)="mspSelected()">
+                <option value="none">All organizations</option>
+                <option *ngFor="let msp of displayed_msps" [value]="msp.msp_id">{{ msp.name }}</option>
             </select>
-            <select name="role" [(ngModel)]="role">
+            <span class="mist-select-chev">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </span>
+        </div>
+    </div>
+
+    <div class="mist-fieldset">
+        <div class="mist-field-label">Organization <span class="mist-req">required</span></div>
+        <div class="mist-select-wrap">
+            <select class="mist-select" name="org_id" [(ngModel)]="org_id">
+                <option value="none">Select an organization…</option>
+                <option *ngFor="let org of displayed_orgs" [value]="org.org_id">{{ org.name }}</option>
+            </select>
+            <span class="mist-select-chev">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </span>
+        </div>
+    </div>
+
+    <div class="mist-fieldset">
+        <div class="mist-field-label">Role <span class="mist-req">required</span></div>
+        <div class="mist-select-wrap">
+            <select class="mist-select" name="role" [(ngModel)]="role">
                 <option value="admin">Super User</option>
                 <option value="write">Network Admin</option>
                 <option value="read">Observer</option>
             </select>
-            <select name="scope" [(ngModel)]="scope" *ngIf="false">
-                <option value="org">Org</option>
-                <option value="site" disabled>Site</option>
-                <option value="sitegroup" disabled>SiteGroup</option>
-            </select>
-            
-            <select *ngIf="scope=='site'" name="site_id" [(ngModel)]="site_id">                
-                <option class="none" value="none">
-                    <div style="width: 100%; text-align: center;">-- Please Select a Site --</div>
-                </option>
-            </select>
-            <select *ngIf="scope=='sitegroup'" name="sitegroup_id" [(ngModel)]="sitegroup_id">  
-                <option class="none" value="none">
-                    <div style="width: 100%; text-align: center;">-- Please Select a Site Group --</div>
-                </option>
-            </select>
-        </div>
-        <div style="width: 100%;">
-            <button (click)="createToken()" class="secondary xlarge">Create</button>
-        </div>
-        <div class="textarea">
-            <textarea type="text" readonly rows="3" [ngClass]="focused == 'token'? 'focused' : ''" id="token" #org_token_input>{{token.key}}</textarea>
-            <button class="copy" name="copy" (click)="copyToken(org_token_input)" [disabled]="token.key==''">
-                <img class="copy" src="assets/copy.svg" alt="copy">
-            </button>
+            <span class="mist-select-chev">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </span>
         </div>
     </div>
-    <button (click)="close()" class="xlarge">CLOSE</button>
+
+    <div class="mist-fieldset">
+        <div class="mist-field-label">Token name <span class="soft">(optional)</span></div>
+        <input class="mist-input" type="text" [(ngModel)]="token_name" placeholder="e.g. terraform-prod" />
+    </div>
+
+    <div class="mist-actions">
+        <button class="mist-btn mist-btn-ghost" (click)="close()">Cancel</button>
+        <button class="mist-btn mist-btn-primary" [disabled]="org_id == 'none'" (click)="createToken()">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Create
+        </button>
+    </div>
+
 </div>

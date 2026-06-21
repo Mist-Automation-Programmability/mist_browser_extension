@@ -1,99 +1,146 @@
-<div class="content data-container" *ngIf="objects.length > 0">
-    <h2>Page Info</h2>
-    <div *ngFor="let object of objects">
-        <div class="box-ids" *ngIf="object.id">
-            <div class="box-ids-text" [ngClass]="focused == object.name? 'focused' : ''">
-                <label class="ids" for={{object.name}}>{{object.name}} ID</label>
-                <div class=box-ids-input>
-                    <input class="ids" type="text" readonly [value]="object.id"  id={{object.name}} #object_int>
-                </div>
-            </div>
-            <button class="copy" name="copy" (click)="copyId(object_int)">
-                <img class="copy" src="assets/copy.svg" alt="copy">
+<div class="mist-detect">
+    <span class="mist-detect-icon">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"></circle>
+            <path d="M3 12h18"></path>
+            <path d="M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18z"></path>
+        </svg>
+    </span>
+    <div class="mist-detect-text">
+        <div class="mist-detect-host">{{ detectHost }}</div>
+        <div class="mist-detect-path">{{ detectPath }}</div>
+    </div>
+    <span class="mist-detect-chip">API page</span>
+</div>
+
+<div class="mist-body">
+
+    <!-- PAGE INFO -->
+    <div class="mist-sec" *ngIf="objects.length > 0">
+        <div class="mist-sec-title"><span>Page Info</span><span class="count">tap to copy</span></div>
+        <div class="mist-ids">
+            <ng-container *ngFor="let object of objects">
+                <button class="mist-idrow" *ngIf="object.id" [class.copied]="focused == object.name"
+                    (click)="copyId(object.id, object.name)" title="Copy">
+                    <div class="mist-idmain"><span class="mist-idlabel">{{ object.name }} ID</span><span class="mist-idval">{{ object.id }}</span></div>
+                    <span class="mist-copied" *ngIf="focused == object.name">
+                        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor"
+                            stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </span>
+                    <span class="mist-copy" *ngIf="focused != object.name">
+                        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect>
+                            <path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg>
+                    </span>
+                </button>
+            </ng-container>
+        </div>
+    </div>
+
+    <!-- API DOCUMENTATION -->
+    <div class="mist-sec">
+        <div class="mist-sec-title"><span>API Documentation</span></div>
+        <div class="mist-methods">
+            <button class="mist-method mist-m-get" [disabled]="!docs.get" (click)="openDoc(docs.get.doc_url)"
+                title="GET documentation">
+                <span class="verb">GET</span>
+                <span class="ext"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor"
+                        stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"></path>
+                        <polyline points="7 7 17 7 17 17"></polyline></svg></span>
+            </button>
+            <button class="mist-method mist-m-post" [disabled]="!docs.post" (click)="openDoc(docs.post.doc_url)"
+                title="POST documentation">
+                <span class="verb">POST</span>
+                <span class="ext"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor"
+                        stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"></path>
+                        <polyline points="7 7 17 7 17 17"></polyline></svg></span>
+            </button>
+            <button class="mist-method mist-m-put" [disabled]="!docs.put" (click)="openDoc(docs.put.doc_url)"
+                title="PUT documentation">
+                <span class="verb">PUT</span>
+                <span class="ext"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor"
+                        stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"></path>
+                        <polyline points="7 7 17 7 17 17"></polyline></svg></span>
+            </button>
+            <button class="mist-method mist-m-del" [disabled]="!docs.delete" (click)="openDoc(docs.delete.doc_url)"
+                title="DELETE documentation">
+                <span class="verb">DEL</span>
+                <span class="ext"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor"
+                        stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"></path>
+                        <polyline points="7 7 17 7 17 17"></polyline></svg></span>
             </button>
         </div>
     </div>
-</div>
-<div class="content data-container">
-    <h2>API Documentation</h2>
-    <div class="crud-container">
-        <button class="post" (click)="openDoc(docs.post.doc_url)" [disabled]="!docs.post">
-            <div class="method post">POST</div>
-            <div>
-                <img src="assets/open.svg" alt="question">
-            </div>    
-        </button>
-        <button class="get" (click)="openDoc(docs.get.doc_url)" [disabled]="!docs.get">
-            <div class="method get">GET</div>
-            <div>
-                <img src="assets/open.svg" alt="question">
-            </div>           
-        </button>
-        <button class="put" (click)="openDoc(docs.put.doc_url)" [disabled]="!docs.put">
-            <div class="method put">PUT</div>
-            <div>
-                <img src="assets/open.svg" alt="question">
-            </div>    
-        </button>
-        <button class="delete" (click)="openDoc(docs.delete.doc_url)" [disabled]="!docs.delete">
-            <div class="method delete">DEL</div>
-            <div>
-                <img src="assets/open.svg" alt="question">
-            </div>    
-        </button>
-    </div>
-</div>
-<div class="content">
-    <h2>Query Parameters</h2>
-    <div *ngIf="query_params.length > 0">
-        <button class="xlarge" (click)="updateUrl()">
-            <span>Update URL</span>
-        </button>
-        <div class="query-params">
-            <div *ngFor="let query of query_params" class="query-param">
-                <label>{{query.name}}
-                </label>
 
+    <!-- QUERY PARAMETERS -->
+    <div class="mist-sec">
+        <div class="mist-sec-title"><span>Query Parameters</span><span class="count" *ngIf="query_params.length > 0">{{ query_params.length }}</span></div>
 
-                <select *ngIf="query.schema.hasOwnProperty('enum')" [(ngModel)]="query.value" [name]="query.value">
-                    <option value=""></option>
-                    <option *ngFor="let enum of query.schema.enum" [value]="enum">{{enum}}</option>
-                </select>
-
-                <div *ngIf="!query.schema.hasOwnProperty('enum')">
-                    <select *ngIf="query.schema.type=='boolean'" [(ngModel)]="query.value" [name]="query.value">
-                        <option value=""></option>
-                        <option value="true">True</option>
-                        <option value="false">False</option>
-                    </select>
-
-                    <input *ngIf="query.schema.type=='string'" type="string" [(ngModel)]="query.value" />
-
-                    <div *ngIf="query.schema.type=='integer'">
-                        <div *ngIf="query.schema.hasOwnProperty('minimum')">
-                            <input type="number" [min]="query.schema.minimum" [(ngModel)]="query.value" />
-                        </div>
-                        <div *ngIf="!query.schema.hasOwnProperty('minimum')">
-                            <input type="number" [(ngModel)]="query.value" />
-                        </div>
+        <ng-container *ngIf="query_params.length > 0">
+            <div class="mist-params">
+                <div class="mist-param" *ngFor="let query of query_params">
+                    <div class="mist-param-key">{{ query.name }}<span class="opt" *ngIf="!query.required">optional</span></div>
+                    <div class="mist-control">
+                        <!-- enum -->
+                        <ng-container *ngIf="query.schema.hasOwnProperty('enum')">
+                            <select class="mist-select" [(ngModel)]="query.value" [name]="query.value">
+                                <option value=""></option>
+                                <option *ngFor="let enum of query.schema.enum" [value]="enum">{{ enum }}</option>
+                            </select>
+                            <span class="chev"><svg viewBox="0 0 24 24" width="13" height="13" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                        </ng-container>
+                        <!-- non-enum -->
+                        <ng-container *ngIf="!query.schema.hasOwnProperty('enum')">
+                            <ng-container *ngIf="query.schema.type=='boolean'">
+                                <select class="mist-select" [(ngModel)]="query.value" [name]="query.value">
+                                    <option value=""></option>
+                                    <option value="true">True</option>
+                                    <option value="false">False</option>
+                                </select>
+                                <span class="chev"><svg viewBox="0 0 24 24" width="13" height="13" fill="none"
+                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                            </ng-container>
+                            <input class="mist-input mono" *ngIf="query.schema.type=='string'" type="text"
+                                [(ngModel)]="query.value" placeholder="value" />
+                            <ng-container *ngIf="query.schema.type=='integer'">
+                                <input class="mist-input mono" *ngIf="query.schema.hasOwnProperty('minimum')" type="number"
+                                    [min]="query.schema.minimum" [(ngModel)]="query.value" placeholder="value" />
+                                <input class="mist-input mono" *ngIf="!query.schema.hasOwnProperty('minimum')" type="number"
+                                    [(ngModel)]="query.value" placeholder="value" />
+                            </ng-container>
+                            <ng-container *ngIf="query.schema.type=='number'">
+                                <input class="mist-input mono" *ngIf="query.schema.hasOwnProperty('minimum')" type="number"
+                                    [min]="query.schema.minimum" step="0.01" [(ngModel)]="query.value" placeholder="value" />
+                                <input class="mist-input mono" *ngIf="!query.schema.hasOwnProperty('minimum')" type="number"
+                                    step="0.01" [(ngModel)]="query.value" placeholder="value" />
+                            </ng-container>
+                            <input class="mist-input mono"
+                                *ngIf="query.schema.type!='boolean' && query.schema.type!='integer' && query.schema.type!='number' && query.schema.type!='string'"
+                                [(ngModel)]="query.value" placeholder="value" />
+                        </ng-container>
                     </div>
-
-                    <div *ngIf="query.schema.type=='number'">
-                        <div *ngIf="query.schema.hasOwnProperty('minimum')">
-                            <input type="number" [min]="query.schema.minimum" step="0.01" [(ngModel)]="query.value" />
-                        </div>
-                        <div *ngIf="!query.schema.hasOwnProperty('minimum')">
-                            <input type="number" step="0.01" [(ngModel)]="query.value" />
-                        </div>
-                    </div>
-
-                    <input *ngIf="query.schema.type!='boolean' && query.schema.type!='integer' && query.schema.type!='number' && query.schema.type!='string'" [(ngModel)]="query.value" />
                 </div>
-
             </div>
+
+            <div class="mist-url">{{ detectHost }}{{ detectPath }}<b>{{ queryString }}</b></div>
+
+            <button class="mist-primary" (click)="updateUrl()">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12a9 9 0 1 1-3-6.7"></path>
+                    <polyline points="21 3 21 9 15 9"></polyline>
+                </svg>
+                Update URL
+            </button>
+        </ng-container>
+
+        <div class="mist-empty-note" *ngIf="query_params.length == 0">
+            This API call doesn't have any query parameters.
         </div>
     </div>
-    <div *ngIf="query_params.length == 0" class="notice-text">
-        This API call doesn't have any query parameters.
-    </div>
+
 </div>

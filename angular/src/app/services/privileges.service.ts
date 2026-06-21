@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { cleanHeaders } from "./http.utils";
+import { BrowserHttpApiService } from "./http.browser.api";
 import { BehaviorSubject } from 'rxjs';
 import { SessionElement } from './browser.service';
 
@@ -39,7 +41,7 @@ export class PrivilegeService {
     roles = ["admin", "write", "read", "helpdesk", "installer"];
 
 
-    constructor(private _http: HttpClient) { }
+    constructor(private _http: HttpClient, private _httpApi: BrowserHttpApiService) { }
 
     setPrivileges(privileges: PrivilegeElement[]): void {
         this.privilegeSource.next(privileges);
@@ -83,21 +85,43 @@ export class PrivilegeService {
 
     private getOrgsInMsp(session: SessionElement, msp_id: string, min_role: string, cb:CallableFunction): void {
         var orgs: OrgElement[] = [];
-        const msp_role = this.privilegeSource.value.find(p => p.msp_id == msp_id && p.scope == "msp").role;
+        const mspPrivilege = this.privilegeSource.value.find(p => p.msp_id == msp_id && p.scope == "msp");
+        if (!mspPrivilege) {
+            cb([]);
+            return;
+        }
+        const msp_role = mspPrivilege.role;
         let url = "https://" + session.api_host + "/api/v1/msps/" + msp_id + "/orgs"
-        this._http.get(url, { headers: { "X-CSRFTOKEN": session.csrftoken } }).subscribe((orgs_from_mist: any[]) => {
-            orgs_from_mist.forEach(org => {
-                var org_role = this.checkIfOrgOverride(org.id);
-                if (!org_role) org_role = msp_role;
-                if (this.checkRole(min_role, org_role)) {
-                    orgs.push({
-                        org_id: org.id,
-                        name: org.name,
-                        role: org_role
-                    })
+        this._httpApi.requestWithCredentialFallback<any[]>(
+            () => this._http.get<any[]>(url, { headers: cleanHeaders({ "X-CSRFTOKEN": session.csrftoken }), withCredentials: true }),
+            url,
+            {
+                method: 'GET',
+                headers: cleanHeaders({ "X-CSRFTOKEN": session.csrftoken })
+            }
+        ).subscribe({
+            next: (orgs_from_mist: any[]) => {
+                if (!Array.isArray(orgs_from_mist)) {
+                    cb([]);
+                    return;
                 }
-            })
-            cb(this.sort_orgs(orgs));
+                orgs_from_mist.forEach(org => {
+                    var org_role = this.checkIfOrgOverride(org.id);
+                    if (!org_role) org_role = msp_role;
+                    if (this.checkRole(min_role, org_role)) {
+                        orgs.push({
+                            org_id: org.id,
+                            name: org.name,
+                            role: org_role
+                        })
+                    }
+                })
+                cb(this.sort_orgs(orgs));
+            },
+            error: (err) => {
+                console.error('PrivilegeService: getOrgsInMsp failed:', err);
+                cb([]);
+            }
         })
     }
 

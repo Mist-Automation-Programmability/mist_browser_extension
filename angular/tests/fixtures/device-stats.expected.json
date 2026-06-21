@@ -1,0 +1,18 @@
+
+{
+  "url": "https://api.gc1.mist.com/api/v1/sites/d6fb4f96-3ba4-4cf5-8af2-a8d7b85087ac/stats/devices/00000000-0000-0000-1000-6c78c1de3380?type=switch",
+  "links": [
+    {
+      "text": "8aa21779-1178-4357-b3e0-42c02b93b870",
+      "href": "https://api.gc1.mist.com/api/v1/orgs/8aa21779-1178-4357-b3e0-42c02b93b870"
+    },
+    {
+      "text": "d6fb4f96-3ba4-4cf5-8af2-a8d7b85087ac",
+      "href": "https://api.gc1.mist.com/api/v1/sites/d6fb4f96-3ba4-4cf5-8af2-a8d7b85087ac"
+    },
+    {
+      "text": "8aa21779-1178-4357-b3e0-42c02b93b870",
+      "href": "https://api.gc1.mist.com/api/v1/orgs/8aa21779-1178-4357-b3e0-42c02b93b870"
+    }
+  ]
+}

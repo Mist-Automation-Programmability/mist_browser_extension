@@ -5,6 +5,11 @@ if (typeof browser === "undefined") {
 }
 
 browser.runtime.onMessage.addListener((request, sender, respond) => {
+    // Ignore typed messages so browser-specific content scripts can own them.
+    if (request && request.type) {
+        return;
+    }
+
     const handler = new Promise((resolve, reject) => {
         if (request) {
             resolve(window.location.href);

@@ -10,17 +10,14 @@ interface QueryParamsInterface {
   name: string,
   value: string,
   description: string,
-  schema: any
+  schema: any,
+  required?: boolean
 }
 
 @Component({
     selector: 'app-api-django',
     templateUrl: 'django.component.html',
     styleUrls: [
-        '../../../scss/button.component.scss',
-        '../../../scss/notice.component.scss',
-        '../../../scss/container.component.scss',
-        '../../../scss/input.component.scss',
         'django.component.scss',
     ],
     standalone: false
@@ -199,14 +196,38 @@ export class ApiDjangoComponent implements OnInit {
   }
 
   // copy the id (org_id, site_id, ...) into the clipboard
-  copyId(inputElement: HTMLInputElement): void {
-    this.focused = inputElement.id;
-    inputElement.select();
-    document.execCommand('copy');
+  async copyId(value: string, key: string): Promise<void> {
+    try {
+      if (!navigator.clipboard?.writeText) return;
+      await navigator.clipboard.writeText(value);
+    } catch (e) {
+      console.warn("copyId failed:", e);
+      return;
+    }
+
+    this.focused = key;
+    this._cd.detectChanges();
     setTimeout(() => {
       this.focused = "";
-      this._cd.detectChanges()
-    }, 150);
-    inputElement.setSelectionRange(0, 0);
+      this._cd.detectChanges();
+    }, 1200);
+  }
+
+  // ---- detected-page strip + request-url preview helpers ----
+  get detectHost(): string {
+    return this.tabUrl ? this.tabUrl.split("/")[2] : "";
+  }
+  get detectPath(): string {
+    if (!this.tabUrl) return "";
+    try { return new URL(this.tabUrl).pathname; } catch (e) { return ""; }
+  }
+  get queryString(): string {
+    const q: string[] = [];
+    this.query_params.forEach(p => {
+      if (p.value != undefined && p.value !== "") {
+        q.push(encodeURIComponent(p.name) + "=" + encodeURIComponent(String(p.value)));
+      }
+    });
+    return q.length ? "?" + q.join("&") : "";
   }
 }
