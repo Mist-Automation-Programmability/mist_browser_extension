@@ -36,3 +36,20 @@ test('Copy button injected once into the response container', () => {
   mod.setupCopyButton(pre, raw, info);
   assert.equal(info.querySelectorAll('button.mist-copy-json').length, 1);
 });
+
+test('Copy button has an accessible label, a text label, both icons, and injected styles', () => {
+  const dom = new JSDOM(`<div class="response-info">${PRE}</div>`);
+  const mod = loadModule(dom.window);
+  const doc = dom.window.document;
+  const info = doc.querySelector('.response-info');
+  const pre = info.querySelector('.prettyprint');
+  mod.setupCopyButton(pre, mod.parseResponse(pre).raw, info);
+
+  const btn = info.querySelector('button.mist-copy-json');
+  assert.equal(btn.getAttribute('aria-label'), 'Copy JSON response');
+  assert.equal(btn.querySelector('.mist-copy-label').textContent, 'Copy JSON');
+  assert.ok(btn.querySelector('svg.mist-ico-copy'), 'clipboard icon present');
+  assert.ok(btn.querySelector('svg.mist-ico-check'), 'check icon present');
+  // built via DOM, not innerHTML — no raw markup string assigned
+  assert.ok(doc.getElementById('mist-copy-json-style'), 'styles injected once');
+});

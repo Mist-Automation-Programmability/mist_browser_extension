@@ -271,7 +271,7 @@ function applyIdLinks(preEl, idMap) {
     }
 }
 
-var TS_KEY_OK = /(_time|_at)$|^expire|^(last_seen|last_used|timestamp)$/;
+var TS_KEY_OK = /(_time|_at)$|^expire|^(last_seen|last_used|last_flapped|timestamp)$/;
 var TS_KEY_EXCLUDE = /^uptime$|_timeout$|^duration$|^interval$|_age$/;
 var TS_MIN = 946684800;    // 2000-01-01
 var TS_MAX = 4102444800;   // 2100-01-01
@@ -319,25 +319,100 @@ function applyTimestamps(preEl) {
     }
 }
 
-function _flash(btn, msg) {
-    var prev = btn.textContent;
-    btn.textContent = msg;
-    setTimeout(function () { btn.textContent = prev; }, 1200);
+// "Copy JSON" button — the copy-code affordance developers know: icon-led,
+// anchored to the response block's top-right, quiet at rest, Mist-blue on hover,
+// green check on success. Styles ride an injected <style> since the DRF page has
+// no access to the extension's CSS.
+var COPY_STYLE_ID = "mist-copy-json-style";
+var SVG_NS = "http://www.w3.org/2000/svg";
+
+// Build an SVG icon from trusted static descriptors (no innerHTML / no page data).
+function _svgIcon(doc, cls, strokeWidth, children) {
+    var svg = doc.createElementNS(SVG_NS, "svg");
+    svg.setAttribute("class", cls);
+    svg.setAttribute("viewBox", "0 0 24 24");
+    svg.setAttribute("fill", "none");
+    svg.setAttribute("stroke", "currentColor");
+    svg.setAttribute("stroke-width", strokeWidth);
+    svg.setAttribute("stroke-linecap", "round");
+    svg.setAttribute("stroke-linejoin", "round");
+    svg.setAttribute("aria-hidden", "true");
+    for (var i = 0; i < children.length; i++) {
+        var el = doc.createElementNS(SVG_NS, children[i].tag);
+        var attrs = children[i].attrs;
+        for (var attr in attrs) { el.setAttribute(attr, attrs[attr]); }
+        svg.appendChild(el);
+    }
+    return svg;
 }
+
+function _injectCopyStyle(doc) {
+    if (doc.getElementById(COPY_STYLE_ID)) return;
+    var style = doc.createElement("style");
+    style.id = COPY_STYLE_ID;
+    // .is-copied / .is-error are declared after :hover so the success/error
+    // colour wins while the cursor is still on the just-clicked button.
+    style.textContent =
+        ".mist-copy-json{position:absolute;top:8px;right:8px;z-index:5;display:inline-flex;" +
+        "align-items:center;gap:6px;padding:5px 10px;border-radius:6px;cursor:pointer;" +
+        "font:500 12px/1 -apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;" +
+        "color:#5a6b7b;background:rgba(255,255,255,.92);border:1px solid #d4dae0;" +
+        "transition:color .15s ease,border-color .15s ease,background .15s ease;}" +
+        ".mist-copy-json:hover{color:#2b8fdb;border-color:#63b4ee;background:#f4faff;}" +
+        ".mist-copy-json:active{transform:translateY(1px);}" +
+        ".mist-copy-json:focus-visible{outline:2px solid rgba(99,180,238,.55);outline-offset:2px;}" +
+        ".mist-copy-json .mist-ico{width:13px;height:13px;flex:none;}" +
+        ".mist-copy-json .mist-ico-check{display:none;}" +
+        ".mist-copy-json.is-copied{color:#15a849;border-color:#41d27f;background:#f1fcf5;}" +
+        ".mist-copy-json.is-copied .mist-ico-copy{display:none;}" +
+        ".mist-copy-json.is-copied .mist-ico-check{display:inline;}" +
+        ".mist-copy-json.is-error{color:#d23f3f;border-color:#f0a3a3;background:#fdf3f3;}" +
+        "@media (prefers-reduced-motion:reduce){.mist-copy-json{transition:none;}}";
+    (doc.head || doc.documentElement).appendChild(style);
+}
+
 function setupCopyButton(preEl, rawJson, container) {
     if (container.querySelector("button.mist-copy-json")) return;   // idempotent
     var doc = preEl.ownerDocument;
+    _injectCopyStyle(doc);
+    // Anchor the button to the response block's top-right corner.
+    var view = doc.defaultView;
+    if (view && view.getComputedStyle(container).position === "static") {
+        container.style.position = "relative";
+    }
     var btn = doc.createElement("button");
     btn.className = "mist-copy-json";
     btn.type = "button";
-    btn.textContent = "Copy JSON";
+    btn.setAttribute("aria-label", "Copy JSON response");
+    btn.appendChild(_svgIcon(doc, "mist-ico mist-ico-copy", "2", [
+        { tag: "rect", attrs: { x: "9", y: "9", width: "13", height: "13", rx: "2" } },
+        { tag: "path", attrs: { d: "M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" } }
+    ]));
+    btn.appendChild(_svgIcon(doc, "mist-ico mist-ico-check", "2.6", [
+        { tag: "polyline", attrs: { points: "20 6 9 17 4 12" } }
+    ]));
+    var label = doc.createElement("span");
+    label.className = "mist-copy-label";
+    label.textContent = "Copy JSON";
+    btn.appendChild(label);
+    var resetTimer = null;
+    function flash(stateClass, text) {
+        btn.classList.remove("is-copied", "is-error");
+        if (stateClass) { btn.classList.add(stateClass); }
+        label.textContent = text;
+        if (resetTimer) { clearTimeout(resetTimer); }
+        resetTimer = setTimeout(function () {
+            btn.classList.remove("is-copied", "is-error");
+            label.textContent = "Copy JSON";
+        }, 1400);
+    }
     btn.addEventListener("click", function () {
         if (typeof navigator !== "undefined" && navigator.clipboard) {
             navigator.clipboard.writeText(rawJson).then(
-                function () { _flash(btn, "Copied"); },
-                function () { _flash(btn, "Copy failed"); });
+                function () { flash("is-copied", "Copied"); },
+                function () { flash("is-error", "Copy failed"); });
         } else {
-            _flash(btn, "Copy failed");
+            flash("is-error", "Copy failed");
         }
     });
     container.insertBefore(btn, container.firstChild);

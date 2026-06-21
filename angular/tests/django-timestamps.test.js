@@ -30,6 +30,23 @@ test('annotates timestamp keys, with UTC in title', () => {
   assert.equal(ann[0].title, '2023-11-14T22:13:20.000Z');
 });
 
+test('last_flapped: annotated when a real epoch, skipped when 0 or the "never" sentinel', () => {
+  // 1700000000 = real flap; 0 = never (below range); 62135596800 = Juniper
+  // "never" sentinel (above range). Only the real one should annotate.
+  const FLAP = `<pre class="prettyprint">{
+  <span class="str">"last_flapped"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">1700000000</span><span class="pun">,</span>
+  <span class="str">"last_flapped"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">0</span><span class="pun">,</span>
+  <span class="str">"last_flapped"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">62135596800</span>
+}</pre>`;
+  const dom = new JSDOM(`<div class="response-info">${FLAP}</div>`);
+  const mod = loadModule(dom.window);
+  const pre = dom.window.document.querySelector('.prettyprint');
+  mod.applyTimestamps(pre);
+  const ann = pre.querySelectorAll('span.mist-ts');
+  assert.equal(ann.length, 1, 'only the in-range last_flapped is annotated');
+  assert.equal(ann[0].title, '2023-11-14T22:13:20.000Z');
+});
+
 test('excludes uptime and non-epoch numbers; idempotent', () => {
   const dom = new JSDOM(`<div class="response-info">${PRE}</div>`);
   const mod = loadModule(dom.window);
@@ -45,7 +62,7 @@ test('excludes uptime and non-epoch numbers; idempotent', () => {
 const EXPECTED_TS_COUNTS = {
   'self-apitokens': 17,
   'device-stats': 14,
-  'list-paginated': 10,
+  'list-paginated': 18, // 10 + 8 in-range last_flapped (2 sentinel 62135596800 excluded by upper bound)
 };
 
 const FIXTURES_DIR = path.join(__dirname, 'fixtures');
