@@ -271,6 +271,54 @@ function applyIdLinks(preEl, idMap) {
     }
 }
 
+var TS_KEY_OK = /(_time|_at)$|^expire|^(last_seen|last_used|timestamp)$/;
+var TS_KEY_EXCLUDE = /^uptime$|_timeout$|^duration$|^interval$|_age$/;
+var TS_MIN = 946684800;    // 2000-01-01
+var TS_MAX = 4102444800;   // 2100-01-01
+
+function isTimestampKey(key) {
+    return TS_KEY_OK.test(key) && !TS_KEY_EXCLUDE.test(key);
+}
+function isEpoch(n) {
+    return typeof n === "number" && isFinite(n) && n >= TS_MIN && n <= TS_MAX;
+}
+function _pad(n) { return (n < 10 ? "0" : "") + n; }
+function fmtLocal(d) {
+    return d.getFullYear() + "-" + _pad(d.getMonth() + 1) + "-" + _pad(d.getDate()) +
+        " " + _pad(d.getHours()) + ":" + _pad(d.getMinutes()) + ":" + _pad(d.getSeconds());
+}
+function precedingKey(numSpan) {
+    var el = numSpan.previousElementSibling, steps = 0;
+    while (el && steps < 6) {
+        if (el.classList && el.classList.contains(TOK.str)) {
+            try { return JSON.parse(el.textContent); }
+            catch (e) { return el.textContent.replace(/^"|"$/g, ""); }
+        }
+        el = el.previousElementSibling; steps++;
+    }
+    return null;
+}
+function applyTimestamps(preEl) {
+    var doc = preEl.ownerDocument;
+    var nodes = preEl.querySelectorAll("span." + TOK.lit);
+    for (var i = 0; i < nodes.length; i++) {
+        var num = nodes[i];
+        if (num.dataset.mistTs) continue;             // idempotent
+        var key = precedingKey(num);
+        if (!key || !isTimestampKey(key)) continue;
+        var val = Number(num.textContent);
+        if (!isEpoch(val)) continue;
+        var d = new Date(val * 1000);
+        var ann = doc.createElement("span");
+        ann.className = "mist-ts";
+        ann.textContent = " → " + fmtLocal(d);
+        ann.title = d.toISOString();                  // UTC
+        ann.style.opacity = "0.6";
+        num.insertAdjacentElement("afterend", ann);
+        num.dataset.mistTs = "1";
+    }
+}
+
 function runAugment(opts) {
     var info = document.querySelector(".response-info");
     if (!info) return;
@@ -284,6 +332,10 @@ function runAugment(opts) {
     if (opts.id_links) {
         try { applyIdLinks(pre, buildIdMap(parsed.data)); }
         catch (e) { console.warn("django_links: id-link augmentation failed", e); }
+    }
+    if (opts.ts_human) {
+        try { applyTimestamps(pre); }
+        catch (e) { console.warn("django_links: timestamp augmentation failed", e); }
     }
 }
 
@@ -299,5 +351,5 @@ if (typeof browser !== "undefined" && browser.storage && browser.storage.local) 
 }
 
 if (typeof module !== "undefined" && module.exports) {
-    module.exports = { TOK, parseResponse, buildIdMap, applyIdLinks, runAugment };
+    module.exports = { TOK, parseResponse, buildIdMap, applyIdLinks, applyTimestamps, isTimestampKey, isEpoch, fmtLocal, precedingKey, runAugment };
 }
