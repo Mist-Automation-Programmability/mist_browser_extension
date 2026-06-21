@@ -1,0 +1,89 @@
+{
+  "url": "https://api.gc1.mist.com/api/v1/orgs/8aa21779-1178-4357-b3e0-42c02b93b870/stats/ports/search?limit=10",
+  "links": [
+    {
+      "text": "8aa21779-1178-4357-b3e0-42c02b93b870",
+      "href": "https://api.gc1.mist.com/api/v1/orgs/8aa21779-1178-4357-b3e0-42c02b93b870"
+    },
+    {
+      "text": "d6fb4f96-3ba4-4cf5-8af2-a8d7b85087ac",
+      "href": "https://api.gc1.mist.com/api/v1/sites/d6fb4f96-3ba4-4cf5-8af2-a8d7b85087ac"
+    },
+    {
+      "text": "8aa21779-1178-4357-b3e0-42c02b93b870",
+      "href": "https://api.gc1.mist.com/api/v1/orgs/8aa21779-1178-4357-b3e0-42c02b93b870"
+    },
+    {
+      "text": "d6fb4f96-3ba4-4cf5-8af2-a8d7b85087ac",
+      "href": "https://api.gc1.mist.com/api/v1/sites/d6fb4f96-3ba4-4cf5-8af2-a8d7b85087ac"
+    },
+    {
+      "text": "8aa21779-1178-4357-b3e0-42c02b93b870",
+      "href": "https://api.gc1.mist.com/api/v1/orgs/8aa21779-1178-4357-b3e0-42c02b93b870"
+    },
+    {
+      "text": "d6fb4f96-3ba4-4cf5-8af2-a8d7b85087ac",
+      "href": "https://api.gc1.mist.com/api/v1/sites/d6fb4f96-3ba4-4cf5-8af2-a8d7b85087ac"
+    },
+    {
+      "text": "8aa21779-1178-4357-b3e0-42c02b93b870",
+      "href": "https://api.gc1.mist.com/api/v1/orgs/8aa21779-1178-4357-b3e0-42c02b93b870"
+    },
+    {
+      "text": "d6fb4f96-3ba4-4cf5-8af2-a8d7b85087ac",
+      "href": "https://api.gc1.mist.com/api/v1/sites/d6fb4f96-3ba4-4cf5-8af2-a8d7b85087ac"
+    },
+    {
+      "text": "8aa21779-1178-4357-b3e0-42c02b93b870",
+      "href": "https://api.gc1.mist.com/api/v1/orgs/8aa21779-1178-4357-b3e0-42c02b93b870"
+    },
+    {
+      "text": "d6fb4f96-3ba4-4cf5-8af2-a8d7b85087ac",
+      "href": "https://api.gc1.mist.com/api/v1/sites/d6fb4f96-3ba4-4cf5-8af2-a8d7b85087ac"
+    },
+    {
+      "text": "8aa21779-1178-4357-b3e0-42c02b93b870",
+      "href": "https://api.gc1.mist.com/api/v1/orgs/8aa21779-1178-4357-b3e0-42c02b93b870"
+    },
+    {
+      "text": "d6fb4f96-3ba4-4cf5-8af2-a8d7b85087ac",
+      "href": "https://api.gc1.mist.com/api/v1/sites/d6fb4f96-3ba4-4cf5-8af2-a8d7b85087ac"
+    },
+    {
+      "text": "8aa21779-1178-4357-b3e0-42c02b93b870",
+      "href": "https://api.gc1.mist.com/api/v1/orgs/8aa21779-1178-4357-b3e0-42c02b93b870"
+    },
+    {
+      "text": "d6fb4f96-3ba4-4cf5-8af2-a8d7b85087ac",
+      "href": "https://api.gc1.mist.com/api/v1/sites/d6fb4f96-3ba4-4cf5-8af2-a8d7b85087ac"
+    },
+    {
+      "text": "8aa21779-1178-4357-b3e0-42c02b93b870",
+      "href": "https://api.gc1.mist.com/api/v1/orgs/8aa21779-1178-4357-b3e0-42c02b93b870"
+    },
+    {
+      "text": "d6fb4f96-3ba4-4cf5-8af2-a8d7b85087ac",
+      "href": "https://api.gc1.mist.com/api/v1/sites/d6fb4f96-3ba4-4cf5-8af2-a8d7b85087ac"
+    },
+    {
+      "text": "8aa21779-1178-4357-b3e0-42c02b93b870",
+      "href": "https://api.gc1.mist.com/api/v1/orgs/8aa21779-1178-4357-b3e0-42c02b93b870"
+    },
+    {
+      "text": "d6fb4f96-3ba4-4cf5-8af2-a8d7b85087ac",
+      "href": "https://api.gc1.mist.com/api/v1/sites/d6fb4f96-3ba4-4cf5-8af2-a8d7b85087ac"
+    },
+    {
+      "text": "8aa21779-1178-4357-b3e0-42c02b93b870",
+      "href": "https://api.gc1.mist.com/api/v1/orgs/8aa21779-1178-4357-b3e0-42c02b93b870"
+    },
+    {
+      "text": "d6fb4f96-3ba4-4cf5-8af2-a8d7b85087ac",
+      "href": "https://api.gc1.mist.com/api/v1/sites/d6fb4f96-3ba4-4cf5-8af2-a8d7b85087ac"
+    },
+    {
+      "text": "/api/v1/orgs/8aa21779-1178-4357-b3e0-42c02b93b870/stats/ports/search?limit=10&search_after=%5B%222093390b3580%22%2C+%22ge-0%2F0%2F9%22%5D",
+      "href": "https://api.gc1.mist.com/api/v1/orgs/8aa21779-1178-4357-b3e0-42c02b93b870/stats/ports/search?limit=10&search_after=%5B%222093390b3580%22%2C+%22ge-0%2F0%2F9%22%5D"
+    }
+  ]
+}
