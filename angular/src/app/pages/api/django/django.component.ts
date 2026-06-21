@@ -224,7 +224,9 @@ export class ApiDjangoComponent implements OnInit {
   get queryString(): string {
     const q: string[] = [];
     this.query_params.forEach(p => {
-      if (p.value != undefined && p.value !== "") q.push(p.name + "=" + p.value);
+      if (p.value != undefined && p.value !== "") {
+        q.push(encodeURIComponent(p.name) + "=" + encodeURIComponent(String(p.value)));
+      }
     });
     return q.length ? "?" + q.join("&") : "";
   }
