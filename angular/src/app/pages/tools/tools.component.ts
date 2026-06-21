@@ -29,7 +29,6 @@ export class ToolsComponent implements OnInit {
 
   ngOnInit() {
     this._browser.getStorage("id_links", (result) => {
-      console.log(result)
       if (result && result.id_links == "true") this.id_links = true;
       else this.id_links = false;
     })
