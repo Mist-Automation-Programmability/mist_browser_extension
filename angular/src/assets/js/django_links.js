@@ -319,6 +319,30 @@ function applyTimestamps(preEl) {
     }
 }
 
+function _flash(btn, msg) {
+    var prev = btn.textContent;
+    btn.textContent = msg;
+    setTimeout(function () { btn.textContent = prev; }, 1200);
+}
+function setupCopyButton(preEl, rawJson, container) {
+    if (container.querySelector("button.mist-copy-json")) return;   // idempotent
+    var doc = preEl.ownerDocument;
+    var btn = doc.createElement("button");
+    btn.className = "mist-copy-json";
+    btn.type = "button";
+    btn.textContent = "Copy JSON";
+    btn.addEventListener("click", function () {
+        if (typeof navigator !== "undefined" && navigator.clipboard) {
+            navigator.clipboard.writeText(rawJson).then(
+                function () { _flash(btn, "Copied"); },
+                function () { _flash(btn, "Copy failed"); });
+        } else {
+            _flash(btn, "Copy failed");
+        }
+    });
+    container.insertBefore(btn, container.firstChild);
+}
+
 function runAugment(opts) {
     var info = document.querySelector(".response-info");
     if (!info) return;
@@ -337,6 +361,10 @@ function runAugment(opts) {
         try { applyTimestamps(pre); }
         catch (e) { console.warn("django_links: timestamp augmentation failed", e); }
     }
+    if (opts.copy_json) {
+        try { setupCopyButton(pre, parsed.raw, info); }
+        catch (e) { console.warn("django_links: copy button failed", e); }
+    }
 }
 
 if (typeof browser !== "undefined" && browser.storage && browser.storage.local) {
@@ -351,5 +379,5 @@ if (typeof browser !== "undefined" && browser.storage && browser.storage.local) 
 }
 
 if (typeof module !== "undefined" && module.exports) {
-    module.exports = { TOK, parseResponse, buildIdMap, applyIdLinks, applyTimestamps, isTimestampKey, isEpoch, fmtLocal, precedingKey, runAugment };
+    module.exports = { TOK, parseResponse, buildIdMap, applyIdLinks, applyTimestamps, isTimestampKey, isEpoch, fmtLocal, precedingKey, setupCopyButton, runAugment };
 }
