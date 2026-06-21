@@ -18,11 +18,6 @@ export interface UsageElement {
     selector: 'app-account',
     templateUrl: 'account.component.html',
     styleUrls: [
-        '../../scss/button.component.scss',
-        '../../scss/notice.component.scss',
-        '../../scss/container.component.scss',
-        '../../scss/popup.component.scss',
-        '../../scss/progress.component.scss',
         'account.component.scss',
     ],
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -51,6 +46,11 @@ export class AccountComponent implements OnInit {
   has_active_sessions: boolean = false;
   is_working = true;
   can_request_cookie_permissions = false;
+
+  get sessionCount(): string {
+    const n = this.sessions.filter(s => s.email).length;
+    return n + (n === 1 ? ' cloud' : ' clouds');
+  }
 
   ngOnInit() {
     this._browser.sessions.subscribe(s => this.sessions = s);

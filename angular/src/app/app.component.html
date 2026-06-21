@@ -1,34 +1,59 @@
-<div style="text-align:center">
-    <div style="    position: absolute;height: 50px;color: white;font-size: large;display: flex;align-items: center;margin-left: 1em; user-select: none;font-weight: 100;">JuniperMIST API</div>
-    <div class="top">
-        <img class="banner" src="assets/banner2.jpeg" alt="banner">
-        <img class="logo" src="assets/mist.png" alt="logo">
-    </div>
+<div class="mist-app">
 
-</div>
+    <header class="mist-header">
+        <div class="mist-brand">
+            <div class="mist-mark">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2.5 16.5 L8.5 6 L12.5 12 L15.5 8 L21.5 16.5"></path>
+                    <circle cx="15.5" cy="8" r="1.7" fill="currentColor" stroke="none"></circle>
+                </svg>
+            </div>
+            <div class="mist-wordmark"><span class="j">HPE</span> <span class="m">Mist API</span></div>
+        </div>
+        <div class="mist-header-tag">{{ tabLabel }}</div>
+    </header>
 
-<div class="app-container">
-    <app-api *ngIf="display=='api'" style="overflow: auto;"></app-api>
-    <app-account *ngIf="display=='account'" style="overflow: auto;"></app-account>
-    <app-tools *ngIf="display=='tools'" style="overflow: auto;"></app-tools>
-    <app-about *ngIf="display=='about'" style="overflow: auto;"></app-about>
-</div>
+    <main class="mist-main">
+        <app-api *ngIf="display=='api'"></app-api>
+        <app-account *ngIf="display=='account'"></app-account>
+        <app-tools *ngIf="display=='tools'"></app-tools>
+        <app-about *ngIf="display=='about'"></app-about>
+    </main>
 
-<div class="bottom">
-    <button class="bottom" (click)="show('api')" [ngClass]="display == 'api'? 'selected' : ''">
-        <img class="bottom icon" src="assets/hub.svg" alt="api">
-        <div class="bottom xxs">API</div>
-    </button>
-    <button class="bottom" (click)="show('account')" [ngClass]="display == 'account'? 'selected' : ''">
-        <img class="bottom icon" src="assets/account.svg" alt="account">
-        <div class="bottom xxs">Accounts</div>
-    </button>
-    <button class="bottom" (click)="show('tools')" [ngClass]="display == 'tools'? 'selected' : ''">
-        <img class="bottom icon" src="assets/tools.svg" alt="tools">
-        <div class="bottom xxs">Tools</div>
-    </button>
-    <button class="bottom" (click)="show('about')" [ngClass]="display == 'about'? 'selected' : ''">
-        <img class="bottom icon" src="assets/info.svg" alt="help">
-        <div class="bottom xxs">about</div>
-    </button>
+    <nav class="mist-tabs">
+        <button class="mist-tab" [class.active]="display=='api'" (click)="show('api')">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="16 18 22 12 16 6"></polyline>
+                <polyline points="8 6 2 12 8 18"></polyline>
+            </svg>
+            API
+        </button>
+        <button class="mist-tab" [class.active]="display=='account'" (click)="show('account')">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="8" r="4"></circle>
+                <path d="M4 21a8 8 0 0 1 16 0"></path>
+            </svg>
+            Accounts
+        </button>
+        <button class="mist-tab" [class.active]="display=='tools'" (click)="show('tools')">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-2.1-.5-.5-2.1z"></path>
+            </svg>
+            Tools
+        </button>
+        <button class="mist-tab" [class.active]="display=='about'" (click)="show('about')">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9"></circle>
+                <line x1="12" y1="11" x2="12" y2="16"></line>
+                <circle cx="12" cy="7.6" r="0.6" fill="currentColor"></circle>
+            </svg>
+            About
+        </button>
+    </nav>
+
 </div>

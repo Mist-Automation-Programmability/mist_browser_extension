@@ -1,9 +1,2 @@
-option {
-    text-align: start;
-}
-
-option.none {
-    text-align: center !important;
-}
-
-
+/* Org token management uses the global .mist-* design system (styles.scss). */
+.mist-tkitem.is-deleted { display: none !important; }

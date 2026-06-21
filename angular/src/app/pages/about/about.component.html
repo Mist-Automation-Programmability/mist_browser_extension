@@ -1,70 +1,152 @@
+<div class="mist-body">
 
-
-<div class="content">
-    <h2>Extension information</h2>
-    <div class="content data-container box-version">
-        <div class="version-info" style="padding: 0.5em 0;">
-            <div class="version-text">Current Version:</div>
-            <div class="version-value">{{current_version}}</div>
+    <!-- EXTENSION INFORMATION -->
+    <div class="mist-sec">
+        <div class="mist-sec-title"><span>Extension information</span></div>
+        <div class="mist-hero">
+            <div class="mist-hero-mark">
+                <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2.5 16.5 L8.5 6 L12.5 12 L15.5 8 L21.5 16.5"></path>
+                    <circle cx="15.5" cy="8" r="1.7" fill="currentColor" stroke="none"></circle>
+                </svg>
+            </div>
+            <div class="mist-hero-main">
+                <div class="mist-hero-name">Mist Browser Extension</div>
+                <div class="mist-hero-row">
+                    <span class="mist-hero-ver">v{{ current_version }}</span>
+                    <span class="mist-hero-desc">Companion for the Mist dashboard</span>
+                </div>
+            </div>
         </div>
-        <!-- <div class="version-info">
-            <div class="version-text">Latest Version:</div>
-            <div class="version-unknown" *ngIf="!last_version && !error_happened">
-                <div>Searching for new version...</div>
-                <img src="assets/question.svg" alt="unknown version">
-            </div>
-            <div class="version-uptodate" *ngIf="last_version && up_to_date">
-                <div>You have the latest Version</div>
-                <img src="assets/check_circle.svg" alt="unknown version">
-            </div>
-            <div class="version-newversion" *ngIf="last_version && !up_to_date">
-                <div>New version available ({{last_version}})</div>
-                <button class="download" (click)="openTab('download_url')">
-                    <div>Download</div>
-                    <img src="assets/download.svg" alt="download">
-                </button>
-            </div>
-            <div class="version-error" *ngIf="error_happened">
-                <div>{{error_message}}</div>
-            </div>
-        </div> -->
+        <div class="mist-links">
+            <button class="mist-link" (click)="openTab('github')">
+                <span class="mist-link-icon">
+                    <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="6" cy="6" r="2.4"></circle>
+                        <circle cx="6" cy="18" r="2.4"></circle>
+                        <circle cx="18" cy="8" r="2.4"></circle>
+                        <path d="M6 8.4v7.2"></path>
+                        <path d="M18 10.4a4 4 0 0 1-4 4h-3"></path>
+                    </svg>
+                </span>
+                <div class="mist-link-main">
+                    <div class="mist-link-name">GitHub Page</div>
+                    <div class="mist-link-host">github.com/Mist-Automation-Programmability</div>
+                </div>
+                <span class="mist-link-ext">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M7 17L17 7"></path>
+                        <polyline points="7 7 17 7 17 17"></polyline>
+                    </svg>
+                </span>
+            </button>
+        </div>
     </div>
-    <div class="links-container">
-        <button class="links xlarge" (click)="openTab('github')">
-            <div>Github Page</div>
-            <img class="icon-open" src="assets/open.svg" alt="open">
-        </button>
-    </div>
-</div>
 
-<div class="content">
-    <h2>Mist API Documentation</h2>
-    <div class="links-container">
-        <button class="links xlarge" (click)="openTab('openapi')">
-            <div>API Documentation</div>
-            <img class="icon-open" src="assets/open.svg" alt="open">
-        </button>
-        <button class="links xlarge" (click)="openTab('postman')">
-            <div>Postman Collection</div>
-            <img class="icon-open" src="assets/open.svg" alt="open">
-        </button>
+    <!-- MIST API DOCUMENTATION -->
+    <div class="mist-sec">
+        <div class="mist-sec-title"><span>Mist API Documentation</span></div>
+        <div class="mist-links">
+            <button class="mist-link" (click)="openTab('openapi')">
+                <span class="mist-link-icon">
+                    <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 5a2 2 0 0 1 2-2h9l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"></path>
+                        <polyline points="14 3 14 8 19 8"></polyline>
+                        <line x1="8" y1="13" x2="15" y2="13"></line>
+                        <line x1="8" y1="16" x2="13" y2="16"></line>
+                    </svg>
+                </span>
+                <div class="mist-link-main">
+                    <div class="mist-link-name">API Documentation</div>
+                    <div class="mist-link-host">juniper.net/documentation</div>
+                </div>
+                <span class="mist-link-ext">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M7 17L17 7"></path>
+                        <polyline points="7 7 17 7 17 17"></polyline>
+                    </svg>
+                </span>
+            </button>
+            <button class="mist-link" (click)="openTab('postman')">
+                <span class="mist-link-icon">
+                    <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 5a2 2 0 0 1 2-2h9l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"></path>
+                        <polyline points="14 3 14 8 19 8"></polyline>
+                        <line x1="8" y1="13" x2="15" y2="13"></line>
+                        <line x1="8" y1="16" x2="13" y2="16"></line>
+                    </svg>
+                </span>
+                <div class="mist-link-main">
+                    <div class="mist-link-name">Postman Collection</div>
+                    <div class="mist-link-host">documenter.getpostman.com</div>
+                </div>
+                <span class="mist-link-ext">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M7 17L17 7"></path>
+                        <polyline points="7 7 17 7 17 17"></polyline>
+                    </svg>
+                </span>
+            </button>
+        </div>
     </div>
-</div>
 
-<div class="content">
-    <h2>Mist Integrations</h2>
-    <div class="links-container">
-        <button class="links xlarge" (click)="openTab('https://store.servicenow.com/store/apps?q=%22juniper%20mist%22')">
-            <div>Servicenow</div>
-            <img class="icon-open" src="assets/open.svg" alt="open">
-        </button>
-        <button class="links xlarge" (click)="openTab('https://registry.terraform.io/providers/Juniper/mist/latest')">
-            <div>Terraform</div>
-            <img class="icon-open" src="assets/open.svg" alt="open">
-        </button>
-        <button class="links xlarge" (click)="openTab('https://www.pulumi.com/registry/packages/junipermist/')">
-            <div>Pulumi</div>
-            <img class="icon-open" src="assets/open.svg" alt="open">
-        </button>
+    <!-- MIST INTEGRATIONS -->
+    <div class="mist-sec">
+        <div class="mist-sec-title"><span>Mist Integrations</span></div>
+        <div class="mist-links">
+            <button class="mist-link"
+                (click)="openTab('https://store.servicenow.com/store/apps?q=%22juniper%20mist%22')">
+                <span class="mist-link-icon mono">SN</span>
+                <div class="mist-link-main">
+                    <div class="mist-link-name">ServiceNow</div>
+                    <div class="mist-link-host">store.servicenow.com</div>
+                </div>
+                <span class="mist-link-ext">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M7 17L17 7"></path>
+                        <polyline points="7 7 17 7 17 17"></polyline>
+                    </svg>
+                </span>
+            </button>
+            <button class="mist-link" (click)="openTab('https://registry.terraform.io/providers/Juniper/mist/latest')">
+                <span class="mist-link-icon mono">TF</span>
+                <div class="mist-link-main">
+                    <div class="mist-link-name">Terraform</div>
+                    <div class="mist-link-host">registry.terraform.io</div>
+                </div>
+                <span class="mist-link-ext">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M7 17L17 7"></path>
+                        <polyline points="7 7 17 7 17 17"></polyline>
+                    </svg>
+                </span>
+            </button>
+            <button class="mist-link" (click)="openTab('https://www.pulumi.com/registry/packages/junipermist/')">
+                <span class="mist-link-icon mono">Pu</span>
+                <div class="mist-link-main">
+                    <div class="mist-link-name">Pulumi</div>
+                    <div class="mist-link-host">pulumi.com/registry</div>
+                </div>
+                <span class="mist-link-ext">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M7 17L17 7"></path>
+                        <polyline points="7 7 17 7 17 17"></polyline>
+                    </svg>
+                </span>
+            </button>
+        </div>
     </div>
+
+    <div class="mist-foot">Built by the <b>Mist Automation &amp; Programmability</b> community · Open source</div>
+
 </div>

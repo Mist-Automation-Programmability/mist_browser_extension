@@ -33,10 +33,6 @@ export interface TokenInfoElement {
     selector: 'app-tools-token-info',
     templateUrl: 'info.component.html',
     styleUrls: [
-        '../../../scss/popup.component.scss',
-        '../../../scss/button.component.scss',
-        '../../../scss/input.component.scss',
-        '../token.component.scss',
         'info.component.scss',
     ],
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -189,15 +185,21 @@ export class TokenInfoComponent implements OnInit {
     this.invalid = false;
   }
   // copy the id (org_id, site_id, ...) into the clipboard
-  copyId(inputElement: HTMLInputElement): void {
-    this.focused = inputElement.id;
-    inputElement.select();
-    document.execCommand('copy');
+  async copyId(value: string, key: string): Promise<void> {
+    try {
+      if (!navigator.clipboard?.writeText) return;
+      await navigator.clipboard.writeText(value);
+    } catch (e) {
+      console.warn("copyId failed:", e);
+      return;
+    }
+
+    this.focused = key;
+    this._cd.detectChanges();
     setTimeout(() => {
       this.focused = "";
-      this._cd.detectChanges()
-    }, 100);
-    inputElement.setSelectionRange(0, 0);
+      this._cd.detectChanges();
+    }, 1200);
   }
 
   close(): void {

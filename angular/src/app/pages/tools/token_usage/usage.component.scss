@@ -1,16 +1,2 @@
-.error {
-    color: var(--error);
-}
-
-.usage {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 0 1em 1em;
-    font-size: small;
-}
-
-.progress-bar {
-    height: 7em;
-    width: 7em;
-}
+/* Token Usage uses the global .mist-* design system (styles.scss). */
+.mist-token-input.is-invalid { border-color: var(--c-danger); }

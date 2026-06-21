@@ -1,3 +1,5 @@
+@use 'app/scss/mist';
+
 /* latin-ext */
 @font-face {
   font-family: 'Lato';
@@ -198,22 +200,58 @@
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
+/* ---- IBM Plex Mono (bundled locally — CSP-safe, no CDN) ---- */
+/* latin */
+@font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 400; font-display: swap; src: url(assets/font/IBMPlexMono/IBMPlexMono-latin-400.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 500; font-display: swap; src: url(assets/font/IBMPlexMono/IBMPlexMono-latin-500.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 600; font-display: swap; src: url(assets/font/IBMPlexMono/IBMPlexMono-latin-600.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+/* latin-ext */
+@font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 400; font-display: swap; src: url(assets/font/IBMPlexMono/IBMPlexMono-latinext-400.woff2) format('woff2'); unicode-range: U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 500; font-display: swap; src: url(assets/font/IBMPlexMono/IBMPlexMono-latinext-500.woff2) format('woff2'); unicode-range: U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 600; font-display: swap; src: url(assets/font/IBMPlexMono/IBMPlexMono-latinext-600.woff2) format('woff2'); unicode-range: U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+
 body {
   width: 350px !important;
   margin: 0 !important;
   font-size: 11px;
-  font-family: "Lato";
-  color: white;       
+  font-family: "Lato", system-ui, sans-serif;
+  color: var(--c-text);
+  background: var(--c-canvas);
+
+  /* ---- refined design-system tokens ---- */
+  --c-canvas:    #161c26;
+  --c-surface:   #202836;
+  --c-surface-2: #1a212c;
+  --c-line:      rgba(255, 255, 255, .07);
+  --c-line-card: #2b3340;
+  --c-accent:        #63b4ee;
+  --c-accent-soft:   rgba(99, 180, 238, .14);
+  --c-success:       #18c956;
+  --c-success-soft:  rgba(24, 201, 86, .14);
+  --c-warning:       #ffb74d;
+  --c-warning-soft:  rgba(255, 183, 77, .12);
+  --c-danger:        #ff6969;
+  --c-donut-track:   #2b3543;
+  --c-text:       #eef2f8;
+  --c-text-dim:   #9aa6b5;
+  --c-text-faint: #90a0b1;
+  --font-ui:   'Lato', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --fs-eyebrow: 10px;
+  --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px; --sp-5: 20px; --sp-6: 24px;
+  --r-card: 12px; --r-md: 9px; --r-sm: 6px; --r-pill: 999px;
+
+  /* ---- legacy vars (kept; remapped onto the new ramp) ---- */
   --primary: #63b4ee;
   --primary-background: #63b4eea3;
   --secondary: #18c956;
   --secondary-background: #18c956a3;
   --active-inner: #fff;
   --focus: 2px rgba(39, 94, 254, .3);
-  --text-color: #fff;
+  --text-color: #eef2f8;
   --text-hover: #63b4ee;
-  --text-disabled: #aaa;
-  --border: #4f5560;
+  --text-disabled: #66727f;
+  --border: #2b3340;
   --border-hover: #63b4ee;
   --background:  #202836;
   --background2:  #161c26;
@@ -221,28 +259,21 @@ body {
   --warning: #FFB74D;
   --error: #ff0000d7;
   --error-background: #ff6969;
-  --success: #18c956d7; 
+  --success: #18c956d7;
   --disabled-inner: #E1E6F9;
   --progress-warning: #ff6969;
   --progress-background: #698bc750;
   --progress-green: #7dff69;
   --input-background: #2d343f;
-  --input-background-focus: black;
+  --input-background-focus: #11161f;
 }
+
+*, *::before, *::after { box-sizing: border-box; }
+button { font-family: inherit; }
 
 html {
   font-style: normal;
   font-weight: 400;
-}
-
-button:hover {
-  transition: all 0.2s ease-in-out;
-  box-shadow: inset rgba(0, 0, 0, 0.15) 0px 2px 8px !important;
-}
-
-button:active {
-  transition: all 0.2s ease-in-out;
-  box-shadow: inset rgba(0, 0, 0, 0.18) 0px 2px 4px !important;
 }
 
 img.icon-open {
@@ -262,8 +293,12 @@ input:focus,
 textarea:focus,
 select:focus {
   outline: none;
-  box-shadow: none !important;
 }
+
+/* thin scrollbars (matches design) */
+::-webkit-scrollbar { width: 7px; height: 7px; }
+::-webkit-scrollbar-thumb { background: rgba(150, 165, 185, .22); border-radius: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
 
 ///////////////////////
 // TOOTLTIP
@@ -314,47 +349,27 @@ select:focus {
   ;
 }
 
-app-api {
-  height: 100%;
-  max-width: 100%;
+/* ---- page hosts fill the shell's main region and let .mist-body scroll ---- */
+app-api, app-account, app-tools, app-about,
+app-api-manage, app-api-django, app-api-juniper-manage,
+app-tools-token-info, app-tools-token-usage {
+  flex: 1 1 auto;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  align-items: stretch;
-  overflow: auto;
+  overflow: hidden;
   scrollbar-width: thin;
-  scrollbar-color: var(--primary)  var(--background);
+  scrollbar-color: rgba(150, 165, 185, .35) transparent;
 }
 
-app-api-django {
-  max-width: 99%;
-  scrollbar-width: thin;
-  scrollbar-color: var(--primary)  var(--background);
-}
-
-app-account {
-  height: 100%;
+/* Account token sub-views overlay the session list (header + tabs stay visible) */
+app-account-manage, app-account-create,
+app-account-manage-org, app-account-create-org {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  scrollbar-width: thin;
-  scrollbar-color: var(--primary)  var(--background);
-}
-
-app-about {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  overflow: auto;
-  scrollbar-width: thin;
-  scrollbar-color: var(--primary)  var(--background);
-}
-
-label {
-  user-select: none;
-  color: #ccc;
-}
-
-app-account-create-org {
-  z-index: 100;
+  background: var(--c-canvas);
+  overflow: hidden;
 }

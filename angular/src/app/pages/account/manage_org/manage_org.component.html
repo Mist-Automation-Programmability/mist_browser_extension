@@ -1,91 +1,133 @@
-<div class="popup-content full-height">
-    <div *ngIf="displayed_msps.length > 0">
-        <select name=msp_id [(ngModel)]="msp_id" (change)="mspSelected()">
-            <option class="none" value="none">
-                <div style="width: 100%; text-align: center;">-- MSP Account --</div>
-            </option>
-            <option *ngFor="let msp of displayed_msps" [value]="msp.msp_id">
-                <div>{{msp.name}}</div>
-            </option>
-        </select>
-    </div>
-    <select name=org_id [(ngModel)]="org_id" (change)="getTokens()" [disabled]="org_loading">
-        <option class="none" value="none">
-            <div style="width: 100%; text-align: center;">-- Please Select an Org --</div>
-        </option>
-        <option *ngFor="let org of displayed_orgs" [value]="org.org_id">
-            <div>{{org.name}}</div>
-        </option>
-    </select>
+<div class="mist-body">
 
-    <div class="container" style="height: 100%; display: flex; flex-direction: column; justify-content: flex-start;">
-        <div *ngIf="org_loading" 
-            style="height: 100%;display: flex;justify-content: center;flex-direction: column;text-align: center; font-weight: lighter; margin: 1em;">
-            <div style="margin: 1em;">Loading the list of Orgs...</div>
+    <div class="mist-subhead">
+        <button class="mist-back" (click)="close()" title="Back">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 6 9 12 15 18"></polyline>
+            </svg>
+        </button>
+        <div class="mist-subhead-title">Org API Tokens</div>
+    </div>
+
+    <div class="mist-crumb" *ngIf="session">
+        <span class="mist-crumb-host">{{ session.cloud_host }}</span>
+        <span class="mist-crumb-scope">Org</span>
+    </div>
+
+    <div class="mist-fieldset" *ngIf="displayed_msps.length > 0">
+        <div class="mist-field-label">MSP Account</div>
+        <div class="mist-select-wrap">
+            <select class="mist-select" name="msp_id" [(ngModel)]="msp_id" (change)="mspSelected()">
+                <option value="none">All organizations</option>
+                <option *ngFor="let msp of displayed_msps" [value]="msp.msp_id">{{ msp.name }}</option>
+            </select>
+            <span class="mist-select-chev">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </span>
         </div>
-        <div *ngIf="!org_loading && org_id == 'none'" 
-        style="height: 100%;display: flex;justify-content: center;flex-direction: column;text-align: center; font-weight: lighter; margin: 1em;">
-            <div style="margin: 1em;">Please select an Org...</div>
+    </div>
+
+    <div class="mist-fieldset">
+        <div class="mist-field-label">Organization <span class="mist-req">required</span></div>
+        <div class="mist-select-wrap">
+            <select class="mist-select" name="org_id" [(ngModel)]="org_id" (change)="getTokens()" [disabled]="org_loading">
+                <option value="none">Select an organization…</option>
+                <option *ngFor="let org of displayed_orgs" [value]="org.org_id">{{ org.name }}</option>
+            </select>
+            <span class="mist-select-chev">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </span>
         </div>
-        <div *ngIf="!org_loading && tokens.length == 0 && org_id != 'none'"
-            style="height: 100%;display: flex;justify-content: center;flex-direction: column;text-align: center; font-weight: lighter; margin: 1em;">
-            <div style="margin: 1em;">This Org doesn't have any API Token yet...</div>
-            <div style="margin: 0 2em;">You can go back and create a new API Token directly from this extension!</div>
+    </div>
+
+    <div class="mist-empty" *ngIf="org_loading">
+        <div class="mist-empty-icon">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9"></circle>
+                <polyline points="12 7 12 12 15 14"></polyline>
+            </svg>
         </div>
-        <div class="token-container" *ngFor="let token of tokens" [ngClass]="token.deleted == true ? 'deleted' : ''">
-            <div class="token">
-                <table>
-                    <tr>
-                        <th>Name:</th>
-                        <td>
-                            <div class="name">{{token.name}}</div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Key:</th>
-                        <td>
-                            <div>{{token.key}}</div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Created By:</th>
-                        <td>
-                            <div>{{token.created_by}}</div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Creation Time:</th>
-                        <td>
-                            <div>{{(token.created_time * 1000)| date:'yyyy-MM-dd HH:mm:ss' }}</div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Last Used Time:</th>
-                        <td>
-                            <div *ngIf="token.last_used"
-                                [ngStyle]="{'color': now - (token.last_used * 1000) > 7776000000  ? 'var(--warning)' : null}">
-                                {{(token.last_used * 1000)| date:'yyyy-MM-dd HH:mm:ss'}}</div>
-                            <div *ngIf="!token.last_used" style="color: var(--error);font-weight: 400;">Never</div>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <div class="delete">
-                <button (click)="confirmDeleteToken(token)">
-                    <img src="assets/delete.svg" alt="delete">
+        <div class="mist-empty-title">Loading organizations…</div>
+        <div class="mist-empty-body">Fetching the organizations you can administer.</div>
+    </div>
+
+    <div class="mist-empty" *ngIf="!org_loading && org_id == 'none'">
+        <div class="mist-empty-icon">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 21V8l9-5 9 5v13"></path>
+                <path d="M9 21v-6h6v6"></path>
+                <path d="M3 21h18"></path>
+            </svg>
+        </div>
+        <div class="mist-empty-title">Select an organization</div>
+        <div class="mist-empty-body">Org API tokens belong to an organization. Choose one above to view and manage its
+            tokens.</div>
+    </div>
+
+    <div class="mist-tklist" *ngIf="!org_loading && org_id != 'none' && tokens.length > 0">
+        <div class="mist-tkitem" *ngFor="let token of tokens" [class.is-deleted]="token.deleted">
+            <div class="mist-tkitem-top">
+                <div class="mist-tkname">{{ token.name || 'Unnamed token' }}</div>
+                <button class="mist-del" (click)="confirmDeleteToken(token)" title="Delete token">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                        <path d="M10 11v6M14 11v6"></path>
+                        <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path>
+                    </svg>
                 </button>
             </div>
+            <div class="mist-tkkey">
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="8" cy="15" r="4"></circle>
+                    <path d="M10.8 12.2 21 2"></path>
+                    <path d="M18 5l3 3"></path>
+                    <path d="M15 8l3 3"></path>
+                </svg>
+                {{ token.key }}
+            </div>
+            <div class="mist-kv" *ngIf="token.created_by">
+                <span class="mist-kv-label">Created by</span>
+                <span class="mist-kv-val">{{ token.created_by }}</span>
+            </div>
+            <div class="mist-tkmeta">
+                <div class="mist-kv">
+                    <span class="mist-kv-label">Created</span>
+                    <span class="mist-kv-val">{{ (token.created_time * 1000) | date:'yyyy-MM-dd HH:mm' }}</span>
+                </div>
+                <div class="mist-kv">
+                    <span class="mist-kv-label">Last used</span>
+                    <span class="mist-kv-val" *ngIf="token.last_used"
+                        [class.stale]="now - (token.last_used * 1000) > 7776000000">{{ (token.last_used * 1000) | date:'yyyy-MM-dd HH:mm' }}</span>
+                    <span class="mist-kv-val never" *ngIf="!token.last_used">Never</span>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div style="display: flex;">
-        <button (click)="close()" class="xlarge">CLOSE</button>
+    <div class="mist-empty" *ngIf="!org_loading && org_id != 'none' && tokens.length == 0">
+        <div class="mist-empty-icon">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="8" cy="15" r="4"></circle>
+                <path d="M10.8 12.2 21 2"></path>
+                <path d="M18 5l3 3"></path>
+                <path d="M15 8l3 3"></path>
+            </svg>
+        </div>
+        <div class="mist-empty-title">No API tokens yet</div>
+        <div class="mist-empty-body">This org doesn't have any API token. Create one with the New button on the session
+            card.</div>
     </div>
+
 </div>
-<app-token-delete-warning 
-    [ngClass]="{hidden: view != 'warning'}"
-    class="popup transparent"
-    (warningConfirm)="warningConfirm()"
-    (warningCancel)="warningCancel()"
->
-</app-token-delete-warning>
+
+<app-token-delete-warning [class.mist-hidden]="view != 'warning'" (warningConfirm)="warningConfirm()"
+    (warningCancel)="warningCancel()"></app-token-delete-warning>

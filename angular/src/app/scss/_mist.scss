@@ -1,0 +1,398 @@
+/* ============================================================
+   MIST EXTENSION — refined design system (global)
+   Ported & consolidated from the Claude Design "Updated browser
+   extension UI" screens. Identity anchors kept: #63b4ee blue,
+   #18c956 green, #202836 / #161c26 surfaces. Tokens live in
+   styles.scss :root; this file holds the shared .mist-* classes.
+   ============================================================ */
+
+@property --usage { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
+
+/* ---- shell ---------------------------------------------------- */
+.mist-app {
+  width: 350px;
+  height: 600px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background: var(--c-canvas);
+  color: var(--c-text);
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+.mist-main { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+
+/* ---- header --------------------------------------------------- */
+.mist-header {
+  flex: none; display: flex; align-items: center; justify-content: space-between;
+  padding: var(--sp-3) var(--sp-4); background: #11161f;
+  border-bottom: 1px solid var(--c-line);
+}
+.mist-brand { display: flex; align-items: center; gap: var(--sp-2); }
+.mist-mark {
+  width: 26px; height: 26px; border-radius: 7px; flex: none;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(142deg, #74c0f2, #4a97da 46%, #5566d8);
+  color: #0d2138; box-shadow: inset 0 1px 0 rgba(255,255,255,.3);
+}
+.mist-wordmark { font-size: 14px; letter-spacing: .01em; line-height: 1; }
+.mist-wordmark .j { font-weight: 300; color: var(--c-text-dim); }
+.mist-wordmark .m { font-weight: 900; color: var(--c-text); }
+.mist-header-tag {
+  font-family: var(--font-mono); font-size: var(--fs-eyebrow); font-weight: 500;
+  color: var(--c-text-dim); letter-spacing: .04em;
+  padding: 3px 8px; border-radius: var(--r-pill);
+  border: 1px solid var(--c-line); background: var(--c-surface);
+}
+
+/* ---- detected-page strip (API tab reads the current tab) ------ */
+.mist-detect {
+  flex: none; display: flex; align-items: center; gap: 8px;
+  padding: 9px var(--sp-4); background: #131922; border-bottom: 1px solid var(--c-line);
+}
+.mist-detect-icon { flex: none; color: var(--c-accent); display: flex; }
+.mist-detect-text { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 1px; }
+.mist-detect-host { font-family: var(--font-mono); font-size: 10.5px; font-weight: 600; color: var(--c-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mist-detect-path { font-family: var(--font-mono); font-size: 9.5px; color: var(--c-text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mist-detect-chip { flex: none; font-size: 9px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--c-accent); background: var(--c-accent-soft); padding: 3px 8px; border-radius: var(--r-pill); }
+
+/* ---- scroll body + section eyebrow ---------------------------- */
+.mist-body { flex: 1; overflow-y: auto; padding: var(--sp-4); display: flex; flex-direction: column; gap: var(--sp-4); }
+.mist-sec { display: flex; flex-direction: column; gap: var(--sp-2); }
+.mist-sec-title {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  font-size: var(--fs-eyebrow); font-weight: 700; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--c-text-faint); padding: 0 2px;
+}
+.mist-sec-title > span { white-space: nowrap; }
+.mist-sec-title .count { font-family: var(--font-mono); font-weight: 500; letter-spacing: .02em; }
+
+/* ---- bottom tab bar ------------------------------------------- */
+.mist-tabs { flex: none; display: flex; background: #11161f; border-top: 1px solid var(--c-line); padding: 6px; gap: 2px; }
+.mist-tab {
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 8px 0 6px; border: 0; background: transparent; border-radius: var(--r-md);
+  color: var(--c-text-faint); font-family: var(--font-ui); font-size: 9.5px; font-weight: 700; letter-spacing: .03em;
+  position: relative; cursor: pointer; transition: color .15s ease, background .15s ease;
+}
+.mist-tab:hover { color: var(--c-text-dim); }
+.mist-tab.active { color: var(--c-accent); background: var(--c-accent-soft); }
+.mist-tab.active::before { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 22px; height: 2px; border-radius: 2px; background: var(--c-accent); }
+
+/* ---- toast ---------------------------------------------------- */
+@keyframes mist-toast { from { opacity: 0; transform: translate(-50%, 10px); } to { opacity: 1; transform: translate(-50%, 0); } }
+.mist-toast {
+  position: absolute; left: 50%; bottom: 70px; z-index: 50;
+  display: inline-flex; align-items: center; gap: 7px; max-width: 88%;
+  padding: 9px 14px; border-radius: var(--r-md);
+  background: #283140; border: 1px solid var(--c-line-card);
+  color: var(--c-text); font-size: 11.5px; font-weight: 700;
+  box-shadow: 0 12px 30px -10px rgba(0,0,0,.7); animation: mist-toast .2s ease;
+}
+.mist-toast svg { color: var(--c-success); flex: none; }
+.mist-toast.is-error svg { color: var(--c-danger); }
+
+/* ---- generic cards / empty states ----------------------------- */
+.mist-card-plain { background: var(--c-surface); border: 1px solid var(--c-line-card); border-radius: var(--r-card); padding: var(--sp-4); }
+.mist-empty {
+  display: flex; flex-direction: column; align-items: center; text-align: center; gap: 9px;
+  padding: 28px 20px; background: var(--c-surface); border: 1px dashed var(--c-line-card); border-radius: var(--r-md);
+}
+.mist-empty-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--c-text-dim); background: var(--c-surface-2); border: 1px solid var(--c-line); }
+.mist-empty-title { font-size: 13px; font-weight: 700; color: var(--c-text); }
+.mist-empty-body { font-size: 11px; color: var(--c-text-dim); line-height: 1.5; max-width: 240px; }
+.mist-empty-note { font-size: 11.5px; color: var(--c-text-dim); line-height: 1.5; background: var(--c-surface); border: 1px dashed var(--c-line-card); border-radius: var(--r-md); padding: 14px; }
+
+/* ---- buttons -------------------------------------------------- */
+.mist-actions { display: flex; gap: 9px; }
+.mist-btn {
+  flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  padding: 12px; border-radius: var(--r-md); font-family: var(--font-ui);
+  font-size: 12.5px; font-weight: 800; letter-spacing: .01em; cursor: pointer;
+  transition: filter .15s ease, border-color .15s ease, color .15s ease, background .15s ease, transform .12s ease;
+}
+.mist-btn-primary { border: 0; background: var(--c-accent); color: #0b1119; box-shadow: 0 8px 20px -8px rgba(99,180,238,.5); }
+.mist-btn-primary:hover { filter: brightness(1.07); }
+.mist-btn-primary:active { transform: translateY(1px); }
+.mist-btn-ghost { border: 1px solid var(--c-line-card); background: transparent; color: var(--c-text); }
+.mist-btn-ghost:hover { border-color: var(--c-text-dim); }
+.mist-btn-danger { border: 0; background: var(--c-danger); color: #2a0e0e; }
+.mist-btn-danger:hover { filter: brightness(1.06); }
+.mist-btn:disabled { opacity: .45; cursor: not-allowed; filter: none; box-shadow: none; }
+.mist-primary {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px; width: 100%;
+  padding: 11px; border: 0; border-radius: var(--r-md); background: var(--c-accent); color: #0b1119;
+  font-family: var(--font-ui); font-size: 12.5px; font-weight: 800; letter-spacing: .01em; cursor: pointer;
+  box-shadow: 0 8px 20px -8px rgba(99,180,238,.55); transition: filter .15s ease, transform .12s ease;
+}
+.mist-primary:hover { filter: brightness(1.07); }
+.mist-primary:active { transform: translateY(1px); }
+.mist-primary:disabled { opacity: .45; cursor: not-allowed; filter: none; box-shadow: none; }
+
+/* ---- modal (scrim + centered card) ---------------------------- */
+@keyframes mist-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes mist-sheet { from { transform: translateY(8px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.mist-scrim { position: absolute; inset: 0; z-index: 40; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(8,11,17,.66); animation: mist-fade .16s ease; }
+.mist-modal { width: 100%; background: var(--c-surface); border: 1px solid var(--c-line-card); border-radius: var(--r-card); padding: 18px; box-shadow: 0 20px 50px -16px rgba(0,0,0,.7); animation: mist-sheet .22s cubic-bezier(.22,1,.36,1); }
+.mist-modal-head { display: flex; align-items: center; gap: 9px; }
+.mist-modal-icon { flex: none; width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--c-danger); background: rgba(255,105,105,.12); }
+.mist-modal-icon.warn { color: var(--c-warning); background: var(--c-warning-soft); }
+.mist-modal-icon.accent { color: var(--c-accent); background: var(--c-accent-soft); }
+.mist-modal-title { font-size: 15px; font-weight: 800; color: var(--c-text); }
+.mist-modal-body { font-size: 11.5px; color: var(--c-text-dim); line-height: 1.5; margin: 12px 0 16px; }
+.mist-modal-body b { color: var(--c-text); font-weight: 700; }
+.mist-modal-body .exp { color: var(--c-warning); font-weight: 700; }
+
+/* ---- ID copy rows (API page / manage / token-info) ------------ */
+@keyframes mist-pop { from { opacity: 0; transform: scale(.7); } to { opacity: 1; transform: scale(1); } }
+.mist-ids { display: flex; flex-direction: column; background: var(--c-surface-2); border: 1px solid var(--c-line); border-radius: var(--r-md); overflow: hidden; }
+.mist-idrow { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; padding: 9px 12px; background: transparent; border: 0; cursor: pointer; transition: background .18s ease; }
+.mist-idrow + .mist-idrow { border-top: 1px solid var(--c-line); }
+.mist-idrow:hover { background: rgba(255,255,255,.035); }
+.mist-idrow.copied { background: var(--c-success-soft); }
+.mist-idmain { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.mist-idlabel { font-family: var(--font-mono); font-size: 9px; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; color: var(--c-text-faint); transition: color .18s ease; }
+.mist-idrow.copied .mist-idlabel { color: var(--c-success); }
+.mist-idval { font-family: var(--font-mono); font-size: 11px; font-weight: 500; color: var(--c-text); word-break: break-all; line-height: 1.4; }
+.mist-copy { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: var(--r-sm); border: 1px solid var(--c-line); background: rgba(255,255,255,.04); color: var(--c-text-dim); transition: color .15s ease, border-color .15s ease; }
+.mist-idrow:hover .mist-copy { color: var(--c-accent); border-color: var(--c-accent); }
+.mist-copied { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: var(--r-sm); border: 1px solid var(--c-success); background: var(--c-success-soft); color: var(--c-success); animation: mist-pop .22s ease; }
+
+/* ---- API page: CRUD method buttons ---------------------------- */
+.mist-methods { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; }
+.mist-method { display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 6px; padding: 10px 4px; border-radius: var(--r-md); border: 1px solid var(--mc-line); background: var(--mc-soft); color: var(--mc); cursor: pointer; transition: transform .12s ease, box-shadow .15s ease, filter .15s ease; }
+.mist-method:hover:not(:disabled) { box-shadow: 0 6px 16px -8px var(--mc); filter: brightness(1.12); }
+.mist-method:active:not(:disabled) { transform: translateY(1px); }
+.mist-method:disabled { --mc: var(--c-text-faint); --mc-soft: transparent; --mc-line: var(--c-line); opacity: .55; cursor: not-allowed; }
+.mist-method .verb { font-family: var(--font-mono); font-size: 12px; font-weight: 700; letter-spacing: .02em; }
+.mist-method .ext { opacity: .7; display: flex; }
+.mist-m-get  { --mc: #2bd06e; --mc-soft: rgba(24,201,86,.12);  --mc-line: rgba(24,201,86,.32); }
+.mist-m-post { --mc: #63b4ee; --mc-soft: rgba(99,180,238,.12); --mc-line: rgba(99,180,238,.32); }
+.mist-m-put  { --mc: #ffb74d; --mc-soft: rgba(255,183,77,.12); --mc-line: rgba(255,183,77,.32); }
+.mist-m-del  { --mc: #ff7d7d; --mc-soft: rgba(255,105,105,.12); --mc-line: rgba(255,105,105,.32); }
+
+/* ---- API page: query parameters ------------------------------- */
+.mist-params { display: flex; flex-direction: column; background: var(--c-surface); border: 1px solid var(--c-line-card); border-radius: var(--r-md); overflow: hidden; }
+.mist-param { display: flex; align-items: center; gap: 10px; padding: 9px 12px; }
+.mist-param + .mist-param { border-top: 1px solid var(--c-line); }
+.mist-param-key { flex: none; width: 78px; font-family: var(--font-mono); font-size: 11px; font-weight: 500; color: var(--c-text); }
+.mist-param-key .opt { display: block; font-family: var(--font-ui); font-size: 8.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--c-text-faint); margin-top: 1px; }
+.mist-control { flex: 1; min-width: 0; position: relative; }
+.mist-control .chev { position: absolute; right: 9px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--c-text-dim); display: flex; }
+.mist-url { font-family: var(--font-mono); font-size: 10.5px; line-height: 1.6; color: var(--c-text-dim); background: var(--c-surface-2); border: 1px solid var(--c-line); border-radius: var(--r-sm); padding: 10px 12px; word-break: break-all; }
+.mist-url b { color: var(--c-accent); font-weight: 600; }
+
+/* ---- inputs / selects (shared) -------------------------------- */
+.mist-input { width: 100%; font-family: var(--font-ui); font-size: 13px; color: var(--c-text); background: var(--c-canvas); border: 1px solid var(--c-line-card); border-radius: var(--r-sm); padding: 11px 12px; outline: none; transition: border-color .15s ease, box-shadow .15s ease; }
+.mist-input::placeholder { color: var(--c-text-faint); }
+.mist-input:focus { border-color: var(--c-accent); box-shadow: 0 0 0 3px var(--c-accent-soft); }
+.mist-input.mono { font-family: var(--font-mono); font-size: 11px; }
+.mist-select-wrap { position: relative; }
+.mist-select { width: 100%; appearance: none; -webkit-appearance: none; font-family: var(--font-ui); font-size: 13px; font-weight: 600; color: var(--c-text); background: var(--c-canvas); border: 1px solid var(--c-line-card); border-radius: var(--r-sm); padding: 11px 34px 11px 12px; outline: none; cursor: pointer; transition: border-color .15s ease, box-shadow .15s ease; }
+.mist-select:focus { border-color: var(--c-accent); box-shadow: 0 0 0 3px var(--c-accent-soft); }
+.mist-select-chev { position: absolute; right: 11px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--c-text-dim); display: flex; }
+.mist-field-label { font-family: var(--font-mono); font-size: 9px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--c-text-faint); display: flex; align-items: center; gap: 6px; }
+.mist-field-label .soft { color: var(--c-text-faint); text-transform: none; letter-spacing: 0; }
+.mist-req { font-size: 8.5px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: var(--c-warning); background: var(--c-warning-soft); border: 1px solid rgba(255,183,77,.25); padding: 2px 6px; border-radius: var(--r-sm); }
+.mist-fieldset { display: flex; flex-direction: column; gap: 7px; }
+
+/* ---- API manage: quick GET links + action card ---------------- */
+.mist-glinks { display: flex; flex-direction: column; background: var(--c-surface); border: 1px solid var(--c-line-card); border-radius: var(--r-md); overflow: hidden; }
+.mist-glink { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; padding: 10px 12px; background: transparent; border: 0; cursor: pointer; transition: background .15s ease; }
+.mist-glink + .mist-glink { border-top: 1px solid var(--c-line); }
+.mist-glink:hover { background: rgba(255,255,255,.04); }
+.mist-glink:active { transform: translateY(1px); }
+.mist-gverb { flex: none; width: 38px; text-align: center; font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: .04em; color: var(--c-success); background: var(--c-success-soft); border-radius: var(--r-sm); padding: 4px 0; }
+.mist-gname { flex: 1; min-width: 0; font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--c-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mist-gext { flex: none; display: flex; color: var(--c-text-faint); transition: color .15s ease; }
+.mist-glink:hover .mist-gext { color: var(--c-accent); }
+.mist-action-wrap { display: flex; flex-direction: column; gap: var(--sp-2); }
+.mist-action { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; padding: 11px 12px; border-radius: var(--r-md); border: 1px solid rgba(99,180,238,.28); background: var(--c-accent-soft); cursor: pointer; transition: background .15s ease, border-color .15s ease; }
+.mist-action:hover { background: rgba(99,180,238,.2); border-color: var(--c-accent); }
+.mist-action:active { transform: translateY(1px); }
+.mist-action-icon { flex: none; width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--c-accent); background: rgba(99,180,238,.16); }
+.mist-action-text { flex: 1; min-width: 0; }
+.mist-action-name { font-size: 11.5px; font-weight: 800; letter-spacing: .03em; text-transform: uppercase; color: var(--c-text); }
+.mist-action-sub { font-size: 10px; color: var(--c-text-dim); margin-top: 1px; }
+.mist-action-caret { flex: none; color: var(--c-accent); display: flex; }
+
+/* ---- Accounts: session card ----------------------------------- */
+.mist-card { flex: none; background: var(--c-surface); border: 1px solid var(--c-line-card); border-radius: var(--r-card); padding: var(--sp-4) var(--sp-4) 0; overflow: hidden; display: flex; flex-direction: column; gap: var(--sp-3); transition: border-color .18s ease, box-shadow .18s ease; }
+.mist-card:hover { border-color: #36414f; box-shadow: 0 6px 20px -10px rgba(0,0,0,.6); }
+.mist-card.is-disabled { opacity: .72; }
+.mist-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--sp-3); }
+.mist-card-info { min-width: 0; flex: 1; }
+.mist-host { display: inline-flex; align-items: center; gap: 6px; max-width: 100%; background: none; border: 0; padding: 0; margin: 0; font-family: var(--font-mono); font-size: 13px; font-weight: 600; color: var(--c-text); letter-spacing: -.01em; cursor: pointer; transition: color .15s ease; }
+.mist-host span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mist-host svg { flex: none; opacity: .55; transition: opacity .15s ease; }
+.mist-host:hover { color: var(--c-accent); }
+.mist-host:hover svg { opacity: 1; }
+.mist-meta { margin-top: 9px; display: flex; flex-direction: column; gap: 4px; }
+.mist-meta-row { font-size: 11px; font-weight: 400; color: var(--c-text-dim); line-height: 1.4; }
+.mist-meta-row.nowrap { white-space: nowrap; }
+.mist-meta-row b { font-weight: 700; color: var(--c-text); }
+.mist-meta-row .mono { font-family: var(--font-mono); font-weight: 500; font-size: 10px; }
+.mist-status { display: inline-flex; align-items: center; gap: 5px; margin-top: 10px; font-size: 10.5px; font-weight: 700; letter-spacing: .02em; }
+.mist-status .dot { width: 6px; height: 6px; border-radius: 50%; flex: none; }
+.mist-status.ok { color: var(--c-success); } .mist-status.ok .dot { background: var(--c-success); box-shadow: 0 0 0 3px var(--c-success-soft); }
+.mist-status.warn { color: var(--c-warning); } .mist-status.warn .dot { background: var(--c-warning); box-shadow: 0 0 0 3px rgba(255,183,77,.16); }
+.mist-status.alert { color: var(--c-danger); } .mist-status.alert .dot { background: var(--c-danger); box-shadow: 0 0 0 3px rgba(255,105,105,.16); }
+.mist-2fa { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; font-size: 10.5px; font-weight: 700; color: var(--c-warning); background: rgba(255,183,77,.1); border: 1px solid rgba(255,183,77,.22); border-radius: var(--r-sm); padding: 4px 8px; }
+
+/* ---- usage donut (signature element) -------------------------- */
+.mist-usage { flex: none; width: 62px; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.mist-usage-label { font-size: 8.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--c-text-faint); }
+.mist-donut {
+  position: relative; width: 54px; height: 54px; border-radius: 50%;
+  --usage: 0%; --arc: var(--c-accent);
+  background: radial-gradient(closest-side, var(--c-surface) 76%, transparent 77% 100%),
+              conic-gradient(var(--arc) var(--usage), var(--c-donut-track) 0);
+  transition: --usage 1.1s cubic-bezier(.22,1,.36,1);
+  display: flex; align-items: center; justify-content: center;
+}
+.mist-donut-pct { font-family: var(--font-mono); font-size: 14px; font-weight: 600; color: var(--c-text); line-height: 1; }
+.mist-donut-pct small { font-size: 8px; font-weight: 500; color: var(--c-text-faint); }
+.mist-donut.empty .mist-donut-pct { color: var(--c-text-faint); }
+.mist-usage-count { font-family: var(--font-mono); font-size: 9.5px; font-weight: 500; color: var(--c-text-dim); white-space: nowrap; letter-spacing: -.01em; }
+.mist-donut.lg { width: 70px; height: 70px; background: radial-gradient(closest-side, var(--c-surface) 76%, transparent 77% 100%), conic-gradient(var(--arc) var(--usage), var(--c-donut-track) 0); }
+.mist-donut.lg .mist-donut-pct { font-size: 16px; }
+.mist-donut.lg .mist-donut-pct small { font-size: 9px; color: var(--c-text-faint); }
+
+/* ---- Accounts: token footer (two halves) ---------------------- */
+.mist-tokens { display: grid; grid-template-columns: 1fr 1fr; margin: 4px calc(var(--sp-4) * -1) 0; border-top: 1px solid var(--c-line); background: var(--c-surface-2); }
+.mist-thalf { padding: 12px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.mist-thalf + .mist-thalf { border-left: 1px solid var(--c-line); }
+.mist-thead { display: flex; align-items: center; gap: 7px; min-width: 0; }
+.mist-thead-icon { width: 22px; height: 22px; flex: none; border-radius: 6px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,.05); color: var(--c-text-dim); }
+.mist-ttitle { font-size: 11px; font-weight: 700; color: var(--c-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: -.005em; }
+.mist-tactions { display: flex; gap: 6px; }
+.mist-tkbtn { flex: 1; min-width: 0; display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 7px 4px; border-radius: var(--r-sm); border: 1px solid transparent; background: rgba(255,255,255,.07); color: var(--c-text); font-family: var(--font-ui); font-size: 10.5px; font-weight: 700; white-space: nowrap; cursor: pointer; transition: color .15s ease, border-color .15s ease, background .15s ease; }
+.mist-tkbtn svg { flex: none; }
+.mist-tkbtn:hover { color: var(--c-accent); border-color: var(--c-accent); background: var(--c-accent-soft); }
+.mist-tkbtn:active { transform: translateY(1px); }
+.mist-tkbtn:disabled { color: var(--c-text-faint); border-color: var(--c-line); background: transparent; cursor: not-allowed; opacity: .55; }
+.mist-tkbtn.create { background: transparent; border-color: var(--c-line-card); color: var(--c-text-dim); }
+.mist-tkbtn.create:hover { color: var(--c-accent); border-color: var(--c-accent); background: var(--c-accent-soft); }
+.mist-tkbtn.create:disabled { color: var(--c-text-faint); border-color: var(--c-line); }
+
+/* ---- token sub-views: subhead / crumb / list ------------------ */
+.mist-subhead { display: flex; align-items: center; gap: 10px; }
+.mist-back { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: var(--r-sm); border: 1px solid var(--c-line-card); background: var(--c-surface); color: var(--c-text-dim); cursor: pointer; transition: color .15s ease, border-color .15s ease; }
+.mist-back:hover { color: var(--c-accent); border-color: var(--c-accent); }
+.mist-subhead-title { font-size: 14px; font-weight: 800; color: var(--c-text); letter-spacing: -.01em; }
+.mist-crumb { display: inline-flex; align-items: center; gap: 8px; align-self: flex-start; padding: 7px 12px; border-radius: var(--r-pill); background: var(--c-surface); border: 1px solid var(--c-line-card); }
+.mist-crumb-host { font-family: var(--font-mono); font-size: 10.5px; font-weight: 600; color: var(--c-text); }
+.mist-crumb-scope { font-size: 9px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--c-accent); background: var(--c-accent-soft); padding: 2px 7px; border-radius: var(--r-pill); }
+.mist-cloud-line { display: inline-flex; align-items: center; gap: 7px; font-size: 11px; color: var(--c-text-dim); }
+.mist-cloud-line svg { color: var(--c-accent); flex: none; }
+.mist-cloud-line b { font-family: var(--font-mono); color: var(--c-text); font-weight: 600; }
+.mist-tklist { display: flex; flex-direction: column; gap: 8px; }
+.mist-tkitem { background: var(--c-surface); border: 1px solid var(--c-line-card); border-radius: var(--r-md); padding: 9px 11px; display: flex; flex-direction: column; gap: 7px; }
+.mist-tkitem-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.mist-tkname { font-size: 12.5px; font-weight: 700; color: var(--c-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: -.01em; }
+.mist-del { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: var(--r-sm); border: 1px solid var(--c-line); background: transparent; color: var(--c-text-faint); cursor: pointer; transition: color .15s ease, border-color .15s ease, background .15s ease; }
+.mist-del:hover { color: var(--c-danger); border-color: var(--c-danger); background: rgba(255,105,105,.1); }
+.mist-tkkey { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; white-space: nowrap; font-family: var(--font-mono); font-size: 10.5px; color: var(--c-text-dim); background: var(--c-surface-2); border: 1px solid var(--c-line); border-radius: var(--r-sm); padding: 3px 8px; }
+.mist-tkkey svg { color: var(--c-text-faint); }
+.mist-tkmeta { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 8px; }
+.mist-kv { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.mist-kv-label { font-size: 8px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--c-text-faint); }
+.mist-kv-val { font-family: var(--font-mono); font-size: 10px; font-weight: 500; color: var(--c-text-dim); }
+.mist-kv-val.never { color: var(--c-danger); }
+.mist-kv-val.stale { color: var(--c-warning); }
+
+/* ---- created-key reveal --------------------------------------- */
+.mist-keypanel { display: flex; flex-direction: column; gap: 13px; align-items: center; text-align: center; padding-top: 6px; }
+.mist-key-check { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--c-success); background: var(--c-success-soft); border: 1px solid rgba(24,201,86,.3); }
+.mist-key-title { font-size: 15px; font-weight: 800; color: var(--c-text); letter-spacing: -.01em; }
+.mist-key-box { width: 100%; font-family: var(--font-mono); font-size: 11.5px; color: var(--c-text); background: var(--c-surface-2); border: 1px solid var(--c-line-card); border-radius: var(--r-sm); padding: 12px; word-break: break-all; line-height: 1.55; text-align: left; }
+.mist-key-warn { display: flex; align-items: flex-start; gap: 7px; width: 100%; font-size: 10.5px; color: var(--c-warning); background: rgba(255,183,77,.1); border: 1px solid rgba(255,183,77,.22); border-radius: var(--r-sm); padding: 9px 11px; text-align: left; line-height: 1.45; }
+.mist-key-warn svg { flex: none; margin-top: 1px; }
+
+/* ---- Tools: settings toggle + tool cards ---------------------- */
+.mist-setting { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; background: var(--c-surface); border: 1px solid var(--c-line-card); border-radius: var(--r-md); padding: 13px 14px; }
+.mist-setting-main { flex: 1; min-width: 0; }
+.mist-setting-top { display: flex; align-items: center; gap: 8px; }
+.mist-setting-label { font-size: 12.5px; font-weight: 700; color: var(--c-text); }
+.mist-exp { font-size: 8.5px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--c-warning); background: var(--c-warning-soft); border: 1px solid rgba(255,183,77,.25); padding: 2px 6px; border-radius: var(--r-sm); }
+.mist-setting-desc { font-size: 11px; color: var(--c-text-dim); line-height: 1.45; margin-top: 6px; }
+.mist-switch { position: relative; flex: none; width: 40px; height: 22px; border-radius: var(--r-pill); background: var(--c-line-card); border: 1px solid var(--c-line); cursor: pointer; transition: background .2s ease, border-color .2s ease; margin-top: 1px; }
+.mist-switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.45); transition: transform .2s cubic-bezier(.22,1,.36,1); }
+.mist-switch.on { background: var(--c-accent); border-color: var(--c-accent); }
+.mist-switch.on::after { transform: translateX(18px); }
+.mist-tool { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; padding: 12px 14px; background: var(--c-surface); border: 1px solid var(--c-line-card); border-radius: var(--r-md); cursor: pointer; transition: border-color .15s ease, background .15s ease; }
+.mist-tool:hover { border-color: #36414f; background: #232c3b; }
+.mist-tool:active { transform: translateY(1px); }
+.mist-tool-icon { width: 38px; height: 38px; flex: none; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--c-accent); background: var(--c-accent-soft); }
+.mist-tool-main { flex: 1; min-width: 0; }
+.mist-tool-name { font-size: 13px; font-weight: 700; color: var(--c-text); letter-spacing: -.01em; }
+.mist-tool-desc { font-size: 11px; color: var(--c-text-dim); margin-top: 2px; line-height: 1.35; }
+.mist-tool-chev { flex: none; color: var(--c-text-faint); display: flex; }
+
+/* ---- Tools: token tools (input row, header, stats, privileges) - */
+.mist-token-row { display: flex; gap: 8px; }
+.mist-token-input { flex: 1; min-width: 0; font-family: var(--font-mono); font-size: 11px; color: var(--c-text); background: var(--c-canvas); border: 1px solid var(--c-line-card); border-radius: var(--r-sm); padding: 9px 10px; outline: none; transition: border-color .15s ease, box-shadow .15s ease; }
+.mist-token-input::placeholder { color: var(--c-text-faint); }
+.mist-token-input:focus { border-color: var(--c-accent); box-shadow: 0 0 0 3px var(--c-accent-soft); }
+.mist-getinfo { flex: none; display: inline-flex; align-items: center; gap: 6px; padding: 9px 14px; border-radius: var(--r-sm); border: 1px solid var(--c-line-card); background: rgba(255,255,255,.06); color: var(--c-text); font-family: var(--font-ui); font-size: 11.5px; font-weight: 800; cursor: pointer; transition: border-color .15s ease, color .15s ease, background .15s ease; }
+.mist-getinfo:hover:not(:disabled) { border-color: var(--c-accent); color: var(--c-accent); background: var(--c-accent-soft); }
+.mist-getinfo:disabled { opacity: .5; cursor: not-allowed; }
+.mist-tokhead { background: var(--c-surface); border: 1px solid var(--c-line-card); border-radius: var(--r-md); padding: 13px 14px; }
+.mist-tokhead-top { display: flex; align-items: center; gap: 8px; }
+.mist-typebadge { font-family: var(--font-mono); font-size: 9.5px; font-weight: 700; letter-spacing: .06em; color: var(--c-accent); background: var(--c-accent-soft); border: 1px solid rgba(99,180,238,.28); padding: 3px 8px; border-radius: var(--r-sm); }
+.mist-tokhead-on { font-size: 11.5px; color: var(--c-text-dim); }
+.mist-tokhead-host { font-family: var(--font-mono); font-size: 11px; font-weight: 600; color: var(--c-text); margin-top: 9px; word-break: break-all; }
+.mist-tokhead-name { font-size: 11.5px; color: var(--c-text-dim); margin-top: 6px; }
+.mist-tokhead-name b { color: var(--c-text); font-weight: 700; }
+.mist-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.mist-stat { background: var(--c-surface-2); border: 1px solid var(--c-line); border-radius: var(--r-md); padding: 11px 6px; text-align: center; }
+.mist-stat-val { font-family: var(--font-mono); font-size: 19px; font-weight: 600; color: var(--c-text); line-height: 1; }
+.mist-stat-label { font-size: 8.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--c-text-faint); margin-top: 6px; }
+.mist-priv { background: var(--c-surface); border: 1px solid var(--c-line-card); border-radius: var(--r-md); padding: 12px 13px; display: flex; flex-direction: column; gap: 11px; }
+.mist-priv-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.mist-priv-name { font-size: 12.5px; font-weight: 700; color: var(--c-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mist-priv-tags { display: flex; gap: 6px; flex: none; }
+.mist-tag { font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: .04em; padding: 3px 7px; border-radius: var(--r-sm); border: 1px solid var(--c-line); color: var(--c-text-dim); background: var(--c-surface-2); }
+.mist-tag.role { color: var(--c-text); border-color: var(--c-line-card); }
+
+/* ---- Tools: token usage card ---------------------------------- */
+.mist-usage-card { display: flex; align-items: center; gap: 16px; background: var(--c-surface); border: 1px solid var(--c-line-card); border-radius: var(--r-md); padding: 16px; }
+.mist-usage-meta { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.mist-usage-cloud { font-family: var(--font-mono); font-size: 11px; font-weight: 600; color: var(--c-text); word-break: break-all; }
+.mist-usage-kv { display: flex; flex-direction: column; gap: 6px; }
+.mist-usage-line { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.mist-usage-line .k { font-size: 11px; color: var(--c-text-dim); }
+.mist-usage-line .v { font-family: var(--font-mono); font-size: 12px; font-weight: 600; color: var(--c-text); }
+
+/* ---- About: hero + external link rows ------------------------- */
+.mist-hero { display: flex; align-items: center; gap: 14px; background: var(--c-surface); border: 1px solid var(--c-line-card); border-radius: var(--r-card); padding: 16px; position: relative; overflow: hidden; }
+.mist-hero::after { content: ''; position: absolute; right: -40px; top: -40px; width: 120px; height: 120px; border-radius: 50%; background: radial-gradient(circle, rgba(99,180,238,.16), transparent 70%); pointer-events: none; }
+.mist-hero-mark { width: 50px; height: 50px; flex: none; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: #0d2138; background: linear-gradient(142deg,#74c0f2,#4a97da 46%,#5566d8); border: 0; box-shadow: inset 0 1px 0 rgba(255,255,255,.3); }
+.mist-hero-main { flex: 1; min-width: 0; position: relative; z-index: 1; }
+.mist-hero-name { font-size: 15px; font-weight: 800; color: var(--c-text); letter-spacing: -.015em; }
+.mist-hero-row { display: flex; align-items: center; gap: 8px; margin-top: 7px; flex-wrap: wrap; }
+.mist-hero-ver { font-family: var(--font-mono); font-size: 11px; font-weight: 600; color: #0d2138; background: linear-gradient(142deg,#74c0f2,#4a97da 46%,#5566d8); border: 0; box-shadow: inset 0 1px 0 rgba(255,255,255,.3); padding: 3px 9px; border-radius: var(--r-pill); }
+.mist-hero-desc { font-size: 11px; color: var(--c-text-dim); }
+.mist-links { display: flex; flex-direction: column; background: var(--c-surface); border: 1px solid var(--c-line-card); border-radius: var(--r-md); overflow: hidden; }
+.mist-link { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; padding: 11px 13px; background: transparent; border: 0; cursor: pointer; transition: background .15s ease; }
+.mist-link + .mist-link { border-top: 1px solid var(--c-line); }
+.mist-link:hover { background: rgba(255,255,255,.04); }
+.mist-link:active { transform: translateY(1px); }
+.mist-link-icon { width: 34px; height: 34px; flex: none; border-radius: 9px; display: flex; align-items: center; justify-content: center; color: var(--c-text-dim); background: var(--c-surface-2); border: 1px solid var(--c-line); transition: color .15s ease, border-color .15s ease; }
+.mist-link-icon.mono { font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: -.02em; }
+.mist-link:hover .mist-link-icon { color: var(--c-accent); border-color: rgba(99,180,238,.4); }
+.mist-link-main { flex: 1; min-width: 0; }
+.mist-link-name { font-size: 13px; font-weight: 700; color: var(--c-text); letter-spacing: -.01em; }
+.mist-link-host { font-family: var(--font-mono); font-size: 10px; color: var(--c-text-faint); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mist-link-ext { flex: none; display: flex; color: var(--c-text-faint); transition: color .15s ease; }
+.mist-link:hover .mist-link-ext { color: var(--c-accent); }
+.mist-foot { text-align: center; font-size: 10px; color: var(--c-text-faint); line-height: 1.5; padding: 4px 0 2px; }
+.mist-foot b { color: var(--c-text-dim); font-weight: 700; }
+
+/* ---- misc note text ------------------------------------------- */
+.mist-note-text { font-size: 11.5px; color: var(--c-text-dim); line-height: 1.5; }
+.mist-note-text .mono { font-family: var(--font-mono); }
+
+/* ---- utility -------------------------------------------------- */
+.mist-hidden { display: none !important; }

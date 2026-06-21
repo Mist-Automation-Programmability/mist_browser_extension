@@ -1,49 +1,70 @@
-<div class="content data-container">
-  <h2>Settings</h2>
-  <div class="setting-container">
-    <div class="checkbox-wrapper setting">
-      <label for="id_links">Enable ID Links generation</label>
-      <input
-        class="switch"
-        type="checkbox"
-        [(ngModel)]="id_links"
-        name="id_links"
-        (change)="changeIdLinks()"
-      />
-    </div>
-    <div class="setting-desc">
-      This feature will try to generate hyperlinks on the Django UI pages for
-      known IDs
+<div class="mist-body" *ngIf="view != 'token-info' && view != 'token-usage'">
+
+  <!-- SETTINGS -->
+  <div class="mist-sec">
+    <div class="mist-sec-title"><span>Settings</span></div>
+    <div class="mist-setting">
+      <div class="mist-setting-main">
+        <div class="mist-setting-top">
+          <div class="mist-setting-label">Enable ID Links generation</div>
+          <span class="mist-exp">Experimental</span>
+        </div>
+        <div class="mist-setting-desc">
+          Generates hyperlinks on the Mist API (Django) pages for known IDs.
+        </div>
+      </div>
+      <button class="mist-switch" [class.on]="id_links" (click)="onToggleIdLinks()" aria-label="Toggle ID links"></button>
     </div>
   </div>
+
+  <!-- API TOKEN TOOLS -->
+  <div class="mist-sec">
+    <div class="mist-sec-title"><span>API Token Tools</span></div>
+    <button class="mist-tool" (click)="openPopup('token-info')">
+      <span class="mist-tool-icon">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M12 16v-4"></path>
+          <circle cx="12" cy="8" r=".6" fill="currentColor"></circle>
+        </svg>
+      </span>
+      <div class="mist-tool-main">
+        <div class="mist-tool-name">API Token Info</div>
+        <div class="mist-tool-desc">Type, scope, privileges &amp; access for any token</div>
+      </div>
+      <span class="mist-tool-chev">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 6 15 12 9 18"></polyline>
+        </svg>
+      </span>
+    </button>
+    <button class="mist-tool" (click)="openPopup('token-usage')">
+      <span class="mist-tool-icon">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 13l3.5-3.5"></path>
+          <path d="M4 16a8 8 0 1 1 16 0"></path>
+        </svg>
+      </span>
+      <div class="mist-tool-main">
+        <div class="mist-tool-name">API Token Usage</div>
+        <div class="mist-tool-desc">Request count &amp; limit against the rate cap</div>
+      </div>
+      <span class="mist-tool-chev">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 6 15 12 9 18"></polyline>
+        </svg>
+      </span>
+    </button>
+  </div>
+
 </div>
 
-<div class="content">
-  <h2>API Token Tools</h2>
-  <div class="links-container">
-    <button class="links xlarge" (click)="openPopup('token-info')">
-      <div>API Token Info</div>
-    </button>
-    <button class="links xlarge" (click)="openPopup('token-usage')">
-      <div>API Token Usage</div>
-    </button>
-  </div>
-</div>
-<app-tools-token-info
-  class="popup transparent"
-  [ngClass]="{ hidden: view != 'token-info' }"
-  (closePopup)="closePopup('token-info')"
-></app-tools-token-info>
-<app-tools-token-usage
-  class="popup transparent"
-  [ngClass]="{ hidden: view != 'token-usage' }"
-  (closePopup)="closePopup('token-usage')"
-></app-tools-token-usage>
-<app-tools-warning
-  [warningMessage]="warningMessage"
-  [experimentalMessage]="experimentalMessage"
-  class="popup transparent"
-  [ngClass]="{ hidden: view != 'warning' }"
-  (warningConfirm)="warningConfirm()"
-  (warningCancel)="warningCancel()"
-></app-tools-warning>
+<app-tools-token-info *ngIf="view == 'token-info'" (closePopup)="closePopup('token-info')"></app-tools-token-info>
+<app-tools-token-usage *ngIf="view == 'token-usage'" (closePopup)="closePopup('token-usage')"></app-tools-token-usage>
+
+<app-tools-warning *ngIf="view == 'warning'" [warningMessage]="warningMessage" [experimentalMessage]="experimentalMessage"
+  (warningConfirm)="warningConfirm()" (warningCancel)="warningCancel()"></app-tools-warning>

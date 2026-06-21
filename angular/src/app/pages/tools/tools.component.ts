@@ -6,10 +6,6 @@ import { BrowserService } from "../../services/browser.service";
     selector: 'app-tools',
     templateUrl: 'tools.component.html',
     styleUrls: [
-        '../../scss/button.component.scss',
-        '../../scss/popup.component.scss',
-        '../../scss/container.component.scss',
-        '../../scss/checkbox.component.scss',
         'tools.component.scss',
     ],
     standalone: false
@@ -33,6 +29,11 @@ export class ToolsComponent implements OnInit {
       if (result && result.id_links == "true") this.id_links = true;
       else this.id_links = false;
     })
+  }
+
+  onToggleIdLinks(): void {
+    this.id_links = !this.id_links;
+    this.changeIdLinks();
   }
 
   changeIdLinks(): void {

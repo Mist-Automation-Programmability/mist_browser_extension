@@ -1,71 +1,40 @@
-<div class="popup-content">
-  <div class="rw-container">
-    <label for="token"> API TOKEN USAGE </label>
-    <div class="input">
-      <input
-        type="text"
-        [(ngModel)]="api_token"
-        placeholder="API Token"
-        (ngModelChange)="token_updated()"
-        [ngStyle]="{'border': invalid ? '1px solid red' : ''}"
-        [readonly]="working"
-      />
-    </div>
-    <button
-      class="secondary xlarge"
-      [disabled]="!api_token || working || invalid"
-      (click)="check_usage()"
-    >
-      <span *ngIf="!working && !invalid">Get Info</span>
-      <span *ngIf="invalid" class="error">Invalid Token</span>
-      <span *ngIf="working">Check {{ check_index }} / {{ check_total }} </span>
+<div class="mist-body">
+
+  <div class="mist-subhead">
+    <button class="mist-back" (click)="close()" title="Back">
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 6 9 12 15 18"></polyline>
+      </svg>
     </button>
+    <div class="mist-subhead-title">API Token Usage</div>
   </div>
-  <div class="cloud-container">
-    <div class="label">Cloud:</div>
-    <div class="value">
-      <span *ngIf="usage.cloud != ''" style="margin-right: 5px"
-        >{{ usage.cloud }} - </span
-      ><span>{{ usage.host }}</span>
+
+  <div class="mist-fieldset">
+    <div class="mist-field-label">API Token</div>
+    <div class="mist-token-row">
+      <input class="mist-token-input" type="text" [(ngModel)]="api_token" (ngModelChange)="token_updated()"
+        placeholder="Paste an API token" [readonly]="working" [class.is-invalid]="invalid" />
+      <button class="mist-getinfo" [disabled]="!api_token || working || invalid" (click)="check_usage()">
+        <span *ngIf="!working && !invalid">Get Info</span>
+        <span *ngIf="invalid">Invalid</span>
+        <span *ngIf="working">{{ check_index }} / {{ check_total }}</span>
+      </button>
     </div>
   </div>
-  <div class="usage">
-    <div class="text-container">
-      <div class="label">API request usage:</div>
-      <div *ngIf="usage.requests > -1" class="value">{{ usage.requests }}</div>
-      <div *ngIf="usage.requests == -1" class="value">-</div>
-      <div class="label">API request limit:</div>
-      <div *ngIf="usage.request_limit > -1" class="value">
-        {{ usage.request_limit }}
+
+  <div class="mist-usage-card" *ngIf="usage.requests > -1">
+    <div class="mist-donut lg" [style.--usage]="usage.request_percentage + '%'"
+      [style.--arc]="usage.request_percentage >= 100 ? 'var(--c-danger)' : (usage.request_percentage >= 80 ? 'var(--c-warning)' : 'var(--c-accent)')">
+      <div class="mist-donut-pct">{{ usage.request_percentage | number : '1.0-0' }}<small>%</small></div>
+    </div>
+    <div class="mist-usage-meta">
+      <div class="mist-usage-cloud"><ng-container *ngIf="usage.cloud">{{ usage.cloud }} · </ng-container>{{ usage.host }}</div>
+      <div class="mist-usage-kv">
+        <div class="mist-usage-line"><span class="k">API request usage</span><span class="v">{{ usage.requests }}</span></div>
+        <div class="mist-usage-line"><span class="k">API request limit</span><span class="v">{{ usage.request_limit }}</span></div>
       </div>
-      <div *ngIf="usage.request_limit == -1" class="value">-</div>
-    </div>
-    <div
-      *ngIf="usage.request_percentage >= 100"
-      class="progress-bar"
-      role="progressbar"
-      [ngStyle]="{
-        background:
-          'radial-gradient(closest-side, var(--background) 79%, transparent 80% 100%), conic-gradient(var(--progress-warning) ' +
-          usage.request_percentage +
-          '%, var(--progress-background) 0)'
-      }"
-    >
-      {{ usage.request_percentage | number : "1.0-0" }}%
-    </div>
-    <div
-      *ngIf="usage.request_percentage < 100"
-      class="progress-bar"
-      role="progressbar"
-      [ngStyle]="{
-        background:
-          'radial-gradient(closest-side, var(--background) 79%, transparent 80% 100%), conic-gradient(var(--progress-green) ' +
-          usage.request_percentage +
-          '%, var(--progress-background) 0)'
-      }"
-    >
-      {{ usage.request_percentage | number : "1.0-0" }}%
     </div>
   </div>
-  <button (click)="close()" class="close">CLOSE</button>
+
 </div>

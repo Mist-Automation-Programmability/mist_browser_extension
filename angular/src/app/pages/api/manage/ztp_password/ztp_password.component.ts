@@ -10,9 +10,6 @@ export interface ZtpResponseElement {
     selector: 'app-ztp-password',
     templateUrl: 'ztp_password.component.html',
     styleUrls: [
-        '../../../../scss/popup.component.scss',
-        '../../../../scss/button.component.scss',
-        '../../../../scss/textarea.component.scss',
         'ztp_password.component.scss',
     ],
     changeDetection: ChangeDetectionStrategy.OnPush,

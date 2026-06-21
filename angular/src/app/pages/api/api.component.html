@@ -1,12 +1,20 @@
 <app-api-juniper-manage *ngIf="display=='juniper-manage'"></app-api-juniper-manage>
 <app-api-manage *ngIf="display=='manage'"></app-api-manage>
 <app-api-django *ngIf="display=='django'"></app-api-django>
-<div *ngIf="display !='juniper-manage' && display !='manage' && display!='django'" class="notice-text">
-    <div>
-        This page is not supported by the extension...
-    </div>
-    <div style="margin-top:1em;">If you think it should, please report your current URL.</div>
-    <div style="display: flex;flex-direction: row;justify-content: center;">
-        <button class="request" (click)="openTab()">Report a missing URL</button>
+
+<div class="mist-body" *ngIf="display!='juniper-manage' && display!='manage' && display!='django'">
+    <div class="mist-empty">
+        <div class="mist-empty-icon">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9"></circle>
+                <path d="M9.5 9a2.5 2.5 0 0 1 4.5 1.4c0 1.6-2 2.1-2 2.1"></path>
+                <circle cx="12" cy="16.5" r=".6" fill="currentColor"></circle>
+            </svg>
+        </div>
+        <div class="mist-empty-title">Page not supported</div>
+        <div class="mist-empty-body">This page isn't supported by the extension yet. If you think it should be, report
+            the current URL.</div>
+        <button class="mist-btn mist-btn-ghost" style="flex:none;" (click)="openTab()">Report a missing URL</button>
     </div>
 </div>

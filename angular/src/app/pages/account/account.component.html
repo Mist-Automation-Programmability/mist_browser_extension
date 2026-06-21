@@ -1,105 +1,188 @@
-<div *ngFor="let session of sessions">
-    <div *ngIf="session.email" class="box-cloud">
-        <div class="box-cloud-info">
-            <div class="box-cloud-info-left">
-                <div>
-                    <div *ngIf="session.additional_cloud_hosts.length <= 1" class="title-cloud-box link">
-                        <h2 class="title-cloud link" (click)="openTab(session.cloud_host)">
-                            {{session.cloud_host}}
-                            <img src="assets/open.svg" alt="open">
-                        </h2>
-                    </div>            
-                    <div *ngIf="session.additional_cloud_hosts.length > 1" class="title-cloud-box">
-                        <h2 class="title-cloud" >
-                            {{session.domain.substring(1)}}
-                        </h2>
-                    </div>            
-                </div>
-                <div class="box-cloud-info-login">
-                    <div class="error"><span *ngIf="!session.two_factor_passed">2FA not passed</span></div>
-                    <div *ngIf="session.api_threshold_reached" class="text-cloud first"><b style="margin-left: 2px;">API Usage Threshold Reached</b></div>
-                    <div *ngIf="!session.api_threshold_reached" class="text-cloud first">Logged in as <b style="margin-left: 2px;">{{session.email}}</b></div>
-                    <div *ngIf="session.expires_at !== null" class="text-cloud">Session expires at <b style="margin-left: 2px;">{{(session.expires_at * 1000) | date:'yyyy-MM-dd HH:mm:ss'}}</b></div>
-                    <div *ngIf="session.expires_at === null" class="text-cloud">Session expires with <b style="margin-left: 2px;">browser session</b></div>
-                </div>
-            </div>
-            <div class="box-cloud-info-right">
-                    <h3 class="title-cloud">API Usage</h3>
-                    <div *ngIf="session.requests > -1" style="font-size: x-small;">{{session.requests}} / {{session.request_limit}}</div>
-                    <div *ngIf="session.requests == -1" style="font-size: x-small;"> - / - </div>
-                <div *ngIf="session.requests == -1" class="progress-bar" role="progressbar" [ngStyle]="{
-                    'background': 'radial-gradient(closest-side, var(--background2) 79%, transparent 80% 100%), conic-gradient(var(--progress-warning) 0%, var(--progress-background) 0)'
-                }">
-                    - %
-                </div>
-                <div *ngIf="session.requests > -1 && session.request_percentage>=100" class="progress-bar" role="progressbar" [ngStyle]="{
-                    'background': 'radial-gradient(closest-side, var(--background2) 79%, transparent 80% 100%), conic-gradient(var(--progress-warning) '+session.request_percentage+'%, var(--progress-background) 0)'
-                }">
-                    {{session.request_percentage | number: '1.0-0' }}%
-                </div>
-                <div *ngIf="session.requests > -1 && session.request_percentage<100" class="progress-bar" role="progressbar" [ngStyle]="{
-                    'background': 'radial-gradient(closest-side, var(--background2) 79%, transparent 80% 100%), conic-gradient(var(--progress-green) '+session.request_percentage+'%, var(--progress-background) 0)'}
-                    ">
-                    {{session.request_percentage | number: '1.0-0' }}%
-                </div>
-            </div>
-        </div>  
-        <div class="box-cloud-token">
-            <div class="box-cloud-token-container">
-                <div class="box-cloud-token-title">
-                    <img class="bottom icon" src="assets/user.svg" alt="user">
-                    <div style="display: flex;justify-content: center;flex-direction: column;">
-                        User API Tokens
+<div class="mist-body">
+
+    <div class="mist-sec-title" *ngIf="has_active_sessions" style="margin-bottom:2px;">
+        <span>Cloud sessions</span><span class="count">{{ sessionCount }}</span>
+    </div>
+
+    <ng-container *ngFor="let session of sessions">
+        <div class="mist-card" *ngIf="session.email" [class.is-disabled]="!session.two_factor_passed">
+            <div class="mist-card-top">
+                <div class="mist-card-info">
+                    <button class="mist-host" *ngIf="session.additional_cloud_hosts.length <= 1"
+                        (click)="openTab(session.cloud_host)" title="Open dashboard">
+                        <span>{{ session.cloud_host }}</span>
+                        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor"
+                            stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M7 17L17 7"></path>
+                            <polyline points="7 7 17 7 17 17"></polyline>
+                        </svg>
+                    </button>
+                    <div class="mist-host" *ngIf="session.additional_cloud_hosts.length > 1" style="cursor:default;">
+                        <span>{{ session.domain.substring(1) }}</span>
+                    </div>
+
+                    <div class="mist-meta">
+                        <div class="mist-meta-row" *ngIf="session.api_threshold_reached"><b>API usage threshold reached</b></div>
+                        <div class="mist-meta-row" *ngIf="!session.api_threshold_reached">Logged in as <b class="mono">{{ session.email }}</b></div>
+                        <div class="mist-meta-row nowrap" *ngIf="session.expires_at !== null">Expires <b class="mono">{{ (session.expires_at * 1000) | date:'yyyy-MM-dd HH:mm' }}</b></div>
+                        <div class="mist-meta-row nowrap" *ngIf="session.expires_at === null">Expires with <b>browser session</b></div>
+                    </div>
+
+                    <div class="mist-status alert" *ngIf="session.api_threshold_reached"><span class="dot"></span>Rate limit reached</div>
+                    <div class="mist-status ok" *ngIf="!session.api_threshold_reached && session.two_factor_passed"><span class="dot"></span>Active</div>
+
+                    <div class="mist-2fa" *ngIf="!session.two_factor_passed">
+                        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 9v4"></path>
+                            <path d="M12 17h.01"></path>
+                            <path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"></path>
+                        </svg>
+                        2FA not passed
                     </div>
                 </div>
-                <div class="box-cloud-token-buttons">
-                    <button class="circle tooltip" (click)="openManageTokens(session.domain, 'user')" [disabled]="!session.two_factor_passed">
-                            <img class="icon"src="assets/list.svg">
-                            <span *ngIf="session.two_factor_passed" class="tooltiptext top">Manage</span>
-                    </button>
-                    <button class="circle secondary tooltip" (click)="openCreateToken(session.domain, 'user')" [disabled]="!session.two_factor_passed">
-                        <img class="icon" src="assets/add.svg">
-                        <span *ngIf="session.two_factor_passed" class="tooltiptext top">Create</span>
-                    </button>                    
+
+                <div class="mist-usage">
+                    <div class="mist-usage-label">API Usage</div>
+                    <div class="mist-donut" [class.empty]="session.requests < 0"
+                        [style.--usage]="(session.requests > -1 ? session.request_percentage : 0) + '%'"
+                        [style.--arc]="session.request_percentage >= 100 ? 'var(--c-danger)' : (session.request_percentage >= 80 ? 'var(--c-warning)' : 'var(--c-accent)')">
+                        <div class="mist-donut-pct" *ngIf="session.requests > -1">{{ session.request_percentage | number:'1.0-0' }}<small>%</small></div>
+                        <div class="mist-donut-pct" *ngIf="session.requests == -1">—</div>
+                    </div>
+                    <div class="mist-usage-count" *ngIf="session.requests > -1">{{ session.requests }} / {{ session.request_limit }}</div>
+                    <div class="mist-usage-count" *ngIf="session.requests == -1">— / —</div>
                 </div>
             </div>
 
-            <div class="box-cloud-token-container">
-                <div class="box-cloud-token-title">
-                    <img class="bottom icon" src="assets/org.svg" alt="user">
-                    <div style="display: flex;justify-content: center;flex-direction: column;">
-                        Org API Tokens
+            <div class="mist-tokens">
+                <div class="mist-thalf">
+                    <div class="mist-thead">
+                        <span class="mist-thead-icon">
+                            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="8" r="4"></circle>
+                                <path d="M4 21a8 8 0 0 1 16 0"></path>
+                            </svg>
+                        </span>
+                        <div class="mist-ttitle">User API Tokens</div>
+                    </div>
+                    <div class="mist-tactions">
+                        <button class="mist-tkbtn" [disabled]="!session.two_factor_passed"
+                            (click)="openManageTokens(session.domain, 'user')">
+                            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="8" y1="6" x2="20" y2="6"></line>
+                                <line x1="8" y1="12" x2="20" y2="12"></line>
+                                <line x1="8" y1="18" x2="20" y2="18"></line>
+                                <circle cx="3.5" cy="6" r="1"></circle>
+                                <circle cx="3.5" cy="12" r="1"></circle>
+                                <circle cx="3.5" cy="18" r="1"></circle>
+                            </svg>
+                            Manage
+                        </button>
+                        <button class="mist-tkbtn create" [disabled]="!session.two_factor_passed"
+                            (click)="openCreateToken(session.domain, 'user')">
+                            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor"
+                                stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            New
+                        </button>
                     </div>
                 </div>
-                <div class="box-cloud-token-buttons">
-                    <button class="circle tooltip" (click)="openManageTokens(session.domain, 'org')" [disabled]="!session.two_factor_passed">
-                        <img class="icon"src="assets/list.svg">
-                        <span *ngIf="session.two_factor_passed" class="tooltiptext top">Manage</span>
-                    </button>
-                    <button class="circle secondary tooltip" (click)="openCreateToken(session.domain, 'org')" [disabled]="!session.two_factor_passed">
-                        <img class="icon" src="assets/add.svg">
-                        <span *ngIf="session.two_factor_passed" class="tooltiptext top">Create</span>
-                    </button>
+
+                <div class="mist-thalf">
+                    <div class="mist-thead">
+                        <span class="mist-thead-icon">
+                            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 21V8l9-5 9 5v13"></path>
+                                <path d="M9 21v-6h6v6"></path>
+                                <path d="M3 21h18"></path>
+                            </svg>
+                        </span>
+                        <div class="mist-ttitle">Org API Tokens</div>
+                    </div>
+                    <div class="mist-tactions">
+                        <button class="mist-tkbtn" [disabled]="!session.two_factor_passed"
+                            (click)="openManageTokens(session.domain, 'org')">
+                            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="8" y1="6" x2="20" y2="6"></line>
+                                <line x1="8" y1="12" x2="20" y2="12"></line>
+                                <line x1="8" y1="18" x2="20" y2="18"></line>
+                                <circle cx="3.5" cy="6" r="1"></circle>
+                                <circle cx="3.5" cy="12" r="1"></circle>
+                                <circle cx="3.5" cy="18" r="1"></circle>
+                            </svg>
+                            Manage
+                        </button>
+                        <button class="mist-tkbtn create" [disabled]="!session.two_factor_passed"
+                            (click)="openCreateToken(session.domain, 'org')">
+                            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor"
+                                stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            New
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
+    </ng-container>
+
+    <!-- cookie permission needed -->
+    <div class="mist-empty" *ngIf="can_request_cookie_permissions && !has_active_sessions && !is_working">
+        <div class="mist-empty-icon">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="10" rx="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+        </div>
+        <div class="mist-empty-title">Permission required</div>
+        <div class="mist-empty-body">The extension needs permission to read Mist session cookies. Allow Mist site
+            access, then reopen this panel.</div>
+        <button class="mist-btn mist-btn-primary" style="flex:none;" (click)="requestCookiePermissions()">Allow Mist
+            site access</button>
     </div>
-</div>
-<div *ngIf="can_request_cookie_permissions && !has_active_sessions && !is_working" class="notice-text" style="margin: 0;">
-    <div>The extension needs permission to read Mist session cookies.</div>
-    <div>Allow Mist site access, then reopen this panel if your browser asks you to.</div>
-    <button class="primary" (click)="requestCookiePermissions()" style="margin: 20px 0">Allow Mist site access</button>
-</div>
-<div *ngIf="!can_request_cookie_permissions && !has_active_sessions && !is_working" class="notice-text" style="margin: 0;">
-    <div>Sorry, I'm not able to find any Mist Session in this browser...</div>
-    <div>Please log in to your Mist Dashboard first.</div>
-</div>
-<div *ngIf="!can_request_cookie_permissions && !has_active_sessions && is_working" class="notice-text" style="margin: 0;">
-    <div>I'm still eating your cookies... Not done yet...</div>
-    <div>Please wait a bit more... Thanks!</div>
+
+    <!-- no sessions -->
+    <div class="mist-empty" *ngIf="!can_request_cookie_permissions && !has_active_sessions && !is_working">
+        <div class="mist-empty-icon">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="8" r="4"></circle>
+                <path d="M4 21a8 8 0 0 1 16 0"></path>
+            </svg>
+        </div>
+        <div class="mist-empty-title">No Mist session found</div>
+        <div class="mist-empty-body">Log in to your Mist dashboard first, then reopen this panel.</div>
+    </div>
+
+    <!-- working -->
+    <div class="mist-empty" *ngIf="!can_request_cookie_permissions && !has_active_sessions && is_working">
+        <div class="mist-empty-icon">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9"></circle>
+                <polyline points="12 7 12 12 15 14"></polyline>
+            </svg>
+        </div>
+        <div class="mist-empty-title">Reading sessions…</div>
+        <div class="mist-empty-body">Looking for your active Mist sessions. This only takes a moment.</div>
+    </div>
+
 </div>
 
-<app-account-manage [ngClass]="{hidden: manageTokens == '' || scope !='user'}" class="popup transparent" [sessionEvent]="eventSession.asObservable()" (closeManageTokens)="closeManageTokens()" [eventManageTokens]="eventManageTokens.asObservable()"></app-account-manage>
-<app-account-create [ngClass]="{hidden: createToken == '' || scope != 'user'}" class="popup transparent" [sessionEvent]="eventSession.asObservable()" (closeCreateToken)="closeCreateToken()" [eventCreateToken]="eventCreateToken.asObservable()"></app-account-create>
-<app-account-manage-org [ngClass]="{hidden: manageTokens == '' || scope != 'org'}" class="popup transparent" [sessionEvent]="eventSession.asObservable()" (closeManageTokens)="closeManageTokens()" [eventManageTokens]="eventManageTokens.asObservable()"></app-account-manage-org>
-<app-account-create-org [ngClass]="{hidden: createToken == '' || scope != 'org'}" class="popup transparent" [sessionEvent]="eventSession.asObservable()" (closeCreateToken)="closeCreateToken()" [eventCreateToken]="eventCreateToken.asObservable()"></app-account-create-org>
+<app-account-manage [class.mist-hidden]="manageTokens == '' || scope != 'user'" [sessionEvent]="eventSession.asObservable()"
+    (closeManageTokens)="closeManageTokens()" [eventManageTokens]="eventManageTokens.asObservable()"></app-account-manage>
+<app-account-create [class.mist-hidden]="createToken == '' || scope != 'user'" [sessionEvent]="eventSession.asObservable()"
+    (closeCreateToken)="closeCreateToken()" [eventCreateToken]="eventCreateToken.asObservable()"></app-account-create>
+<app-account-manage-org [class.mist-hidden]="manageTokens == '' || scope != 'org'" [sessionEvent]="eventSession.asObservable()"
+    (closeManageTokens)="closeManageTokens()" [eventManageTokens]="eventManageTokens.asObservable()"></app-account-manage-org>
+<app-account-create-org [class.mist-hidden]="createToken == '' || scope != 'org'" [sessionEvent]="eventSession.asObservable()"
+    (closeCreateToken)="closeCreateToken()" [eventCreateToken]="eventCreateToken.asObservable()"></app-account-create-org>
