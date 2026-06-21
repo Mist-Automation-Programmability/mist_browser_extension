@@ -15,6 +15,31 @@
       </div>
       <button class="mist-switch" [class.on]="id_links" (click)="onToggleIdLinks()" aria-label="Toggle ID links"></button>
     </div>
+    <div class="mist-setting">
+      <div class="mist-setting-main">
+        <div class="mist-setting-top">
+          <div class="mist-setting-label">Convert timestamps to human-readable</div>
+          <span class="mist-exp">Experimental</span>
+        </div>
+        <div class="mist-setting-desc">
+          Shows a local-time date next to epoch timestamps on Mist API pages
+          (UTC on hover). Applies after the page is reloaded.
+        </div>
+      </div>
+      <button class="mist-switch" [class.on]="ts_human" (click)="onToggleTimestamps()" aria-label="Toggle timestamp conversion"></button>
+    </div>
+    <div class="mist-setting">
+      <div class="mist-setting-main">
+        <div class="mist-setting-top">
+          <div class="mist-setting-label">Show "Copy JSON" button</div>
+        </div>
+        <div class="mist-setting-desc">
+          Adds a button to copy the raw JSON response on Mist API pages.
+          Applies after the page is reloaded.
+        </div>
+      </div>
+      <button class="mist-switch" [class.on]="copy_json" (click)="onToggleCopyJson()" aria-label="Toggle Copy JSON button"></button>
+    </div>
   </div>
 
   <!-- API TOKEN TOOLS -->
