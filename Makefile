@@ -99,6 +99,13 @@ webext-safari: ## Build the Safari web extension package
 			--no-open \
 			--no-prompt \
 			--force
+	## App Store requires LSApplicationCategoryType; the converter omits it and --force regenerates the plist, so re-apply it
+	@cd ./angular && \
+		PLIST="./Mist Extension/macOS (App)/Info.plist" && \
+		/usr/libexec/PlistBuddy -c "Add :LSApplicationCategoryType string public.app-category.developer-tools" "$$PLIST" 2>/dev/null || \
+		/usr/libexec/PlistBuddy -c "Set :LSApplicationCategoryType public.app-category.developer-tools" "$$PLIST"
+	## Replace the converter's upscaled-from-128px app icon with crisp renders from the vector source
+	@bash ./scripts/gen_safari_appicon.sh
 
 webext-ffx: ## Build the Firefox web extension package
 	@echo "Building Firefox web extension package..."
