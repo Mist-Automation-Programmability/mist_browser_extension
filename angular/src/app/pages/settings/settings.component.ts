@@ -12,7 +12,6 @@ import { ThemeService, ThemePref } from "../../services/theme.service";
     standalone: false
 })
 export class SettingsComponent implements OnInit {
-  eventWarning: Subject<boolean> = new Subject<boolean>()
   experimentalMessage: boolean = false;
   warningMessage: string = "";
   view: string = "";
