@@ -1,5 +1,4 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { Subject } from 'rxjs';
 import { BrowserService } from "../../services/browser.service";
 import { ThemeService, ThemePref } from "../../services/theme.service";
 
