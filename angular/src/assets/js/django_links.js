@@ -104,12 +104,14 @@ function process_element(org_id, site_id, self, element, element_type, element_s
 
     // Privileges carry their own org context, so handle them independently of the
     // page-level org_id (e.g. /self has privileges but no top-level org_id).
-    if (element.hasOwnProperty("privileges")) {
+    if (Array.isArray(element.privileges)) {
         element.privileges.forEach(function (privilege) {
+            if (!privilege) return;
             var p_org = privilege.org_id;
-            if (privilege.hasOwnProperty("org_id")) _gen_id_org_common(p_org, privilege.org_id, "orgs");
-            if (privilege.hasOwnProperty("site_id")) _gen_id_org_common(p_org, privilege.site_id, "sites");
-            if (privilege.hasOwnProperty("sitegroup_id")) _gen_id_org_common(p_org, privilege.sitegroup_id, "sitegroups");
+            if (p_org) _gen_id_org_common(p_org, p_org, "orgs");
+            if (privilege.site_id) _gen_id_org_common(p_org, privilege.site_id, "sites");
+            // sitegroup links embed the org in their path, so skip when org_id is absent
+            if (p_org && privilege.sitegroup_id) _gen_id_org_common(p_org, privilege.sitegroup_id, "sitegroups");
         });
     }
 
