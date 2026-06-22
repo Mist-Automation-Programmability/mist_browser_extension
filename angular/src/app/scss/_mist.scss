@@ -218,8 +218,7 @@
 .mist-action-caret { flex: none; color: var(--c-accent); display: flex; }
 
 /* ---- Accounts: session card ----------------------------------- */
-.mist-card { flex: none; background: var(--c-surface); border: 1px solid var(--c-line-card); border-radius: var(--r-card); padding: var(--sp-4) var(--sp-4) 0; overflow: hidden; display: flex; flex-direction: column; gap: var(--sp-3); transition: border-color .18s ease, box-shadow .18s ease; }
-.mist-card:hover { border-color: #36414f; box-shadow: 0 6px 20px -10px rgba(0,0,0,.6); }
+.mist-card { flex: none; background: var(--c-surface); border: 1px solid var(--c-line-card); border-radius: var(--r-card); padding: var(--sp-4) var(--sp-4) 0; overflow: hidden; display: flex; flex-direction: column; gap: var(--sp-3); }
 .mist-card.is-disabled { opacity: .72; }
 .mist-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--sp-3); }
 .mist-card-info { min-width: 0; flex: 1; }
@@ -396,3 +395,78 @@
 
 /* ---- utility -------------------------------------------------- */
 .mist-hidden { display: none !important; }
+
+/* ==================================================================
+   LIGHT THEME — additive layer. ThemeService sets
+   body[data-theme="light"]; dark is the default (no attribute).
+   Token re-points win over the body{} defaults by specificity, so
+   most of the UI flips for free — only the handful of hardcoded
+   surface colors and white-alpha hovers need explicit overrides.
+   ================================================================== */
+body[data-theme="light"] {
+  --c-canvas:    #e9edf2;
+  --c-surface:   #ffffff;
+  --c-surface-2: #f1f4f8;
+  --c-line:      rgba(22, 34, 52, .09);
+  --c-line-card: #e2e7ee;
+  --c-accent:        #2477c4;
+  --c-accent-soft:   rgba(36, 119, 196, .12);
+  --c-success:       #129a4c;
+  --c-success-soft:  rgba(18, 154, 76, .13);
+  --c-warning:       #b06f10;
+  --c-warning-soft:  rgba(176, 111, 16, .12);
+  --c-danger:        #d23838;
+  --c-donut-track:   #dce2e9;
+  --c-text:       #16202e;
+  --c-text-dim:   #586676;
+  --c-text-faint: #8893a2;
+
+  /* legacy vars (older components) remapped onto the light ramp */
+  --primary: #2477c4;
+  --primary-background: #2477c4a3;
+  --secondary: #129a4c;
+  --secondary-background: #129a4ca3;
+  --text-color: #16202e;
+  --text-hover: #2477c4;
+  --text-disabled: #8893a2;
+  --border: #e2e7ee;
+  --border-hover: #2477c4;
+  --background:  #ffffff;
+  --background2: #e9edf2;
+  --warning: #b06f10;
+  --error-background: #d23838;
+  --input-background: #f1f4f8;
+  --input-background-focus: #ffffff;
+}
+
+/* dark hardcoded shells → light surfaces */
+body[data-theme="light"] .mist-header,
+body[data-theme="light"] .mist-detect,
+body[data-theme="light"] .mist-tabs { background: #f6f8fb; }
+body[data-theme="light"] .mist-popup { border-color: #d7dde5; box-shadow: 0 24px 60px -26px rgba(40, 62, 96, .30); }
+body[data-theme="light"] .mist-toast { background: #ffffff; box-shadow: 0 14px 32px -12px rgba(40, 62, 96, .30); }
+
+/* hover surfaces that were dark or white-alpha (invisible on light) */
+body[data-theme="light"] .mist-tool:hover { border-color: #c8d2dd; background: #f1f4f8; }
+body[data-theme="light"] .mist-idrow:hover:not(.copied),
+body[data-theme="light"] .mist-glink:hover,
+body[data-theme="light"] .mist-link:hover { background: rgba(22, 34, 52, .045); }
+body[data-theme="light"] .mist-copy { background: rgba(22, 34, 52, .04); }
+body[data-theme="light"] .mist-thead-icon { background: rgba(22, 34, 52, .05); }
+body[data-theme="light"] .mist-tkbtn { background: rgba(22, 34, 52, .05); }
+body[data-theme="light"] .mist-tkbtn.create,
+body[data-theme="light"] .mist-tkbtn:disabled { background: transparent; }
+body[data-theme="light"] .mist-tkbtn:hover { background: var(--c-accent-soft); }
+body[data-theme="light"] .mist-getinfo { background: rgba(22, 34, 52, .05); }
+body[data-theme="light"] .mist-getinfo:hover:not(:disabled) { background: var(--c-accent-soft); }
+
+/* primary buttons: white text reads better on the darker light-mode accent */
+body[data-theme="light"] .mist-primary,
+body[data-theme="light"] .mist-btn-primary { color: #ffffff; }
+
+/* ---- appearance segmented control (Settings) ------------------- */
+.mist-segment { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; background: var(--c-surface-2); border: 1px solid var(--c-line-card); border-radius: var(--r-md); padding: 4px; }
+.mist-seg { display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 9px 0 7px; border: 0; background: transparent; border-radius: var(--r-sm); color: var(--c-text-dim); font-family: var(--font-ui); font-size: 10.5px; font-weight: 700; letter-spacing: .02em; cursor: pointer; transition: background .15s ease, color .15s ease; }
+.mist-seg svg { opacity: .9; }
+.mist-seg:hover { color: var(--c-text); }
+.mist-seg.active { background: var(--c-accent-soft); color: var(--c-accent); }
