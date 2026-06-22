@@ -428,18 +428,44 @@ function runAugment(opts) {
         console.warn("django_links: could not parse response JSON; leaving page untouched");
         return;
     }
-    if (opts.id_links) {
-        try { applyIdLinks(pre, buildIdMap(parsed.data)); }
-        catch (e) { console.warn("django_links: id-link augmentation failed", e); }
-    }
-    if (opts.ts_human) {
-        try { applyTimestamps(pre); }
-        catch (e) { console.warn("django_links: timestamp augmentation failed", e); }
-    }
+
+    // Copy JSON reads the parsed text, not the highlight tokens, so apply it now.
     if (opts.copy_json) {
         try { setupCopyButton(pre, parsed.raw, info); }
         catch (e) { console.warn("django_links: copy button failed", e); }
     }
+
+    if (!opts.id_links && !opts.ts_human) return;
+
+    // id-links and timestamps walk the page's syntax-highlight tokens
+    // (span.str / span.lit), which the Mist page may inject AFTER our content
+    // script runs (observed on Safari). Apply now; if the tokens aren't there
+    // yet, re-apply when they appear. buildIdMap uses the parsed JSON (available
+    // regardless of highlighting), and applyIdLinks/applyTimestamps are
+    // idempotent, so re-running is safe.
+    var idMap = opts.id_links ? buildIdMap(parsed.data) : null;
+    var apply = function () {
+        var p = info.querySelector(".prettyprint");
+        if (!p) return false;
+        if (opts.id_links) {
+            try { applyIdLinks(p, idMap); }
+            catch (e) { console.warn("django_links: id-link augmentation failed", e); }
+        }
+        if (opts.ts_human) {
+            try { applyTimestamps(p); }
+            catch (e) { console.warn("django_links: timestamp augmentation failed", e); }
+        }
+        return !!p.querySelector("span." + TOK.str + ", span." + TOK.lit);
+    };
+
+    if (apply()) return;                       // tokens already present — done
+    if (typeof MutationObserver === "undefined") return;
+
+    var obs = new MutationObserver(function () {
+        if (apply()) obs.disconnect();         // highlighting arrived — apply once, stop
+    });
+    obs.observe(info, { childList: true, subtree: true });
+    setTimeout(function () { obs.disconnect(); }, 10000);  // safety: stop watching after 10s
 }
 
 if (typeof browser !== "undefined" && browser.storage && browser.storage.local) {
