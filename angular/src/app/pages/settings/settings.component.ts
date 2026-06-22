@@ -99,7 +99,6 @@ export class SettingsComponent implements OnInit {
     this.view = "";
     this.experimentalMessage = false;
     this.pendingSetting = null;
-    this.eventWarning.next(false);
     this._cd.detectChanges();
   }
 }
