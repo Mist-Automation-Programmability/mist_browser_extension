@@ -79,6 +79,9 @@ export class AboutComponent implements OnInit {
       case "github":
         dest_url = this.github_repo_url;
         break;
+      case "releases":
+        dest_url = this.github_repo_url + "/releases";
+        break;
     }
     if (dest_url) {
       this._browser.tabOpen(dest_url);
