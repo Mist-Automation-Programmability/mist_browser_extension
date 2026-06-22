@@ -869,11 +869,12 @@ export class ApiManageComponent implements OnInit {
           this.forgeSiteObjectStats("devices", res?.groups?.host, res?.groups?.detail, extra_params);
           this.forgeSiteObjectEvents("devices", res?.groups?.obj, res?.groups?.host, res?.groups?.detail);
           this.forgeSiteObjectAlarms("devices", res?.groups?.obj, res?.groups?.host, res?.groups?.detail);
+          this.forgeOrgObjectStatsSearch("ports", res?.groups?.host, stats_filter, this.obj_name + " ports");
+          this.forgeOrgObjectStatsSearch("ospf_peers", res?.groups?.host, stats_filter, this.obj_name + " ospf peers");
+          this.forgeOrgObjectStatsSearch("bgp_peers", res?.groups?.host, stats_filter, this.obj_name + " bgp peers");
+          this.forgeOrgObjectStatsSearch("vpn_peers", res?.groups?.host, stats_filter, this.obj_name + " vpn peers");
           this.forgeSiteApLastConfig(res?.groups?.detail, res?.groups?.host, res?.groups?.obj);
           this.forgeSiteDeviceSyntheticTest(res?.groups?.detail, res?.groups?.host, res?.groups?.obj);
-          this.forgeOrgObjectStatsSearch("bgp_peers", res?.groups?.host, stats_filter, this.obj_name + " bgp peers");
-          this.forgeOrgObjectStatsSearch("ports", res?.groups?.host, stats_filter, this.obj_name + " ports");
-          this.forgeOrgObjectStatsSearch("vpn_peers", res?.groups?.host, stats_filter, this.obj_name + " vpn peers");
           break;
         case "switch":
           if (["list", "topology", "location"].includes(this.obj_id)) this.obj_id = undefined;
@@ -897,10 +898,11 @@ export class ApiManageComponent implements OnInit {
             this.forgeSiteObjectStats("devices", res?.groups?.host, res?.groups?.detail, extra_params);
             this.forgeSiteObjectEvents("devices", res?.groups?.obj, res?.groups?.host, res?.groups?.detail);
             this.forgeSiteObjectAlarms("devices", res?.groups?.obj, res?.groups?.host, res?.groups?.detail);
-            this.forgeSiteDeviceSyntheticTest(res?.groups?.detail, res?.groups?.host, res?.groups?.obj);
-            this.forgeOrgObjectStatsSearch("bgp_peers", res?.groups?.host, stats_filter, this.obj_name + " bgp peers");
             this.forgeOrgObjectStatsSearch("ports", res?.groups?.host, stats_filter, this.obj_name + " ports");
+            this.forgeOrgObjectStatsSearch("ospf_peers", res?.groups?.host, stats_filter, this.obj_name + " ospf peers");
+            this.forgeOrgObjectStatsSearch("bgp_peers", res?.groups?.host, stats_filter, this.obj_name + " bgp peers");
             this.forgeSiteObjectSearch("wired_clients", res?.groups?.host, null, clients_filter, this.obj_name + " clients");
+            this.forgeSiteDeviceSyntheticTest(res?.groups?.detail, res?.groups?.host, res?.groups?.obj);
             this.forgeSiteDiscoveredSwitchUrl(res?.groups?.host);
           }
           break;
