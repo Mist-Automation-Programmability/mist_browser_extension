@@ -102,6 +102,17 @@ function process_element(org_id, site_id, self, element, element_type, element_s
 
 
 
+    // Privileges carry their own org context, so handle them independently of the
+    // page-level org_id (e.g. /self has privileges but no top-level org_id).
+    if (element.hasOwnProperty("privileges")) {
+        element.privileges.forEach(function (privilege) {
+            var p_org = privilege.org_id;
+            if (privilege.hasOwnProperty("org_id")) _gen_id_org_common(p_org, privilege.org_id, "orgs");
+            if (privilege.hasOwnProperty("site_id")) _gen_id_org_common(p_org, privilege.site_id, "sites");
+            if (privilege.hasOwnProperty("sitegroup_id")) _gen_id_org_common(p_org, privilege.sitegroup_id, "sitegroups");
+        });
+    }
+
     if (org_id) {
         if (element.hasOwnProperty("admin_id")) _gen_id_org_common(org_id, element.admin_id, "admins");
         if (element.hasOwnProperty("alarmtemplate_id")) _gen_id_org_common(org_id, element.alarmtemplate_id, "alarmtemplates");
@@ -137,13 +148,6 @@ function process_element(org_id, site_id, self, element, element_type, element_s
         if (element.hasOwnProperty("nacrule_id")) _gen_id_org_common(org_id, element.nacrule_id, "nacrules");
         if (element.hasOwnProperty("nactag_id")) _gen_id_org_common(org_id, element.nactag_id, "nactags");
         if (element.hasOwnProperty("networktemplate_id")) _gen_id_org_common(org_id, element.networktemplate_id, "networktemplates");
-        if (element.hasOwnProperty("privileges")) {
-            element.privileges.forEach(function (privilege) {
-                if (privilege.hasOwnProperty("org_id")) _gen_id_org_common(org_id, privilege.org_id, "orgs");
-                if (privilege.hasOwnProperty("site_id")) _gen_id_org_common(org_id, privilege.org_id, "sites");
-                if (privilege.hasOwnProperty("sitegroup_id")) _gen_id_org_common(org_id, privilege.org_id, "sitegroup_id");
-            });
-        }
         if (element.hasOwnProperty("rftemplate_id")) _gen_id_org_common(org_id, element.rftemplate_id, "rftemplates");
         if (element.hasOwnProperty("secpolicy_id")) _gen_id_org_common(org_id, element.secpolicy_id, "secpolicies");
         if (element.hasOwnProperty("sitegroup_ids")) _gen_id_org_common(org_id, element.sitegroup_ids, "sitegroups");
@@ -161,7 +165,7 @@ function process_element(org_id, site_id, self, element, element_type, element_s
         if (element.hasOwnProperty("dst_deny_wxtags")) _gen_id_site_common(site_id, element.dst_deny_wxtags, "wxtags");
         if (element.hasOwnProperty("src_wxtags")) _gen_id_site_common(site_id, element.src_wxtags, "wxtags");
         if (element.hasOwnProperty("upgrade_id")) _gen_id_site_common(site_id, element.upgrade_id, "devices/upgrade");
-        if (element.hasOwnProperty("webhook_id")) _gen_id_site_common(org_id, element.webhook_id, "webhooks");
+        if (element.hasOwnProperty("webhook_id")) _gen_id_site_common(site_id, element.webhook_id, "webhooks");
     }
 
 
@@ -288,6 +292,8 @@ function fmtLocal(d) {
         " " + _pad(d.getHours()) + ":" + _pad(d.getMinutes()) + ":" + _pad(d.getSeconds());
 }
 function precedingKey(numSpan) {
+    // The key str token normally sits ~2 spans back (value <- pun ":" <- pln " " <-
+    // str key); 6 is generous slack for whitespace/punctuation token variants.
     var el = numSpan.previousElementSibling, steps = 0;
     while (el && steps < 6) {
         if (el.classList && el.classList.contains(TOK.str)) {
