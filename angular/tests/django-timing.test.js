@@ -47,3 +47,38 @@ test('runAugment applies synchronously when tokens are already present', () => {
   mod.runAugment({ id_links: false, ts_human: true, copy_json: false });
   assert.equal(pre.querySelectorAll('span.mist-ts').length, 1, 'applied synchronously when tokens present');
 });
+
+test('runAugment waits for the response block itself to appear, then applies', async () => {
+  // Fresh Safari reload: the content script can run before the response block is
+  // even in the DOM. It must keep watching the document and apply once it shows up.
+  const dom = new JSDOM('<div id="root"></div>', { url: 'https://api.gc1.mist.com/api/v1/self/apitokens' });
+  const mod = loadModule(dom.window);
+  const doc = dom.window.document;
+
+  mod.runAugment({ id_links: false, ts_human: true, copy_json: false });
+  assert.equal(doc.querySelectorAll('span.mist-ts').length, 0, 'nothing before the block exists');
+
+  doc.getElementById('root').innerHTML =
+    `<div class="response-info"><pre class="prettyprint">${HIGHLIGHTED}</pre></div>`;
+  await new Promise((r) => setTimeout(r, 80));
+  assert.equal(doc.querySelectorAll('span.mist-ts').length, 1, 'applied after the block appeared');
+});
+
+test('runAugment ignores header-only tokens and waits for the JSON body to highlight', async () => {
+  // On reload the DRF page first shows only the HTTP-header lit spans (inside
+  // .meta nocode); the JSON body is not highlighted yet — must NOT count as done.
+  const HEADER_ONLY =
+    '<pre class="prettyprint"><span class="meta nocode">HTTP 200 OK\n' +
+    '<b>Allow:</b> <span class="lit">GET, POST</span>\n' +
+    '<b>Vary:</b> <span class="lit">Accept</span></span>\n\n{ "created_time": 1700000000 }</pre>';
+  const dom = new JSDOM(`<div class="response-info">${HEADER_ONLY}</div>`, { url: 'https://api.gc1.mist.com/api/v1/self/apitokens' });
+  const mod = loadModule(dom.window);
+  const pre = dom.window.document.querySelector('.prettyprint');
+
+  mod.runAugment({ id_links: false, ts_human: true, copy_json: false });
+  assert.equal(pre.querySelectorAll('span.mist-ts').length, 0, 'header-only lit spans must not trigger a premature apply');
+
+  pre.innerHTML = HIGHLIGHTED;   // body finally highlighted
+  await new Promise((r) => setTimeout(r, 80));
+  assert.equal(pre.querySelectorAll('span.mist-ts').length, 1, 'applied once the body highlighted');
+});

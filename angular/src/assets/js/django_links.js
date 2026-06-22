@@ -418,54 +418,68 @@ function setupCopyButton(preEl, rawJson, container) {
     container.insertBefore(btn, container.firstChild);
 }
 
+// True once the JSON body (not just the HTTP-header block) is syntax-highlighted.
+// The DRF response header carries its own lit spans, so "any str/lit token" would
+// falsely report completion before the body is highlighted (notably on reload).
+function bodyIsHighlighted(preEl) {
+    var toks = preEl.querySelectorAll("span." + TOK.str + ", span." + TOK.lit);
+    for (var i = 0; i < toks.length; i++) {
+        if (!toks[i].closest(".meta")) return true;   // a token outside the header block
+    }
+    return false;
+}
+
 function runAugment(opts) {
-    var info = document.querySelector(".response-info");
-    if (!info) return;
-    var pre = info.querySelector(".prettyprint");
-    if (!pre) return;
-    var parsed = parseResponse(pre);
-    if (!parsed) {
-        console.warn("django_links: could not parse response JSON; leaving page untouched");
-        return;
-    }
+    // The Mist DRF page renders the response block and then syntax-highlights it
+    // (span.str / span.lit). On Safari this often happens AFTER our content script
+    // runs, and on a fresh page load the block itself may not be in the DOM yet.
+    // So we retry the whole attempt as the page mutates until everything we need
+    // exists. setupCopyButton / applyIdLinks / applyTimestamps are idempotent, so
+    // repeats (and recomputing buildIdMap) are safe.
+    function attempt() {
+        var info = document.querySelector(".response-info");
+        var pre = info && info.querySelector(".prettyprint");
+        if (!info || !pre) return false;
+        var parsed = parseResponse(pre);
+        if (!parsed) return false;
 
-    // Copy JSON reads the parsed text, not the highlight tokens, so apply it now.
-    if (opts.copy_json) {
-        try { setupCopyButton(pre, parsed.raw, info); }
-        catch (e) { console.warn("django_links: copy button failed", e); }
-    }
+        if (opts.copy_json) {
+            try { setupCopyButton(pre, parsed.raw, info); }
+            catch (e) { console.warn("django_links: copy button failed", e); }
+        }
+        if (!opts.id_links && !opts.ts_human) return true;   // copy-only: done
 
-    if (!opts.id_links && !opts.ts_human) return;
-
-    // id-links and timestamps walk the page's syntax-highlight tokens
-    // (span.str / span.lit), which the Mist page may inject AFTER our content
-    // script runs (observed on Safari). Apply now; if the tokens aren't there
-    // yet, re-apply when they appear. buildIdMap uses the parsed JSON (available
-    // regardless of highlighting), and applyIdLinks/applyTimestamps are
-    // idempotent, so re-running is safe.
-    var idMap = opts.id_links ? buildIdMap(parsed.data) : null;
-    var apply = function () {
-        var p = info.querySelector(".prettyprint");
-        if (!p) return false;
         if (opts.id_links) {
-            try { applyIdLinks(p, idMap); }
+            try { applyIdLinks(pre, buildIdMap(parsed.data)); }
             catch (e) { console.warn("django_links: id-link augmentation failed", e); }
         }
         if (opts.ts_human) {
-            try { applyTimestamps(p); }
+            try { applyTimestamps(pre); }
             catch (e) { console.warn("django_links: timestamp augmentation failed", e); }
         }
-        return !!p.querySelector("span." + TOK.str + ", span." + TOK.lit);
-    };
+        // Done only once the JSON BODY is highlighted — the HTTP-header block carries
+        // a few lit spans of its own, so "any token" fires too early on reload.
+        return bodyIsHighlighted(pre);
+    }
 
-    if (apply()) return;                       // tokens already present — done
+    if (attempt()) return;
     if (typeof MutationObserver === "undefined") return;
 
+    // Watch the whole document until the block + tokens appear; coalesce bursts of
+    // mutations so we re-attempt at most once per frame.
+    var scheduled = false;
+    var raf = (typeof requestAnimationFrame !== "undefined")
+        ? requestAnimationFrame : function (f) { return setTimeout(f, 16); };
     var obs = new MutationObserver(function () {
-        if (apply()) obs.disconnect();         // highlighting arrived — apply once, stop
+        if (scheduled) return;
+        scheduled = true;
+        raf(function () {
+            scheduled = false;
+            if (attempt()) obs.disconnect();
+        });
     });
-    obs.observe(info, { childList: true, subtree: true });
-    setTimeout(function () { obs.disconnect(); }, 10000);  // safety: stop watching after 10s
+    obs.observe(document.documentElement, { childList: true, subtree: true });
+    setTimeout(function () { obs.disconnect(); }, 15000);  // stop watching after 15s
 }
 
 if (typeof browser !== "undefined" && browser.storage && browser.storage.local) {
