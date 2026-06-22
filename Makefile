@@ -135,7 +135,7 @@ webext-safari-init: ## First-time only: generate the Safari Xcode project + one-
 		sed -i '' "s/MARKETING_VERSION = [^;]*;/MARKETING_VERSION = $$V;/g" "$$PBX" && \
 		sed -i '' "s/MACOSX_DEPLOYMENT_TARGET = [^;]*;/MACOSX_DEPLOYMENT_TARGET = 11.0;/g" "$$PBX" && \
 		sed -i '' "s/CURRENT_PROJECT_VERSION = [^;]*;/CURRENT_PROJECT_VERSION = $$B;/g" "$$PBX"
-	@echo "Project generated. In Xcode (once): Signing & Capabilities -> Team -> Thomas Munzer (5UZ24A5VY3) on both targets, and General -> App Category -> Developer Tools. Then 'make webext-safari' updates the code and preserves them."
+	@echo "Project generated. In Xcode (once): set Signing & Capabilities -> Team on both targets, and General -> App Category -> Developer Tools. Then 'make webext-safari' updates the code and preserves them."
 
 webext-ffx: ## Build the Firefox web extension package
 	@echo "Building Firefox web extension package..."
