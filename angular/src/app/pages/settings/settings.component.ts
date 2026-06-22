@@ -75,7 +75,6 @@ export class SettingsComponent implements OnInit {
     this.view = "warning";
     this.experimentalMessage = true;
     this.warningMessage = message;
-    this.eventWarning.next(true);
     this._cd.detectChanges();
   }
 
