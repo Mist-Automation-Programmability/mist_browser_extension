@@ -160,13 +160,67 @@ export class ApiManageComponent implements OnInit {
     const site_evpn_re = /^evpn\/site\/?([0-9]\/)?(?<site_id>[0-9a-z_-]*)?(\/(?<topology_id>[0-9a-f-]{36}))?\??(?<query_params>.*)?$/is;
     const site_wlan_template_re = /^wlan\/orgWlanDetail\/(?<template_id>[0-9a-z_-]*)\/(?<wlan_id>[0-9a-f-]{36})\/(?<site_id>[0-9a-f-]{36})\??(?<query_params>.*)?$/is;
     const site_common_re = /^(?<obj>[a-z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view|band|list)\/)?(?<inter>[0-9]*\/)?((?<obj_id>[0-9a-z_-]*)\/)?(?<site_id>[0-9a-f-]{36})?\??(?<query_params>.*)?$/is;
-    const site_common_objs = new Set(["ap", "gateway", "switch", "assets", "wlan", "tags", "psk", "tunnels", "clients", "guestclients", "sdkclients", "wiredclients", "zigbeeclients", "wxlan", "security", "switchconfig", "pcap", "siteedge", "cellularedges", "rrm"]);
+    const site_common_objs = new Set([
+      "ap",
+      "gateway",
+      "switch",
+      "assets",
+      "wlan",
+      "tags",
+      "psk",
+      "tunnels",
+      "clients",
+      "guestclients",
+      "sdkclients",
+      "wiredclients",
+      "zigbeeclients",
+      "wxlan",
+      "security",
+      "switchconfig",
+      "pcap",
+      "siteedge",
+      "cellularedges",
+      "rrm"
+    ]);
     const org_evpn_re = /^evpn\/org(\/(?<topology_id>[0-9a-f-]{36}))?\??(?<query_params>.*)?$/is;
     const org_inventory = /^apinventory\/?(?<detail>aps|switches|wan_edges|mist_edges)?\/?(?<site_id>[0-9a-z_-]*)\??(?<query_params>.*)?$/is;
     const org_identityProviders = /^nacIdentityProviders(\/oauth\/(?<provider>[a-z]+)\/(?<obj_id>[0-9a-z_-]+))?\??(?<query_params>.*)?$/is;
     const org_upgrade = /^upgrade\/?(?<device_type>ap|switch|gateway|mxedge)?\??(?<query_params>.*)?$/is;
     const org_common_re = /^(?<obj>[a-zA-Z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view|template|rfTemplate|provider|nacportals|pskportals)\/)?([0-9]\/)?(?<obj_id>[0-9a-z_-]*)(\/(?<site_id>[0-9a-f-]{36}))?\??(?<query_params>[0-9a-z_=&-]*)?$/is;
-    const org_common_objs = new Set(["orgtags", "misttunnels", "templates", "switchtemplate", "gatewaytemplates", "hubs", "deviceprofiles", "org", "orgpsk", "configuration", "auditlogs", "adminconfig", "subscription", "edge", "vpns", "template", "rftemplates", "services", "networks", "applicationpolicy", "authpolicylabels", "naccertificates", "nacpolicy", "onboardingworkflow", "sdk", "premiumanalytics", "private5g", "securityevents", "nacclients", "nacendpoints", "sitetemplates"]);
+    const org_common_objs = new Set([
+      "orgtags",
+      "misttunnels",
+      "templates",
+      "switchtemplate",
+      "gatewaytemplates",
+      "hubs",
+      "deviceprofiles",
+      "org",
+      "orgpsk",
+      "configuration",
+      "auditlogs",
+      "adminconfig",
+      "subscription",
+      "edge",
+      "vpns",
+      "template",
+      "rftemplates",
+      "services",
+      "networks",
+      "applicationpolicy",
+      "authpolicylabels",
+      "naccertificates",
+      "nacpolicy",
+      "onboardingworkflow",
+      "sdk",
+      "premiumanalytics",
+      "private5g",
+      "securityevents",
+      "nacclients",
+      "nacendpoints",
+      "sitetemplates",
+      "gatewaytopologywizard"
+    ]);
 
     this.dispatchRoute(parsed, [
       { re: minis_re, handler: this.MarvisMinisUrl.bind(this) },
@@ -216,10 +270,12 @@ export class ApiManageComponent implements OnInit {
     if (detail && !this.not_detail.includes(detail)) {
       this.obj_name = obj_name
     } else {
-      if (obj_name.includes("switch")) {
+      if (obj_name.endsWith("switch")) {
         this.obj_name = obj_name.replace("switch", "switches");
-      } else if (obj_name.includes("policy")) {
+      } else if (obj_name.endsWith("policy")) {
         this.obj_name = obj_name.replace("policy", "policies");
+      } else if (obj_name.endsWith("topology")) {
+        this.obj_name = obj_name.replace("topology", "topologies");
       } else {
         this.obj_name = obj_name + "s";
       }
@@ -1256,6 +1312,14 @@ export class ApiManageComponent implements OnInit {
             name: "NAC Endpoints"
           })
           break;
+        case "gatewaytopologywizard":
+          this.setName("WAN Topology", res?.groups?.detail);
+          this.forgeOrgObject("vpns", res?.groups?.host, res?.groups?.detail);
+          this.quick_links.push({
+            url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/gatewaytemplates",
+            name: "Gateway templates"
+          })
+          break;
       }
     }
   }
@@ -1465,7 +1529,7 @@ export class ApiManageComponent implements OnInit {
       this.site_id = res?.groups?.uuid;
     }
 
-    this.setName("floor plan", res?.groups?.detail);    ;
+    this.setName("floor plan", res?.groups?.detail);;
     this.forgeSiteObject("maps", res?.groups?.host, res?.groups?.detail);
     if (this.obj_id) {
       this.quick_links.push({
