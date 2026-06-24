@@ -321,7 +321,8 @@ function applyTimestamps(preEl) {
         ann.className = "mist-ts";
         ann.textContent = " → " + fmtLocal(d);
         ann.title = d.toISOString();                  // UTC
-        ann.style.opacity = "0.6";
+        ann.style.opacity = "0.5";
+        ann.style.userSelect = "none";
         num.insertAdjacentElement("afterend", ann);
         num.dataset.mistTs = "1";
     }
