@@ -1529,7 +1529,7 @@ export class ApiManageComponent implements OnInit {
       this.site_id = res?.groups?.uuid;
     }
 
-    this.setName("floor plan", res?.groups?.detail);;
+    this.setName("floor plan", res?.groups?.detail);
     this.forgeSiteObject("maps", res?.groups?.host, res?.groups?.detail);
     if (this.obj_id) {
       this.quick_links.push({
