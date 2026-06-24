@@ -18,6 +18,15 @@
         }
     }
 
+    // onMessage only fires for same-extension contexts (no externally_connectable
+    // is declared); verify the sender id defensively so a future manifest change
+    // can't silently expose this credentialed session fetch. Tolerate runtimes
+    // that omit sender.id by only rejecting an explicit mismatch.
+    function isInternalSender(sender) {
+        var selfId = api && api.runtime && api.runtime.id;
+        return !sender || !sender.id || !selfId || sender.id === selfId;
+    }
+
     debugLog("Mist Safari content: content_safari.js loaded on", window.location.href);
 
     function getSessionFromPage() {
@@ -64,6 +73,10 @@
     debugLog("Mist Safari content: registering mist_get_session listener");
     api.runtime.onMessage.addListener(function (request, sender, respond) {
         if (!request || request.type !== "mist_get_session") {
+            return false;
+        }
+        if (!isInternalSender(sender)) {
+            console.warn("Mist Safari content: rejected message from unexpected sender");
             return false;
         }
 

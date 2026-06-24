@@ -102,6 +102,19 @@ function process_element(org_id, site_id, self, element, element_type, element_s
 
 
 
+    // Privileges carry their own org context, so handle them independently of the
+    // page-level org_id (e.g. /self has privileges but no top-level org_id).
+    if (Array.isArray(element.privileges)) {
+        element.privileges.forEach(function (privilege) {
+            if (!privilege) return;
+            var p_org = privilege.org_id;
+            if (p_org) _gen_id_org_common(p_org, p_org, "orgs");
+            if (privilege.site_id) _gen_id_org_common(p_org, privilege.site_id, "sites");
+            // sitegroup links embed the org in their path, so skip when org_id is absent
+            if (p_org && privilege.sitegroup_id) _gen_id_org_common(p_org, privilege.sitegroup_id, "sitegroups");
+        });
+    }
+
     if (org_id) {
         if (element.hasOwnProperty("admin_id")) _gen_id_org_common(org_id, element.admin_id, "admins");
         if (element.hasOwnProperty("alarmtemplate_id")) _gen_id_org_common(org_id, element.alarmtemplate_id, "alarmtemplates");
@@ -137,13 +150,6 @@ function process_element(org_id, site_id, self, element, element_type, element_s
         if (element.hasOwnProperty("nacrule_id")) _gen_id_org_common(org_id, element.nacrule_id, "nacrules");
         if (element.hasOwnProperty("nactag_id")) _gen_id_org_common(org_id, element.nactag_id, "nactags");
         if (element.hasOwnProperty("networktemplate_id")) _gen_id_org_common(org_id, element.networktemplate_id, "networktemplates");
-        if (element.hasOwnProperty("privileges")) {
-            element.privileges.forEach(function (privilege) {
-                if (privilege.hasOwnProperty("org_id")) _gen_id_org_common(org_id, privilege.org_id, "orgs");
-                if (privilege.hasOwnProperty("site_id")) _gen_id_org_common(org_id, privilege.org_id, "sites");
-                if (privilege.hasOwnProperty("sitegroup_id")) _gen_id_org_common(org_id, privilege.org_id, "sitegroup_id");
-            });
-        }
         if (element.hasOwnProperty("rftemplate_id")) _gen_id_org_common(org_id, element.rftemplate_id, "rftemplates");
         if (element.hasOwnProperty("secpolicy_id")) _gen_id_org_common(org_id, element.secpolicy_id, "secpolicies");
         if (element.hasOwnProperty("sitegroup_ids")) _gen_id_org_common(org_id, element.sitegroup_ids, "sitegroups");
@@ -161,7 +167,7 @@ function process_element(org_id, site_id, self, element, element_type, element_s
         if (element.hasOwnProperty("dst_deny_wxtags")) _gen_id_site_common(site_id, element.dst_deny_wxtags, "wxtags");
         if (element.hasOwnProperty("src_wxtags")) _gen_id_site_common(site_id, element.src_wxtags, "wxtags");
         if (element.hasOwnProperty("upgrade_id")) _gen_id_site_common(site_id, element.upgrade_id, "devices/upgrade");
-        if (element.hasOwnProperty("webhook_id")) _gen_id_site_common(org_id, element.webhook_id, "webhooks");
+        if (element.hasOwnProperty("webhook_id")) _gen_id_site_common(site_id, element.webhook_id, "webhooks");
     }
 
 
@@ -288,6 +294,8 @@ function fmtLocal(d) {
         " " + _pad(d.getHours()) + ":" + _pad(d.getMinutes()) + ":" + _pad(d.getSeconds());
 }
 function precedingKey(numSpan) {
+    // The key str token normally sits ~2 spans back (value <- pun ":" <- pln " " <-
+    // str key); 6 is generous slack for whitespace/punctuation token variants.
     var el = numSpan.previousElementSibling, steps = 0;
     while (el && steps < 6) {
         if (el.classList && el.classList.contains(TOK.str)) {
@@ -313,7 +321,8 @@ function applyTimestamps(preEl) {
         ann.className = "mist-ts";
         ann.textContent = " → " + fmtLocal(d);
         ann.title = d.toISOString();                  // UTC
-        ann.style.opacity = "0.6";
+        ann.style.opacity = "0.5";
+        ann.style.userSelect = "none";
         num.insertAdjacentElement("afterend", ann);
         num.dataset.mistTs = "1";
     }
@@ -418,28 +427,68 @@ function setupCopyButton(preEl, rawJson, container) {
     container.insertBefore(btn, container.firstChild);
 }
 
+// True once the JSON body (not just the HTTP-header block) is syntax-highlighted.
+// The DRF response header carries its own lit spans, so "any str/lit token" would
+// falsely report completion before the body is highlighted (notably on reload).
+function bodyIsHighlighted(preEl) {
+    var toks = preEl.querySelectorAll("span." + TOK.str + ", span." + TOK.lit);
+    for (var i = 0; i < toks.length; i++) {
+        if (!toks[i].closest(".meta")) return true;   // a token outside the header block
+    }
+    return false;
+}
+
 function runAugment(opts) {
-    var info = document.querySelector(".response-info");
-    if (!info) return;
-    var pre = info.querySelector(".prettyprint");
-    if (!pre) return;
-    var parsed = parseResponse(pre);
-    if (!parsed) {
-        console.warn("django_links: could not parse response JSON; leaving page untouched");
-        return;
+    // The Mist DRF page renders the response block and then syntax-highlights it
+    // (span.str / span.lit). On Safari this often happens AFTER our content script
+    // runs, and on a fresh page load the block itself may not be in the DOM yet.
+    // So we retry the whole attempt as the page mutates until everything we need
+    // exists. setupCopyButton / applyIdLinks / applyTimestamps are idempotent, so
+    // repeats (and recomputing buildIdMap) are safe.
+    function attempt() {
+        var info = document.querySelector(".response-info");
+        var pre = info && info.querySelector(".prettyprint");
+        if (!info || !pre) return false;
+        var parsed = parseResponse(pre);
+        if (!parsed) return false;
+
+        if (opts.copy_json) {
+            try { setupCopyButton(pre, parsed.raw, info); }
+            catch (e) { console.warn("django_links: copy button failed", e); }
+        }
+        if (!opts.id_links && !opts.ts_human) return true;   // copy-only: done
+
+        if (opts.id_links) {
+            try { applyIdLinks(pre, buildIdMap(parsed.data)); }
+            catch (e) { console.warn("django_links: id-link augmentation failed", e); }
+        }
+        if (opts.ts_human) {
+            try { applyTimestamps(pre); }
+            catch (e) { console.warn("django_links: timestamp augmentation failed", e); }
+        }
+        // Done only once the JSON BODY is highlighted — the HTTP-header block carries
+        // a few lit spans of its own, so "any token" fires too early on reload.
+        return bodyIsHighlighted(pre);
     }
-    if (opts.id_links) {
-        try { applyIdLinks(pre, buildIdMap(parsed.data)); }
-        catch (e) { console.warn("django_links: id-link augmentation failed", e); }
-    }
-    if (opts.ts_human) {
-        try { applyTimestamps(pre); }
-        catch (e) { console.warn("django_links: timestamp augmentation failed", e); }
-    }
-    if (opts.copy_json) {
-        try { setupCopyButton(pre, parsed.raw, info); }
-        catch (e) { console.warn("django_links: copy button failed", e); }
-    }
+
+    if (attempt()) return;
+    if (typeof MutationObserver === "undefined") return;
+
+    // Watch the whole document until the block + tokens appear; coalesce bursts of
+    // mutations so we re-attempt at most once per frame.
+    var scheduled = false;
+    var raf = (typeof requestAnimationFrame !== "undefined")
+        ? requestAnimationFrame : function (f) { return setTimeout(f, 16); };
+    var obs = new MutationObserver(function () {
+        if (scheduled) return;
+        scheduled = true;
+        raf(function () {
+            scheduled = false;
+            if (attempt()) obs.disconnect();
+        });
+    });
+    obs.observe(document.documentElement, { childList: true, subtree: true });
+    setTimeout(function () { obs.disconnect(); }, 15000);  // stop watching after 15s
 }
 
 if (typeof browser !== "undefined" && browser.storage && browser.storage.local) {

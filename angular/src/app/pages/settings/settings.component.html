@@ -1,0 +1,79 @@
+<div class="mist-body">
+
+  <!-- APPEARANCE -->
+  <div class="mist-sec">
+    <div class="mist-sec-title"><span>Appearance</span></div>
+    <div class="mist-segment" role="group" aria-label="Theme">
+      <button class="mist-seg" [class.active]="theme=='system'" (click)="setTheme('system')" aria-label="Match system theme">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="13" rx="2"></rect>
+          <path d="M8 21h8"></path>
+          <path d="M12 17v4"></path>
+        </svg>
+        System
+      </button>
+      <button class="mist-seg" [class.active]="theme=='light'" (click)="setTheme('light')" aria-label="Light theme">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+        </svg>
+        Light
+      </button>
+      <button class="mist-seg" [class.active]="theme=='dark'" (click)="setTheme('dark')" aria-label="Dark theme">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+        </svg>
+        Dark
+      </button>
+    </div>
+  </div>
+
+  <!-- API PAGE ENHANCEMENTS -->
+  <div class="mist-sec">
+    <div class="mist-sec-title"><span>API Page Enhancements</span></div>
+    <div class="mist-setting">
+      <div class="mist-setting-main">
+        <div class="mist-setting-top">
+          <div class="mist-setting-label">Enable ID Links generation</div>
+          <span class="mist-exp">Experimental</span>
+        </div>
+        <div class="mist-setting-desc">
+          Generates hyperlinks on the Mist API (Django) pages for known IDs.
+        </div>
+      </div>
+      <button class="mist-switch" [class.on]="id_links" (click)="onToggleIdLinks()" aria-label="Toggle ID links"></button>
+    </div>
+    <div class="mist-setting">
+      <div class="mist-setting-main">
+        <div class="mist-setting-top">
+          <div class="mist-setting-label">Convert timestamps to human-readable</div>
+          <span class="mist-exp">Experimental</span>
+        </div>
+        <div class="mist-setting-desc">
+          Shows a local-time date next to epoch timestamps on Mist API pages
+          (UTC on hover). Applies after the page is reloaded.
+        </div>
+      </div>
+      <button class="mist-switch" [class.on]="ts_human" (click)="onToggleTimestamps()" aria-label="Toggle timestamp conversion"></button>
+    </div>
+    <div class="mist-setting">
+      <div class="mist-setting-main">
+        <div class="mist-setting-top">
+          <div class="mist-setting-label">Show "Copy JSON" button</div>
+        </div>
+        <div class="mist-setting-desc">
+          Adds a button to copy the raw JSON response on Mist API pages.
+          Applies after the page is reloaded.
+        </div>
+      </div>
+      <button class="mist-switch" [class.on]="copy_json" (click)="onToggleCopyJson()" aria-label="Toggle Copy JSON button"></button>
+    </div>
+  </div>
+
+</div>
+
+<app-tools-warning *ngIf="view == 'warning'" [warningMessage]="warningMessage" [experimentalMessage]="experimentalMessage"
+  (warningConfirm)="warningConfirm()" (warningCancel)="warningCancel()"></app-tools-warning>

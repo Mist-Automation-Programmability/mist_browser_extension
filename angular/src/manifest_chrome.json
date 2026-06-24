@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Mist Extension",
   "short_name": "mist-extension",
-  "version": "6.0.0",
+  "version": "6.0.1",
   "description": "Web Browser Extension for Mist Developers to provide easier access to Mist APIs",
   "icons": {
     "16": "assets/favicon-16x16.png",
@@ -24,8 +24,7 @@
       "js": [
         "assets/js/content.js",
         "assets/js/django_links.js",
-        "assets/js/django_automation.js",
-        "assets/js/purify.min.js"
+        "assets/js/django_automation.js"
       ]
     }
   ],

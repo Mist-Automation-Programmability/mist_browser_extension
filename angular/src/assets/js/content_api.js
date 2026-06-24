@@ -14,6 +14,32 @@
         }
     }
 
+    // Base domains this bridge is allowed to fetch from — mirrors the manifest
+    // host_permissions. Keep in sync with mist.hosts.ts / mist_hosts.js.
+    var MIST_HOST_SUFFIXES = [".mist.com", ".mistsys.com", ".mist-federal.com", ".ai.juniper.net"];
+
+    function isAllowedMistUrl(url) {
+        try {
+            var parsed = new URL(url);
+            if (parsed.protocol !== "https:") return false;
+            var host = parsed.hostname.toLowerCase();
+            return MIST_HOST_SUFFIXES.some(function (suffix) {
+                return host === suffix.slice(1) || host.endsWith(suffix);
+            });
+        } catch (e) {
+            return false;
+        }
+    }
+
+    // onMessage only fires for same-extension contexts (no externally_connectable
+    // is declared); verify the sender id defensively so a future manifest change
+    // can't silently expose this credentialed-fetch bridge. Tolerate runtimes that
+    // omit sender.id by only rejecting an explicit mismatch.
+    function isInternalSender(sender) {
+        var selfId = api && api.runtime && api.runtime.id;
+        return !sender || !sender.id || !selfId || sender.id === selfId;
+    }
+
     function buildApiHeaders(request) {
         return Object.assign({ "Accept": "application/json" }, request.headers || {});
     }
@@ -60,6 +86,12 @@
                 error: "Mist content API only supports GET; open the API tab for writes",
             });
         }
+        if (!isAllowedMistUrl(request.url)) {
+            return Promise.resolve({
+                ok: false,
+                error: "Mist content API: refused non-Mist URL",
+            });
+        }
         return sendApiRequest(request);
     }
 
@@ -71,6 +103,10 @@
     debugLog("Mist content API: registering mist_api_request listener");
     api.runtime.onMessage.addListener(function (request, sender, respond) {
         if (!request || request.type !== "mist_api_request") {
+            return false;
+        }
+        if (!isInternalSender(sender)) {
+            console.warn("Mist content API: rejected message from unexpected sender");
             return false;
         }
 

@@ -4,6 +4,32 @@
         var usePromiseResponse = !!(options && options.usePromiseResponse);
         var backfillMissingDomain = !!(options && options.backfillMissingDomain);
 
+        // Base domains the extension is allowed to read cookies for — mirrors the
+        // manifest host_permissions. Keep in sync with mist.hosts.ts / mist_hosts.js.
+        var MIST_HOST_SUFFIXES = [".mist.com", ".mistsys.com", ".mist-federal.com", ".ai.juniper.net"];
+
+        function isAllowedMistUrl(url) {
+            try {
+                var parsed = new URL(url);
+                if (parsed.protocol !== "https:") return false;
+                var host = parsed.hostname.toLowerCase();
+                return MIST_HOST_SUFFIXES.some(function (suffix) {
+                    return host === suffix.slice(1) || host.endsWith(suffix);
+                });
+            } catch (e) {
+                return false;
+            }
+        }
+
+        // onMessage only fires for same-extension contexts (no externally_connectable
+        // is declared), but verify the sender id defensively so a future manifest
+        // change can't silently expose the cookie handler. Tolerate runtimes that
+        // omit sender.id by only rejecting an explicit mismatch.
+        function isInternalSender(sender) {
+            var selfId = api.runtime && api.runtime.id;
+            return !sender || !sender.id || !selfId || sender.id === selfId;
+        }
+
         function callApi(apiFunction, args) {
             if (typeof browser !== "undefined") {
                 return Promise.resolve(apiFunction.apply(null, args));
@@ -133,8 +159,14 @@
                 if (!message || message.type !== "getCookies") {
                     return;
                 }
+                if (!isInternalSender(sender)) {
+                    console.warn("background.getCookies: rejected message from unexpected sender");
+                    return;
+                }
 
-                var urls = Array.isArray(message.urls) ? message.urls : [];
+                // Only ever query cookies for Mist hosts, regardless of what the
+                // caller asked for (defense in depth on top of host_permissions).
+                var urls = (Array.isArray(message.urls) ? message.urls : []).filter(isAllowedMistUrl);
                 var getCookiesPromise = getCookiesFromUrls(urls)
                     .then(cookies => ({ cookies: cookies }))
                     .catch(err => {

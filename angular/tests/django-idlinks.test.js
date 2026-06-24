@@ -47,9 +47,30 @@ test('applyIdLinks is idempotent (second run adds no anchors)', () => {
   const dom = new JSDOM(`<div class="response-info">${raw}</div>`, { url: exp.url });
   const mod = loadModule(dom.window);
   const pre = dom.window.document.querySelector('.prettyprint');
-  const map = mod.buildIdMap(mod.parseResponse(pre).data);
+  const parsed = mod.parseResponse(pre);
+  assert.ok(parsed, 'response parsed');
+  const map = mod.buildIdMap(parsed.data);
   mod.applyIdLinks(pre, map);
   const first = pre.querySelectorAll('a').length;
   mod.applyIdLinks(pre, map);
   assert.equal(pre.querySelectorAll('a').length, first);
+});
+
+test('buildIdMap links privilege IDs on /self (which has no top-level org_id)', () => {
+  const dom = new JSDOM('<div></div>', { url: 'https://api.gc1.mist.com/api/v1/self' });
+  const mod = loadModule(dom.window);
+  const map = mod.buildIdMap({
+    email: 'x@y.z',
+    privileges: [
+      { scope: 'org', org_id: '05007bbb-99c4-4ed3-9fdc-5369128d14a0' },
+      { scope: 'site', org_id: '05007bbb-99c4-4ed3-9fdc-5369128d14a0', site_id: '2bf12442-1558-41bd-849e-738d6d4aa1a3' },
+      { scope: 'sitegroup', org_id: '05007bbb-99c4-4ed3-9fdc-5369128d14a0', sitegroup_id: 'aaaa1111-2222-3333-4444-555566667777' },
+    ],
+  });
+  assert.equal(map['05007bbb-99c4-4ed3-9fdc-5369128d14a0'],
+    'https://api.gc1.mist.com/api/v1/orgs/05007bbb-99c4-4ed3-9fdc-5369128d14a0');
+  assert.equal(map['2bf12442-1558-41bd-849e-738d6d4aa1a3'],
+    'https://api.gc1.mist.com/api/v1/sites/2bf12442-1558-41bd-849e-738d6d4aa1a3');
+  assert.equal(map['aaaa1111-2222-3333-4444-555566667777'],
+    'https://api.gc1.mist.com/api/v1/orgs/05007bbb-99c4-4ed3-9fdc-5369128d14a0/sitegroups/aaaa1111-2222-3333-4444-555566667777');
 });

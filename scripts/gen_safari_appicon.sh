@@ -12,7 +12,7 @@
 set -euo pipefail
 
 SVG="angular/src/assets/mist-icon.svg"
-ICONSET="angular/Mist Extension/Shared (App)/Assets.xcassets/AppIcon.appiconset"
+ICONSET="angular/Mist Extension/Mist Extension/Assets.xcassets/AppIcon.appiconset"
 
 CHROME="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 if [ ! -x "$CHROME" ]; then
@@ -50,7 +50,6 @@ fi
 gen() { # <pixels> <dest-filename>
   sips -z "$1" "$1" "$TMP/icon1024.png" --out "$ICONSET/$2" >/dev/null 2>&1
 }
-gen 1024 "universal-icon-1024@1x.png"
 gen 1024 "mac-icon-512@2x.png"
 gen 512  "mac-icon-512@1x.png"
 gen 512  "mac-icon-256@2x.png"
