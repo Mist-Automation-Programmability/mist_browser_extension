@@ -19,10 +19,7 @@ browser.runtime.onMessage.addListener((request, sender, respond) => {
     });
 
     handler
-        .then(message => {
-            console.log(message)
-            respond(message)
-        })
+        .then(message => respond(message))
         .catch(error => respond(error));
     return true;
 });

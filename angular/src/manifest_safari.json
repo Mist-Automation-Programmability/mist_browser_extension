@@ -27,8 +27,7 @@
         "assets/js/content_api.js",
         "assets/js/content_safari.js",
         "assets/js/django_links.js",
-        "assets/js/django_automation.js",
-        "assets/js/purify.min.js"
+        "assets/js/django_automation.js"
       ]
     }
   ],

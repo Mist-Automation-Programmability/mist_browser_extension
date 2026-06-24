@@ -127,7 +127,6 @@ export class TokenInfoComponent implements OnInit {
     this.set_privileges(data);
     this.working = false;
     this._cd.detectChanges();
-    console.log(this.info)
   }
   private set_privileges(data): void {
     this.success = true;
@@ -159,7 +158,6 @@ export class TokenInfoComponent implements OnInit {
       }
       this.info.privileges.push(tmp)
     })
-    console.log(this.info)
   }
 
   private reset() {
