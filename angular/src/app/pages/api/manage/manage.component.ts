@@ -592,6 +592,9 @@ export class ApiManageComponent implements OnInit {
   ////////////////////// ORG OBJ FUNCTION
   private forgeOrg(host: string) {
     this.quick_links.push({
+      url: "https://api." + host + "/api/v1/orgs/" + this.org_id,
+      name: "org info"
+    }, {
       url: "https://api." + host + "/api/v1/orgs/" + this.org_id + "/setting",
       name: "org setting"
     }, {
