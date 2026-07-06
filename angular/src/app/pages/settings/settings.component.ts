@@ -60,12 +60,7 @@ export class SettingsComponent implements OnInit {
 
   onToggleTimestamps(): void {
     this.ts_human = !this.ts_human;
-    if (this.ts_human) {
-      this.requestExperimental("ts_human",
-        "It may impact your browser performance on Mist API pages with a large number of entries.");
-    } else {
-      this._browser.setStorage("ts_human", "false");
-    }
+    this._browser.setStorage("ts_human", this.ts_human ? "true" : "false");
   }
 
   onToggleCopyJson(): void {
@@ -90,7 +85,6 @@ export class SettingsComponent implements OnInit {
     if (this.pendingSetting) {
       this._browser.setStorage(this.pendingSetting, "true");
       if (this.pendingSetting === "id_links") this.id_links = true;
-      if (this.pendingSetting === "ts_human") this.ts_human = true;
     }
     this.view = "";
     this.experimentalMessage = false;
@@ -100,7 +94,6 @@ export class SettingsComponent implements OnInit {
 
   warningCancel(): void {
     if (this.pendingSetting === "id_links") this.id_links = false;
-    if (this.pendingSetting === "ts_human") this.ts_human = false;
     if (this.pendingSetting) this._browser.setStorage(this.pendingSetting, "false");
     this.view = "";
     this.experimentalMessage = false;
