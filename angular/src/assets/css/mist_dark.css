@@ -64,6 +64,16 @@ html[data-mist-dark] body {
   background-color: var(--md-bg-0) !important;
   color: var(--md-text-0) !important;
 }
+/* signin/cloud pages (login, org chooser): Mist draws the full-bleed photo in
+ * a z-index:-10 div. Natively html has NO background, so body's gradient is
+ * promoted to the CANVAS and the photo paints above it. Forcing html/body
+ * dark un-promotes that gradient, which then paints OVER the photo — the
+ * background image "disappears". Restore native canvas painting on those
+ * pages (scoped via the login card); the card/panel styles itself. */
+html[data-mist-dark]:has(.signin-card),
+html[data-mist-dark]:has(.signin-card) body {
+  background-color: transparent !important;
+}
 
 /* app shell */
 html[data-mist-dark] .appView-container,
@@ -307,6 +317,36 @@ html[data-mist-dark] .mc-Input:focus {
 html[data-mist-dark] ::placeholder {
   color: var(--md-text-2) !important;
 }
+/* signin-page underline inputs (email/password/2FA = uikit-input-pattern-light,
+ * native: border:none + bottom underline only, no fill): the generic input
+ * fill turned them into boxes and the focus box-shadow drew a full rectangle.
+ * Keep the native underline anatomy, dark-adapted. (Signin-only class.) */
+html[data-mist-dark] .uikit-input-input.uikit-input-pattern-light {
+  background-color: transparent !important;
+  border-color: var(--md-border) !important;
+}
+html[data-mist-dark] .uikit-input-input.uikit-input-pattern-light:focus {
+  box-shadow: none !important;
+  border-color: #63b4ee !important;
+}
+/* disabled fields: light theme drops them to a grey #e8eaeb fill with muted
+ * text; the generic dark input rule made them identical to enabled fields.
+ * Dark equivalent: lift the field toward the card surface + mute text, so it
+ * no longer reads as an editable well. (Placed after the base input rules and
+ * one pseudo-class more specific, so it wins the cascade.) */
+html[data-mist-dark] .DeprecatedInput:disabled,
+html[data-mist-dark] textarea:disabled,
+html[data-mist-dark] .chakra-input:disabled,
+html[data-mist-dark] input[type="text"]:disabled,
+html[data-mist-dark] input[type="search"]:disabled,
+html[data-mist-dark] input[type="password"]:disabled,
+html[data-mist-dark] input[type="number"]:disabled,
+html[data-mist-dark] .mc-Input:disabled,
+html[data-mist-dark] select:disabled {
+  background-color: var(--md-bg-3) !important;
+  color: var(--md-text-2) !important;
+  border-color: var(--md-border-soft) !important;
+}
 html[data-mist-dark] .mc-Input,
 html[data-mist-dark] select {
   background-color: #101216 !important;
@@ -321,7 +361,7 @@ html[data-mist-dark] select {
  * forced dark — the selected state gets an explicit blue so it stays visible. */
 html[data-mist-dark] .btn.normal:not(.dangerous):not(.highlighted):not(.btn-copied),
 html[data-mist-dark] .btnDivider,
-html[data-mist-dark] .uikit-button:not(.uikit-button-color-primary):not(.uikit-button-color-danger),
+html[data-mist-dark] .uikit-button:not(.uikit-button-color-primary):not(.uikit-button-color-danger):not(.signin-orgChooser-btn):not(.uikit-button-pattern-text):not(.uikit-button-pattern-normal.uikit-button-color-normal):not(.uikit-button-pattern-icon),
 html[data-mist-dark] .dropdown-DropdownButton,
 html[data-mist-dark] .component-Button,
 html[data-mist-dark] button[role="tab"]:not(.selected):not([aria-selected="true"]):not(.chakra-tabs__tab),
@@ -356,6 +396,52 @@ html[data-mist-dark] .chooser ul {
   background-color: var(--md-bg-2) !important;
   border-color: var(--md-border) !important;
 }
+/* uikit select/dropdown family (PCAP page "Type" pickers, device pickers):
+ * white panel + pale-blue #e2eff4 hover/selected rows applied via
+ * pseudo-classes, which the fixer can never pre-tag — style them statically */
+html[data-mist-dark] .uikit-selectTrigger {
+  background-color: #101216 !important;
+  color: var(--md-text-0) !important;
+  border-color: var(--md-border) !important;
+}
+html[data-mist-dark] .uikit-dropdown-content {
+  background-color: var(--md-bg-2) !important;
+  color: var(--md-text-0) !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.6) !important;
+}
+html[data-mist-dark] .uikit-dropdown-list-item {
+  color: var(--md-text-0) !important;
+}
+html[data-mist-dark] .uikit-dropdown-list-item:hover,
+html[data-mist-dark] .uikit-dropdown-list-item-selected {
+  background-color: var(--md-hover) !important;
+  color: var(--md-text-0) !important;
+}
+html[data-mist-dark] .uikit-dropdown-list-item--disabled {
+  background-color: transparent !important;
+  color: var(--md-text-2) !important;
+}
+html[data-mist-dark] .uikit-dropdown-option-group-label {
+  color: var(--md-text-1) !important;
+}
+/* WxLAN policy label chips: .tag-text is skipped by the fixer so semantic
+ * colours (green/red enabled labels) stay native — but DISABLED chips are
+ * light grey #c0c1c0 with white text, unreadable on dark. Mute those only. */
+html[data-mist-dark] .tag.tag-disabled .tag-text {
+  background-color: var(--md-bg-3) !important;
+  color: var(--md-text-1) !important;
+}
+/* device-picker search lists (PCAP "Add Switch"/"Add WAN Edge" popups): rows
+ * are li.SearchListItem; an emotion :hover paints a light wash that turns the
+ * light-lifted text white-on-white on dark */
+html[data-mist-dark] .SearchListItem:hover,
+html[data-mist-dark] .SearchListItem[data-hover],
+html[data-mist-dark] .SearchListItem[aria-selected="true"] {
+  background-color: var(--md-hover) !important;
+}
+html[data-mist-dark] .uikit-dropdown-filter-container {
+  border-color: var(--md-border) !important;
+}
 
 /* dropdown caret indicators are icon-font glyphs with hardcoded dark colour */
 html[data-mist-dark] .dropdownIcon,
@@ -387,6 +473,40 @@ html[data-mist-dark] .NACPolicy-groupText {
 /* row-actions "..." menus (Move Up/Down/Delete etc.) — light item hover */
 html[data-mist-dark] .dropdown-DropdownContent li:hover {
   background-color: var(--md-hover) !important;
+}
+/* older .dropdown-list row menus (WxLAN policy "..." etc.): native hover is a
+ * light #dedede wash, the trigger cell paints light grey while open, and
+ * "Delete" uses a dark red #841123 — all illegible on dark */
+html[data-mist-dark] td.row-more {
+  background-color: transparent !important;
+}
+html[data-mist-dark] td.row-more:hover {
+  background-color: var(--md-hover) !important;
+}
+html[data-mist-dark] .dropdown-list li:hover,
+html[data-mist-dark] .dropdown-list li.hovered {
+  background-color: var(--md-hover) !important;
+}
+html[data-mist-dark] .dropdown-list li.divider:hover,
+html[data-mist-dark] .dropdown-list li.list-heading:hover,
+html[data-mist-dark] .dropdown-list li.dropdown-hover:hover {
+  background-color: transparent !important;
+}
+html[data-mist-dark] .dropdown-list li.delete {
+  color: #f16a6a !important;
+}
+/* editableTagList pickers ("Add Interface" in the Secure-Edge panel, tag
+ * lists): the hover wash is applied to the li's DESCENDANT (.tag-name), so
+ * the li:hover rule above misses it; empty-msg carries a light fill */
+html[data-mist-dark] .editableTagList.dropdown-list .group.scroll-area li.generic-tag :hover {
+  background-color: var(--md-hover) !important;
+}
+html[data-mist-dark] .editableTagList .empty-msg {
+  background-color: var(--md-bg-3) !important;
+  color: var(--md-text-1) !important;
+}
+html[data-mist-dark] .editableTagList .validation-message {
+  color: #f16a6a !important;
 }
 
 /* dropdown/option hovers use light greys in the light theme */
@@ -423,7 +543,7 @@ html[data-mist-dark] .chakra-tabs__tab[aria-selected="true"] {
   color: var(--md-text-0) !important;
 }
 html[data-mist-dark] .btn.normal:not(.dangerous):not(.highlighted):not(.btn-copied):hover,
-html[data-mist-dark] .uikit-button:not(.uikit-button-color-primary):not(.uikit-button-color-danger):hover,
+html[data-mist-dark] .uikit-button:not(.uikit-button-color-primary):not(.uikit-button-color-danger):not(.signin-orgChooser-btn):not(.uikit-button-pattern-text):not(.uikit-button-pattern-normal.uikit-button-color-normal):not(.uikit-button-pattern-icon):hover,
 html[data-mist-dark] .dropdown-DropdownButton:hover,
 html[data-mist-dark] .component-ToggleButtons-item:not(.active):hover {
   background-color: var(--md-hover) !important;
@@ -449,11 +569,39 @@ html[data-mist-dark] .uikit-button.uikit-button-pattern-link:not(.uikit-button-c
   background-color: rgba(99, 180, 238, 0.12) !important;
   color: #85c6f5 !important;
 }
+/* -pattern-icon = icon-only buttons (✓ save / ✕ cancel in rule editors,
+ * clear-search, delete-tag …): natively TRANSPARENT with a coloured glyph
+ * (#1bb1f2 primary, #707375 normal, #f1324c danger) — the flatten blanket
+ * boxed them and painted every glyph white, losing the save/cancel
+ * semantics. Excluded from the blanket; native/page glyph colours ride
+ * through, only the hover wash is restated for dark. */
+html[data-mist-dark] .uikit-button.uikit-button-pattern-icon {
+  background-color: transparent !important;
+  border-color: transparent !important;
+}
+html[data-mist-dark] .uikit-button.uikit-button-pattern-icon:hover {
+  background-color: var(--md-hover) !important;
+}
+/* -pattern-text = plain text buttons ("View Account", "Mist Courses", …):
+ * natively transparent with NO border, a light pill wash only on hover.
+ * Excluded from the flatten blanket; restated here because their native text
+ * colour is dark grey (unreadable on dark) and the native disabled state
+ * would paint a light #e8eaeb pill. */
+html[data-mist-dark] .uikit-button.uikit-button-pattern-text {
+  background-color: transparent !important;
+  border-color: transparent !important;
+  color: var(--md-text-0) !important;
+}
+html[data-mist-dark] .uikit-button.uikit-button-pattern-text:hover {
+  background-color: var(--md-hover) !important;
+}
 /* NOTE: uikit `-pattern-*` classes are SHAPE only (radius/padding); the paint
  * comes from `-color-*` (primary=blue, danger=red, normal=grey). A former rule
  * here forced pattern-normal solid blue, wrongly painting grey color-normal
  * buttons ("Locate") blue. Solid colours are now handled by the color-class
- * exclusions on the flatten blanket; color-normal stays theme-flattened. */
+ * exclusions on the flatten blanket; solid grey CTAs (pattern-normal +
+ * color-normal: "Assign to Sites", "Locate") keep their native #707375 fill
+ * via the combo exclusion — the flattened look read as near-invisible. */
 /* uikit COLOR classes (signin "Next" = -color-primary solid blue #1bb1f2,
  * -color-danger solid red #f1324c) are excluded from the flatten blanket above
  * so their native semantic look survives. Only the TRANSPARENT danger styles
@@ -469,10 +617,33 @@ html[data-mist-dark] .btn.disabled {
   color: var(--md-text-2) !important;
 }
 
-/* scope/site selector menu (Monitor header dropdown) */
+/* scope/site selector menu (Monitor header dropdown) + horizontal tab strips
+ * (PCAP page AP/WAN/Switch/Mist Edge): some variants carry a hardcoded light
+ * #f7f8f9 item fill — native design is transparent items + underline, with a
+ * pale blue wash on the active one. */
 html[data-mist-dark] .component-Tabs-item {
+  background-color: transparent !important;
   color: var(--md-text-1) !important;
   border-color: var(--md-border-soft) !important;
+}
+html[data-mist-dark] .component-Tabs-item--active {
+  background-color: rgba(17, 116, 189, 0.22) !important;
+}
+/* HORIZONTAL strips (PCAP page) are underline-tabs: no fill at all, the 3px
+ * bottom border is the only mark (native: transparent → #cdd9e0 on hover →
+ * #0071b9 active). The generic item rules above paint a fill/borders, so
+ * restate the underline-only look at higher specificity. */
+html[data-mist-dark] .component-Tabs--horizontal .component-Tabs-item {
+  background-color: transparent !important;
+  border-color: transparent !important;
+}
+html[data-mist-dark] .component-Tabs--horizontal .component-Tabs-item:hover {
+  background-color: transparent !important;
+  border-bottom-color: #4a525e !important;
+}
+html[data-mist-dark] .component-Tabs--horizontal .component-Tabs-item--active {
+  background-color: transparent !important;
+  border-bottom-color: #2196df !important;
 }
 html[data-mist-dark] .component-Tabs-item:hover {
   background-color: var(--md-hover) !important;
@@ -525,6 +696,36 @@ html[data-mist-dark] h2,
 html[data-mist-dark] h3,
 html[data-mist-dark] h4 {
   color: var(--md-text-0);
+}
+
+/* Chakra alerts (e.g. the Port Mirroring notice in rule editors): pale
+ * status fills (blue.100/orange.100/red.100/green.100) under our inherited
+ * light text = illegible. Deep status-tinted fills keep the semantics. */
+html[data-mist-dark] .chakra-alert {
+  color: var(--md-text-0) !important;
+}
+html[data-mist-dark] .chakra-alert[data-status="info"] {
+  background-color: #1e3a52 !important;
+}
+html[data-mist-dark] .chakra-alert[data-status="warning"] {
+  background-color: #4a3419 !important;
+}
+html[data-mist-dark] .chakra-alert[data-status="error"] {
+  background-color: #4b1d24 !important;
+}
+html[data-mist-dark] .chakra-alert[data-status="success"] {
+  background-color: #1d3d2a !important;
+}
+/* Secure-Edge "Add Provider" side panel: its notices are BARE emotion
+ * role=alert divs (no .chakra-alert class / data-status). The cream orange.50
+ * note bg misses the fixer's neutral band by 1 chroma point and kept our
+ * lifted white text on a light fill; the error's red.800 text was near-black
+ * on the darkened fill. Neutral dark surface + light red for direct-text
+ * (error) banners — the note's own text is a .chakra-text P that the generic
+ * lift already turns light, so the container colour doesn't affect it. */
+html[data-mist-dark] .secureEdgeConnectorSidePanel [role="alert"] {
+  background-color: var(--md-bg-3) !important;
+  color: #f16a6a !important;
 }
 
 /* ==================== dividers / misc ======================= */
@@ -583,6 +784,13 @@ html[data-mist-dark] svg.client-roam-insights-graph-svg rect[fill="#fff"],
 html[data-mist-dark] svg.client-roam-insights-graph-svg rect[style*="fill: rgb(255, 255, 255)"] {
   fill: var(--md-bg-2) !important;
 }
+/* signin-page logo: the "Juniper Mist" wordmark is 12 <path>s drawn black
+ * (inline style="fill:black") — invisible on the dark login panel. Recolour
+ * ONLY the paths to soft-white; the coloured square mark is <rect>/<polygon>
+ * (teal/green/orange) and is intentionally left untouched. */
+html[data-mist-dark] svg.JuniperMistLogo path {
+  fill: var(--md-text-0) !important;
+}
 /* SLE sparklines (svg.metricSparkline): the trend line is drawn near-black
  * (#202020) and the plot backdrop light grey — invert their prominence. */
 html[data-mist-dark] svg path.spark {
@@ -637,6 +845,16 @@ html[data-mist-dark] [data-md-lit="b"]:not(.selected):not(.active):not([aria-sel
 /* "h" = pale blue selection/hover wash — stays a highlight on dark */
 html[data-mist-dark] [data-md-lit="h"] {
   background-color: var(--md-hover) !important;
+}
+/* Chakra menu buttons ("More" on template pages): the fixer darkens the
+ * button bg, but the caret svg has no text node so it never earns a dim tag —
+ * it inherits the native near-black colour and the button reads as DISABLED.
+ * Lift the inherited colour on neutral-tagged menu buttons; buttons with a
+ * semantic wash (blue "Utilities" = tagged "h") don't match, and descendants
+ * that declare their own colour are unaffected by inheritance. */
+html[data-mist-dark] .chakra-menu__menu-button[data-md-lit="b"],
+html[data-mist-dark] .chakra-menu__menu-button[data-md-lit="c"] {
+  color: var(--md-text-0) !important;
 }
 html[data-mist-dark] [data-md-dim="0"] {
   color: var(--md-text-0) !important;
