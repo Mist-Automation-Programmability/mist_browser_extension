@@ -18,6 +18,7 @@ export class SettingsComponent implements OnInit {
   id_links: boolean = false;
   ts_human: boolean = false;
   copy_json: boolean = false;
+  dark_manage: boolean = false;
   private pendingSetting: string | null = null;
 
   constructor(
@@ -36,6 +37,9 @@ export class SettingsComponent implements OnInit {
     })
     this._browser.getStorage("copy_json", (result) => {
       this.copy_json = !!result && result.copy_json == "true";
+    })
+    this._browser.getStorage("dark_manage", (result) => {
+      this.dark_manage = !!result && result.dark_manage == "true";
     })
   }
 
@@ -67,6 +71,11 @@ export class SettingsComponent implements OnInit {
   onToggleCopyJson(): void {
     this.copy_json = !this.copy_json;
     this._browser.setStorage("copy_json", this.copy_json ? "true" : "false");
+  }
+
+  onToggleDarkManage(): void {
+    this.dark_manage = !this.dark_manage;
+    this._browser.setStorage("dark_manage", this.dark_manage ? "true" : "false");
   }
 
   private requestExperimental(key: string, message: string): void {
