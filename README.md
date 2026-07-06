@@ -16,6 +16,8 @@ A web browser extension designed to simplify access to Juniper Mist APIs and API
   - [Supported Juniper Clouds](#supported-juniper-clouds)
   - [API Tab](#api-tab)
   - [Account Tab](#account-tab)
+  - [Tools Tab](#tools-tab)
+  - [Settings Tab](#settings-tab)
   - [About Tab](#about-tab)
 - [Installation](#installation)
   - [Chrome / Chromium](#chrome--chromium)
@@ -110,6 +112,17 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 <img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/ext_tool_token_info.png" width="25%">
 <img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/ext_tool_token_usage.png" width="25%">
 </div>
+
+### Settings Tab
+Configure the extension and enable opt-in enhancements for the Mist dashboard and API pages. All enhancements are off by default.
+
+- **Appearance** — choose the extension popup theme: *System*, *Light*, or *Dark*.
+- **Mist Dashboard**
+  - **Dark mode for the Mist dashboard** *(Experimental)* — applies an extension-provided dark theme to the Mist manage pages (`manage.*`). It is carefully scoped to preserve Mist's status and brand colours (greens, reds, blues, Marvis purple) and toggles instantly, with no page reload.
+- **API Page Enhancements** *(Mist API / Django pages)*
+  - **ID Links generation** *(Experimental)* — turns known Mist IDs (`org_id`, `site_id`, object IDs) into clickable links.
+  - **Human-readable timestamps** — shows a local-time date with its UTC offset (and a `DST` marker where applicable) next to epoch timestamps; hover to see the exact UTC value.
+  - **Copy JSON** — adds a button to copy the raw JSON response.
 
 ### About Tab
 - Quick access to Mist API documentation (official Mist documentation, Postman documentation, OpenAPI documentation).
