@@ -38,6 +38,14 @@ html[data-mist-dark] {
   --md-text-1: #aeb6c2; /* secondary text         */
   --md-text-2: #8b94a1; /* muted / placeholder    */
 
+  /* ---- accents / wells (kept out of the neutral ramp on purpose) ---- */
+  --md-bg-input: #101216; /* input wells — deeper than bg-0 for depth      */
+  --md-selected: #1174bd; /* selected tab / toggle fill                    */
+  --md-link: #5fb0f0;     /* links lifted one step to read on dark         */
+  --md-focus: #63b4ee;    /* focus ring + outline-button accent (same hue) */
+  --md-danger: #f16a6a;   /* danger text on dark (native reds too dark)    */
+  --md-info-bg: #1e3a52;  /* deep info-blue bar (switch header, alert-info)*/
+
   /* ---- Chakra semantic tokens (help Chakra-native components) ---- */
   --chakra-colors-chakra-body-bg: var(--md-bg-1);
   --chakra-colors-chakra-body-text: var(--md-text-0);
@@ -228,7 +236,7 @@ html[data-mist-dark] .EmptyTableMsg-btn:hover {
  * unreadable. Darken the bar (unique .switchPortHeader > .chakra-stack) to a
  * dark blue so the light labels + white buttons read. */
 html[data-mist-dark] .switchPortHeader > .chakra-stack {
-  background-color: #1e3a52 !important;
+  background-color: var(--md-info-bg) !important;
 }
 /* switch front panel: ports re-render on live status polls, so fresh nodes
  * flashed white until the fixer re-tagged them. Style the light "down/idle"
@@ -288,7 +296,7 @@ html[data-mist-dark] input[type="search"],
 html[data-mist-dark] input[type="password"],
 html[data-mist-dark] input[type="number"],
 html[data-mist-dark] [id$="-filter-input"] {
-  background-color: #101216 !important;
+  background-color: var(--md-bg-input) !important;
   color: var(--md-text-0) !important;
   border-color: var(--md-border) !important;
   /* Mist inputs carry an inset shadow (rgba(0,0,0,.15) inset) for light-theme
@@ -314,7 +322,7 @@ html[data-mist-dark] textarea:focus,
 html[data-mist-dark] .chakra-input:focus,
 html[data-mist-dark] .uikit-input-input:focus,
 html[data-mist-dark] .mc-Input:focus {
-  border-color: #63b4ee !important;
+  border-color: var(--md-focus) !important;
   box-shadow: 0 0 0 1px rgba(99, 180, 238, 0.55) !important;
   outline: none !important;
 }
@@ -331,7 +339,7 @@ html[data-mist-dark] .uikit-input-input.uikit-input-pattern-light {
 }
 html[data-mist-dark] .uikit-input-input.uikit-input-pattern-light:focus {
   box-shadow: none !important;
-  border-color: #63b4ee !important;
+  border-color: var(--md-focus) !important;
 }
 /* in-place rename fields inside table rows (webhook/token names): during a
  * whole-row hover they keep their own surface — in the light theme that reads
@@ -341,7 +349,7 @@ html[data-mist-dark] .uikit-input-input.uikit-input-pattern-light:focus {
 html[data-mist-dark] td.row-name input,
 html[data-mist-dark] td.row-name .chakra-editable__input,
 html[data-mist-dark] td.row-name [contenteditable="true"] {
-  background-color: #101216 !important;
+  background-color: var(--md-bg-input) !important;
   border: 1px solid var(--md-border) !important;
 }
 /* disabled fields: light theme drops them to a grey #e8eaeb fill with muted
@@ -364,7 +372,7 @@ html[data-mist-dark] select:disabled {
 }
 html[data-mist-dark] .mc-Input,
 html[data-mist-dark] select {
-  background-color: #101216 !important;
+  background-color: var(--md-bg-input) !important;
   color: var(--md-text-0) !important;
   border-color: var(--md-border) !important;
   box-shadow: none !important;
@@ -415,7 +423,7 @@ html[data-mist-dark] .chooser ul {
  * white panel + pale-blue #e2eff4 hover/selected rows applied via
  * pseudo-classes, which the fixer can never pre-tag — style them statically */
 html[data-mist-dark] .uikit-selectTrigger {
-  background-color: #101216 !important;
+  background-color: var(--md-bg-input) !important;
   color: var(--md-text-0) !important;
   border-color: var(--md-border) !important;
 }
@@ -463,6 +471,27 @@ html[data-mist-dark] .dropdownIcon,
 html[data-mist-dark] [class*="fa-caret"] {
   color: var(--md-text-1) !important;
 }
+/* duration selector dropdown (.timeIntervalPredefinedSelector: Last 60 Min /
+ * Last 24 Hr / Last 7 Days / Custom Date + Today/Yesterday/…). The white .col
+ * panel is fixer-darkened, but the item hover (#eaf1f6) and the selected wash
+ * (#e4eff8, with #474747 text) are pseudo-class states the fixer can't pre-tag,
+ * and the two columns are split by a bright #d0d0d0 divider. Style statically;
+ * the blue selected left-bar (#1074bc) is kept. */
+html[data-mist-dark] .timeIntervalPredefinedSelector .col {
+  background-color: var(--md-bg-2) !important;
+}
+html[data-mist-dark] .timeIntervalPredefinedSelector .col:first-child {
+  border-right-color: var(--md-border) !important;
+}
+html[data-mist-dark] .timeIntervalPredefinedSelector .col .preset:hover {
+  background-color: var(--md-hover) !important;
+}
+html[data-mist-dark] .timeIntervalPredefinedSelector .col .preset.selected {
+  color: var(--md-text-0) !important;
+}
+html[data-mist-dark] .timeIntervalPredefinedSelector .col .preset.selected:not(:hover) {
+  background-color: var(--md-bg-3) !important;
+}
 /* scope/entity selector lists (site / client / AP pickers) — light row hover */
 html[data-mist-dark] .entityList ul > li:hover,
 html[data-mist-dark] .entityList li.hovered,
@@ -508,7 +537,7 @@ html[data-mist-dark] .dropdown-list li.dropdown-hover:hover {
   background-color: transparent !important;
 }
 html[data-mist-dark] .dropdown-list li.delete {
-  color: #f16a6a !important;
+  color: var(--md-danger) !important;
 }
 /* editableTagList pickers ("Add Interface" in the Secure-Edge panel, tag
  * lists): the hover wash is applied to the li's DESCENDANT (.tag-name), so
@@ -521,7 +550,7 @@ html[data-mist-dark] .editableTagList .empty-msg {
   color: var(--md-text-1) !important;
 }
 html[data-mist-dark] .editableTagList .validation-message {
-  color: #f16a6a !important;
+  color: var(--md-danger) !important;
 }
 
 /* dropdown/option hovers use light greys in the light theme */
@@ -543,10 +572,10 @@ html[data-mist-dark] .component-ToggleButtons {
 html[data-mist-dark] button[role="tab"].selected,
 html[data-mist-dark] button[role="tab"][aria-selected="true"]:not(.chakra-tabs__tab),
 html[data-mist-dark] .component-ToggleButtons-item.active {
-  background-color: #1174bd !important;
+  background-color: var(--md-selected) !important;
   background-image: none !important;
   color: #ffffff !important;
-  border-color: #1174bd !important;
+  border-color: var(--md-selected) !important;
 }
 /* Chakra tabs (events-tile counters etc.) are underline-style: no fill, the
  * separate blue indicator under the active tab is the only selection mark */
@@ -556,6 +585,14 @@ html[data-mist-dark] .chakra-tabs__tab {
 }
 html[data-mist-dark] .chakra-tabs__tab[aria-selected="true"] {
   color: var(--md-text-0) !important;
+}
+/* VERTICAL chakra tab lists are used as master rows (e.g. insights event list:
+ * Bad Cable / Switch Health / …). Each row carries a bright #f0f0f0 bottom
+ * border as a separator — .chakra-tabs__tab is in the fixer's skip-list, so
+ * nothing recolours it. Darken the separator (scoped to vertical so horizontal
+ * counter-tab active underlines, if any, are never touched). */
+html[data-mist-dark] .chakra-tabs__tablist[aria-orientation="vertical"] .chakra-tabs__tab {
+  border-color: var(--md-border-soft) !important;
 }
 html[data-mist-dark] .btn.normal:not(.dangerous):not(.highlighted):not(.btn-copied):hover,
 html[data-mist-dark] .uikit-button:not(.uikit-button-color-primary):not(.uikit-button-color-danger):not(.signin-orgChooser-btn):not(.uikit-button-pattern-text):not(.uikit-button-pattern-normal.uikit-button-color-normal):not(.uikit-button-pattern-icon):hover,
@@ -568,7 +605,7 @@ html[data-mist-dark] .component-ToggleButtons-item:not(.active):hover {
  * -color-danger keeps red text. These come after the base rule so they win. */
 html[data-mist-dark] .uikit-button.uikit-button-pattern-outline {
   background-color: transparent !important;
-  color: #63b4ee !important;
+  color: var(--md-focus) !important;
   border-color: #2f6ea6 !important;
 }
 html[data-mist-dark] .uikit-button.uikit-button-pattern-outline:hover {
@@ -578,7 +615,7 @@ html[data-mist-dark] .uikit-button.uikit-button-pattern-outline:hover {
  * "Add Network", …) — restore their blue instead of the flattened base look */
 html[data-mist-dark] .uikit-button.uikit-button-pattern-link:not(.uikit-button-color-danger):not(.uikit-button-disabled) {
   background-color: transparent !important;
-  color: #5fb0f0 !important;
+  color: var(--md-link) !important;
 }
 html[data-mist-dark] .uikit-button.uikit-button-pattern-link:not(.uikit-button-color-danger):not(.uikit-button-disabled):hover {
   background-color: rgba(99, 180, 238, 0.12) !important;
@@ -624,7 +661,7 @@ html[data-mist-dark] .uikit-button.uikit-button-pattern-text:hover {
  * contrast; solid danger keeps native white-on-red. */
 html[data-mist-dark] .uikit-button.uikit-button-pattern-link.uikit-button-color-danger,
 html[data-mist-dark] .uikit-button.uikit-button-pattern-outline.uikit-button-color-danger {
-  color: #f16a6a !important;
+  color: var(--md-danger) !important;
 }
 html[data-mist-dark] .uikit-button-disabled,
 html[data-mist-dark] .btn.disabled {
@@ -671,7 +708,7 @@ html[data-mist-dark] .component-Tabs-item--active {
 /* Mist blue links read too dark on dark surfaces — lift one step */
 html[data-mist-dark] span.link,
 html[data-mist-dark] a.link {
-  color: #5fb0f0 !important;
+  color: var(--md-link) !important;
 }
 
 /* ============ dialogs / slide-in panels / tooltips =========== */
@@ -691,13 +728,57 @@ html[data-mist-dark] .hover-label-container {
   color: var(--md-text-0) !important;
   border-color: var(--md-border) !important;
 }
+/* react-tooltip cards (topology node hover = comp-NodeTooltip/CommonTooltip,
+ * and any other .__react_component_tooltip.type-light popup): library default
+ * is a white card + #222 text + #d0d0d0 border, with a CSS-triangle arrow
+ * drawn via ::before (border colour) + ::after (fill colour) on the border
+ * side matching the placement. Recolour the card and BOTH arrow layers for
+ * every placement (the tooltip flips near screen edges). */
+html[data-mist-dark] .__react_component_tooltip.type-light {
+  background-color: var(--md-bg-2) !important;
+  color: var(--md-text-0) !important;
+  border-color: var(--md-border) !important;
+}
+html[data-mist-dark] .__react_component_tooltip.type-light.place-top::after {
+  border-top-color: var(--md-bg-2) !important;
+}
+html[data-mist-dark] .__react_component_tooltip.type-light.place-bottom::after {
+  border-bottom-color: var(--md-bg-2) !important;
+}
+html[data-mist-dark] .__react_component_tooltip.type-light.place-left::after {
+  border-left-color: var(--md-bg-2) !important;
+}
+html[data-mist-dark] .__react_component_tooltip.type-light.place-right::after {
+  border-right-color: var(--md-bg-2) !important;
+}
+html[data-mist-dark] .__react_component_tooltip.type-light.border.place-top::before {
+  border-top-color: var(--md-border) !important;
+}
+html[data-mist-dark] .__react_component_tooltip.type-light.border.place-bottom::before {
+  border-bottom-color: var(--md-border) !important;
+}
+html[data-mist-dark] .__react_component_tooltip.type-light.border.place-left::before {
+  border-left-color: var(--md-border) !important;
+}
+html[data-mist-dark] .__react_component_tooltip.type-light.border.place-right::before {
+  border-right-color: var(--md-border) !important;
+}
+/* node-type glyph in the tooltip header (.device-icon = a black line-SVG,
+ * uikit-icon-*): the fixer never touches svg internals, so it stays black on
+ * the dark card. Its strokes/fills are all currentColor, so a single `color`
+ * override on the svg recolours every device icon (stroke- or fill-based)
+ * without risking a filled outline. Scoped to the tooltip — the graph's own
+ * node-pill icons render fine and must not change. */
+html[data-mist-dark] .comp-NodeTooltip .device-icon {
+  color: var(--md-text-1) !important;
+}
 
 /* =================== neutral text lift ====================== */
 /* Only container-level defaults + known neutral-text hosts. Saturated status
- * colours (set explicitly by Mist) are intentionally left to win. */
-html[data-mist-dark] .content-block,
-html[data-mist-dark] .block-wide,
-html[data-mist-dark] .block-narrow,
+ * colours (set explicitly by Mist) are intentionally left to win.
+ * (.content-block/.block-wide/.block-narrow are NOT repeated here — the cards
+ * rule above already gives them `color` with !important, so a weaker restate
+ * could never win the cascade.) */
 html[data-mist-dark] .PropertyTable,
 /* chakra-text is excluded INSIDE menu items: neutral labels inherit text-0
  * from the menu-list rule anyway, while semantic colours declared on the
@@ -727,7 +808,7 @@ html[data-mist-dark] .chakra-alert {
   color: var(--md-text-0) !important;
 }
 html[data-mist-dark] .chakra-alert[data-status="info"] {
-  background-color: #1e3a52 !important;
+  background-color: var(--md-info-bg) !important;
 }
 html[data-mist-dark] .chakra-alert[data-status="warning"] {
   background-color: #4a3419 !important;
@@ -747,7 +828,7 @@ html[data-mist-dark] .chakra-alert[data-status="success"] {
  * lift already turns light, so the container colour doesn't affect it. */
 html[data-mist-dark] .secureEdgeConnectorSidePanel [role="alert"] {
   background-color: var(--md-bg-3) !important;
-  color: #f16a6a !important;
+  color: var(--md-danger) !important;
 }
 
 /* ==================== dividers / misc ======================= */

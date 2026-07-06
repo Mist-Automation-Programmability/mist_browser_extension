@@ -88,8 +88,9 @@
         // on the root (mma-chart, multi-line-chart, …) that must go dark.
         var svgAnc = el.closest("svg");
         if (svgAnc && svgAnc !== el) { return true; }
-        return el.closest(".leaflet-container") ||
-            el.closest(".mapboxgl-map") || el.closest('[class*="gm-"]') ||
+        // map widgets: one grouped closest() rather than three separate
+        // ancestor walks (this runs for every element, twice per full pass).
+        return el.closest(".leaflet-container, .mapboxgl-map, [class*='gm-']") ||
             el.tagName === "IMG" ||
             // label chips (.tag-text) carry semantic colours — leave them light
             (el.classList && el.classList.contains("tag-text")) ||
