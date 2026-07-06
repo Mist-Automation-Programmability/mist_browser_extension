@@ -162,6 +162,10 @@ html[data-mist-dark] table.chakra-table {
  * (list views, traffic steering — these have a native cell hover we widen to
  * the row). Reorderable policy/rule tables have no hoverable cells and must not
  * row-highlight; only their editable name cell reacts (see .row-name rule). */
+/* NOTE: the TR itself must take the wash too — some cells (e.g. webhook
+ * row-name) are narrower than their visual column, and the uncovered strip
+ * otherwise shows the tr's bg-2 as a dark hole in the hover (cut-44). */
+html[data-mist-dark] tr.table-row:has(td.table-cell--hoverable):hover,
 html[data-mist-dark] tr.table-row:has(td.table-cell--hoverable):hover td,
 html[data-mist-dark] td.table-cell--hoverable:hover {
   background-color: var(--md-hover) !important;
@@ -328,6 +332,17 @@ html[data-mist-dark] .uikit-input-input.uikit-input-pattern-light {
 html[data-mist-dark] .uikit-input-input.uikit-input-pattern-light:focus {
   box-shadow: none !important;
   border-color: #63b4ee !important;
+}
+/* in-place rename fields inside table rows (webhook/token names): during a
+ * whole-row hover they keep their own surface — in the light theme that reads
+ * as a white input on the grey wash, but on dark the fill nearly matches the
+ * row's resting colour and looks like a stuck-hover artefact. Give them the
+ * full input anatomy (well + border) so they read as editors. */
+html[data-mist-dark] td.row-name input,
+html[data-mist-dark] td.row-name .chakra-editable__input,
+html[data-mist-dark] td.row-name [contenteditable="true"] {
+  background-color: #101216 !important;
+  border: 1px solid var(--md-border) !important;
 }
 /* disabled fields: light theme drops them to a grey #e8eaeb fill with muted
  * text; the generic dark input rule made them identical to enabled fields.
@@ -698,6 +713,13 @@ html[data-mist-dark] h4 {
   color: var(--md-text-0);
 }
 
+/* API Token modal container: fixer-tagged as a control ("c") in older builds
+ * and picked up the control hover wash — a static panel must not react to
+ * hover. (The fixer now size-gates the "c" tag; this pins the known case.) */
+html[data-mist-dark] .APITokenModal-container,
+html[data-mist-dark] .APITokenModal-container:hover {
+  background-color: var(--md-bg-2) !important;
+}
 /* Chakra alerts (e.g. the Port Mirroring notice in rule editors): pale
  * status fills (blue.100/orange.100/red.100/green.100) under our inherited
  * light text = illegible. Deep status-tinted fills keep the semantics. */

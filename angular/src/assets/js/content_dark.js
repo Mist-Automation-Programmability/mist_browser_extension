@@ -105,7 +105,13 @@
             var bg = parseColor(cs.backgroundColor);
             if (bg && bg.a >= 0.9 && luma(bg) >= 205 && cs.backgroundImage === "none") {
                 if (chroma(bg) <= 14) {
-                    el.setAttribute("data-md-lit", interactive(el) ? "b" : (luma(bg) >= 245 ? "s" : "c"));
+                    // Panel-sized elements are surfaces no matter their grey:
+                    // the "c" (control) tag carries a :hover wash, and a modal
+                    // container tagged "c" would lighten whenever hovered.
+                    var box = el.getBoundingClientRect();
+                    var panelSized = box.width > 350 && box.height > 260;
+                    el.setAttribute("data-md-lit", (interactive(el) && !panelSized) ? "b"
+                        : ((luma(bg) >= 245 || panelSized) ? "s" : "c"));
                 } else if (chroma(bg) <= 30 && bg.b >= bg.g && bg.g > bg.r) {
                     // pale BLUE-tinted wash = Mist's selection/hover highlight
                     // (e.g. #ebf8ff, #e4effa) — keep it a highlight, not a surface
