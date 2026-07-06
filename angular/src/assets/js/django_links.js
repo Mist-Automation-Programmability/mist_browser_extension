@@ -293,6 +293,33 @@ function fmtLocal(d) {
     return d.getFullYear() + "-" + _pad(d.getMonth() + 1) + "-" + _pad(d.getDate()) +
         " " + _pad(d.getHours()) + ":" + _pad(d.getMinutes()) + ":" + _pad(d.getSeconds());
 }
+// UTC offset label for the date being formatted (per-timestamp, so DST is
+// reflected correctly): "UTC", "UTC+2", "UTC-7", "UTC+5:30". Summer-time
+// dates get an explicit " DST" marker so two timestamps on the same page
+// showing different offsets (winter vs summer) are self-explanatory.
+function _stdOffset() {
+    // The zone's standard offset = the larger getTimezoneOffset() of Jan/Jul
+    // (DST always moves the clock forward, shrinking the offset-from-UTC).
+    var y = new Date().getFullYear();
+    return Math.max(new Date(y, 0, 1).getTimezoneOffset(),
+        new Date(y, 6, 1).getTimezoneOffset());
+}
+function _tzName() {
+    try { return " · " + Intl.DateTimeFormat().resolvedOptions().timeZone; }
+    catch (e) { return ""; }
+}
+function fmtTz(d) {
+    var off = -d.getTimezoneOffset();          // minutes east of UTC
+    var dst = d.getTimezoneOffset() < _stdOffset();
+    var label;
+    if (off === 0) label = "UTC";
+    else {
+        var abs = Math.abs(off);
+        label = "UTC" + (off > 0 ? "+" : "-") + Math.floor(abs / 60) +
+            (abs % 60 ? ":" + _pad(abs % 60) : "");
+    }
+    return dst ? label + " DST" : label;
+}
 function precedingKey(numSpan) {
     // The key str token normally sits ~2 spans back (value <- pun ":" <- pln " " <-
     // str key); 6 is generous slack for whitespace/punctuation token variants.
@@ -319,8 +346,8 @@ function applyTimestamps(preEl) {
         var d = new Date(val * 1000);
         var ann = doc.createElement("span");
         ann.className = "mist-ts";
-        ann.textContent = " → " + fmtLocal(d);
-        ann.title = d.toISOString();                  // UTC
+        ann.textContent = " → " + fmtLocal(d) + " (" + fmtTz(d) + ")";
+        ann.title = "UTC: " + d.toISOString() + _tzName();  // full story on hover
         ann.style.opacity = "0.5";
         ann.style.userSelect = "none";
         num.insertAdjacentElement("afterend", ann);
