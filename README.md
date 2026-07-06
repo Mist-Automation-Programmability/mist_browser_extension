@@ -121,7 +121,7 @@ Configure the extension and enable opt-in enhancements for the Mist dashboard an
   - **Dark mode for the Mist dashboard** *(Experimental)* — applies an extension-provided dark theme to the Mist manage pages (`manage.*`). It is carefully scoped to preserve Mist's status and brand colours (greens, reds, blues, Marvis purple) and toggles instantly, with no page reload.
 - **API Page Enhancements** *(Mist API / Django pages)*
   - **ID Links generation** *(Experimental)* — turns known Mist IDs (`org_id`, `site_id`, object IDs) into clickable links.
-  - **Human-readable timestamps** — shows a local-time date with its UTC offset (and a `DST` marker where applicable) next to epoch timestamps; hover to see the exact UTC value.
+  - **Human-readable timestamps** — shows a local-time date with its UTC offset (and a `DST` marker where applicable) next to epoch timestamps.
   - **Copy JSON** — adds a button to copy the raw JSON response.
 
 ### About Tab
