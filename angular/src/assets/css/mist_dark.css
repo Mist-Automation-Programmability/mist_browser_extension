@@ -184,6 +184,42 @@ html[data-mist-dark] .Chart-minMaxValue {
 html[data-mist-dark] .Chart-yValue {
   fill: var(--md-text-0) !important;
 }
+/* Marvis Actions status dropdown (Open / In Progress / Resolved By User):
+ * native item hover is a light #f0f0f0 wash — white-on-white on dark. */
+html[data-mist-dark] .ActionStatus-select .dropdown > ul > li:hover {
+  background: var(--md-hover) !important;
+}
+/* Traffic Anomaly details modal (Marvis Actions "View More"): the RX GBytes
+ * overlay is drawn stroke="black" with a black .area tint (opacity .1 kept),
+ * its legend swatch is painted near-black, the CAUSES "Port" dot label is
+ * black (fill="block" — a Mist typo that falls back to black), and the
+ * quadrant axis arrows/lines are #404345 — all invisible on the dark modal. */
+html[data-mist-dark] .modalWindow .viz-container path[stroke="black"] {
+  stroke: var(--md-text-0) !important;
+}
+html[data-mist-dark] .modalWindow .viz-container path.area[fill="black"] {
+  fill: var(--md-text-0) !important;
+}
+html[data-mist-dark] .AnomalyTimeline-legend-icon--line {
+  background-color: var(--md-text-0) !important;
+}
+html[data-mist-dark] .AnomalyCauses-graph text[fill="block"],
+html[data-mist-dark] .AnomalyCauses-graph text[fill="black"] {
+  fill: var(--md-text-0) !important;
+}
+html[data-mist-dark] .AnomalyCauses-graph line,
+html[data-mist-dark] .AnomalyCauses-graph path,
+html[data-mist-dark] .DetectedAnomalies-indicators path,
+html[data-mist-dark] .DetectedAnomalies-indicators line {
+  stroke: var(--md-text-2) !important;
+}
+/* virtual-chassis stacked-switch icon (switch lists, uikit-icon-switchStacked):
+ * the "stack" effect uses two rects hardcoded fill="#FFFFFF" to occlude the
+ * back outline — invisible plates on white, a glaring white square on dark.
+ * Repaint them to the table-row surface so they occlude invisibly again. */
+html[data-mist-dark] svg[class*="uikit-icon-switchStacked"] rect[fill="#FFFFFF" i] {
+  fill: var(--md-bg-2) !important;
+}
 
 /* ========================= tables =========================== */
 html[data-mist-dark] .table,
