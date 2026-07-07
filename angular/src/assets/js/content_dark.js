@@ -18,6 +18,12 @@
  *      A MutationObserver queues newly-added subtrees and a leading-edge
  *      throttle processes them within ~0-250ms — scanning only what changed,
  *      not the whole document, so late-rendered cards darken near-instantly.
+ *      Tags record a judgement about an element's CLASS-driven style, so the
+ *      observer also watches class attribute swaps (Emotion moves selection
+ *      state between hashed classes with no childList change): a tagged
+ *      element whose classes changed since tagging is stripped and re-judged
+ *      in the same pass, so stale tags never pin a now-selected control to
+ *      its old paint.
  */
 (function () {
     var _browser = (typeof browser !== "undefined") ? browser : (typeof chrome !== "undefined" ? chrome : null);
@@ -41,6 +47,16 @@
     var lastRun = 0;
     var fullScan = true;   // next pass scans the whole body
     var dirty = [];        // otherwise: only these newly-added subtree roots
+
+    // class signature at tag time (element -> class string): lets a pass
+    // detect that Emotion swapped the element's classes after we judged it.
+    var tagSig = (typeof WeakMap !== "undefined") ? new WeakMap() : null;
+    // SVG className is an SVGAnimatedString — always compare the attribute.
+    function clsSig(el) { return el.getAttribute("class") || ""; }
+    function setTag(el, name, value) {
+        el.setAttribute(name, value);
+        if (tagSig) { tagSig.set(el, clsSig(el)); }
+    }
 
     function parseColor(value) {
         var m = (value || "").match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
@@ -101,6 +117,18 @@
 
     function tagBackground(el) {
         if (skip(el)) { return; }
+        // stale-tag check: if the classes changed since we tagged (Emotion
+        // selection state moved), the old judgement no longer applies — strip
+        // every tag and re-judge below with the element's new native style.
+        if (tagSig) {
+            var sig = tagSig.get(el);
+            if (sig !== undefined && sig !== clsSig(el)) {
+                el.removeAttribute("data-md-lit");
+                el.removeAttribute("data-md-bord");
+                el.removeAttribute("data-md-dim");
+                tagSig.delete(el);
+            }
+        }
         var cs = getComputedStyle(el);
         if (!el.hasAttribute("data-md-lit")) {
             var bg = parseColor(cs.backgroundColor);
@@ -111,12 +139,12 @@
                     // container tagged "c" would lighten whenever hovered.
                     var box = el.getBoundingClientRect();
                     var panelSized = box.width > 350 && box.height > 260;
-                    el.setAttribute("data-md-lit", (interactive(el) && !panelSized) ? "b"
+                    setTag(el, "data-md-lit", (interactive(el) && !panelSized) ? "b"
                         : ((luma(bg) >= 245 || panelSized) ? "s" : "c"));
                 } else if (chroma(bg) <= 30 && bg.b >= bg.g && bg.g > bg.r) {
                     // pale BLUE-tinted wash = Mist's selection/hover highlight
                     // (e.g. #ebf8ff, #e4effa) — keep it a highlight, not a surface
-                    el.setAttribute("data-md-lit", "h");
+                    setTag(el, "data-md-lit", "h");
                 }
             }
         }
@@ -135,7 +163,7 @@
                 if (parseFloat(cs["border" + s + "Width"]) > 0 && cs["border" + s + "Style"] !== "none") {
                     var bc = parseColor(cs["border" + s + "Color"]);
                     if (bc && bc.a > 0.4 && luma(bc) >= 150 && chroma(bc) <= 30) {
-                        el.setAttribute("data-md-bord", "b");
+                        setTag(el, "data-md-bord", "b");
                         break;
                     }
                 }
@@ -144,7 +172,7 @@
                 parseFloat(cs.outlineWidth) > 0 && cs.outlineStyle !== "none") {
                 var oc = parseColor(cs.outlineColor);
                 if (oc && oc.a > 0.4 && luma(oc) >= 150 && chroma(oc) <= 30) {
-                    el.setAttribute("data-md-bord", "o");
+                    setTag(el, "data-md-bord", "o");
                 }
             }
         }
@@ -163,12 +191,12 @@
         if (!fg || luma(fg) >= 135 || !onDarkSurface(el)) { return; }
         if (chroma(fg) <= 24) {
             // true neutral dark text: near-black -> primary, mid-grey -> secondary
-            el.setAttribute("data-md-dim", luma(fg) < 90 ? "0" : "1");
+            setTag(el, "data-md-dim", luma(fg) < 90 ? "0" : "1");
         } else if (chroma(fg) <= 34) {
             // slightly blue-tinted muted greys (Chakra gray.600/700, used for
             // small sub-labels like "EX / QFX") -> secondary, never bright.
             // >34 chroma is a real accent colour and is left alone.
-            el.setAttribute("data-md-dim", "1");
+            setTag(el, "data-md-dim", "1");
         }
     }
 
@@ -223,11 +251,18 @@
         enabled = true;
         setDark(true);
         if (!observer && typeof MutationObserver !== "undefined") {
-            // childList only: our own data-md-* attribute writes never re-trigger it.
+            // childList + class attribute only: our own data-md-* attribute
+            // writes are outside the filter and never re-trigger it. Class
+            // swaps re-queue the element so stale tags are re-judged.
             observer = new MutationObserver(function (mutations) {
                 if (!enabled) { return; }
                 if (!fullScan) {
                     for (var i = 0; i < mutations.length; i++) {
+                        if (mutations[i].type === "attributes") {
+                            var t = mutations[i].target;
+                            if (t.nodeType === 1) { dirty.push(t); }
+                            continue;
+                        }
                         var added = mutations[i].addedNodes;
                         for (var j = 0; j < added.length; j++) {
                             if (added[j].nodeType === 1) { dirty.push(added[j]); }
@@ -237,7 +272,10 @@
                 }
                 scheduleFix();
             });
-            observer.observe(document.documentElement, { subtree: true, childList: true });
+            observer.observe(document.documentElement, {
+                subtree: true, childList: true,
+                attributes: true, attributeFilter: ["class"]
+            });
         }
         window.addEventListener("hashchange", requestFullScan);
         if (document.body) { requestFullScan(); }
