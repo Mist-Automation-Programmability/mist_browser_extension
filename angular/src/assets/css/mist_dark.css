@@ -121,14 +121,27 @@ html[data-mist-dark] .mc-Chatlog-feedback .chakra-button {
 html[data-mist-dark] .mc-Chatlog-feedback .chakra-button:hover {
   color: var(--md-text-0) !important;
 }
-/* Live View "Edit Floorplan Stack" / "Add Floorplans" buttons: same gray.700
- * chakra-icon disease — pencil2/add2 icons invisible on their dark buttons. */
+/* Live View gray.700 chakra-icon buttons: edit/add (pencil2/add2) next to the
+ * floor-stack heading and the scene control rail (Settings sliders / Ruler /
+ * Zoom dash / Focus / Lock — add2 doubles as Zoom In) — all invisible on
+ * their dark buttons. The active rail button paints its own white icon via a
+ * colored emotion style and is deliberately not matched here. */
 html[data-mist-dark] .chakra-button svg.uikit-icon-pencil2,
-html[data-mist-dark] .chakra-button svg.uikit-icon-add2 {
+html[data-mist-dark] .chakra-button svg.uikit-icon-add2,
+html[data-mist-dark] .chakra-button svg.uikit-icon-sliders,
+html[data-mist-dark] .chakra-button svg.uikit-icon-ruler,
+html[data-mist-dark] .chakra-button svg.uikit-icon-dash,
+html[data-mist-dark] .chakra-button svg.uikit-icon-focus,
+html[data-mist-dark] .chakra-button svg.uikit-icon-lock {
   color: var(--md-text-1) !important;
 }
 html[data-mist-dark] .chakra-button:hover svg.uikit-icon-pencil2,
-html[data-mist-dark] .chakra-button:hover svg.uikit-icon-add2 {
+html[data-mist-dark] .chakra-button:hover svg.uikit-icon-add2,
+html[data-mist-dark] .chakra-button:hover svg.uikit-icon-sliders,
+html[data-mist-dark] .chakra-button:hover svg.uikit-icon-ruler,
+html[data-mist-dark] .chakra-button:hover svg.uikit-icon-dash,
+html[data-mist-dark] .chakra-button:hover svg.uikit-icon-focus,
+html[data-mist-dark] .chakra-button:hover svg.uikit-icon-lock {
   color: var(--md-text-0) !important;
 }
 /* Live View side panel (Clients/Assets/Devices accordion): the map-marker
