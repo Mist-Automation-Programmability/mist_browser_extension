@@ -111,6 +111,16 @@ html[data-mist-dark] .iconBtn:not(.disabled):hover,
 html[data-mist-dark] .comp-appHeaderBtn:hover .comp-appHeaderBtn-icon {
   color: var(--md-text-0) !important;
 }
+/* Marvis chat response feedback row (.mc-Chatlog-feedback: regenerate /
+ * thumbs up / thumbs down): uikit currentColor icons on chakra buttons
+ * painted gray.700 #2d3748 — invisible on the dark panel. Same lift-on-host
+ * recipe (covers the stroke-based lucide refresh AND fill-based thumbs). */
+html[data-mist-dark] .mc-Chatlog-feedback .chakra-button {
+  color: var(--md-text-1) !important;
+}
+html[data-mist-dark] .mc-Chatlog-feedback .chakra-button:hover {
+  color: var(--md-text-0) !important;
+}
 
 /* ====================== cards / panels ======================= */
 html[data-mist-dark] .content-block,
