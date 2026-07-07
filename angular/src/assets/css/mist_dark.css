@@ -167,6 +167,23 @@ html[data-mist-dark] .Hierarchy-child--inactive {
 html[data-mist-dark] .Hierarchy-grandchild.expanded {
   box-shadow: rgba(0, 0, 0, 0.5) 1px 1px 3px !important;
 }
+/* Marvis Actions time chart (.Chart / LineGraph component): the hover
+ * crosshair (a classless svg line), the "Jun 25 4:00 AM …: 0 Actions" hover
+ * readout (.Chart-yValue), the dotted mean line and the y-axis min/max
+ * figures are all painted black — invisible on the dark card. The classless
+ * selector also covers the tiny axis tick stubs (were currentColor). */
+html[data-mist-dark] .Chart svg line:not([class]) {
+  stroke: var(--md-text-1) !important;
+}
+html[data-mist-dark] .Chart-meanLine {
+  stroke: var(--md-text-2) !important;
+}
+html[data-mist-dark] .Chart-minMaxValue {
+  fill: var(--md-text-2) !important;
+}
+html[data-mist-dark] .Chart-yValue {
+  fill: var(--md-text-0) !important;
+}
 
 /* ========================= tables =========================== */
 html[data-mist-dark] .table,
