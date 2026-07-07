@@ -524,6 +524,18 @@ html[data-mist-dark] .affectedItemsBlock .tabbedTables .tabs .tab:hover {
 html[data-mist-dark] .affectedItemsBlock .tabbedTables .tabs .tab.selected {
   background-color: var(--md-bg-3) !important;
 }
+/* SLE "Root Cause analysis" metric list (.serviceLevelsMetricView .metricTab):
+ * native hover {#eaf1f6} and selected {#e4eff8; color:#000} are pale-blue
+ * washes the fixer flattens to one dark surface, so the selected metric was
+ * only distinguishable by font-weight. Selected after hover so a hovered
+ * selected row keeps its selected paint, as native does. */
+html[data-mist-dark] .serviceLevelsMetricView .metricTab:hover {
+  background-color: var(--md-hover) !important;
+}
+html[data-mist-dark] .serviceLevelsMetricView .metricTab.selected {
+  background-color: var(--md-bg-3) !important;
+  color: var(--md-text-0) !important;
+}
 /* scope/entity selector lists (site / client / AP pickers) — light row hover */
 html[data-mist-dark] .entityList ul > li:hover,
 html[data-mist-dark] .entityList li.hovered,
@@ -805,6 +817,56 @@ html[data-mist-dark] .__react_component_tooltip.type-light.border.place-left::be
   border-left-color: var(--md-border) !important;
 }
 html[data-mist-dark] .__react_component_tooltip.type-light.border.place-right::before {
+  border-right-color: var(--md-border) !important;
+}
+/* SLE tooltips (.serviceLevelsTooltip — classifier/metric cards on the SLE
+ * RCA page, also reused by RRM/security views): Mist overrides the library
+ * theme with a cream card {#ebf0d4; color:#474747; border:#9b9b9b} + black
+ * .title/.value and #606060 body — a light island on the dark page. Recolour
+ * card + both arrow layers per placement (same recipe as type-light above).
+ * .failureCount--error (semantic red) is excluded from the .value lift. */
+html[data-mist-dark] .__react_component_tooltip.serviceLevelsTooltip {
+  background-color: var(--md-bg-3) !important;
+  color: var(--md-text-1) !important;
+  border-color: var(--md-border) !important;
+}
+html[data-mist-dark] .__react_component_tooltip.serviceLevelsTooltip .title,
+html[data-mist-dark] .__react_component_tooltip.serviceLevelsTooltip .value:not([class*="failureCount"]),
+html[data-mist-dark] .__react_component_tooltip.serviceLevelsTooltip table tr td:last-child {
+  color: var(--md-text-0) !important;
+}
+html[data-mist-dark] .__react_component_tooltip.serviceLevelsTooltip p,
+html[data-mist-dark] .__react_component_tooltip.serviceLevelsTooltip .description,
+html[data-mist-dark] .__react_component_tooltip.serviceLevelsTooltip .name,
+html[data-mist-dark] .__react_component_tooltip.serviceLevelsTooltip table tr td:first-child {
+  color: var(--md-text-1) !important;
+}
+html[data-mist-dark] .__react_component_tooltip.serviceLevelsTooltip .date,
+html[data-mist-dark] .__react_component_tooltip.serviceLevelsTooltip .category {
+  color: var(--md-text-2) !important;
+}
+html[data-mist-dark] .__react_component_tooltip.serviceLevelsTooltip.place-top::after {
+  border-top-color: var(--md-bg-3) !important;
+}
+html[data-mist-dark] .__react_component_tooltip.serviceLevelsTooltip.place-bottom::after {
+  border-bottom-color: var(--md-bg-3) !important;
+}
+html[data-mist-dark] .__react_component_tooltip.serviceLevelsTooltip.place-left::after {
+  border-left-color: var(--md-bg-3) !important;
+}
+html[data-mist-dark] .__react_component_tooltip.serviceLevelsTooltip.place-right::after {
+  border-right-color: var(--md-bg-3) !important;
+}
+html[data-mist-dark] .__react_component_tooltip.serviceLevelsTooltip.border.place-top::before {
+  border-top-color: var(--md-border) !important;
+}
+html[data-mist-dark] .__react_component_tooltip.serviceLevelsTooltip.border.place-bottom::before {
+  border-bottom-color: var(--md-border) !important;
+}
+html[data-mist-dark] .__react_component_tooltip.serviceLevelsTooltip.border.place-left::before {
+  border-left-color: var(--md-border) !important;
+}
+html[data-mist-dark] .__react_component_tooltip.serviceLevelsTooltip.border.place-right::before {
   border-right-color: var(--md-border) !important;
 }
 /* node-type glyph in the tooltip header (.device-icon = a black line-SVG,
