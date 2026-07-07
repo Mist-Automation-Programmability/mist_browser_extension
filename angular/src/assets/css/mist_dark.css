@@ -131,6 +131,25 @@ html[data-mist-dark] .chakra-button:hover svg.uikit-icon-pencil2,
 html[data-mist-dark] .chakra-button:hover svg.uikit-icon-add2 {
   color: var(--md-text-0) !important;
 }
+/* Live View side panel (Clients/Assets/Devices accordion): the map-marker
+ * icons are a currentColor body + WHITE glyph paths — the row text lift turns
+ * the body near-white, leaving white-on-white blobs. Repaint the glyphs to
+ * the panel surface (light plate + dark glyph). Scene pins render separately
+ * and are untouched. */
+html[data-mist-dark] .chakra-accordion__panel svg[class*="uikit-icon-map-marker-"] path[fill="white" i],
+html[data-mist-dark] .chakra-accordion__panel svg[class*="uikit-icon-map-marker-"] path[fill="#fff" i],
+html[data-mist-dark] .chakra-accordion__panel svg[class*="uikit-icon-map-marker-"] path[fill="#ffffff" i] {
+  fill: var(--md-bg-1) !important;
+}
+/* ANTI-BLINK: the live view re-creates these panel rows several times per
+ * second (position updates). Their colourless `border: 1px solid` resolves to
+ * currentColor (bright after the text lift); the fixer re-tags each fresh
+ * copy data-md-bord="b" up to 250ms later, so the separator flashed light on
+ * every re-render. Cover it statically (same value as the tag repaint) so
+ * re-created rows are dark from the first frame. */
+html[data-mist-dark] .chakra-accordion__panel .chakra-stack:has(> svg[class*="uikit-icon-map-marker-"]) {
+  border-color: var(--md-border) !important;
+}
 
 /* ====================== cards / panels ======================= */
 html[data-mist-dark] .content-block,
