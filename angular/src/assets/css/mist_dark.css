@@ -153,6 +153,20 @@ html[data-mist-dark] .chakra-card {
   border-color: var(--md-border) !important;
   color: var(--md-text-0) !important;
 }
+/* Marvis Actions tree (#!virtualAssistant/action): active category nodes and
+ * expanded action boxes glow lightgray {rgb(211,211,211)} — a white halo on
+ * the dark canvas. Swap for a dark drop shadow (denser alpha so it still
+ * reads on dark); inactive/disabled nodes keep their native shadow-less look. */
+html[data-mist-dark] .Hierarchy-child {
+  box-shadow: rgba(0, 0, 0, 0.5) 0 4px 9px !important;
+}
+html[data-mist-dark] .Hierarchy-child--disabled,
+html[data-mist-dark] .Hierarchy-child--inactive {
+  box-shadow: none !important;
+}
+html[data-mist-dark] .Hierarchy-grandchild.expanded {
+  box-shadow: rgba(0, 0, 0, 0.5) 1px 1px 3px !important;
+}
 
 /* ========================= tables =========================== */
 html[data-mist-dark] .table,
