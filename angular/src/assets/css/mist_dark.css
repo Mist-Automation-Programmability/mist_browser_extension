@@ -528,7 +528,17 @@ html[data-mist-dark] .affectedItemsBlock .tabbedTables .tabs .tab.selected {
  * native hover {#eaf1f6} and selected {#e4eff8; color:#000} are pale-blue
  * washes the fixer flattens to one dark surface, so the selected metric was
  * only distinguishable by font-weight. Selected after hover so a hovered
- * selected row keeps its selected paint, as native does. */
+ * selected row keeps its selected paint, as native does.
+ * The BASE rule exists because the initially-selected pill is pale-blue at
+ * scan time, so the fixer refuses to tag it (colored interactive element) and
+ * never re-scans on the class swap — once deselected it fell back to its
+ * native white bg + #474747 label. Values match the fixer repaint (bg-2 +
+ * text-0 inheritance) so tagged rows don't shift; explicit child colours
+ * (green success %) still win over the inherited color. */
+html[data-mist-dark] .serviceLevelsMetricView .metricTab {
+  background-color: var(--md-bg-2) !important;
+  color: var(--md-text-0) !important;
+}
 html[data-mist-dark] .serviceLevelsMetricView .metricTab:hover {
   background-color: var(--md-hover) !important;
 }
