@@ -506,6 +506,15 @@ html[data-mist-dark] .timeIntervalPredefinedSelector .col .preset.selected {
 html[data-mist-dark] .timeIntervalPredefinedSelector .col .preset.selected:not(:hover) {
   background-color: var(--md-bg-3) !important;
 }
+/* SLE "Affected Items" list (Users / Access Points / Applications rows): the
+ * row hover (#eaf1f6) and selected (#e4eff8) are pale-blue washes the fixer
+ * can't pre-tag — with our lifted light text they go light-on-light. */
+html[data-mist-dark] .affectedItemsBlock .tabbedTables .tabs .tab:hover {
+  background-color: var(--md-hover) !important;
+}
+html[data-mist-dark] .affectedItemsBlock .tabbedTables .tabs .tab.selected {
+  background-color: var(--md-bg-3) !important;
+}
 /* scope/entity selector lists (site / client / AP pickers) — light row hover */
 html[data-mist-dark] .entityList ul > li:hover,
 html[data-mist-dark] .entityList li.hovered,
@@ -930,6 +939,17 @@ html[data-mist-dark] svg .tick line {
 }
 html[data-mist-dark] svg path.domain {
   stroke: #4a525e !important;
+}
+/* SLE "Success Rate" donut (svg.donutChart): the centred percentage
+ * (.percent/.percentSign) is drawn near-black #474747 and the sub-label
+ * (.averageLabel) #4a4a4a — both illegible on the dark gauge (fixer skips svg
+ * internals). Lift the big number to primary, the sub-label to muted. */
+html[data-mist-dark] svg.donutChart .percent,
+html[data-mist-dark] svg.donutChart .percentSign {
+  fill: var(--md-text-0) !important;
+}
+html[data-mist-dark] svg.donutChart .averageLabel {
+  fill: var(--md-text-2) !important;
 }
 
 /* ============== runtime-tagged elements (content_dark.js) ==== */
