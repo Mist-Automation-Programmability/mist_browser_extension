@@ -156,6 +156,7 @@ export class ApiManageComponent implements OnInit {
     const insights_re = /^dashboard\/(?<detail>insights|insights-full-stack)\/((?<obj>[a-z]+)\/)?((?<obj_id>[a-z0-9-]+)\/)?((?<period>[a-z0-9]+)\/)?((?<start>[0-9]*)\/)?((?<stop>[0-9]*)\/)?(?<site_id>[0-9a-f-]{36})?\??(?<query_params>.*)?$/is;
     const alarm_re = /^alerts\/?(?<site_id>[0-9a-z-]*)\??(?<query_params>.*)?$/is;
     const events_re = /^marvis\/?(?<site_id>[0-9a-z-]*)\??(?<query_params>.*)?$/is;
+    const marvis_re = /^virtualAssistant\/action?(?<query_params>.*)?$/is;
     const floorplans_re = /^(cliLocation|liveView)\/(?<detail>view|config|validationPath|wayfinding)?\/?(?<uuid>[0-9a-f-]{36})\/?(floorplan|beaconsAndZones)?\/?(?<site_id>[0-9a-f-]{36})?\??(?<query_params>.*)?$/is;
     const site_evpn_re = /^evpn\/site\/?([0-9]\/)?(?<site_id>[0-9a-z_-]*)?(\/(?<topology_id>[0-9a-f-]{36}))?\??(?<query_params>.*)?$/is;
     const site_wlan_template_re = /^wlan\/orgWlanDetail\/(?<template_id>[0-9a-z_-]*)\/(?<wlan_id>[0-9a-f-]{36})\/(?<site_id>[0-9a-f-]{36})\??(?<query_params>.*)?$/is;
@@ -232,6 +233,7 @@ export class ApiManageComponent implements OnInit {
       { re: insights_re, handler: this.insightsUrl.bind(this) },
       { re: alarm_re, handler: this.alarmUrl.bind(this) },
       { re: events_re, handler: this.eventsUrl.bind(this) },
+      { re: marvis_re, handler: this.marvisUrl.bind(this) },
       { re: floorplans_re, handler: this.floorplansUrl.bind(this) },
       { re: site_evpn_re, handler: this.siteEvpnUrl.bind(this) },
       { re: org_evpn_re, handler: this.orgEvpnUrl.bind(this) },
@@ -1498,10 +1500,44 @@ export class ApiManageComponent implements OnInit {
       name: "Site Events"
     })
   }
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////// MARVIS URL FUNCTION DISPATCHER
+  private marvisUrl(res: RegExpExecArray): void {
+    this.org_id = res?.groups?.org_id;
+    let extra_params: string = "";
+    let extra_params_array: string[] = [];
+
+    if (res?.groups?.query_params) {
+      res?.groups?.query_params.split("&").forEach(param => {
+        let key = param.split("=")[0];
+        let value = param.split("=")[1];
+        switch (key.toLowerCase()) {
+          case "start":
+            extra_params_array.push("start=" + value);
+            break;
+          case "end":
+            extra_params_array.push("end=" + value);
+            break;
+          case "site":
+            this.site_id = value;
+            extra_params_array.push("site_id=" + value);
+            break;
+        }
+      })
+    }
+
+    if (extra_params_array) extra_params = extra_params_array.join("&");
+
+    this.quick_links.push({
+      url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/alarms/search?group=marvis&limit=1000&" + extra_params,
+      name: "Marvis Actions"
+    })
+  }
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
-  ////////////////////// EVENTS URL FUNCTION DISPATCHER
+  ////////////////////// ORG UPGRADE URL FUNCTION DISPATCHER
   private orgUpgradeUrl(res: RegExpExecArray): void {
     this.org_id = res?.groups?.org_id;
     var device_types = ["ap", "switch", "gateway"];
@@ -1519,7 +1555,7 @@ export class ApiManageComponent implements OnInit {
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
-  ////////////////////// EVENTS URL FUNCTION DISPATCHER
+  ////////////////////// FLOORPLANS URL FUNCTION DISPATCHER
   private floorplansUrl(res: RegExpExecArray): void {
     this.org_id = res?.groups?.org_id;
     if (res?.groups?.site_id) {
@@ -1748,7 +1784,7 @@ export class ApiManageComponent implements OnInit {
           name: "Wired Clients Count"
         },
         {
-          url: "https://api." + host + "/api/v1/orgs/" + org_id + "/alarms/search?start=1745532000&end=1745598080&group=marvis&limit=1000&" + query_params,
+          url: "https://api." + host + "/api/v1/orgs/" + org_id + "/alarms/search?&group=marvis&limit=1000&" + query_params,
           name: "Marvis Actions"
         },
         {
