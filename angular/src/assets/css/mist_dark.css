@@ -407,7 +407,7 @@ html[data-mist-dark] .scopeSelector,
 html[data-mist-dark] .siteSelector,
 html[data-mist-dark] .chooser,
 html[data-mist-dark] .timeRangeSelector {
-  background-color: var(--md-bg-3) !important;
+  background-color: var(--md-bg-2) !important;
   /* these buttons carry a light bevel GRADIENT as background-image
    * (linear-gradient(#f8f8f8,#e0e0e0)) that paints over background-color — the
    * base tab looked dark only because a solid grey; hover re-adds the gradient
@@ -483,6 +483,15 @@ html[data-mist-dark] .uikit-dropdown-filter-container {
 /* dropdown caret indicators are icon-font glyphs with hardcoded dark colour */
 html[data-mist-dark] .dropdownIcon,
 html[data-mist-dark] [class*="fa-caret"] {
+  color: var(--md-text-1) !important;
+}
+/* expand/collapse chevrons in icon-only flat buttons (e.g. the Upstream
+ * Resource Monitoring rows on the site config page): svg.uikit-icon-chevron*
+ * are drawn #404040 (currentColor) — near-invisible on the dark card. */
+html[data-mist-dark] .component-FlatButton .uikit-icon-chevronDown,
+html[data-mist-dark] .component-FlatButton .uikit-icon-chevronUp,
+html[data-mist-dark] .component-FlatButton .uikit-icon-chevronRight,
+html[data-mist-dark] .component-FlatButton .uikit-icon-chevronLeft {
   color: var(--md-text-1) !important;
 }
 /* duration selector dropdown (.timeIntervalPredefinedSelector: Last 60 Min /
@@ -607,6 +616,18 @@ html[data-mist-dark] .chakra-tabs__tab {
   color: var(--md-text-1) !important;
 }
 html[data-mist-dark] .chakra-tabs__tab[aria-selected="true"] {
+  color: var(--md-text-0) !important;
+}
+/* segmented chakra button groups (.chakra-button__group, e.g. APs/Switches in
+ * AP Firmware Upgrade): the native hover/active are pale-blue washes
+ * (blue.100 #bee3f8 / blue.50 #ebf8ff) that go light-on-light under our lifted
+ * text. Darken them. NOTE the selected button is distinguished NATIVELY only by
+ * font-weight (400 vs 300), which survives on dark — there is no stable
+ * attribute/class to hang a fill on, and a fixer tag would go stale (the app
+ * swaps the panel content without a childList mutation the observer catches). */
+html[data-mist-dark] .chakra-button__group .chakra-button:hover,
+html[data-mist-dark] .chakra-button__group .chakra-button:active {
+  background-color: var(--md-hover) !important;
   color: var(--md-text-0) !important;
 }
 /* VERTICAL chakra tab lists are used as master rows (e.g. insights event list:
