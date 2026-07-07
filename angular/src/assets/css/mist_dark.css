@@ -264,12 +264,19 @@ html[data-mist-dark] svg[class*="uikit-icon-switchStacked"] rect[fill="#FFFFFF" 
 }
 /* new Live View BETA (#!liveView, 3D floor-stack scene): the backdrop is a
  * near-white radial "dome" (rgba(189,203,253,.2) → #f8fafc) painted on an
- * emotion-hashed chakra-stack. Anchor on its stable .AutoCompleteSearch child
- * (:has() — same technique as the policy-row hover scoping) and keep the
- * depth feel with a faint blue glow on the dark surface. */
-html[data-mist-dark] .appView-content > .chakra-stack:has(> .AutoCompleteSearch) {
+ * emotion-hashed chakra-stack — the same element in browse AND stack-edit
+ * mode (edit removes the search box, so no :has() child anchor works in both;
+ * the unconditioned direct-child match is safe — .appView-* exists only on
+ * Live View). Keep the depth feel with a faint blue glow on the dark surface. */
+html[data-mist-dark] .appView-content > .chakra-stack {
   background: radial-gradient(87.22% 87.22% at 50% 105.96%,
               rgba(95, 176, 240, 0.08) 0%, var(--md-bg-1) 100%) !important;
+}
+/* stack-edit floor rows: the chakra-editable hover pill (pencil + name +
+ * drag handle) paints chakra white on :hover/[data-hover] — cut-11 family. */
+html[data-mist-dark] .chakra-editable .chakra-stack:hover,
+html[data-mist-dark] .chakra-editable .chakra-stack[data-hover] {
+  background-color: var(--md-hover) !important;
 }
 /* Live View floor thumbnails (diamond plates in chakra-links): the selected
  * plate casts a saturated indigo shadow {rgba(0,40,183,.5)} — a neon halo on
