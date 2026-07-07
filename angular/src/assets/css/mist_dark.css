@@ -1044,6 +1044,27 @@ html[data-mist-dark] svg.donutChart .percentSign {
 html[data-mist-dark] svg.donutChart .averageLabel {
   fill: var(--md-text-2) !important;
 }
+/* "Feature Ranking" divergence chart (.DivergenceBarChart, Experience
+ * Correlation on the Application SLE page): vertical gridlines are light
+ * greys {#e8eaeb gridLine + classless #e0e0e0} that glare on dark, the zero
+ * referenceLine / category chevrons / "+0.9"-style parentBarLabel values are
+ * blacks and dark greys that vanish (fixer skips svg internals). Child bars
+ * and blue/green value labels keep their own colours. */
+html[data-mist-dark] .DivergenceBarChart svg line:not(.DivergenceBarChart-referenceLine) {
+  stroke: #333a43 !important;
+}
+html[data-mist-dark] .DivergenceBarChart-referenceLine {
+  stroke: var(--md-text-2) !important;
+}
+html[data-mist-dark] .DivergenceBarChart-chevronIcon {
+  stroke: var(--md-text-1) !important;
+}
+html[data-mist-dark] .DivergenceBarChart .parentBarLabel {
+  fill: var(--md-text-1) !important;
+}
+html[data-mist-dark] .DivergenceBarChart-yAxisTickText {
+  fill: var(--md-text-0) !important;
+}
 
 /* ============== runtime-tagged elements (content_dark.js) ==== */
 /* data-md-lit: literal light-neutral background found by computed style —
