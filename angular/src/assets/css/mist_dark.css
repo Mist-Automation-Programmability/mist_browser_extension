@@ -229,6 +229,13 @@ html[data-mist-dark] .appView-content > .chakra-stack:has(> .AutoCompleteSearch)
   background: radial-gradient(87.22% 87.22% at 50% 105.96%,
               rgba(95, 176, 240, 0.08) 0%, var(--md-bg-1) 100%) !important;
 }
+/* Live View floor thumbnails (diamond plates in chakra-links): the selected
+ * plate casts a saturated indigo shadow {rgba(0,40,183,.5)} — a neon halo on
+ * dark. Unify with the siblings' dark shadow (same geometry); the lavender
+ * fill remains the selection cue. */
+html[data-mist-dark] .appView-content > .chakra-stack:has(> .AutoCompleteSearch) .chakra-link div[role="button"] {
+  box-shadow: rgba(0, 0, 0, 0.5) 4.66667px 4.66667px 7px !important;
+}
 
 /* ========================= tables =========================== */
 html[data-mist-dark] .table,
