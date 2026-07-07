@@ -241,10 +241,13 @@ html[data-mist-dark] .appView-content > .chakra-stack:has(> .AutoCompleteSearch)
 }
 /* Live View floor thumbnails (diamond plates in chakra-links): the selected
  * plate casts a saturated indigo shadow {rgba(0,40,183,.5)} — a neon halo on
- * dark. Unify with the siblings' dark shadow (same geometry); the lavender
- * fill remains the selection cue. */
+ * dark — while a plain dark shadow is invisible against the dark backdrop
+ * and flattens the scene. Dark-UI elevation = a soft desaturated glow: keep
+ * a dark directional anchor + add a quiet blue-grey rim that lifts every
+ * plate (user-tuned). The lavender fill remains the selection cue. */
 html[data-mist-dark] .appView-content > .chakra-stack:has(> .AutoCompleteSearch) .chakra-link div[role="button"] {
-  box-shadow: rgba(0, 0, 0, 0.5) 4.66667px 4.66667px 7px !important;
+  box-shadow: rgba(0, 0, 0, 0.6) 4.66667px 4.66667px 7px,
+              0 0 14px 3px rgba(150, 180, 235, 0.35) !important;
 }
 
 /* ========================= tables =========================== */
