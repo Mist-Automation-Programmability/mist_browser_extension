@@ -151,7 +151,7 @@ export class ApiManageComponent implements OnInit {
     const minis_sle_re = /^marvisMiniSLE\??(?<query_params>.*)?$/is;
     const orginsights_re = /^orgInsights\??(?<query_params>.*)?$/is;
     const orgsle_re = /^dashboard\/(?<scope>siteComparison|wiredSiteComparison|wanSiteComparison)\/(?<sle>[a-z-]*)\/(?<worstsle>[a-z-]*)\/([a-z-_]*)\/(?<period>[0-9a-z-]*)\/(?<start>[0-9]*)\/(?<stop>[0-9]*)\??(?<query_params>.*)?$/is;
-    const sle_details_re = /^dashboard\/(?<detail>serviceLevels|wiredserviceLevels|wanServiceLevels|juniperGateway)\/page2\/(stats|timeline)\/[a-zA-Z-]+\/[a-zA-Z-]+\/(?<scope>site|device|client|juniperSwitch|juniperGateway)\/(?<scope_id>[a-f0-9-]*)\/(?<sle_name>[a-z-]*)\/(?<sle_sub_1>[a-zA-Z-]+)\/(?<sle_sub_2>[a-zA-Z-]+)(\/(?<period>[0-9a-z]*))?(\/(?<start>[0-9]*))?(\/(?<stop>[0-9]*))?\/(?<site_id>[a-f0-9-]*)\??(?<query_params>.*)?$/is;
+    const sle_details_re = /^dashboard\/(?<detail>serviceLevels|wiredserviceLevels|wanServiceLevels|juniperGateway)\/page2\/(stats|timeline|dist)\/[a-zA-Z-]+\/[a-zA-Z-]+\/(?<scope>site|device|client|juniperSwitch|juniperGateway)\/(?<scope_id>[a-f0-9-]*)\/(?<sle_name>[a-z-]*)\/(?<sle_sub_1>[a-zA-Z-]+)\/(?<sle_sub_2>[a-zA-Z-]+)(\/(?<period>[0-9a-z]*))?(\/(?<start>[0-9]*))?(\/(?<stop>[0-9]*))?\/(?<site_id>[a-f0-9-]*)\??(?<query_params>.*)?$/is;
     const sle_re = /^dashboard\/(?<detail>serviceLevels|wiredserviceLevels|wanServiceLevels|juniperGateway|applicationServiceLevels)(\/(?<scope>org|site|device|client|juniperSwitch|juniperGateway))?(\/(?<scope_id>[a-f0-9-]*))?(\/(?<period>[0-9a-z-]*))?(\/(?<start>[0-9]*))?(\/(?<stop>[0-9]*))?\/(?<site_id>[a-f0-9-]*)\??(?<query_params>.*)?$/is;
     const insights_re = /^dashboard\/(?<detail>insights|insights-full-stack)\/((?<obj>[a-z]+)\/)?((?<obj_id>[a-z0-9-]+)\/)?((?<period>[a-z0-9]+)\/)?((?<start>[0-9]*)\/)?((?<stop>[0-9]*)\/)?(?<site_id>[0-9a-f-]{36})?\??(?<query_params>.*)?$/is;
     const alarm_re = /^alerts\/?(?<site_id>[0-9a-z-]*)\??(?<query_params>.*)?$/is;
@@ -1894,7 +1894,8 @@ export class ApiManageComponent implements OnInit {
           sles = [
             "switch-stc",
             "switch-health",
-            "switch-throughput"
+            "switch-throughput",
+            "switch-bandwidth",
           ]
           this.forgeSlehUrl(res?.groups?.host, scope, res?.groups?.site_id, res?.groups?.scope_id, sles, extra_params)
           break;
@@ -1971,9 +1972,10 @@ export class ApiManageComponent implements OnInit {
           impacted_entities = ["clients", "switches", "interfaces"];
           break;
         case "switch-stc":
+        case "switch-bandwidth":
           impacted_entities = ["clients", "vlan", "switches", "interfaces"];
           break;
-        case "switch-health":
+        case "switch-health-v2":
           impacted_entities = ["switches", "chassis"];
           break;
         // wan
