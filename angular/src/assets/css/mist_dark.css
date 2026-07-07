@@ -220,6 +220,15 @@ html[data-mist-dark] .DetectedAnomalies-indicators line {
 html[data-mist-dark] svg[class*="uikit-icon-switchStacked"] rect[fill="#FFFFFF" i] {
   fill: var(--md-bg-2) !important;
 }
+/* new Live View BETA (#!liveView, 3D floor-stack scene): the backdrop is a
+ * near-white radial "dome" (rgba(189,203,253,.2) → #f8fafc) painted on an
+ * emotion-hashed chakra-stack. Anchor on its stable .AutoCompleteSearch child
+ * (:has() — same technique as the policy-row hover scoping) and keep the
+ * depth feel with a faint blue glow on the dark surface. */
+html[data-mist-dark] .appView-content > .chakra-stack:has(> .AutoCompleteSearch) {
+  background: radial-gradient(87.22% 87.22% at 50% 105.96%,
+              rgba(95, 176, 240, 0.08) 0%, var(--md-bg-1) 100%) !important;
+}
 
 /* ========================= tables =========================== */
 html[data-mist-dark] .table,
