@@ -121,6 +121,16 @@ html[data-mist-dark] .mc-Chatlog-feedback .chakra-button {
 html[data-mist-dark] .mc-Chatlog-feedback .chakra-button:hover {
   color: var(--md-text-0) !important;
 }
+/* Live View "Edit Floorplan Stack" / "Add Floorplans" buttons: same gray.700
+ * chakra-icon disease — pencil2/add2 icons invisible on their dark buttons. */
+html[data-mist-dark] .chakra-button svg.uikit-icon-pencil2,
+html[data-mist-dark] .chakra-button svg.uikit-icon-add2 {
+  color: var(--md-text-1) !important;
+}
+html[data-mist-dark] .chakra-button:hover svg.uikit-icon-pencil2,
+html[data-mist-dark] .chakra-button:hover svg.uikit-icon-add2 {
+  color: var(--md-text-0) !important;
+}
 
 /* ====================== cards / panels ======================= */
 html[data-mist-dark] .content-block,
