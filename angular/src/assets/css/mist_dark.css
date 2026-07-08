@@ -540,8 +540,11 @@ html[data-mist-dark] select {
 /* ============== buttons / tabs / toggles / pickers =========== */
 /* Selection states: Mist marks selected tabs/toggles with .selected / .active /
  * aria-selected and paints them brand blue. Only the UNSELECTED state may be
- * forced dark — the selected state gets an explicit blue so it stays visible. */
-html[data-mist-dark] .btn.normal:not(.dangerous):not(.highlighted):not(.btn-copied),
+ * forced dark — the selected state gets an explicit blue so it stays visible.
+ * NOTE .btn paint lives on the BASE class (#e0e0e0); .normal/.large/.small are
+ * size-only, so anchor on bare .btn (a .btn.normal anchor missed the .btn.large
+ * "Inventory" CTA on empty AP lists). Semantic colours stay via the :nots. */
+html[data-mist-dark] .btn:not(.dangerous):not(.highlighted):not(.btn-copied),
 html[data-mist-dark] .btnDivider,
 html[data-mist-dark] .uikit-button:not(.uikit-button-color-primary):not(.uikit-button-color-danger):not(.signin-orgChooser-btn):not(.uikit-button-pattern-text):not(.uikit-button-pattern-normal.uikit-button-color-normal):not(.uikit-button-pattern-icon),
 html[data-mist-dark] .dropdown-DropdownButton,
@@ -821,7 +824,7 @@ html[data-mist-dark] .chakra-button__group .chakra-button:active {
 html[data-mist-dark] .chakra-tabs__tablist[aria-orientation="vertical"] .chakra-tabs__tab {
   border-color: var(--md-border-soft) !important;
 }
-html[data-mist-dark] .btn.normal:not(.dangerous):not(.highlighted):not(.btn-copied):hover,
+html[data-mist-dark] .btn:not(.dangerous):not(.highlighted):not(.btn-copied):hover,
 html[data-mist-dark] .uikit-button:not(.uikit-button-color-primary):not(.uikit-button-color-danger):not(.signin-orgChooser-btn):not(.uikit-button-pattern-text):not(.uikit-button-pattern-normal.uikit-button-color-normal):not(.uikit-button-pattern-icon):hover,
 html[data-mist-dark] .dropdown-DropdownButton:hover,
 html[data-mist-dark] .component-ToggleButtons-item:not(.active):hover {
