@@ -277,7 +277,7 @@ function applyIdLinks(preEl, idMap) {
     }
 }
 
-var TS_KEY_OK = /(_time|_at)$|^expire|^(last_seen|last_used|last_flapped|timestamp)$/;
+var TS_KEY_OK = /(_time|_at)$|^expire|^(last_seen|last_used|last_flapped|timestamp|start|end)$/;
 var TS_KEY_EXCLUDE = /^uptime$|_timeout$|^duration$|^interval$|_age$/;
 var TS_MIN = 946684800;    // 2000-01-01
 var TS_MAX = 4102444800;   // 2100-01-01
