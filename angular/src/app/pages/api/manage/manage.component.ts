@@ -1538,7 +1538,7 @@ export class ApiManageComponent implements OnInit {
     if (extra_params_array) extra_params = extra_params_array.join("&");
 
     this.quick_links.push({
-      url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/alarms/search?group=marvis&limit=1000&" + extra_params,
+      url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/alarms/search?group=marvis&limit=1000" + (extra_params ? ("&" + extra_params) : ""),
       name: "Marvis Actions"
     })
   }
