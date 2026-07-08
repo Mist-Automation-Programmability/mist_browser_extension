@@ -1911,7 +1911,8 @@ export class ApiManageComponent implements OnInit {
           sles = [
             "gateway-health",
             "wan-link-health",
-            "application-health"
+            "application-health",
+            "gateway-bandwidth"
           ]
           this.forgeSlehUrl(res?.groups?.host, scope, res?.groups?.site_id, res?.groups?.scope_id, sles, extra_params)
           break;
@@ -1983,6 +1984,7 @@ export class ApiManageComponent implements OnInit {
         case "switch-bandwidth":
           impacted_entities = ["clients", "vlan", "switches", "interfaces"];
           break;
+        case "switch-health":
         case "switch-health-v2":
           impacted_entities = ["switches", "chassis"];
           break;
@@ -1995,6 +1997,9 @@ export class ApiManageComponent implements OnInit {
           break;
         case "application-health":
           impacted_entities = ["clients", "applications", "gateways", "interfaces"];
+          break;
+        case "gateway-bandwidth":
+          impacted_entities = ["gateways", "interfaces"];
           break;
       }
       this.forgeSleDetailshUrl(res?.groups?.host, scope, res?.groups?.site_id, res?.groups?.scope_id, res?.groups?.sle_name, impacted_entities, extra_params)
