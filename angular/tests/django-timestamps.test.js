@@ -26,8 +26,10 @@ test('annotates timestamp keys, with UTC in title', () => {
 
   const ann = pre.querySelectorAll('span.mist-ts');
   assert.equal(ann.length, 1, 'exactly one annotation');
-  assert.match(ann[0].textContent, /→ \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/);
-  assert.equal(ann[0].title, '2023-11-14T22:13:20.000Z');
+  // Local date + UTC-offset label; title = "UTC: <iso>" + optional " · <zone>".
+  // Regexes stay timezone-agnostic so the suite passes on any machine.
+  assert.match(ann[0].textContent, /→ \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} \(UTC[^)]*\)/);
+  assert.match(ann[0].title, /^UTC: 2023-11-14T22:13:20\.000Z/);
 });
 
 test('last_flapped: annotated when a real epoch, skipped when 0 or the "never" sentinel', () => {
@@ -44,7 +46,30 @@ test('last_flapped: annotated when a real epoch, skipped when 0 or the "never" s
   mod.applyTimestamps(pre);
   const ann = pre.querySelectorAll('span.mist-ts');
   assert.equal(ann.length, 1, 'only the in-range last_flapped is annotated');
-  assert.equal(ann[0].title, '2023-11-14T22:13:20.000Z');
+  assert.match(ann[0].title, /^UTC: 2023-11-14T22:13:20\.000Z/);
+});
+
+test('start/end (SLE-style keys): exact match annotated, prefixed/suffixed keys are not', () => {
+  // 1783440000 = 2026-07-07T16:00:00Z (an SLE summary ?start= value).
+  // "port_start"/"end_index" must NOT match — the allow-list is exact-match.
+  const SLE = `<pre class="prettyprint">{
+  <span class="str">"start"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">1783440000</span><span class="pun">,</span>
+  <span class="str">"end"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">1783527712</span><span class="pun">,</span>
+  <span class="str">"interval"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">3600</span><span class="pun">,</span>
+  <span class="str">"port_start"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">1783440000</span><span class="pun">,</span>
+  <span class="str">"end_index"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">1783440000</span>
+}</pre>`;
+  const dom = new JSDOM(`<div class="response-info">${SLE}</div>`);
+  const mod = loadModule(dom.window);
+  const pre = dom.window.document.querySelector('.prettyprint');
+  mod.applyTimestamps(pre);
+  const ann = pre.querySelectorAll('span.mist-ts');
+  assert.equal(ann.length, 2, 'only start and end are annotated');
+  assert.match(ann[0].title, /^UTC: 2026-07-07T16:00:00\.000Z/);
+  assert.match(ann[1].title, /^UTC: 2026-07-08T16:21:52\.000Z/);
+
+  assert.ok(mod.isTimestampKey('start') && mod.isTimestampKey('end'));
+  assert.ok(!mod.isTimestampKey('port_start') && !mod.isTimestampKey('end_index'));
 });
 
 test('excludes uptime and non-epoch numbers; idempotent', () => {
@@ -79,18 +104,21 @@ for (const [fixtureName, expectedCount] of Object.entries(EXPECTED_TS_COUNTS)) {
     assert.equal(spans.length, expectedCount,
       `expected ${expectedCount} mist-ts spans in ${fixtureName}, got ${spans.length}`);
 
-    const ISO_RE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
-    const TEXT_RE = /^ → \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
+    // Title = "UTC: <iso>" + optional " · <zone>"; text carries a local date and
+    // a "(UTC±H[:MM][ DST])" offset label. Timezone-agnostic on purpose.
+    const ISO_RE = /^UTC: (\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z)( · .+)?$/;
+    const TEXT_RE = /^ → \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} \(UTC[^)]*\)$/;
     const TS_MIN = 946684800;
     const TS_MAX = 4102444800;
 
     for (let i = 0; i < spans.length; i++) {
       const s = spans[i];
-      assert.match(s.title, ISO_RE,
-        `span[${i}] title not ISO-8601 UTC in ${fixtureName}: ${s.title}`);
+      const m = s.title.match(ISO_RE);
+      assert.ok(m,
+        `span[${i}] title not "UTC: <iso>" in ${fixtureName}: ${s.title}`);
       assert.match(s.textContent, TEXT_RE,
         `span[${i}] textContent malformed in ${fixtureName}: ${JSON.stringify(s.textContent)}`);
-      const epoch = new Date(s.title).getTime() / 1000;
+      const epoch = new Date(m[1]).getTime() / 1000;
       assert.ok(epoch >= TS_MIN && epoch <= TS_MAX,
         `span[${i}] decoded epoch ${epoch} out of range in ${fixtureName}`);
     }
