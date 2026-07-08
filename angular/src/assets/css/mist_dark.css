@@ -669,6 +669,21 @@ html[data-mist-dark] .affectedItemsBlock .tabbedTables .tabs .tab:hover {
 html[data-mist-dark] .affectedItemsBlock .tabbedTables .tabs .tab.selected {
   background-color: var(--md-bg-3) !important;
 }
+/* SLE page2 "Root Cause analysis" band (.rootCauseBlock): the native design
+ * recesses it below the page — #f8f8f8 under the white cards, with a #d0d0d0
+ * bottom hairline — but the fixer's generic surface repaint flattened band
+ * and page to the same value. Restore the layering in the same direction:
+ * band one step darker (bg-0) than the bg-2 content, pills popping on it. */
+html[data-mist-dark] .serviceLevelsMetricView .rootCauseBlock {
+  background-color: var(--md-bg-0) !important;
+  border-bottom-color: var(--md-border) !important;
+}
+/* classifier / impact-summary panels float on the band a step lighter
+ * (natively #fff on #f8f8f8) */
+html[data-mist-dark] .serviceLevelsMetricView .rootCauseBlock .classifierBlock,
+html[data-mist-dark] .serviceLevelsMetricView .rootCauseBlock .impactSummaryBlock {
+  background-color: var(--md-bg-1) !important;
+}
 /* SLE "Root Cause analysis" metric list (.serviceLevelsMetricView .metricTab):
  * native hover {#eaf1f6} and selected {#e4eff8; color:#000} are pale-blue
  * washes the fixer flattens to one dark surface, so the selected metric was
