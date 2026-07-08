@@ -151,7 +151,7 @@ export class ApiManageComponent implements OnInit {
     const minis_sle_re = /^marvisMiniSLE\??(?<query_params>.*)?$/is;
     const orginsights_re = /^orgInsights\??(?<query_params>.*)?$/is;
     const orgsle_re = /^dashboard\/(?<scope>siteComparison|wiredSiteComparison|wanSiteComparison)\/(?<sle>[a-z-]*)\/(?<worstsle>[a-z-]*)\/([a-z-_]*)\/(?<period>[0-9a-z-]*)\/(?<start>[0-9]*)\/(?<stop>[0-9]*)\??(?<query_params>.*)?$/is;
-    const sle_details_re = /^dashboard\/(?<detail>serviceLevels|wiredserviceLevels|wanServiceLevels|juniperGateway)\/page2\/(stats|timeline|dist)\/[a-zA-Z-]+\/[a-zA-Z-]+\/(?<scope>site|device|client|juniperSwitch|juniperGateway)\/(?<scope_id>[a-f0-9-]*)\/(?<sle_name>[a-z-]*)\/(?<sle_sub_1>[a-zA-Z-]+)\/(?<sle_sub_2>[a-zA-Z-]+)(\/(?<period>[0-9a-z]*))?(\/(?<start>[0-9]*))?(\/(?<stop>[0-9]*))?\/(?<site_id>[a-f0-9-]*)\??(?<query_params>.*)?$/is;
+    const sle_details_re = /^dashboard\/(?<detail>serviceLevels|wiredserviceLevels|wanServiceLevels|juniperGateway)\/page2\/(stats|timeline|dist|affected|location)\/[a-zA-Z-]+\/[a-zA-Z-]+\/(?<scope>site|device|client|juniperSwitch|juniperGateway)\/(?<scope_id>[a-f0-9-]*)\/(?<sle_name>[a-z-]*)\/(?<sle_sub_1>[a-zA-Z-]+)\/(?<sle_sub_2>[a-zA-Z-]+)(\/(?<period>[0-9a-z]*))?(\/(?<start>[0-9]*))?(\/(?<stop>[0-9]*))?\/(?<site_id>[a-f0-9-]*)\??(?<query_params>.*)?$/is;
     const sle_re = /^dashboard\/(?<detail>serviceLevels|wiredserviceLevels|wanServiceLevels|juniperGateway|applicationServiceLevels)(\/(?<scope>org|site|device|client|juniperSwitch|juniperGateway))?(\/(?<scope_id>[a-f0-9-]*))?(\/(?<period>[0-9a-z-]*))?(\/(?<start>[0-9]*))?(\/(?<stop>[0-9]*))?\/(?<site_id>[a-f0-9-]*)\??(?<query_params>.*)?$/is;
     const insights_re = /^dashboard\/(?<detail>insights|insights-full-stack)\/((?<obj>[a-z]+)\/)?((?<obj_id>[a-z0-9-]+)\/)?((?<period>[a-z0-9]+)\/)?((?<start>[0-9]*)\/)?((?<stop>[0-9]*)\/)?(?<site_id>[0-9a-f-]{36})?\??(?<query_params>.*)?$/is;
     const alarm_re = /^alerts\/?(?<site_id>[0-9a-z-]*)\??(?<query_params>.*)?$/is;
@@ -785,7 +785,7 @@ export class ApiManageComponent implements OnInit {
         name: sle + " threshold"
       },
       {
-        url: "https://api." + host + "/api/v1/sites/" + site_id + "/sle/" + scope + "/" + scope_id + "/metric/" + sle + "/summary?" + extra_params,
+        url: "https://api." + host + "/api/v1/sites/" + site_id + "/sle/" + scope + "/" + scope_id + "/metric/" + sle + "/summary-trend?" + extra_params,
         name: sle + " summary"
       },
       {
@@ -1013,8 +1013,16 @@ export class ApiManageComponent implements OnInit {
           this.forgeSiteObjectStats(res?.groups?.obj, res?.groups?.host, res?.groups?.detail);
           break;
         case "guestclients":
-          this.setName(res?.groups?.obj.substr(0, res?.groups?.obj.length - 1), res?.groups?.detail);
-          this.forgeSiteObjectSearch("guests", res?.groups?.host, null);
+          this.quick_links.push(
+            {
+              url: "https://api." + res?.groups?.host + "/api/v1/sites/" + this.site_id + "/guests",
+              name: "Active Guest Authorizations"
+            },
+            {
+              url: "https://api." + res?.groups?.host + "/api/v1/sites/" + this.site_id + "/guests/search?duration=30d",
+              name: "Search Guest Authorizations"
+            },
+          );
           break;
         case "wiredclients":
           this.setName(res?.groups?.obj.substr(0, res?.groups?.obj.length - 1), res?.groups?.detail);
