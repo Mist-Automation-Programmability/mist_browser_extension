@@ -156,7 +156,7 @@ export class ApiManageComponent implements OnInit {
     const insights_re = /^dashboard\/(?<detail>insights|insights-full-stack)\/((?<obj>[a-z]+)\/)?((?<obj_id>[a-z0-9-]+)\/)?((?<period>[a-z0-9]+)\/)?((?<start>[0-9]*)\/)?((?<stop>[0-9]*)\/)?(?<site_id>[0-9a-f-]{36})?\??(?<query_params>.*)?$/is;
     const alarm_re = /^alerts\/?(?<site_id>[0-9a-z-]*)\??(?<query_params>.*)?$/is;
     const events_re = /^marvis\/?(?<site_id>[0-9a-z-]*)\??(?<query_params>.*)?$/is;
-    const marvis_re = /^virtualAssistant\/action?(?<query_params>.*)?$/is;
+    const marvis_re = /^virtualAssistant\/action\??(?<query_params>.*)?$/is;
     const floorplans_re = /^(cliLocation|liveView)\/(?<detail>view|config|validationPath|wayfinding)?\/?(?<uuid>[0-9a-f-]{36})\/?(floorplan|beaconsAndZones)?\/?(?<site_id>[0-9a-f-]{36})?\??(?<query_params>.*)?$/is;
     const site_evpn_re = /^evpn\/site\/?([0-9]\/)?(?<site_id>[0-9a-z_-]*)?(\/(?<topology_id>[0-9a-f-]{36}))?\??(?<query_params>.*)?$/is;
     const site_wlan_template_re = /^wlan\/orgWlanDetail\/(?<template_id>[0-9a-z_-]*)\/(?<wlan_id>[0-9a-f-]{36})\/(?<site_id>[0-9a-f-]{36})\??(?<query_params>.*)?$/is;
