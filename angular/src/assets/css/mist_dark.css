@@ -1176,6 +1176,26 @@ html[data-mist-dark] svg.bar-chart path.area[fill="#b7d5eb88" i] {
 html[data-mist-dark] svg.bar-chart path.area[fill="#b7ebcf" i] {
   fill: rgba(16, 188, 94, 0.22) !important;
 }
+/* AP-insights variants of the same family: the RSSI min/max band is an
+ * svg.mma-chart path.area painted #b7d5eb for BOTH fill and stroke, and the
+ * channel-utilization charts (2.4/5/6 GHz) draw each channel's empty track as
+ * an svg.bar-chart rect fill=#ececeb — white slabs on dark. Band gets the
+ * same translucent series blue; tracks sit one step above the card. The
+ * "Min/Max" legend chip is an inline-styled span.color-box — kept in sync
+ * with the darkened band (unscoped: the expanded-chart modal rebuilds it
+ * outside .graph-heading). */
+html[data-mist-dark] svg.mma-chart path.area[fill="#b7d5eb" i] {
+  fill: rgba(16, 116, 188, 0.28) !important;
+}
+html[data-mist-dark] svg.mma-chart path.area[stroke="#b7d5eb" i] {
+  stroke: rgba(16, 116, 188, 0.5) !important;
+}
+html[data-mist-dark] svg.bar-chart rect[fill="#ececeb" i] {
+  fill: var(--md-bg-3) !important;
+}
+html[data-mist-dark] span.color-box[style*="rgb(183, 213, 235)"] {
+  background-color: rgba(16, 116, 188, 0.4) !important;
+}
 /* client-insights roaming graph paints its label panel / row bands white via
  * a fill attribute and an inline style — both lose to !important */
 html[data-mist-dark] svg.client-roam-insights-graph-svg rect[fill="#fff"],
