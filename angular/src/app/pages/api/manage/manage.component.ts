@@ -1792,7 +1792,7 @@ export class ApiManageComponent implements OnInit {
           name: "Wired Clients Count"
         },
         {
-          url: "https://api." + host + "/api/v1/orgs/" + org_id + "/alarms/search?&group=marvis&limit=1000&" + query_params,
+          url: "https://api." + host + "/api/v1/orgs/" + org_id + "/alarms/search?group=marvis&limit=1000&" + query_params,
           name: "Marvis Actions"
         },
         {
