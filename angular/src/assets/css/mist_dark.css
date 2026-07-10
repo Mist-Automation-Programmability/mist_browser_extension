@@ -1243,6 +1243,18 @@ html[data-mist-dark] svg.time-window-svg .event-box rect.selected {
 html[data-mist-dark] svg.time-window-svg .event-box-text text {
   fill: var(--md-text-0) !important;
 }
+/* the strip's event marker LINES are colour-coded rects (red #c21934 = bad,
+ * green #12d46a = good) with NEUTRAL events drawn as fill-less rects that
+ * default to SVG black — invisible on dark. Lift only the fill-less ones. */
+html[data-mist-dark] svg.time-window-svg g.events > rect:not([fill]) {
+  fill: var(--md-text-0) !important;
+}
+/* shared hover crosshair on ALL insights/SLE charts (div.hover-bar overlay):
+ * #000 on the time-window strip, #777 on the chart variants — both sink into
+ * the dark canvas. One light value everywhere. */
+html[data-mist-dark] .hover-bar {
+  background-color: var(--md-text-1) !important;
+}
 /* channel-utilization "17%" value labels: inline style="fill: black" on the
  * g.labels texts. Lift ONLY inline-black text (never legible on dark) — the
  * channel numbers in the same group are #a8a8a8 and stay native. */
