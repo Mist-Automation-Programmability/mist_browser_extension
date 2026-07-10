@@ -2,6 +2,10 @@
 
 A web browser extension designed to simplify access to Juniper Mist APIs and API Tokens. This extension is supported on Firefox, Chrome, and Chromium-based browsers (e.g., Edge, Brave, Sidekick). It is a valuable tool for Juniper Mist developers and users to explore and utilize Mist APIs efficiently.
 
+<div align="center">
+<img src="._readme/img/hero_grab_ids.png" width="90%">
+</div>
+
 > [!IMPORTANT]
 > This extension is in the process of being published on the Chrome Web Store, Microsoft Edge Add-ons Store, and Firefox Add-ons Store. Once available, the official store links will be provided below.
 > 
@@ -17,6 +21,8 @@ A web browser extension designed to simplify access to Juniper Mist APIs and API
   - [Supported Juniper Clouds](#supported-juniper-clouds)
   - [API Tab](#api-tab)
   - [Account Tab](#account-tab)
+  - [Tools Tab](#tools-tab)
+  - [Settings Tab](#settings-tab)
   - [About Tab](#about-tab)
 - [Installation](#installation)
   - [Chrome / Chromium](#chrome--chromium)
@@ -71,10 +77,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 - Direct access to Mist API Pages (Django) from the current Mist dashboard page.
 
 <div>
-<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/mist_ui_device.png" width="75%">
-</div>
-<div>
-<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/mist_ui_sle.png" width="75%">
+<img src="._readme/img/api_dashboard.png" width="30%">
 </div>
 
 #### When on a Django Page
@@ -83,40 +86,48 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 - Direct access to the online API documentation for the current API call (GET/POST/PUT/DELETE).
 
 <div>
-<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/mist_api_device.png" width="75%">
+<img src="._readme/img/api_django.png" width="30%">
 </div>
 
 
 ### Account Tab
 - Lists all current valid Mist sessions in the web browser for various Mist clouds (e.g., `manage.mist.com`, `manage.eu.mist.com`, `manage.gc1.mist.com`).
 <div>
-<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/ext_account.png" width="25%">
+<img src="._readme/img/accounts_sessions.png" width="30%">
 </div>
-- Manage User API Tokens (list, delete, create).
+- Manage User and Organization API Tokens (list, create, delete).
 <div>
-<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/ext_token_user_create.png" width="25%">
-<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/ext_token_user_list.png" width="25%">
-</div>
-- Manage Organization API Tokens (list, delete, create).
-
-<div>
-<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/ext_token_org_create.png" width="25%">
-<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/ext_token_org_list.png" width="25%">
+<img src="._readme/img/accounts_tokens.png" width="30%">
 </div>
 
 
 ### Tools Tab
 - Provides different tools to view API Token information and usage
 <div>
-<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/ext_tool_token_info.png" width="25%">
-<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/ext_tool_token_usage.png" width="25%">
+<img src="._readme/img/tools_token_info.png" width="30%">
+<img src="._readme/img/tools_token_usage.png" width="30%">
 </div>
+
+### Settings Tab
+Configure the extension and enable opt-in enhancements for the Mist dashboard and API pages. All enhancements are off by default.
+
+<div>
+<img src="._readme/img/settings_theme.png" width="70%">
+</div>
+
+- **Appearance** — choose the extension popup theme: *System*, *Light*, or *Dark*.
+- **Mist Dashboard**
+  - **Dark mode for the Mist dashboard** *(Experimental)* — applies an extension-provided dark theme to the Mist manage pages (`manage.*`). It is carefully scoped to preserve Mist's status and brand colours (greens, reds, blues, Marvis purple) and toggles instantly, with no page reload.
+- **API Page Enhancements** *(Mist API / Django pages)*
+  - **ID Links generation** *(Experimental)* — turns known Mist IDs (`org_id`, `site_id`, object IDs) into clickable links.
+  - **Human-readable timestamps** — shows a local-time date with its UTC offset (and a `DST` marker where applicable) next to epoch timestamps.
+  - **Copy JSON** — adds a button to copy the raw JSON response.
 
 ### About Tab
 - Quick access to Mist API documentation (official Mist documentation, Postman documentation, OpenAPI documentation).
 - Version check to determine if a new version of the extension is available, with the ability to download updates directly from the extension.
 <div>
-<img src="https://github.com/Mist-Automation-Programmability/mist_browser_extension/raw/main/._readme/img/ext_about.png" width="25%">
+<img src="._readme/img/about.png" width="30%">
 </div>
 ---
 

@@ -83,3 +83,19 @@ typings/
 
 .vscode/
 .vscode/settings.json
+
+# App Store / Chrome Web Store screenshot pipeline (kept local, not in the repo)
+/screenshots/
+/chromestore/
+/appstore_out/
+/_tmp/
+/gen_appstore.py
+/_enc.png
+/favicon-16.png
+/favicon-32.png
+/favicon.svg
+/icon-16.png
+/icon-32.png
+/icon-48.png
+/icon-128.png
+/mist-icon.svg

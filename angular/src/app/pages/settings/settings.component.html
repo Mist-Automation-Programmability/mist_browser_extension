@@ -31,6 +31,23 @@
     </div>
   </div>
 
+  <!-- MIST DASHBOARD -->
+  <div class="mist-sec">
+    <div class="mist-sec-title"><span>Mist Dashboard</span></div>
+    <div class="mist-setting">
+      <div class="mist-setting-main">
+        <div class="mist-setting-top">
+          <div class="mist-setting-label">Dark mode for the Mist dashboard</div>
+          <span class="mist-exp">Experimental</span>
+        </div>
+        <div class="mist-setting-desc">
+          Applies an extension-provided dark theme to the Mist manage pages.
+        </div>
+      </div>
+      <button class="mist-switch" [class.on]="dark_manage" (click)="onToggleDarkManage()" aria-label="Toggle Mist dashboard dark mode"></button>
+    </div>
+  </div>
+
   <!-- API PAGE ENHANCEMENTS -->
   <div class="mist-sec">
     <div class="mist-sec-title"><span>API Page Enhancements</span></div>
@@ -50,11 +67,10 @@
       <div class="mist-setting-main">
         <div class="mist-setting-top">
           <div class="mist-setting-label">Convert timestamps to human-readable</div>
-          <span class="mist-exp">Experimental</span>
         </div>
         <div class="mist-setting-desc">
-          Shows a local-time date next to epoch timestamps on Mist API pages
-          (UTC on hover). Applies after the page is reloaded.
+          Shows a local-time date with its UTC offset next to epoch timestamps
+          on Mist API pages. Applies after the page is reloaded.
         </div>
       </div>
       <button class="mist-switch" [class.on]="ts_human" (click)="onToggleTimestamps()" aria-label="Toggle timestamp conversion"></button>
