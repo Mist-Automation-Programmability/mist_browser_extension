@@ -1216,6 +1216,33 @@ html[data-mist-dark] span.color-box[style*="rgb(204, 165, 187)"] {
 html[data-mist-dark] span.color-box[style*="rgb(183, 235, 207)"] {
   background-color: rgba(16, 188, 94, 0.4) !important;
 }
+/* WAN-edge Application Path Insights (BETA, .arv-chart-parent): per-bucket
+ * stacked app bars in an anonymous svg. A path with no data draws its 113
+ * buckets as near-white #F5F6F7 rects = a solid white band. Empty buckets go
+ * one step above the card; the svg backdrop is statically shadowed to the
+ * same value the fixer tags, since these charts re-render on poll
+ * (anti-blink). Green/red status rects + stacked app colours stay native. */
+html[data-mist-dark] .arv-chart-parent svg {
+  background-color: var(--md-bg-2) !important;
+}
+html[data-mist-dark] .arv-chart-parent rect[fill="#F5F6F7" i] {
+  fill: var(--md-bg-3) !important;
+}
+/* Insights top time-window strip: the numbered event-count boxes under the
+ * axis (g.event-box) are stylesheet-painted WHITE rects + grey stroke with
+ * black count text, and the selected box a pale-blue #e4eff8 wash. Red/green
+ * event marker rects keep their semantic colours. */
+html[data-mist-dark] svg.time-window-svg .event-box rect {
+  fill: var(--md-bg-3) !important;
+  stroke: var(--md-border) !important;
+}
+html[data-mist-dark] svg.time-window-svg .event-box rect.selected {
+  fill: rgba(99, 180, 238, 0.25) !important;
+  stroke: #2f6ea6 !important;
+}
+html[data-mist-dark] svg.time-window-svg .event-box-text text {
+  fill: var(--md-text-0) !important;
+}
 /* channel-utilization "17%" value labels: inline style="fill: black" on the
  * g.labels texts. Lift ONLY inline-black text (never legible on dark) — the
  * channel numbers in the same group are #a8a8a8 and stay native. */
