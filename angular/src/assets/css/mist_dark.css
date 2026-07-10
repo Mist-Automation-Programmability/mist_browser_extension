@@ -1170,11 +1170,24 @@ html[data-mist-dark] .graph-wrapper {
  * so the canvas shows through and the blue/green distinction survives.
  * Line-only charts (fill="none") and semantic green/red rects stay native. */
 html[data-mist-dark] svg.bar-chart path.area[fill="#b7d5eb" i],
-html[data-mist-dark] svg.bar-chart path.area[fill="#b7d5eb88" i] {
+html[data-mist-dark] svg.bar-chart path.area[fill="#b7d5eb88" i],
+html[data-mist-dark] svg.bar-chart path.area[fill="#b7d5ebaa" i],
+html[data-mist-dark] svg.time-window-svg path.area[fill="#b7d5eb" i] {
   fill: rgba(16, 116, 188, 0.28) !important;
 }
-html[data-mist-dark] svg.bar-chart path.area[fill="#b7ebcf" i] {
+html[data-mist-dark] svg.bar-chart path.area[fill="#b7ebcf" i],
+html[data-mist-dark] svg.time-window-svg path.area[fill="#b7ebcf" i] {
   fill: rgba(16, 188, 94, 0.22) !important;
+}
+/* switch-insights min-max-avg charts (CPU/Memory Utilization, Power Draw):
+ * the "Max" band is pastel mauve #cca5bb with a deep-wine #82235a stroke —
+ * washed out on dark. Wine fill at alpha (blends violet under the Avg blue,
+ * like the native lavender blend) + a lifted wine stroke for the band edge.
+ * The saturated half-alpha d3 series (#1f77b488 etc on Bytes, Data Rate,
+ * TX/RX Packets) already read correctly on dark and stay native. */
+html[data-mist-dark] svg.bar-chart path.area[fill="#cca5bb" i] {
+  fill: rgba(130, 35, 90, 0.45) !important;
+  stroke: #b04a80 !important;
 }
 /* AP-insights variants of the same family: the RSSI min/max band is an
  * svg.mma-chart path.area painted #b7d5eb for BOTH fill and stroke, and the
@@ -1195,6 +1208,13 @@ html[data-mist-dark] svg.bar-chart rect[fill="#ececeb" i] {
 }
 html[data-mist-dark] span.color-box[style*="rgb(183, 213, 235)"] {
   background-color: rgba(16, 116, 188, 0.4) !important;
+}
+/* …and the same sync for the pastel "Max" (mauve) and "TX" (mint) chips */
+html[data-mist-dark] span.color-box[style*="rgb(204, 165, 187)"] {
+  background-color: rgba(130, 35, 90, 0.6) !important;
+}
+html[data-mist-dark] span.color-box[style*="rgb(183, 235, 207)"] {
+  background-color: rgba(16, 188, 94, 0.4) !important;
 }
 /* channel-utilization "17%" value labels: inline style="fill: black" on the
  * g.labels texts. Lift ONLY inline-black text (never legible on dark) — the
