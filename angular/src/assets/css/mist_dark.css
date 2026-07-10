@@ -1255,6 +1255,28 @@ html[data-mist-dark] svg.time-window-svg g.events > rect:not([fill]) {
 html[data-mist-dark] .hover-bar {
   background-color: var(--md-text-1) !important;
 }
+/* Marvis Mini SLE "Trace path" (g.node groups in an anonymous svg): endpoint
+ * plates are white rects (blue stroke) and the unresolved hop a white circle
+ * (white stroke) — glaring on dark. Plates/circle → surface; the endpoint
+ * device glyph (uikit icon in a foreignObject) draws currentColor, which the
+ * theme lifts light, so it reads correctly once its plate is dark. Hop
+ * numbers carry fill attrs (#FFF on blue hops, #000 on the unresolved one)
+ * but a page rule overrides both to #606060 — restate light. Attribute-
+ * anchored so other d3 g.node graphs can only gain from the repaints. */
+html[data-mist-dark] g.node > rect[fill="#FFF" i] {
+  fill: var(--md-bg-3) !important;
+}
+html[data-mist-dark] g.node circle[fill="#FFF" i] {
+  fill: var(--md-bg-3) !important;
+  stroke: var(--md-text-2) !important;
+}
+html[data-mist-dark] g.node text[fill="#FFF" i],
+html[data-mist-dark] g.node text[fill="#000" i] {
+  fill: var(--md-text-0) !important;
+}
+html[data-mist-dark] g.node text:not([fill]) {
+  fill: var(--md-text-1) !important;
+}
 /* channel-utilization "17%" value labels: inline style="fill: black" on the
  * g.labels texts. Lift ONLY inline-black text (never legible on dark) — the
  * channel numbers in the same group are #a8a8a8 and stay native. */
