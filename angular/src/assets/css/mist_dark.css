@@ -1161,6 +1161,21 @@ html[data-mist-dark] svg.multi-line-chart,
 html[data-mist-dark] .graph-wrapper {
   background-color: var(--md-bg-2) !important;
 }
+/* Insights time-series (svg.bar-chart on site/AP/client Insights): the area
+ * fills are light-theme pastels set via fill ATTRIBUTE — #b7d5eb solid blue
+ * (DNS/DHCP Latency, Associated Clients), #b7d5eb88 half-alpha blue (RX) that
+ * muddies to GREY over the dark canvas, #b7ebcf solid mint (TX). Opaque
+ * pastels read as bright slabs on dark and bury the y-axis labels. Repaint as
+ * translucent SERIES-HUE fills (each series' own stroke colour at low alpha)
+ * so the canvas shows through and the blue/green distinction survives.
+ * Line-only charts (fill="none") and semantic green/red rects stay native. */
+html[data-mist-dark] svg.bar-chart path.area[fill="#b7d5eb" i],
+html[data-mist-dark] svg.bar-chart path.area[fill="#b7d5eb88" i] {
+  fill: rgba(16, 116, 188, 0.28) !important;
+}
+html[data-mist-dark] svg.bar-chart path.area[fill="#b7ebcf" i] {
+  fill: rgba(16, 188, 94, 0.22) !important;
+}
 /* client-insights roaming graph paints its label panel / row bands white via
  * a fill attribute and an inline style — both lose to !important */
 html[data-mist-dark] svg.client-roam-insights-graph-svg rect[fill="#fff"],
