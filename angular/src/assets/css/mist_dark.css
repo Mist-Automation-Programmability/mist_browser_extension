@@ -1196,6 +1196,12 @@ html[data-mist-dark] svg.bar-chart rect[fill="#ececeb" i] {
 html[data-mist-dark] span.color-box[style*="rgb(183, 213, 235)"] {
   background-color: rgba(16, 116, 188, 0.4) !important;
 }
+/* channel-utilization "17%" value labels: inline style="fill: black" on the
+ * g.labels texts. Lift ONLY inline-black text (never legible on dark) — the
+ * channel numbers in the same group are #a8a8a8 and stay native. */
+html[data-mist-dark] svg.bar-chart text[style*="fill: black" i] {
+  fill: var(--md-text-0) !important;
+}
 /* client-insights roaming graph paints its label panel / row bands white via
  * a fill attribute and an inline style — both lose to !important */
 html[data-mist-dark] svg.client-roam-insights-graph-svg rect[fill="#fff"],
