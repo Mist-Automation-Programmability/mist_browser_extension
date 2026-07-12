@@ -126,6 +126,7 @@
                 el.removeAttribute("data-md-lit");
                 el.removeAttribute("data-md-bord");
                 el.removeAttribute("data-md-dim");
+                el.removeAttribute("data-md-tint");
                 tagSig.delete(el);
             }
         }
@@ -145,6 +146,17 @@
                     // pale BLUE-tinted wash = Mist's selection/hover highlight
                     // (e.g. #ebf8ff, #e4effa) — keep it a highlight, not a surface
                     setTag(el, "data-md-lit", "h");
+                } else if (el.classList && el.classList.contains("tree-node")) {
+                    // config-diff trees (Confirm Changes modal): added/removed/
+                    // modified rows are PASTELS painted via bare emotion hashes,
+                    // so static CSS has nothing stable to anchor on. Classify
+                    // the hue and let the sheet re-base each row dark while it
+                    // keeps its diff meaning: green added, red/pink removed,
+                    // orange modified. Scoped to .tree-node rows only.
+                    setTag(el, "data-md-tint",
+                        (bg.g >= bg.r && bg.g >= bg.b) ? "g"
+                            : (bg.g > bg.b) ? "o"
+                                : "r");
                 }
             }
         }

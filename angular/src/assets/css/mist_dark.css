@@ -1408,6 +1408,23 @@ html[data-mist-dark] [data-md-bord="b"] {
 html[data-mist-dark] [data-md-bord="o"] {
   outline-color: var(--md-border) !important;
 }
+/* data-md-tint: pastel diff rows in the "Confirm Changes" config-diff tree
+ * (green added / red-pink removed / orange modified). The pastels are painted
+ * by bare emotion hashes — no stable class — so the fixer classifies the hue
+ * and these rules re-base each row dark with its meaning intact. The colour
+ * lift covers the inherited grey pipe glyphs; value texts are already light. */
+html[data-mist-dark] .tree-node[data-md-tint="g"] {
+  background-color: rgba(16, 188, 94, 0.15) !important;
+}
+html[data-mist-dark] .tree-node[data-md-tint="r"] {
+  background-color: rgba(194, 25, 52, 0.18) !important;
+}
+html[data-mist-dark] .tree-node[data-md-tint="o"] {
+  background-color: rgba(234, 133, 63, 0.15) !important;
+}
+html[data-mist-dark] .tree-node[data-md-tint] {
+  color: var(--md-text-1) !important;
+}
 
 /* ====================== scrollbars ========================== */
 html[data-mist-dark] ::-webkit-scrollbar {
