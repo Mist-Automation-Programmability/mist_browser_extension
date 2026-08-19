@@ -2,7 +2,8 @@ import { Component, Input, Output, ChangeDetectionStrategy, ChangeDetectorRef, E
 import { HttpClient } from '@angular/common/http';
 import { cleanHeaders } from "../../../services/http.utils";
 import { getRequestPercentage } from "../../../services/browser.session";
-import { BrowserService } from "../../../services/browser.service"
+import { BrowserService } from "../../../services/browser.service";
+import { CloudName } from '../../../services/mist.hosts';
 
 export interface TokenUsageElement {
   requests: number,
@@ -39,11 +40,13 @@ export class TokenUsageComponent implements OnInit {
     cloud: "",
     host: "",
   };
+  api_hosts: CloudName = {};
   working: boolean = false;
   invalid: boolean = false;
   check_index: number = 0;
   check_total: number = 0;
   api_token: string = "";
+  cloud_id: string = "none";
 
   ngOnInit() {
     this.invalid = false;
@@ -53,12 +56,12 @@ export class TokenUsageComponent implements OnInit {
   }
 
   check_usage() {
-    const api_hosts = this._browser.getHostApi()
+    this.api_hosts = this._browser.getTokenProbeHosts();
     this.working = true;
     this.invalid = false;
     this.check_index = 0;
-    this.check_total = api_hosts.length;
-    this.check_cloud_usage(api_hosts);
+    this.check_total = Object.keys(this.api_hosts).length;
+    this.check_cloud_usage(this.api_hosts);
   }
 
   private check_cloud_usage(api_hosts): void {

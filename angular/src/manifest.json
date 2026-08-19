@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Mist Extension",
   "short_name": "mist-extension",
-  "version": "6.0.0",
+  "version": "6.2.0",
   "description": "Web Browser Extension for Mist Developers to provide easier access to Mist APIs",
   "icons": {
     "16": "assets/favicon-16x16.png",
@@ -21,16 +21,33 @@
         "https://*.mist-federal.com/*",
         "https://*.ai.juniper.net/*"
       ],
+      "run_at": "document_start",
+      "css": [
+        "assets/css/mist_dark.css"
+      ],
+      "js": [
+        "assets/js/content_dark.js"
+      ]
+    },
+    {
+      "matches": [
+        "https://*.mist.com/*",
+        "https://*.mistsys.com/*",
+        "https://*.mist-federal.com/*",
+        "https://*.ai.juniper.net/*"
+      ],
       "js": [
         "assets/js/content.js",
+        "assets/js/mist_hosts.js",
+        "assets/js/content_api.js",
+        "assets/js/content_safari.js",
         "assets/js/django_links.js",
-        "assets/js/django_automation.js",
-        "assets/js/purify.min.js"
+        "assets/js/django_automation.js"
       ]
     }
   ],
   "background": {
-    "service_worker": "assets/js/bg-chrome.js"
+    "service_worker": "assets/js/bg-safari.js"
   },
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'"

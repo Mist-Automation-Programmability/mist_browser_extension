@@ -11,6 +11,22 @@
   </div>
 
   <div class="mist-fieldset">
+    <div class="mist-field-label">Mist Cloud</div>
+    <div class="mist-select-wrap">
+      <select class="mist-select" name="cloud_id" [(ngModel)]="cloud_id">
+        <option value="none">Auto</option>
+        <option *ngFor="let cloud of api_hosts | keyvalue" [value]="cloud.key">{{ cloud.value }}</option>
+      </select>
+      <span class="mist-select-chev">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </span>
+    </div>
+  </div>
+
+  <div class="mist-fieldset">
     <div class="mist-field-label">API Token</div>
     <div class="mist-token-row">
       <input class="mist-token-input" type="text" [(ngModel)]="api_token" (ngModelChange)="token_updated()"
@@ -62,41 +78,56 @@
         <div class="mist-ids" *ngIf="p.msp_id || p.org_id || p.site_id">
           <button class="mist-idrow" *ngIf="p.msp_id" [class.copied]="focused == p.msp_id"
             (click)="copyId(p.msp_id, p.msp_id)" title="Copy">
-            <div class="mist-idmain"><span class="mist-idlabel">MSP ID</span><span class="mist-idval">{{ p.msp_id }}</span></div>
+            <div class="mist-idmain"><span class="mist-idlabel">MSP ID</span><span class="mist-idval">{{ p.msp_id
+                }}</span></div>
             <span class="mist-copied" *ngIf="focused == p.msp_id">
               <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8"
-                stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
             </span>
             <span class="mist-copy" *ngIf="focused != p.msp_id">
               <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect>
-                <path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg>
+                stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="11" height="11" rx="2"></rect>
+                <path d="M5 15V5a2 2 0 0 1 2-2h10"></path>
+              </svg>
             </span>
           </button>
           <button class="mist-idrow" *ngIf="p.org_id" [class.copied]="focused == p.org_id"
             (click)="copyId(p.org_id, p.org_id)" title="Copy">
-            <div class="mist-idmain"><span class="mist-idlabel">ORG ID</span><span class="mist-idval">{{ p.org_id }}</span></div>
+            <div class="mist-idmain"><span class="mist-idlabel">ORG ID</span><span class="mist-idval">{{ p.org_id
+                }}</span></div>
             <span class="mist-copied" *ngIf="focused == p.org_id">
               <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8"
-                stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
             </span>
             <span class="mist-copy" *ngIf="focused != p.org_id">
               <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect>
-                <path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg>
+                stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="11" height="11" rx="2"></rect>
+                <path d="M5 15V5a2 2 0 0 1 2-2h10"></path>
+              </svg>
             </span>
           </button>
           <button class="mist-idrow" *ngIf="p.site_id" [class.copied]="focused == p.site_id"
             (click)="copyId(p.site_id, p.site_id)" title="Copy">
-            <div class="mist-idmain"><span class="mist-idlabel">SITE ID</span><span class="mist-idval">{{ p.site_id }}</span></div>
+            <div class="mist-idmain"><span class="mist-idlabel">SITE ID</span><span class="mist-idval">{{ p.site_id
+                }}</span></div>
             <span class="mist-copied" *ngIf="focused == p.site_id">
               <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8"
-                stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
             </span>
             <span class="mist-copy" *ngIf="focused != p.site_id">
               <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect>
-                <path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg>
+                stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="11" height="11" rx="2"></rect>
+                <path d="M5 15V5a2 2 0 0 1 2-2h10"></path>
+              </svg>
             </span>
           </button>
         </div>

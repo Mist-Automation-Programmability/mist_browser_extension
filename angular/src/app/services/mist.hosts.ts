@@ -5,6 +5,10 @@ export interface MistHostConfig {
     additional_cloud_hosts: string[];
 }
 
+export interface CloudName {
+    [id: string]: string;
+}
+
 export const MIST_DOMAINS: string[] = [
     ".mistsys.com",
     ".mist.com",
@@ -75,6 +79,37 @@ export const MIST_API_HOSTS: string[] = [
     "api.mistsys.com",
     "api.staging.mist-federal.com",
 ];
+
+export const MIST_CLOUD_NAMES: CloudName = {
+    "mist.com": "Global 01",
+    "gc1.mist.com": "Global 02",
+    "ac2.mist.com": "Global 03",
+    "gc2.mist.com": "Global 04",
+    "gc4.mist.com": "Global 05",
+    "gc5.mist.com": "APAC 02",
+    "gc6.mist.com": "EMEA 04",
+    "gc7.mist.com": "APAC 03",
+    "eu.mist.com": "EMEA 01",
+    "gc3.mist.com": "EMEA 02",
+    "ac6.mist.com": "EMEA 03",
+    "ac5.mist.com": "APAC 01",
+    "us.mist-federal.com": "GOV"
+}
+
+export const MIST_CLOUD_NAMES_COMMERCIAL: CloudName = {
+    "mist.com": "Global 01",
+    "gc1.mist.com": "Global 02",
+    "ac2.mist.com": "Global 03",
+    "gc2.mist.com": "Global 04",
+    "gc4.mist.com": "Global 05",
+    "gc5.mist.com": "APAC 02",
+    "gc6.mist.com": "EMEA 04",
+    "gc7.mist.com": "APAC 03",
+    "eu.mist.com": "EMEA 01",
+    "gc3.mist.com": "EMEA 02",
+    "ac6.mist.com": "EMEA 03",
+    "ac5.mist.com": "APAC 01",
+}
 
 export const MIST_COOKIE_HOST_PERMISSIONS: string[] = [
     "https://*.mist.com/*",

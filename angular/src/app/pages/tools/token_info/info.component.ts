@@ -1,7 +1,8 @@
 import { Component, Output, ChangeDetectionStrategy, ChangeDetectorRef, EventEmitter, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { cleanHeaders } from "../../../services/http.utils";
-import { BrowserService } from "../../../services/browser.service"
+import { BrowserService } from "../../../services/browser.service";
+import { CloudName } from '../../../services/mist.hosts';
 
 export interface PrivilegeElement {
   scope: string,
@@ -66,6 +67,8 @@ export class TokenInfoComponent implements OnInit {
   check_total: number = 0;
   api_token: string = "";
   success: boolean = false;
+  api_hosts: CloudName = {};
+  cloud_id: string = "none";
 
   ngOnInit() {
     this.reset();
@@ -73,12 +76,13 @@ export class TokenInfoComponent implements OnInit {
 
 
   check_info() {
-    const api_hosts = this._browser.getHostApi()
+    this.api_hosts = this._browser.getTokenProbeHosts();
+    console.log("api_hosts", this.api_hosts)
     this.working = true;
     this.invalid = false;
     this.check_index = 0;
-    this.check_total = api_hosts.length;
-    this.check_cloud_usage(api_hosts);
+    this.check_total = Object.keys(this.api_hosts).length;
+    this.check_cloud_usage(this.api_hosts);
   }
 
   private check_cloud_usage(api_hosts): void {

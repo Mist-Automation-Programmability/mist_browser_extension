@@ -5,7 +5,9 @@ import { loadSessions } from "./browser.loader";
 import type { BrowserSessionContext } from "./browser.loader.context";
 import {
     getConfiguredMistDomainFromHost,
+    CloudName,
     MIST_API_HOSTS,
+    MIST_CLOUD_NAMES_COMMERCIAL,
     MIST_COOKIE_HOST_PERMISSIONS,
     MIST_DOMAINS,
     MIST_MANAGE_HOSTS,
@@ -31,9 +33,7 @@ export interface SessionElement {
     api_threshold_reached: boolean,
 }
 
-export interface CloudName {
-    string
-}
+
 
 @Injectable({
     providedIn: 'root'
@@ -45,6 +45,7 @@ export class BrowserService {
     private domains: string[] = MIST_DOMAINS;
     private host_manage: string[] = MIST_MANAGE_HOSTS;
     private host_api: string[] = MIST_API_HOSTS;
+    private host_api_commercial: CloudName = MIST_CLOUD_NAMES_COMMERCIAL;
 
     private cloud_name: { [id: string]: string; } = {
         "mist.com": "Global 01",
@@ -126,6 +127,10 @@ export class BrowserService {
 
     getHostApi(): string[] {
         return this.host_api;
+    }
+
+    getTokenProbeHosts(): CloudName {
+        return this.host_api_commercial;
     }
 
     getCloud(host: string): string {
