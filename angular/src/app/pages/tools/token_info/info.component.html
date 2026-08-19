@@ -13,9 +13,9 @@
   <div class="mist-fieldset">
     <div class="mist-field-label">Mist Cloud</div>
     <div class="mist-select-wrap">
-      <select class="mist-select" name="cloud_id" [(ngModel)]="cloud_id">
+      <select class="mist-select" name="cloud_id" [(ngModel)]="cloud_id" (ngModelChange)="token_updated()">
         <option value="none">Auto</option>
-        <option *ngFor="let cloud of api_hosts | keyvalue" [value]="cloud.key">{{ cloud.value }}</option>
+        <option *ngFor="let cloud of api_hosts | keyvalue: sortClouds" [value]="cloud.key">{{ cloud.value }}</option>
       </select>
       <span class="mist-select-chev">
         <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"
