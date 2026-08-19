@@ -165,6 +165,7 @@ export class ApiManageComponent implements OnInit {
       "ap",
       "gateway",
       "switch",
+      "routers",
       "assets",
       "wlan",
       "tags",
@@ -181,13 +182,14 @@ export class ApiManageComponent implements OnInit {
       "pcap",
       "siteedge",
       "cellularedges",
-      "rrm"
+      "rrm",
+      "apconfig"
     ]);
     const org_evpn_re = /^evpn\/org(\/(?<topology_id>[0-9a-f-]{36}))?\??(?<query_params>.*)?$/is;
     const org_inventory = /^apinventory\/?(?<detail>aps|switches|wan_edges|mist_edges)?\/?(?<site_id>[0-9a-z_-]*)\??(?<query_params>.*)?$/is;
     const org_identityProviders = /^nacIdentityProviders(\/oauth\/(?<provider>[a-z]+)\/(?<obj_id>[0-9a-z_-]+))?\??(?<query_params>.*)?$/is;
     const org_upgrade = /^upgrade\/?(?<device_type>ap|switch|gateway|mxedge)?\??(?<query_params>.*)?$/is;
-    const org_common_re = /^(?<obj>[a-zA-Z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view|template|rfTemplate|provider|nacportals|pskportals)\/)?([0-9]\/)?(?<obj_id>[0-9a-z_-]*)(\/(?<site_id>[0-9a-f-]{36}))?\??(?<query_params>[0-9a-z_=&-]*)?$/is;
+    const org_common_re = /^(?<obj>[a-zA-Z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view|template|rfTemplate|provider|nacportals|pskportals|flowtelemetry)\/)?([0-9]\/)?(?<obj_id>[0-9a-z_-]*)(\/(?<site_id>[0-9a-f-]{36}))?\??(?<query_params>[0-9a-z_=&-]*)?$/is;
     const org_common_objs = new Set([
       "orgtags",
       "misttunnels",
@@ -209,6 +211,7 @@ export class ApiManageComponent implements OnInit {
       "services",
       "networks",
       "applicationpolicy",
+      "securityprofiles",
       "authpolicylabels",
       "naccertificates",
       "nacpolicy",
@@ -220,7 +223,8 @@ export class ApiManageComponent implements OnInit {
       "nacclients",
       "nacendpoints",
       "sitetemplates",
-      "gatewaytopologywizard"
+      "gatewaytopologywizard",
+      "flowtelemetry"
     ]);
 
     this.dispatchRoute(parsed, [
@@ -964,6 +968,28 @@ export class ApiManageComponent implements OnInit {
             this.forgeSiteDiscoveredSwitchUrl(res?.groups?.host);
           }
           break;
+        case "routers":
+          res.groups.obj = "router";
+          if (["list", "topology", "location"].includes(this.obj_id)) this.obj_id = undefined;
+          var is_uuid = false;
+          if (this.obj_id) is_uuid = uuid_re.test(this.obj_id);
+          this.setName(res?.groups?.obj, res?.groups?.detail);
+          if (!res?.groups?.details) extra_params = "type=" + res?.groups?.obj;
+          stats_filter = "site_id=" + this.site_id;
+          clients_filter = "site_id=" + this.site_id;
+          if (this.obj_id) {
+            stats_filter += "&mac=" + this.obj_id.split("-")[4];
+            clients_filter += "&device_mac=" + this.obj_id.split("-")[4];
+          }
+
+          this.forgeSiteObject("devices", res?.groups?.host, res?.groups?.detail, extra_params);
+          this.forgeSiteObjectStats("devices", res?.groups?.host, res?.groups?.detail, extra_params);
+          this.forgeSiteObjectEvents("devices", res?.groups?.obj, res?.groups?.host, res?.groups?.detail);
+          this.forgeSiteObjectAlarms("devices", res?.groups?.obj, res?.groups?.host, res?.groups?.detail);
+          this.forgeOrgObjectStatsSearch("ports", res?.groups?.host, stats_filter, this.obj_name + " ports");
+          this.forgeOrgObjectStatsSearch("ospf_peers", res?.groups?.host, stats_filter, this.obj_name + " ospf peers");
+          this.forgeOrgObjectStatsSearch("bgp_peers", res?.groups?.host, stats_filter, this.obj_name + " bgp peers");
+          break;
         case "assets":
           // need to retrieve the asset ID to generate the detail request
           if (!res?.groups?.detail) {
@@ -1068,6 +1094,9 @@ export class ApiManageComponent implements OnInit {
             url: "https://api." + res?.groups?.host + "/api/v1/sites/" + this.site_id + "/rrm/events?band=" + band,
             name: "Site RRM Events (" + band + "GHz)"
           });
+          break;
+        case "apconfig":
+          break;
       }
     }
   }
@@ -1252,10 +1281,19 @@ export class ApiManageComponent implements OnInit {
           this.forgeOrgObject(res?.groups?.obj.toLowerCase(), res?.groups?.host, res?.groups?.detail);
           break;
         case "applicationpolicy":
-          this.setName("servicepolicy", res?.groups?.details);
+          this.setName("service policy", res?.groups?.details);
           this.forgeOrgObject("servicepolicies", res?.groups?.host, res?.groups?.detail);
           this.forgeOrgObject("idpprofiles", res?.groups?.host, res?.groups?.detail, undefined, "idp profiles");
           this.forgeOrgObject("avprofiles", res?.groups?.host, res?.groups?.detail, undefined, "antivirus profiles");
+          this.forgeOrgObject("aamwprofiles", res?.groups?.host, res?.groups?.detail, undefined, "antimalware profiles");
+          this.forgeOrgObject("secintelprofiles", res?.groups?.host, res?.groups?.detail, undefined, "sec intel profiles");
+          break;
+        case "securityprofiles":
+          this.setName("Security Profile", res?.groups?.details);
+          this.forgeOrgObject("idpprofiles", res?.groups?.host, res?.groups?.detail, undefined, "idp profiles");
+          this.forgeOrgObject("avprofiles", res?.groups?.host, res?.groups?.detail, undefined, "antivirus profiles");
+          this.forgeOrgObject("aamwprofiles", res?.groups?.host, res?.groups?.detail, undefined, "antimalware profiles");
+          this.forgeOrgObject("secintelprofiles", res?.groups?.host, res?.groups?.detail, undefined, "sec intel profiles");
           break;
         case "authpolicylabels":
           this.setName("NAC Tag", res?.groups?.detail);
@@ -1306,14 +1344,28 @@ export class ApiManageComponent implements OnInit {
           break;
         case "securityevents":
           this.setName("Secutiry Events", res?.groups?.detail);
-          this.quick_links.push({
-            url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/security/events/search?type=idp_attack_event",
-            name: "IDP Events"
-          },
+          this.quick_links.push(
+            {
+              url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/security/events/search?type=idp_attack_event",
+              name: "IDP Events"
+            },
             {
               url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/security/events/search?type=ewf_event",
               name: "URL Filtering Events"
-            })
+            },
+            {
+              url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/security/events/search?type=av_event",
+              name: "Anti-Virus Events"
+            },
+            {
+              url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/security/events/search?type=aamw_event",
+              name: "Advanced Anti-Malware Events"
+            },
+            {
+              url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/security/events/search?type=secintel_event",
+              name: "Security Intelligence Events"
+            }
+          )
           break;
         case "nacendpoints":
           this.setName("NAC Endpoints", res?.groups?.detail);
@@ -1329,6 +1381,36 @@ export class ApiManageComponent implements OnInit {
             url: "https://api." + res?.groups?.host + "/api/v1/orgs/" + this.org_id + "/gatewaytemplates",
             name: "Gateway templates"
           })
+          break;
+        case "flowtelemetry":
+          if (this.obj_id && !this.site_id) {
+            this.site_id = this.obj_id;
+            this.obj_id = undefined;
+          }
+          const device_mac = res?.groups?.query_params?.includes("switch=") ? res?.groups?.query_params.split("switch=")[1].split("&")[0] : "";
+          const device_id = device_mac ? "00000000-0000-0000-1000-" + device_mac : "";
+          if (device_id != "") {
+            this.obj_id = device_id;
+          }
+          this.setName("Device", res?.groups?.detail);
+          if (device_id != "") {
+            this.quick_links.push({
+              url: "https://api." + res?.groups?.host + "/api/v1/sites/" + this.site_id + "/devices/" + device_id + "/flow_records/search?limit=1000",
+              name: "Flow Telemetry"
+            });
+            this.quick_links.push({
+              url: "https://api." + res?.groups?.host + "/sites/" + this.site_id + "/insights/device/" + device_mac + "/top-flow-by-src?limit=1000",
+              name: "Top Flow by Source"
+            })
+            this.quick_links.push({
+              url: "https://api." + res?.groups?.host + "/sites/" + this.site_id + "/insights/device/" + device_mac + "/top-flow-by-dst?limit=1000",
+              name: "Top Flow by Destination"
+            })
+            this.quick_links.push({
+              url: "https://api." + res?.groups?.host + "/sites/" + this.site_id + "/insights/device/" + device_mac + "/top-flow-by-app?limit=1000",
+              name: "Top Flow by Application"
+            })
+          }
           break;
       }
     }
@@ -1630,6 +1712,18 @@ export class ApiManageComponent implements OnInit {
           this.forgeSiteObjectStats("devices", res?.groups?.host, "detail", extra_params);
           this.forgeSiteObjectEvents("devices", "switch", res?.groups?.host, "detail", extra_params);
           this.forgeSiteObjectAlarms("devices", "switch", res?.groups?.host, "detail", extra_params);
+          this.forgeOrgObjectStatsSearch("ospf_peers", res?.groups?.host, stats_filter, this.obj_name + " ospf peers");
+          this.forgeOrgObjectStatsSearch("bgp_peers", res?.groups?.host, stats_filter, this.obj_name + " bgp peers");
+          this.forgeOrgObjectStatsSearch("ports", res?.groups?.host, stats_filter, this.obj_name + " ports");
+          break;
+        case "juniperRouter":
+          stats_filter = "site_id=" + this.site_id;
+          if (this.obj_id) stats_filter += "&mac=" + this.obj_id.split("-")[4];
+          this.setName("router", "insights");
+          this.forgeSiteObject("devices", res?.groups?.host, "detail");
+          this.forgeSiteObjectStats("devices", res?.groups?.host, "detail", extra_params);
+          this.forgeSiteObjectEvents("devices", "router", res?.groups?.host, "detail", extra_params);
+          this.forgeSiteObjectAlarms("devices", "router", res?.groups?.host, "detail", extra_params);
           this.forgeOrgObjectStatsSearch("ospf_peers", res?.groups?.host, stats_filter, this.obj_name + " ospf peers");
           this.forgeOrgObjectStatsSearch("bgp_peers", res?.groups?.host, stats_filter, this.obj_name + " bgp peers");
           this.forgeOrgObjectStatsSearch("ports", res?.groups?.host, stats_filter, this.obj_name + " ports");

@@ -1,0 +1,605 @@
+# =============================================================================
+# Mist Browser Extension - Quick Links coverage audit
+# =============================================================================
+# Purpose : verify the extension detects each Mist dashboard URL as expected
+#           and proposes the important Mist API "Quick Links" for that page.
+#
+# Method  : (1) static analysis of the router
+#               angular/src/app/pages/api/manage/manage.component.ts
+#               (regex dispatch in parseOrgUrl / parseMspUrl -> forge* helpers)
+#           (2) live walk of every left-nav section + sub-menu on a real,
+#               authenticated session, recording the actual current route hash
+#               and the api/v1 calls each page fires (Resource Timing API).
+#           (3) every PROPOSED endpoint below is verified to exist in the public
+#               spec mist_openapi/mist.openapi.json (see endpoint_verification
+#               fields). Endpoints under /api/v1/labs/... are beta and are NOT in
+#               the public spec - flagged as such, never proposed as the primary.
+#
+# Test org: TM-LAB  (cloud manage.gc1.mist.com)
+#   org_id  : 8aa21779-1178-4357-b3e0-42c02b93b870
+#   site_id : 51dcce54-0eec-47c6-b29d-f9494a80ec5d   (site "DNT-RLM")
+#   date    : 2026-07-07
+#
+# coverage values:
+#   covered  - router matches the URL and emits the expected quick link(s)
+#   gap      - router does NOT match the URL (no quick links emitted)
+#
+# URL params come from  /admin/?org_id=<org_id>#!<route>
+# Placeholders: {org_id} {site_id} {obj_id} {device_uuid} {mac} {period} {start} {stop}
+# 'current_links' are paths relative to  https://api.{host}/api/v1
+# =============================================================================
+
+summary:
+  entries_listed: 90          # 82 covered + 8 gaps below (includes detail/sub-page variants)
+  covered: 82
+  gaps: 8
+  distinct_nav_destinations: ~66   # collapsing detail/variant pages onto one handler
+  headline: >
+    Coverage is very broad - essentially the entire Monitor / Clients / Devices /
+    Site / Organization / MSP tree is handled. The gaps are newer or niche pages
+    (Marvis Actions, the Location SLE tab, Location Diagnostics, and 4
+    analytics/ML pages with no stable REST endpoint). Two existing links also
+    show drift - see review_findings.
+  gaps_list:
+    - "#!virtualAssistant/action          (Marvis > Marvis Actions)       - HIGH value"
+    - "#!dashboard/locationServiceLevels   (Monitor > SLE > Location tab)  - MEDIUM value"
+    - "#!locationDiagnostics/{site_id}     (Location > Diagnostics)        - MEDIUM value"
+    - "#!occupancyAnalytics/site/{site_id} (Analytics > Occupancy)         - MEDIUM value"
+    - "#!networkAnalytics/{site_id}        (Analytics > Network Analytics) - LOW value"
+    - "#!topology/detail                   (Org > Network Topology)        - LOW value (labs/beta)"
+    - "#!canvas                            (Analytics > Analyze)           - LOW value (no REST)"
+    - "#!rfGlassesPlayback/{site_id}       (Location > RF Env Replay)      - LOW value (no REST)"
+
+# -----------------------------------------------------------------------------
+# GAPS - pages with NO quick links today + proposed additions
+# -----------------------------------------------------------------------------
+gaps:
+
+  - page: Marvis > Marvis Actions
+    url: "#!virtualAssistant/action"
+    params: [org_id]
+    coverage: gap
+    reason: >
+      Router matches obj="virtualAssistant" which is NOT in org_common_objs, so
+      accept() fails and no handler runs.
+    api_calls_observed_beta:   # what the UI actually calls - all under /labs/, NOT in the public spec
+      - "/api/v1/labs/orgs/{org_id}/marvis_actions?start&end&interval&query"
+      - "/api/v1/labs/orgs/{org_id}/suggestion?start&end&page&limit&query&resolve_wcid"
+      - "/api/v1/labs/orgs/{org_id}/suggestions?active&display_priority&query"
+      - "/api/v1/labs/suggestions_schema"
+    proposed_quick_links:
+      # There is NO public /orgs/{org_id}/suggestions endpoint (verified against
+      # mist_openapi/mist.openapi.json). The documented public way to read Marvis
+      # Actions is the alarms API with group=marvis - the SAME pattern the
+      # extension already uses in orgInsightUrl() for its "Marvis Actions" links.
+      - name: "Marvis Actions"
+        url: "https://api.{host}/api/v1/orgs/{org_id}/alarms/search?group=marvis&duration=1d&limit=1000"
+      - name: "Marvis Actions count"
+        url: "https://api.{host}/api/v1/orgs/{org_id}/alarms/count?interval=3600&group=marvis&distinct=time&duration=1d"
+    implementation_hint: >
+      Add "virtualassistant" to org_common_objs + a case in commonOrgUrl (or a
+      dedicated regex ^virtualAssistant/action) that reuses the alarms group=marvis
+      links already built in orgInsightUrl. NOTE: no public /orgs/{org_id}/suggestions
+      endpoint exists - "suggestion" appears in the spec only at MSP scope
+      (/msps/{msp_id}/suggestion/count, already used by commonMspUrl); the org-level
+      marvis_actions/suggestions endpoints are /labs/ (beta) only.
+    endpoint_verification: "vs mist_openapi/mist.openapi.json: alarms/search + alarms/count EXIST; orgs/{org_id}/suggestions does NOT."
+
+  - page: Monitor > Service Levels > Location (tab)
+    url: "#!dashboard/locationServiceLevels/site/{site_id}/{period}/{start}/{stop}/{site_id}"
+    params: [org_id, site_id, period, start, stop]
+    coverage: gap
+    reason: >
+      sle_re detail alternation is (serviceLevels|wiredserviceLevels|
+      wanServiceLevels|juniperGateway|applicationServiceLevels) - it is missing
+      "locationServiceLevels". The other 4 SLE tabs ARE covered.
+    ui_sle_panels_observed: ["SDK Connect Time", "Latency", "Teleports", "Dropped Requests", "AP Health"]
+    proposed_quick_links:
+      pattern: "https://api.{host}/api/v1/sites/{site_id}/sle/site/{site_id}/metric/{metric}/summary-trend?start={start}&end={stop}"
+      candidate_metrics: ["sdk-connect-time", "latency", "teleports", "dropped-requests", "ap-health"]
+      note: "metric slugs need confirmation on a site with BLE/asset data (empty test site fired no location SLE calls)."
+      endpoint_verification: "vs spec: the summary-trend path sle/{scope}/{scope_id}/metric/{metric}/summary-trend EXISTS; only the location metric slugs are unconfirmed."
+    implementation_hint: >
+      Add "locationServiceLevels" to the sle_re detail group + a matching case in
+      sleUrl() that calls forgeSlehUrl(..., locationMetrics, ...).
+
+  - page: Location > Location Diagnostics
+    url: "#!locationDiagnostics/{site_id}"
+    params: [org_id, site_id]
+    coverage: gap
+    api_calls_observed:
+      - "/api/v1/sites/{site_id}/location/ml/current"
+      - "/api/v1/sites/{site_id}/maps"
+      - "/api/v1/sites/{site_id}/beacons"
+    proposed_quick_links:
+      - name: "Site Maps"
+        url: "https://api.{host}/api/v1/sites/{site_id}/maps"
+      - name: "Site Beacons"
+        url: "https://api.{host}/api/v1/sites/{site_id}/beacons"
+      - name: "Location ML settings"
+        url: "https://api.{host}/api/v1/sites/{site_id}/location/ml/current"
+    endpoint_verification: "vs spec: maps, beacons, location/ml/current all EXIST (also observed live)."
+
+  - page: Analytics > Occupancy Analytics
+    url: "#!occupancyAnalytics/site/{site_id}"
+    params: [org_id, site_id]
+    coverage: gap
+    api_calls_observed: []   # empty test site loads zone data on-demand
+    proposed_quick_links:
+      - name: "Site Zones stats"
+        url: "https://api.{host}/api/v1/sites/{site_id}/stats/zones"
+      - name: "Zone visits"
+        url: "https://api.{host}/api/v1/sites/{site_id}/zones/visits/search?duration=1d&interval=3600"
+    endpoint_verification: "vs spec: stats/zones EXISTS; visits path is documented as {zone_type}/visits/search (zone_type=zones) and is already used by forgeAsset(). No live calls captured (empty test site)."
+
+  - page: Analytics > Network Analytics
+    url: "#!networkAnalytics/{site_id}"
+    params: [org_id, site_id]
+    coverage: gap
+    api_calls_observed:
+      - "/api/v1/orgs/{org_id}/uisettings?purpose"
+    proposed_quick_links: []
+    note: >
+      Data is loaded on-demand after selecting dimensions; no stable per-page REST
+      endpoint observed. Low priority - likely not worth a quick link.
+
+  - page: Organization > Network Topology
+    url: "#!topology/detail"
+    params: [org_id]
+    coverage: gap
+    api_calls_observed:
+      - "/api/v1/labs/orgs/{org_id}/topology"
+      - "/api/v1/labs/orgs/{org_id}/count/topology"
+    proposed_quick_links:
+      - name: "Network Topology (beta)"
+        url: "https://api.{host}/api/v1/labs/orgs/{org_id}/topology"
+    note: "Marvis 'Network Topology' - only /labs/ (beta) endpoints exist; low priority."
+
+  - page: Analytics > Analyze
+    url: "#!canvas"
+    params: [org_id]
+    coverage: gap
+    proposed_quick_links: []
+    note: "Marvis data-explorer (BETA). No stable REST endpoint; skip."
+
+  - page: Location > RF Environment Replay
+    url: "#!rfGlassesPlayback/{site_id}"
+    params: [org_id, site_id]
+    coverage: gap
+    proposed_quick_links: []
+    note: "RF capture/replay (streaming/ML). No obvious REST quick link; skip."
+
+# -----------------------------------------------------------------------------
+# COVERED - page inventory (grouped by left-nav section)
+# -----------------------------------------------------------------------------
+covered:
+
+  monitor:
+    - page: Monitor > Service Levels > Insights (site)
+      url: "#!dashboard/insights/{site_id}"
+      params: [org_id, site_id]
+      handler: 'insightsUrl -> forgeSite(site)'
+      current_links: 'sites/{site_id}, setting, webhooks, stats, devices/events/search, clients/events/search'
+    - page: Monitor > Service Levels > Wireless
+      url: "#!dashboard/serviceLevels/site/{site_id}/{period}/{start}/{stop}/{site_id}"
+      params: [org_id, site_id, period, start, stop]
+      handler: 'sleUrl (serviceLevels)'
+      current_links: 'sites/{site_id}/sle/site/{site_id}/metric/{m}/summary-trend for m in: time-to-connect, failed-to-connect, roaming, throughput, coverage, capacity, ap-availability'
+    - page: Monitor > Service Levels > Wired
+      url: "#!dashboard/wiredServiceLevels/site/{site_id}/{period}/{start}/{stop}/{site_id}"
+      params: [org_id, site_id, period, start, stop]
+      handler: 'sleUrl (wiredServiceLevels)'
+      current_links: 'sle .../metric/{m}/summary-trend for m in: switch-stc, switch-health, switch-throughput'
+      review: 'see review_findings: live UI uses switch-health-v2 + switch-bandwidth'
+    - page: Monitor > Service Levels > WAN
+      url: "#!dashboard/wanServiceLevels/site/{site_id}/{period}/{start}/{stop}/{site_id}"
+      params: [org_id, site_id, period, start, stop]
+      handler: 'sleUrl (wanServiceLevels)'
+      current_links: 'sle .../metric/{m}/summary-trend for m in: gateway-health, wan-link-health, application-health'
+    - page: Monitor > Service Levels > Application
+      url: "#!dashboard/applicationServiceLevels/site/{site_id}/{period}/{start}/{stop}/{site_id}"
+      params: [org_id, site_id, period, start, stop]
+      handler: 'sleUrl (applicationServiceLevels) -> forgeApplicationSlehUrl'
+      current_links: 'sites/{site_id}/insights/call-metrics, stats/calls/count, stats/calls/troubleshoot, stats/calls/search'
+    - page: Monitor > SLE metric detail (drill-in)
+      url: "#!dashboard/{serviceLevels|wiredserviceLevels|wanServiceLevels|juniperGateway}/page2/{stats|timeline}/.../{scope}/{scope_id}/{sle}/.../{site_id}"
+      params: [org_id, site_id, scope, scope_id, sle, period, start, stop]
+      handler: 'sleDetailsUrl'
+      current_links: 'sle/{scope}/{scope_id}/metric/{sle}/{threshold|summary|histogram|impact-summary|impacted-*}'
+    - page: Monitor > Site comparison SLE (org)
+      url: "#!dashboard/{siteComparison|wiredSiteComparison|wanSiteComparison}/{sle}/{worstsle}/.../{period}/{start}/{stop}"
+      params: [org_id, sle, worstsle, period, start, stop]
+      handler: 'orgSleUrl'
+      current_links: 'orgs/{org_id}/insights/sites-sle, insights/worst-sites-by-sle'
+    - page: Monitor > Alerts
+      url: "#!alerts/{site_id}"
+      params: [org_id, site_id]
+      handler: 'alarmUrl'
+      current_links: '{sites|orgs}/{id}/alarms/search, alarms/count, orgs/{org_id}/alarmtemplates, const/alarm_defs'
+    - page: Monitor insight detail - AP
+      url: "#!dashboard/insights/device/{device_uuid}/{period}/{start}/{stop}/{site_id}"
+      params: [org_id, site_id, device_uuid, period, start, stop]
+      handler: 'insightsUrl (device)'
+      current_links: 'sites/{site_id}/devices/{id}, stats/devices, devices/events/search, alarms/search, devices/last_config/search'
+    - page: Monitor insight detail - Wi-Fi Client
+      url: "#!dashboard/insights/client/{mac}/{period}/{start}/{stop}/{site_id}"
+      params: [org_id, site_id, mac, period, start, stop]
+      handler: 'insightsUrl (client)'
+      current_links: 'clients/search, stats/clients, clients/events/search, alarms/search, stats/calls/search, calls/client/{id}/troubleshoot'
+    - page: Monitor insight detail - Switch
+      url: "#!dashboard/insights/juniperSwitch/{device_uuid}/{period}/{start}/{stop}/{site_id}"
+      params: [org_id, site_id, device_uuid]
+      handler: 'insightsUrl (juniperSwitch)'
+      current_links: 'devices/{id}, stats/devices, events/search, alarms/search, stats/{ospf_peers|bgp_peers|ports}/search'
+    - page: Monitor insight detail - Gateway
+      url: "#!dashboard/insights/juniperGateway/{device_uuid}/{period}/{start}/{stop}/{site_id}"
+      params: [org_id, site_id, device_uuid]
+      handler: 'insightsUrl (juniperGateway)'
+      current_links: 'devices/{id}, stats/devices, events/search, alarms/search, stats/{ospf_peers|bgp_peers|ports|vpn_peers}/search'
+    - page: Monitor insight detail - Wired Client
+      url: "#!dashboard/insights/wiredClient/{mac}/{period}/{start}/{stop}/{site_id}"
+      params: [org_id, site_id, mac]
+      handler: 'insightsUrl (wiredClient)'
+      current_links: 'wired_clients/search, wired_clients/events/search, stats/calls/search'
+    - page: Monitor insight detail - Mist Edge
+      url: "#!dashboard/insights/edge/{uuid}/{period}/{start}/{stop}/{site_id}"
+      params: [org_id, uuid]
+      handler: 'insightsUrl (edge)'
+      current_links: 'orgs/{org_id}/mxedges/{id}, stats/mxedges, mxedges/events/search'
+    - page: Org Insights (dashboard)
+      url: "#!orgInsights"
+      params: [org_id]
+      handler: 'orgInsightUrl'
+      current_links: 'orgs/{org_id}/insights/sites-sle (wireless/wired/wan), clients/count, nac_clients/count, alarms/search (marvis), alarms/count, devices/count?distinct=version'
+      review: 'see review_findings: hardcoded start/end timestamps in the Marvis Actions link'
+
+  marvis:
+    - page: Marvis > Marvis Minis
+      url: "#!marvisMini?view=dashboard&site={site_id}&start=&end="
+      params: [org_id, site_id, start, end]
+      handler: 'MarvisMinisUrl'
+      current_links: 'sites/{site_id}/synthetic_test/search'
+    - page: Marvis > Marvis Minis SLE
+      url: "#!marvisMiniSLE?scopeType=&scopeId=&metric=&start=&end="
+      params: [org_id, site_id, scopeType, scopeId, start, end]
+      handler: 'MarvisMinisSLEUrl'
+      current_links: 'orgs/{org_id}/sle/org/{org_id}/metric/{network-services|application}/summary-trend, insights/minis-top-probes'
+
+  clients:
+    - page: Clients > Wi-Fi Clients
+      url: "#!clients/{site_id}"
+      params: [org_id, site_id]
+      handler: 'commonSiteUrl (clients)'
+      current_links: 'sites/{site_id}/clients/search, stats/clients'
+      confirmed_live: true
+    - page: Clients > Wired Clients
+      url: "#!wiredClients/{site_id}"
+      params: [org_id, site_id]
+      handler: 'commonSiteUrl (wiredclients)'
+      current_links: 'sites/{site_id}/wired_clients/search'
+    - page: Clients > App Clients (SDK)
+      url: "#!sdkClients/{site_id}"
+      params: [org_id, site_id]
+      handler: 'commonSiteUrl (sdkclients)'
+      current_links: 'sites/{site_id}/sdkclients/search, stats/sdkclients'
+    - page: Clients > BLE Clients (Assets)
+      url: "#!assets/{site_id}"
+      params: [org_id, site_id]
+      handler: 'commonSiteUrl (assets)'
+      current_links: 'sites/{site_id}/assets, stats/assets, stats/discovered_assets'
+    - page: Clients > NAC Clients
+      url: "#!nacclients"
+      params: [org_id, site_id]
+      handler: 'commonOrgUrl (nacclients) -> orgNacUrl'
+      current_links: 'orgs/{org_id}/nac_clients/search, nac_clients/events/search'
+    - page: Clients > Guest Clients
+      url: "#!guestclients/{site_id}"
+      params: [org_id, site_id]
+      handler: 'commonSiteUrl (guestclients)'
+      current_links: 'sites/{site_id}/guests/search'
+
+  devices:
+    - page: Access Points (list)
+      url: "#!ap/{site_id}"
+      params: [org_id, site_id]
+      handler: 'commonSiteUrl (ap)'
+      current_links: 'sites/{site_id}/devices?type=ap, stats/devices, devices/events/search, alarms/search'
+      confirmed_live: true
+    - page: Switches (list)
+      url: "#!switch/{site_id}"
+      params: [org_id, site_id]
+      handler: 'commonSiteUrl (switch)'
+      current_links: 'devices?type=switch, stats/devices, events/search, alarms/search, stats/{ports|ospf_peers|bgp_peers}/search, wired_clients/search, stats/discovered_switches/search'
+    - page: WAN Edges (list)
+      url: "#!gateway/{site_id}"
+      params: [org_id, site_id]
+      handler: 'commonSiteUrl (gateway)'
+      current_links: 'devices?type=gateway, stats/devices, events/search, alarms/search, stats/{ports|ospf_peers|bgp_peers|vpn_peers}/search'
+      confirmed_live: true
+    - page: Mist Edges (Inventory / Clusters / Tunnels)
+      url: "#!edge"
+      params: [org_id]
+      handler: 'commonOrgUrl (edge) -> forgeEdge'
+      current_links: 'orgs/{org_id}/mxedges, stats/mxedges, mxclusters, mxtunnels'
+    - page: Device detail (AP / Switch / Gateway)
+      url: "#!{ap|switch|gateway}/detail/{device_uuid}/{site_id}"
+      params: [org_id, site_id, device_uuid]
+      handler: 'commonSiteUrl (detail branch)'
+      current_links: 'devices/{id}, config_cmd, stats/devices/{id}, events/search, alarms/search, + ZTP password action'
+
+  location:
+    - page: Location > Live View
+      url: "#!liveView/{view}/{map_uuid}/{site_id}"
+      params: [org_id, site_id, map_uuid]
+      handler: 'floorplansUrl'
+      current_links: 'sites/{site_id}/maps/{id}, maps/{id}/auto_placement, mapstacks'
+
+  analytics:
+    - page: Analytics > Premium Analytics
+      url: "#!premiumanalytics"
+      params: [org_id]
+      handler: 'commonOrgUrl (premiumanalytics)'
+      current_links: 'orgs/{org_id}/pma/dashboards'
+    - page: Analytics > Events
+      url: "#!marvis/{site_id}"
+      params: [org_id, site_id]
+      handler: 'eventsUrl'
+      current_links: 'sites/{site_id}/insights/marvis'
+
+  site_config:
+    - page: Site > Switch Configuration
+      url: "#!switchconfig/{site_id}"
+      handler: 'commonSiteUrl (switchconfig)'
+      current_links: 'sites/{site_id}/setting/derived'
+    - page: Site > 3rd Party Tunnels
+      url: "#!tunnels/{site_id}"
+      handler: 'commonSiteUrl (tunnels)'
+      current_links: 'sites/{site_id}/wxtunnels, stats/wxtunnels'
+    - page: Site > Labels
+      url: "#!tags/{site_id}"
+      handler: 'commonSiteUrl (tags)'
+      current_links: 'sites/{site_id}/wxtags'
+    - page: Site > Packet Captures
+      url: "#!pcap/site/{site_id}"
+      handler: 'commonSiteUrl (pcap)'
+      current_links: 'sites/{site_id}/pcaps'
+    - page: Site > Policy (WxLAN)
+      url: "#!wxlan/{site_id}"
+      handler: 'commonSiteUrl (wxlan)'
+      current_links: 'sites/{site_id}/wxrules, stats/wxrules'
+    - page: Site > Pre-Shared Keys
+      url: "#!psk/{site_id}"
+      handler: 'commonSiteUrl (psk)'
+      current_links: 'sites/{site_id}/psks'
+    - page: Site > Radio Management
+      url: "#!rrm/{site_id}"
+      handler: 'commonSiteUrl (rrm)'
+      current_links: 'sites/{site_id}/rrm/current, rrm/neighbors/band/{b}, rrm/events'
+    - page: Site > Security (Rogues)
+      url: "#!security/{site_id}"
+      handler: 'commonSiteUrl (security)'
+      current_links: 'sites/{site_id}/rogues/events/search, insights/rogues, insights/rogues/clients'
+    - page: Site > WLANs
+      url: "#!wlan/{site_id}"
+      handler: 'commonSiteUrl (wlan)'
+      current_links: 'sites/{site_id}/wlans'
+    - page: Site > WLAN in template
+      url: "#!wlan/orgWlanDetail/{template_id}/{wlan_id}/{site_id}"
+      handler: 'siteWlanTemplateUrl'
+      current_links: 'orgs/{org_id}/wlans/{id}, templates/{id}'
+    - page: Site > Cellular Edges
+      url: "#!cellularedges/{site_id}"
+      handler: 'commonSiteUrl (cellularedges)'
+      current_links: 'orgs/{org_id}/stats/otherdevices, otherdevices/events/search'
+    - page: Site > Zigbee/IoT clients
+      url: "#!zigbeeclients/{site_id}"
+      handler: 'commonSiteUrl (zigbeeclients)'
+      current_links: 'sites/{site_id}/iotendpoints/search'
+    - page: Site > Site EVPN
+      url: "#!evpn/site/{site_id}"
+      handler: 'siteEvpnUrl'
+      current_links: 'sites/{site_id}/evpn_topologies, orgs/{org_id}/evpn_topologies, deviceprofiles?type=switch'
+
+  org_config:
+    - page: Org > Administrators
+      url: "#!adminconfig"
+      handler: 'commonOrgUrl (adminconfig)'
+      current_links: 'orgs/{org_id}/admins'
+    - page: Org > Audit Logs
+      url: "#!auditlogs"
+      handler: 'commonOrgUrl (auditlogs)'
+      current_links: 'orgs/{org_id}/logs, logs?message=accessed-org'
+    - page: Org > Firmware Upgrades
+      url: "#!upgrade/{device_type?}"
+      handler: 'orgUpgradeUrl'
+      current_links: 'orgs/{org_id}/devices/upgrade, devices/versions (ap/switch/gateway)'
+    - page: Org > Inventory
+      url: "#!apinventory/{aps|switches|wan_edges|mist_edges}?"
+      handler: 'orgInventoryUrl'
+      current_links: 'orgs/{org_id}/inventory (+ ?type=ap|switch|gateway)'
+    - page: Org > Mobile (SDK)
+      url: "#!sdk"
+      handler: 'commonOrgUrl (sdk)'
+      current_links: 'orgs/{org_id}/sdkinvites'
+    - page: Org > Settings
+      url: "#!org"
+      handler: 'commonOrgUrl (org) -> forgeOrg'
+      current_links: 'orgs/{org_id}/setting, stats, ssos, ssoroles, webhooks, apitokens, vars/search'
+    - page: Org > Site Configuration (list)
+      url: "#!configuration"
+      handler: 'commonOrgUrl (configuration)'
+      current_links: 'orgs/{org_id}/sites, sites/search, sitegroups'
+    - page: Org > Site Configuration (one site)
+      url: "#!configuration/{site_id}"
+      handler: 'commonOrgUrl (configuration site)'
+      current_links: 'sites/{site_id}, setting, webhooks, stats, devices/events/search, clients/events/search'
+    - page: Org > Subscriptions
+      url: "#!subscription"
+      handler: 'commonOrgUrl (subscription)'
+      current_links: 'orgs/{org_id}/licenses'
+    - page: Org > Auth Policies (NAC)
+      url: "#!nacpolicy"
+      handler: 'commonOrgUrl (nacpolicy)'
+      current_links: 'orgs/{org_id}/nacrules, nac_clients/search, nac_clients/events/search, nac_clients/count'
+    - page: Org > Auth Policy Labels
+      url: "#!authpolicylabels"
+      handler: 'commonOrgUrl (authpolicylabels)'
+      current_links: 'orgs/{org_id}/nactags'
+    - page: Org > Certificates (NAC)
+      url: "#!naccertificates"
+      handler: 'commonOrgUrl (naccertificates)'
+      current_links: 'orgs/{org_id}/setting, cert, setting/mist_scep/client_certs'
+    - page: Org > Client Onboarding
+      url: "#!onboardingworkflow/{nacportals?}"
+      handler: 'commonOrgUrl (onboardingworkflow)'
+      current_links: 'orgs/{org_id}/nacportals OR pskportals'
+    - page: Org > Endpoints (NAC)
+      url: "#!nacendpoints"
+      handler: 'commonOrgUrl (nacendpoints)'
+      current_links: 'orgs/{org_id}/usermacs/search'
+    - page: Org > Identity Providers
+      url: "#!nacIdentityProviders"
+      handler: 'orgNacIdentityProvidersUrl'
+      current_links: 'orgs/{org_id}/ssos, setting/{intune|jamf|mobicontrol|vmware}/link_accounts'
+    - page: Org > Application Policy
+      url: "#!applicationpolicy"
+      handler: 'commonOrgUrl (applicationpolicy)'
+      current_links: 'orgs/{org_id}/servicepolicies, idpprofiles, avprofiles'
+    - page: Org > Applications
+      url: "#!services"
+      handler: 'commonOrgUrl (services)'
+      current_links: 'orgs/{org_id}/services'
+    - page: Org > Hub Profiles
+      url: "#!hubs"
+      handler: 'commonOrgUrl (hubs) -> forgeHubProfile'
+      current_links: 'orgs/{org_id}/deviceprofiles?type=gateway, vpns'
+    - page: Org > Networks
+      url: "#!networks"
+      handler: 'commonOrgUrl (networks)'
+      current_links: 'orgs/{org_id}/networks'
+    - page: Org > WAN Edge Templates
+      url: "#!gatewaytemplates"
+      handler: 'commonOrgUrl (gatewaytemplates)'
+      current_links: 'orgs/{org_id}/gatewaytemplates'
+    - page: Org > WAN Topology
+      url: "#!gatewayTopologyWizard"
+      handler: 'commonOrgUrl (gatewaytopologywizard)'
+      current_links: 'orgs/{org_id}/vpns, gatewaytemplates'
+    - page: Org > Campus Fabric (EVPN)
+      url: "#!evpn/site/{site_id} | #!evpn/org"
+      handler: 'siteEvpnUrl / orgEvpnUrl'
+      current_links: 'evpn_topologies, deviceprofiles?type=switch'
+    - page: Org > Switch Templates
+      url: "#!switchtemplate"
+      handler: 'commonOrgUrl (switchtemplate)'
+      current_links: 'orgs/{org_id}/networktemplates'
+    - page: Org > Device Profiles
+      url: "#!deviceprofiles"
+      handler: 'commonOrgUrl (deviceprofiles)'
+      current_links: 'orgs/{org_id}/deviceprofiles'
+    - page: Org > Labels
+      url: "#!orgtags"
+      handler: 'commonOrgUrl (orgtags)'
+      current_links: 'orgs/{org_id}/wxtags'
+    - page: Org > Pre-Shared Keys
+      url: "#!orgpsk"
+      handler: 'commonOrgUrl (orgpsk)'
+      current_links: 'orgs/{org_id}/psks'
+    - page: Org > RF Templates
+      url: "#!rftemplates"
+      handler: 'commonOrgUrl (rftemplates)'
+      current_links: 'orgs/{org_id}/rftemplates'
+    - page: Org > WLAN Templates
+      url: "#!templates"
+      handler: 'commonOrgUrl (templates)'
+      current_links: 'orgs/{org_id}/templates, wlans'
+    - page: Org > Security Events
+      url: "#!securityevents"
+      handler: 'commonOrgUrl (securityevents)'
+      current_links: 'orgs/{org_id}/security/events/search?type=idp_attack_event, ?type=ewf_event'
+    - page: Org > Mist Tunnels
+      url: "#!misttunnels"
+      handler: 'commonOrgUrl (misttunnels)'
+      current_links: 'orgs/{org_id}/mxtunnels'
+    - page: Org > VPNs
+      url: "#!vpns"
+      handler: 'commonOrgUrl (vpns)'
+      current_links: 'orgs/{org_id}/vpns'
+    - page: Org > Site Templates
+      url: "#!sitetemplates"
+      handler: 'commonOrgUrl (sitetemplates)'
+      current_links: 'orgs/{org_id}/sitetemplates'
+
+  msp:   # separate portal - manage.<host>/msp/?msp_id=<msp_id>
+    - page: MSP > Organizations
+      url: "/msp/#!orgs"
+      handler: 'commonMspUrl (orgs)'
+      current_links: 'msps/{msp_id}, licenses, orggroups, orgs, orgs/search'
+    - page: MSP > Organizations (AIOps)
+      url: "/msp/#!orgs/aiops"
+      handler: 'commonMspUrl (orgs aiops)'
+      current_links: 'msps/{msp_id}/insights/orgs-sle (wifi/wired/wan), suggestion/count'
+    - page: MSP > Administrators
+      url: "/msp/#!admins"
+      handler: 'commonMspUrl (admins)'
+      current_links: 'msps/{msp_id}/admins'
+    - page: MSP > Audit Logs
+      url: "/msp/#!auditLogs"
+      handler: 'commonMspUrl (auditlogs)'
+      current_links: 'msps/{msp_id}/logs'
+    - page: MSP > MSP Info
+      url: "/msp/#!mspInfo"
+      handler: 'commonMspUrl (mspinfo)'
+      current_links: 'msps/{msp_id}, licenses, ssos, ssoroles, orggroups, orgs'
+    - page: MSP > Labels (org groups)
+      url: "/msp/#!labels"
+      handler: 'commonMspUrl (labels)'
+      current_links: 'msps/{msp_id}/orggroups'
+
+# -----------------------------------------------------------------------------
+# REVIEW FINDINGS - existing coverage that works but looks stale/incomplete
+# -----------------------------------------------------------------------------
+review_findings:
+
+  - id: hardcoded-marvis-timestamps
+    severity: medium
+    file: angular/src/app/pages/api/manage/manage.component.ts
+    where: 'orgInsightUrl() - the "Marvis Actions" quick link (~line 1751)'
+    problem: >
+      The URL contains a hardcoded "start=1745532000&end=1745598080" (a fixed
+      2025 window) instead of the page's dynamic start/end query_params like every
+      other link in the same function.
+    fix: >
+      Use the same query_params tail as the sibling links, or drop start/end and
+      rely on a duration.
+
+  - id: wired-sle-metrics
+    severity: informational
+    confidence: low
+    file: angular/src/app/pages/api/manage/manage.component.ts
+    where: 'sleUrl() case wiredServiceLevels (~line 1857) + sleDetailsUrl() switch cases'
+    status: >
+      CORRECTED. An earlier draft of this finding claimed "switch-health was
+      renamed to switch-health-v2" and told you to rename + add switch-bandwidth.
+      That was wrong/unverified - see below.
+    verified:
+      - 'Extension emits summary-trend for [switch-stc, switch-health, switch-throughput] (read from source).'
+      - 'const/insight_metrics (authoritative, via get_mist_constants) lists the valid switch metrics as:
+         switch-by-bytes, switch-health, switch-metrics, switch-stc, switch-stc-new, switch-throughput.'
+      - 'So switch-stc, switch-health and switch-throughput are ALL still valid -> the existing wired-SLE
+         quick links are NOT broken and need no rename. switch-health-v2 is NOT in the constant.'
+    observed_but_unconfirmed:
+      - 'Live wired-SLE tab (gc1, 2026-07) additionally requested summary-trend for switch-health-v2 and
+         switch-bandwidth. Neither is in const/insight_metrics, so they are likely a newer or SLE-internal
+         metric set - not something to adopt blindly.'
+      - 'const/insight_metrics does carry "switch-stc-new" (a newer variant of switch-stc) that the extension
+         does not use.'
+    recommendation: >
+      No change required for correctness. If you want the newer wired metrics, first confirm each returns 200
+      on  sites/{site_id}/sle/site/{site_id}/metric/{m}/summary-trend  for a site that has switches (I could
+      not run this GET - the Chrome extension was disconnected at correction time). Only then decide whether
+      to add switch-bandwidth / switch-stc-new or move to switch-health-v2.
+
+  - id: location-sle-missing
+    severity: low
+    see: 'gaps -> Monitor > Service Levels > Location'

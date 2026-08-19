@@ -1,7 +1,7 @@
 # Mist Browser Extension — Architecture and Security Overview
 
-**Audience:** Customers, enterprise architects, and security reviewers  
-**Version reviewed:** 6.1.1  
+**Audience:** Customers, enterprise architects, and security reviewers<br>
+**Implementation baseline:** Current source<br>
 **Last validated:** 2026-07-15
 
 ## 1. Purpose and scope
@@ -91,7 +91,7 @@ The handoff is cleared before form submission. An expired action is rejected; a 
 
 ### API-token inspection tool
 
-The optional Tools workflow cannot determine an API token's cloud locally. When the user asks to inspect a token, the extension sends it sequentially over HTTPS to the configured Mist/Juniper API hosts until a host accepts it or the list is exhausted. This configured list includes supported production clouds and configured staging/integration hosts within the permitted domain families. The token is held in memory only and is not stored in extension storage.
+The optional Tools workflow cannot determine an API token's cloud locally. When the user asks to inspect a token, the extension sends it sequentially over HTTPS to a restricted list of production commercial Mist and production Juniper AI API hosts until a host accepts it or the list is exhausted. GovCloud, staging, and integration hosts are deliberately excluded to limit credential exposure; tokens issued by those environments cannot be inspected with this workflow. The token is held in memory only and is not stored in extension storage.
 
 ## 4. Browser permissions
 
@@ -110,6 +110,8 @@ All three browser packages request the same functional permissions. Access is li
 
 Firefox also declares the same four host patterns as optional host permissions so access can be requested through Firefox's permission workflow.
 
+These host permissions support the extension's complete feature set. The API-token inspection workflow uses the narrower production-host list described above.
+
 ## 5. Data handling and privacy
 
 The extension contains no analytics, telemetry, advertising, tracking, or crash-reporting integration. It does not transmit data to the developer and does not use a third-party service to process Mist data.
@@ -118,14 +120,14 @@ The extension contains no analytics, telemetry, advertising, tracking, or crash-
 |---|---|
 | Mist session cookies | Read locally for supported Mist/Juniper domains, kept in browser memory, and not copied to developer-controlled infrastructure or persisted by the extension. Browser-authenticated requests send them only to their applicable Mist/Juniper origin. |
 | Account, privilege, usage, and token metadata | Retrieved from configured Mist/Juniper HTTPS API endpoints, displayed in the popup, and retained in memory only. |
-| API token entered in Tools | Retained in memory only and sent to configured Mist/Juniper API hosts as described in the token-inspection flow above. |
+| API token entered in Tools | Retained in memory only and sent sequentially to the restricted production commercial Mist/Juniper host list described above. It is not sent to GovCloud, staging, or integration hosts. |
 | User preferences | Stored in browser extension storage until the user clears extension data or uninstalls the extension. |
 | Pending API action | Stored locally with an exact URL and timestamp; accepted only within 15 seconds and cleared before submission. It is never sent to the extension developer. |
 | Clipboard data | Written only following a user copy action. The extension does not read the clipboard. |
 
-Normal session-based operations target the cloud detected from the user's Mist session or active Mist page. The token-inspection tool is the exception because it must discover the token's issuing cloud.
+Normal session-based operations target the cloud detected from the user's Mist session or active Mist page. The token-inspection tool is the exception because it discovers the token's issuing cloud within its restricted production commercial host list.
 
-The current 6.1.1 user interface does not run an automatic GitHub release check. Links in the About view open public documentation, integration, repository, or release pages in a normal browser tab only when selected by the user; those sites then operate under their own privacy terms.
+The current user interface does not run an automatic GitHub release check. Links in the About view open public documentation, integration, repository, or release pages in a normal browser tab only when selected by the user; those sites then operate under their own privacy terms.
 
 For the complete privacy statement, see [PRIVACY.md](PRIVACY.md).
 
@@ -160,4 +162,4 @@ The source code is public at [Mist-Automation-Programmability/mist_browser_exten
 
 Questions, defect reports, and feature requests can be submitted through the project's [GitHub issue tracker](https://github.com/Mist-Automation-Programmability/mist_browser_extension/issues).
 
-This document describes the behavior verified in version 6.1.1 from the browser manifests, popup services, background scripts, page integration scripts, and privacy statement. It is a technical architecture overview, not a certification, penetration-test report, service-level agreement, or statement of a customer's regulatory compliance.
+This document describes the behavior verified from the current browser manifests, popup services, background scripts, page integration scripts, and privacy statement. It is a technical architecture overview, not a certification, penetration-test report, service-level agreement, or statement of a customer's regulatory compliance.

@@ -1,7 +1,9 @@
 import { Component, Output, ChangeDetectionStrategy, ChangeDetectorRef, EventEmitter, OnInit } from '@angular/core';
+import { KeyValue } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { cleanHeaders } from "../../../services/http.utils";
-import { BrowserService } from "../../../services/browser.service"
+import { BrowserService } from "../../../services/browser.service";
+import { CloudName } from '../../../services/mist.hosts';
 
 export interface PrivilegeElement {
   scope: string,
@@ -30,13 +32,13 @@ export interface TokenInfoElement {
 }
 
 @Component({
-    selector: 'app-tools-token-info',
-    templateUrl: 'info.component.html',
-    styleUrls: [
-        'info.component.scss',
-    ],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'app-tools-token-info',
+  templateUrl: 'info.component.html',
+  styleUrls: [
+    'info.component.scss',
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class TokenInfoComponent implements OnInit {
 
@@ -66,19 +68,28 @@ export class TokenInfoComponent implements OnInit {
   check_total: number = 0;
   api_token: string = "";
   success: boolean = false;
+  api_hosts: CloudName = {};
+  cloud_id: string = "none";
 
   ngOnInit() {
+    this.api_hosts = this._browser.getTokenProbeHosts();
     this.reset();
   }
 
+  sortClouds(first: KeyValue<string, string>, second: KeyValue<string, string>): number {
+    return first.value.localeCompare(second.value);
+  }
 
   check_info() {
-    const api_hosts = this._browser.getHostApi()
+    const cloudHosts = this.cloud_id === "none"
+      ? Object.keys(this.api_hosts)
+      : [this.cloud_id];
+    const hosts = cloudHosts.map(host => "api." + host);
     this.working = true;
     this.invalid = false;
     this.check_index = 0;
-    this.check_total = api_hosts.length;
-    this.check_cloud_usage(api_hosts);
+    this.check_total = hosts.length;
+    this.check_cloud_usage(hosts);
   }
 
   private check_cloud_usage(api_hosts): void {

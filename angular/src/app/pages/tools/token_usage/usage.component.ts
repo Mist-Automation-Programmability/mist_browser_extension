@@ -2,7 +2,9 @@ import { Component, Input, Output, ChangeDetectionStrategy, ChangeDetectorRef, E
 import { HttpClient } from '@angular/common/http';
 import { cleanHeaders } from "../../../services/http.utils";
 import { getRequestPercentage } from "../../../services/browser.session";
-import { BrowserService } from "../../../services/browser.service"
+import { BrowserService } from "../../../services/browser.service";
+import { CloudName } from '../../../services/mist.hosts';
+import { KeyValue } from '@angular/common';
 
 export interface TokenUsageElement {
   requests: number,
@@ -44,21 +46,31 @@ export class TokenUsageComponent implements OnInit {
   check_index: number = 0;
   check_total: number = 0;
   api_token: string = "";
+  api_hosts: CloudName = {};
+  cloud_id: string = "none";
 
   ngOnInit() {
+    this.api_hosts = this._browser.getTokenProbeHosts();
     this.invalid = false;
     this.check_index = 0;
     this.api_token = "";
     this._cd.detectChanges()
   }
 
+    sortClouds(first: KeyValue<string, string>, second: KeyValue<string, string>): number {
+    return first.value.localeCompare(second.value);
+  }
+
   check_usage() {
-    const api_hosts = this._browser.getHostApi()
+    const cloudHosts = this.cloud_id === "none"
+      ? Object.keys(this.api_hosts)
+      : [this.cloud_id];
+    const hosts = cloudHosts.map(host => "api." + host);
     this.working = true;
     this.invalid = false;
     this.check_index = 0;
-    this.check_total = api_hosts.length;
-    this.check_cloud_usage(api_hosts);
+    this.check_total = Object.keys(this.api_hosts).length;
+    this.check_cloud_usage(hosts);
   }
 
   private check_cloud_usage(api_hosts): void {
