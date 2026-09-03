@@ -14,6 +14,10 @@
     "test:unit": "node --test \"tests/**/*.test.js\""
   },
   "private": true,
+  "overrides": {
+    "fast-uri": "^3.1.7",
+    "qs": "^6.16.0"
+  },
   "xo": {
     "envs": [
       "browser",
@@ -36,7 +40,7 @@
     "@angular/platform-browser": "^22.1.5",
     "@angular/platform-browser-dynamic": "^22.1.5",
     "@angular/router": "^22.1.5",
-    "@types/webextension-polyfill": "^0.12.5",
+    "@types/webextension-polyfill": "^0.12.6",
     "ngx-build-plus": "^20.0.0",
     "rxjs": "^7.8.2",
     "tslib": "^2.8.1",
