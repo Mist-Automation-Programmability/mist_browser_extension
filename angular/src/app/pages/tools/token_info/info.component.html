@@ -15,7 +15,9 @@
     <div class="mist-select-wrap">
       <select class="mist-select" name="cloud_id" [(ngModel)]="cloud_id" (ngModelChange)="token_updated()">
         <option value="none">Auto</option>
-        <option *ngFor="let cloud of api_hosts | keyvalue: sortClouds" [value]="cloud.key">{{ cloud.value }}</option>
+        @for (cloud of api_hosts | keyvalue: sortClouds; track cloud) {
+          <option [value]="cloud.key">{{ cloud.value }}</option>
+        }
       </select>
       <span class="mist-select-chev">
         <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"
@@ -32,24 +34,33 @@
       <input class="mist-token-input" type="text" [(ngModel)]="api_token" (ngModelChange)="token_updated()"
         placeholder="Paste an API token" [readonly]="working" [class.is-invalid]="invalid" />
       <button class="mist-getinfo" [disabled]="!api_token || working || invalid" (click)="check_info()">
-        <span *ngIf="!working && !invalid">Get Info</span>
-        <span *ngIf="invalid">Invalid</span>
-        <span *ngIf="working">{{ check_index }} / {{ check_total }}</span>
+        @if (!working && !invalid) {
+          <span>Get Info</span>
+        }
+        @if (invalid) {
+          <span>Invalid</span>
+        }
+        @if (working) {
+          <span>{{ check_index }} / {{ check_total }}</span>
+        }
       </button>
     </div>
   </div>
 
-  <ng-container *ngIf="success">
+  @if (success) {
     <div class="mist-tokhead">
       <div class="mist-tokhead-top">
         <span class="mist-typebadge">{{ info.type | uppercase }}</span>
         <span class="mist-tokhead-on">API token on</span>
       </div>
       <div class="mist-tokhead-host">{{ info.host }} · {{ info.cloud }}</div>
-      <div class="mist-tokhead-name" *ngIf="info.type == 'org'">Token name <b>{{ info.name }}</b></div>
-      <div class="mist-tokhead-name" *ngIf="info.type == 'user'">User name <b>{{ info.name }}</b></div>
+      @if (info.type == 'org') {
+        <div class="mist-tokhead-name">Token name <b>{{ info.name }}</b></div>
+      }
+      @if (info.type == 'user') {
+        <div class="mist-tokhead-name">User name <b>{{ info.name }}</b></div>
+      }
     </div>
-
     <div class="mist-stats">
       <div class="mist-stat">
         <div class="mist-stat-val">{{ info.msp_count }}</div>
@@ -64,75 +75,96 @@
         <div class="mist-stat-label">Site Access</div>
       </div>
     </div>
-
     <div class="mist-sec">
       <div class="mist-sec-title"><span>Privileges</span><span class="count">{{ info.privileges.length }}</span></div>
-      <div class="mist-priv" *ngFor="let p of info.privileges">
-        <div class="mist-priv-top">
-          <div class="mist-priv-name">{{ p.name }}</div>
-          <div class="mist-priv-tags">
-            <span class="mist-tag">{{ p.scope | uppercase }}</span>
-            <span class="mist-tag role">{{ p.role | uppercase }}</span>
+      @for (p of info.privileges; track p) {
+        <div class="mist-priv">
+          <div class="mist-priv-top">
+            <div class="mist-priv-name">{{ p.name }}</div>
+            <div class="mist-priv-tags">
+              <span class="mist-tag">{{ p.scope | uppercase }}</span>
+              <span class="mist-tag role">{{ p.role | uppercase }}</span>
+            </div>
           </div>
-        </div>
-        <div class="mist-ids" *ngIf="p.msp_id || p.org_id || p.site_id">
-          <button class="mist-idrow" *ngIf="p.msp_id" [class.copied]="focused == p.msp_id"
-            (click)="copyId(p.msp_id, p.msp_id)" title="Copy">
-            <div class="mist-idmain"><span class="mist-idlabel">MSP ID</span><span class="mist-idval">{{ p.msp_id
+          @if (p.msp_id || p.org_id || p.site_id) {
+            <div class="mist-ids">
+              @if (p.msp_id) {
+                <button class="mist-idrow" [class.copied]="focused == p.msp_id"
+                  (click)="copyId(p.msp_id, p.msp_id)" title="Copy">
+                  <div class="mist-idmain"><span class="mist-idlabel">MSP ID</span><span class="mist-idval">{{ p.msp_id
                 }}</span></div>
-            <span class="mist-copied" *ngIf="focused == p.msp_id">
-              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8"
-                stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="20 6 9 17 4 12"></polyline>
-              </svg>
-            </span>
-            <span class="mist-copy" *ngIf="focused != p.msp_id">
-              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round">
-                <rect x="9" y="9" width="11" height="11" rx="2"></rect>
-                <path d="M5 15V5a2 2 0 0 1 2-2h10"></path>
-              </svg>
-            </span>
+                @if (focused == p.msp_id) {
+                  <span class="mist-copied">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8"
+                      stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                  </span>
+                }
+                @if (focused != p.msp_id) {
+                  <span class="mist-copy">
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="9" y="9" width="11" height="11" rx="2"></rect>
+                      <path d="M5 15V5a2 2 0 0 1 2-2h10"></path>
+                    </svg>
+                  </span>
+                }
+              </button>
+            }
+            @if (p.org_id) {
+              <button class="mist-idrow" [class.copied]="focused == p.org_id"
+                (click)="copyId(p.org_id, p.org_id)" title="Copy">
+                <div class="mist-idmain"><span class="mist-idlabel">ORG ID</span><span class="mist-idval">{{ p.org_id
+              }}</span></div>
+              @if (focused == p.org_id) {
+                <span class="mist-copied">
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </span>
+              }
+              @if (focused != p.org_id) {
+                <span class="mist-copy">
+                  <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="9" y="9" width="11" height="11" rx="2"></rect>
+                    <path d="M5 15V5a2 2 0 0 1 2-2h10"></path>
+                  </svg>
+                </span>
+              }
+            </button>
+          }
+          @if (p.site_id) {
+            <button class="mist-idrow" [class.copied]="focused == p.site_id"
+              (click)="copyId(p.site_id, p.site_id)" title="Copy">
+              <div class="mist-idmain"><span class="mist-idlabel">SITE ID</span><span class="mist-idval">{{ p.site_id
+            }}</span></div>
+            @if (focused == p.site_id) {
+              <span class="mist-copied">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </span>
+            }
+            @if (focused != p.site_id) {
+              <span class="mist-copy">
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="9" y="9" width="11" height="11" rx="2"></rect>
+                  <path d="M5 15V5a2 2 0 0 1 2-2h10"></path>
+                </svg>
+              </span>
+            }
           </button>
-          <button class="mist-idrow" *ngIf="p.org_id" [class.copied]="focused == p.org_id"
-            (click)="copyId(p.org_id, p.org_id)" title="Copy">
-            <div class="mist-idmain"><span class="mist-idlabel">ORG ID</span><span class="mist-idval">{{ p.org_id
-                }}</span></div>
-            <span class="mist-copied" *ngIf="focused == p.org_id">
-              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8"
-                stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="20 6 9 17 4 12"></polyline>
-              </svg>
-            </span>
-            <span class="mist-copy" *ngIf="focused != p.org_id">
-              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round">
-                <rect x="9" y="9" width="11" height="11" rx="2"></rect>
-                <path d="M5 15V5a2 2 0 0 1 2-2h10"></path>
-              </svg>
-            </span>
-          </button>
-          <button class="mist-idrow" *ngIf="p.site_id" [class.copied]="focused == p.site_id"
-            (click)="copyId(p.site_id, p.site_id)" title="Copy">
-            <div class="mist-idmain"><span class="mist-idlabel">SITE ID</span><span class="mist-idval">{{ p.site_id
-                }}</span></div>
-            <span class="mist-copied" *ngIf="focused == p.site_id">
-              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8"
-                stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="20 6 9 17 4 12"></polyline>
-              </svg>
-            </span>
-            <span class="mist-copy" *ngIf="focused != p.site_id">
-              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round">
-                <rect x="9" y="9" width="11" height="11" rx="2"></rect>
-                <path d="M5 15V5a2 2 0 0 1 2-2h10"></path>
-              </svg>
-            </span>
-          </button>
-        </div>
+        }
       </div>
-    </div>
-  </ng-container>
+    }
+  </div>
+}
+</div>
+}
 
 </div>
