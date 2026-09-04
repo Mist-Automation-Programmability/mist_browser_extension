@@ -147,8 +147,8 @@ export class ApiManageComponent implements OnInit {
 
   private parseOrgUrl(parsed: ManageUrlParts): void {
 
-    const minis_re = /^marvisMini\??(?<query_params>.*)?$/is;
     const minis_sle_re = /^marvisMiniSLE\??(?<query_params>.*)?$/is;
+    const minis_re = /^marvisMini\??(?<query_params>.*)?$/is;
     const orginsights_re = /^orgInsights\??(?<query_params>.*)?$/is;
     const orgsle_re = /^dashboard\/(?<scope>siteComparison|wiredSiteComparison|wanSiteComparison)\/(?<sle>[a-z-]*)\/(?<worstsle>[a-z-]*)\/([a-z-_]*)\/(?<period>[0-9a-z-]*)\/(?<start>[0-9]*)\/(?<stop>[0-9]*)\??(?<query_params>.*)?$/is;
     const sle_details_re = /^dashboard\/(?<detail>serviceLevels|wiredserviceLevels|wanServiceLevels|juniperGateway)\/page2\/(stats|timeline|dist|affected|location)\/[a-zA-Z-]+\/[a-zA-Z-]+\/(?<scope>site|device|client|juniperSwitch|juniperGateway)\/(?<scope_id>[a-f0-9-]*)\/(?<sle_name>[a-z-]*)\/(?<sle_sub_1>[a-zA-Z-]+)\/(?<sle_sub_2>[a-zA-Z-]+)(\/(?<period>[0-9a-z]*))?(\/(?<start>[0-9]*))?(\/(?<stop>[0-9]*))?\/(?<site_id>[a-f0-9-]*)\??(?<query_params>.*)?$/is;
@@ -157,7 +157,7 @@ export class ApiManageComponent implements OnInit {
     const alarm_re = /^alerts\/?(?<site_id>[0-9a-z-]*)\??(?<query_params>.*)?$/is;
     const events_re = /^marvis\/?(?<site_id>[0-9a-z-]*)\??(?<query_params>.*)?$/is;
     const marvis_re = /^virtualAssistant\/action\??(?<query_params>.*)?$/is;
-    const floorplans_re = /^(cliLocation|liveView)\/(?<detail>view|config|validationPath|wayfinding)?\/?(?<uuid>[0-9a-f-]{36})\/?(floorplan|beaconsAndZones)?\/?(?<site_id>[0-9a-f-]{36})?\??(?<query_params>.*)?$/is;
+    const floorplans_re = /^(cliLocation|liveView)\/(?<detail>view|config|validationPath|wayfinding|stack)?\/?(?<uuid>[0-9a-f-]{36})\/?(floorplan|beaconsAndZones)?\/?(?<site_id>[0-9a-f-]{36})?\??(?<query_params>.*)?$/is;
     const site_evpn_re = /^evpn\/site\/?([0-9]\/)?(?<site_id>[0-9a-z_-]*)?(\/(?<topology_id>[0-9a-f-]{36}))?\??(?<query_params>.*)?$/is;
     const site_wlan_template_re = /^wlan\/orgWlanDetail\/(?<template_id>[0-9a-z_-]*)\/(?<wlan_id>[0-9a-f-]{36})\/(?<site_id>[0-9a-f-]{36})\??(?<query_params>.*)?$/is;
     const site_common_re = /^(?<obj>[a-z]+)\/?((?<detail>detail|site|admin|edgedetail|clusterdetail|new|view|band|list)\/)?(?<inter>[0-9]*\/)?((?<obj_id>[0-9a-z_-]*)\/)?(?<site_id>[0-9a-f-]{36})?\??(?<query_params>.*)?$/is;
@@ -228,8 +228,8 @@ export class ApiManageComponent implements OnInit {
     ]);
 
     this.dispatchRoute(parsed, [
-      { re: minis_re, handler: this.MarvisMinisUrl.bind(this) },
       { re: minis_sle_re, handler: this.MarvisMinisSLEUrl.bind(this) },
+      { re: minis_re, handler: this.MarvisMinisUrl.bind(this) },
       { re: orginsights_re, handler: this.orgInsightUrl.bind(this) },
       { re: orgsle_re, handler: this.orgSleUrl.bind(this) },
       { re: sle_details_re, handler: this.sleDetailsUrl.bind(this) },
@@ -1654,20 +1654,24 @@ export class ApiManageComponent implements OnInit {
     } else {
       this.site_id = res?.groups?.uuid;
     }
-
-    this.setName("floor plan", res?.groups?.detail);
-    this.forgeSiteObject("maps", res?.groups?.host, res?.groups?.detail);
-    if (this.obj_id) {
-      this.quick_links.push({
-        url: "https://api." + res?.groups?.host + "/api/v1/sites/" + this.site_id + "/maps/" + this.obj_id + "/auto_placement",
-        name: "Auto Placement Status"
-      })
+    if (res?.groups?.detail == "stack") {
+      this.setName("map stack", res?.groups?.detail);
+      this.forgeSiteObject("mapstacks", res?.groups?.host, res?.groups?.detail);
     } else {
-      this.quick_links.push({
-        url: "https://api." + res?.groups?.host + "/api/v1/sites/" + this.site_id + "/mapstacks",
-        name: "Map Stacks"
-      })
+      this.setName("floor plan", res?.groups?.detail);
+      this.forgeSiteObject("maps", res?.groups?.host, res?.groups?.detail);
+      if (this.obj_id) {
+        this.quick_links.push({
+          url: "https://api." + res?.groups?.host + "/api/v1/sites/" + this.site_id + "/maps/" + this.obj_id + "/auto_placement",
+          name: "Auto Placement Status"
+        })
+      } else {
+        this.quick_links.push({
+          url: "https://api." + res?.groups?.host + "/api/v1/sites/" + this.site_id + "/mapstacks",
+          name: "Map Stacks"
+        })
 
+      }
     }
   }
 
@@ -1797,15 +1801,28 @@ export class ApiManageComponent implements OnInit {
 
   ////////////////////// MARVIS MINIS SLE
   private MarvisMinisSLEUrl(res: RegExpExecArray): void {
+    console.log(res);
     this.org_id = res?.groups?.org_id;
     const host = res?.groups?.host;
     const org_id = res?.groups?.org_id;
+    const metrics = [
+      {
+        "api": "network-services",
+        "name": "net svc"
+      },
+      {
+        "api": "application",
+        "name": "app"
+      }
+    ];
     let extra_params: string | undefined = undefined;
     let e_params = [];
     let scopeType = "org";
     let scopeId: string = this.org_id;
+    let start, end, app, metric;
     if (res?.groups?.query_params) {
       res?.groups?.query_params.split("&").forEach(param => {
+        console.log(param)
         let splitted_param = param.split("=");
         if (splitted_param.length == 2) {
           let key = splitted_param[0];
@@ -1818,34 +1835,84 @@ export class ApiManageComponent implements OnInit {
               scopeId = val;
               break;
             case "start":
-            case "end":
-            case "metric":
+              start = val;
               e_params.push(param);
               break
+            case "end":
+              end = val;
+              e_params.push(param);
+              break
+            case "app":
+              app = val;
+              e_params.push(param);
+              break
+            case "metric":
+              metric = val;
+              e_params.push(param);
+              break;
           }
         }
       })
 
+      if (start && end && end - start < 43200) {
+        e_params.push("interval=600")
+      }
       if (scopeType == "site" && scopeId) {
         this.site_id = scopeId;
       }
 
       extra_params = e_params.join("&");
-      const metrics = ["network-services", "application"]
+
+      this.quick_links.push(
+        {
+          url: "https://api." + host + "/api/v1/" + scopeType + "s/" + scopeId + "/insights/minis-top-probes?" + extra_params,
+          name: "minis top probes"
+        },
+      )
+      if (scopeType == "site" && scopeId) {
+        this.quick_links.push(
+          {
+            url: "https://api." + host + "/api/v1/" + scopeType + "s/" + scopeId + "/insights/minis-probe-stats?" + extra_params.replace("app=", "probe="),
+            name: "minis probe stats"
+          },
+        )
+      }
       metrics.forEach(metric => {
         this.quick_links.push(
           {
-            url: "https://" + host + "/api/v1/orgs/" + org_id + "/sle/org/" + org_id + "/metric/" + metric + "/summary-trend?" + extra_params,
-            name: metric + " Trend Summary"
-          }
+            url: "https://api." + host + "/api/v1/orgs/" + org_id + "/sle/" + scopeType + "/" + scopeId + "/metric/" + metric.api + "/summary-trend?" + extra_params,
+            name: metric.name + " Trend Summary"
+          },
+          {
+            url: "https://api." + host + "/api/v1/orgs/" + org_id + "/sle/" + scopeType + "/" + scopeId + "/metric/" + metric.api + "/histogram?" + extra_params,
+            name: metric.name + " Histogram"
+          },
+          {
+            url: "https://api." + host + "/api/v1/orgs/" + org_id + "/sle/" + scopeType + "/" + scopeId + "/metric/" + metric.api + "/total-impacts?" + extra_params,
+            name: metric.name + " total impacts"
+          },
+          {
+            url: "https://api." + host + "/api/v1/orgs/" + org_id + "/sle/" + scopeType + "/" + scopeId + "/metric/" + metric.api + "/impact-summary?fields=server%2Cvlan%2Cap%2Cswitch%2Capplication&" + extra_params,
+            name: metric.name + " impacts summary"
+          },
+          {
+            url: "https://api." + host + "/api/v1/orgs/" + org_id + "/sle/" + scopeType + "/" + scopeId + "/metric/" + metric.api + "/impacted-servers?" + extra_params,
+            name: metric.name + " impacted servers"
+          },
+          {
+            url: "https://api." + host + "/api/v1/orgs/" + org_id + "/sle/" + scopeType + "/" + scopeId + "/metric/" + metric.api + "/impacted-aps?" + extra_params,
+            name: metric.name + " impacted aps"
+          },
+          {
+            url: "https://api." + host + "/api/v1/orgs/" + org_id + "/sle/" + scopeType + "/" + scopeId + "/metric/" + metric.api + "/impacted-vlan?" + extra_params,
+            name: metric.name + " impacted vlans"
+          },
+          {
+            url: "https://api." + host + "/api/v1/orgs/" + org_id + "/sle/" + scopeType + "/" + scopeId + "/metric/" + metric.api + "/impacted-switches?" + extra_params,
+            name: metric.name + " impacted switches"
+          },
         )
       })
-      this.quick_links.push(
-        {
-          url: "https://" + host + "/api/v1/orgs/" + org_id + "/insights/minis-top-probes?" + extra_params,
-          name: "minis top probes"
-        }
-      )
 
     }
   }
