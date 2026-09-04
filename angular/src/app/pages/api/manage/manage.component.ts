@@ -1854,7 +1854,7 @@ export class ApiManageComponent implements OnInit {
         }
       })
 
-      if (start && end && end - start < 43200) {
+      if (start && end && Number(end) - Number(start) < 43200) {
         e_params.push("interval=600")
       }
       if (scopeType == "site" && scopeId) {
