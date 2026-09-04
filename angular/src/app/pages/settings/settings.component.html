@@ -91,5 +91,7 @@
 
 </div>
 
-<app-tools-warning *ngIf="view == 'warning'" [warningMessage]="warningMessage" [experimentalMessage]="experimentalMessage"
+@if (view == 'warning') {
+  <app-tools-warning [warningMessage]="warningMessage" [experimentalMessage]="experimentalMessage"
   (warningConfirm)="warningConfirm()" (warningCancel)="warningCancel()"></app-tools-warning>
+}

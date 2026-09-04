@@ -1,158 +1,208 @@
-<div class="mist-detect" *ngIf="org_id || msp_id">
+@if (org_id || msp_id) {
+  <div class="mist-detect">
     <span class="mist-detect-icon">
-        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="4" width="18" height="14" rx="2"></rect>
-            <path d="M3 9h18"></path>
-            <circle cx="6.5" cy="6.5" r=".6" fill="currentColor"></circle>
-        </svg>
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="4" width="18" height="14" rx="2"></rect>
+        <path d="M3 9h18"></path>
+        <circle cx="6.5" cy="6.5" r=".6" fill="currentColor"></circle>
+      </svg>
     </span>
     <div class="mist-detect-text">
-        <div class="mist-detect-host">{{ detect_host }}</div>
-        <div class="mist-detect-path">{{ detect_route }}</div>
+      <div class="mist-detect-host">{{ detect_host }}</div>
+      <div class="mist-detect-path">{{ detect_route }}</div>
     </div>
     <span class="mist-detect-chip">Manage page</span>
-</div>
+  </div>
+}
 
 <div class="mist-body">
 
-    <!-- not supported -->
-    <div class="mist-empty" *ngIf="!org_id && !msp_id">
-        <div class="mist-empty-icon">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"
-                stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="9"></circle>
-                <path d="M9.5 9a2.5 2.5 0 0 1 4.5 1.4c0 1.6-2 2.1-2 2.1"></path>
-                <circle cx="12" cy="16.5" r=".6" fill="currentColor"></circle>
-            </svg>
-        </div>
-        <div class="mist-empty-title">Page not supported</div>
-        <div class="mist-empty-body">This page isn't supported by the extension yet. If you think it should be, report
-            the current URL.</div>
-        <button class="mist-btn mist-btn-ghost" style="flex:none;"
-            (click)="openApiTab('https://github.com/tmunzer/mist_browser_extension/issues/new')">Report a missing
-            URL</button>
+  <!-- not supported -->
+  @if (!org_id && !msp_id) {
+    <div class="mist-empty">
+      <div class="mist-empty-icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"
+          stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M9.5 9a2.5 2.5 0 0 1 4.5 1.4c0 1.6-2 2.1-2 2.1"></path>
+          <circle cx="12" cy="16.5" r=".6" fill="currentColor"></circle>
+        </svg>
+      </div>
+      <div class="mist-empty-title">Page not supported</div>
+      <div class="mist-empty-body">This page isn't supported by the extension yet. If you think it should be, report
+      the current URL.</div>
+      <button class="mist-btn mist-btn-ghost" style="flex:none;"
+        (click)="openApiTab('https://github.com/tmunzer/mist_browser_extension/issues/new')">Report a missing
+      URL</button>
     </div>
+  }
 
-    <!-- PAGE INFO -->
-    <div class="mist-sec" *ngIf="org_id || msp_id">
-        <div class="mist-sec-title"><span>Page Info</span><span class="count">tap to copy</span></div>
-        <div class="mist-ids">
-            <button class="mist-idrow" *ngIf="msp_id" [class.copied]="focused == 'msp_id'"
-                (click)="copyId(msp_id, 'msp_id')" title="Copy">
-                <div class="mist-idmain"><span class="mist-idlabel">MSP ID</span><span class="mist-idval">{{ msp_id }}</span></div>
-                <span class="mist-copied" *ngIf="focused == 'msp_id'">
-                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8"
-                        stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+  <!-- PAGE INFO -->
+  @if (org_id || msp_id) {
+    <div class="mist-sec">
+      <div class="mist-sec-title"><span>Page Info</span><span class="count">tap to copy</span></div>
+      <div class="mist-ids">
+        @if (msp_id) {
+          <button class="mist-idrow" [class.copied]="focused == 'msp_id'"
+            (click)="copyId(msp_id, 'msp_id')" title="Copy">
+            <div class="mist-idmain"><span class="mist-idlabel">MSP ID</span><span class="mist-idval">{{ msp_id }}</span></div>
+            @if (focused == 'msp_id') {
+              <span class="mist-copied">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8"
+                  stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                 </span>
-                <span class="mist-copy" *ngIf="focused != 'msp_id'">
-                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect>
-                        <path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg>
-                </span>
-            </button>
-            <button class="mist-idrow" *ngIf="org_id" [class.copied]="focused == 'org_id'"
+              }
+              @if (focused != 'msp_id') {
+                <span class="mist-copy">
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect>
+                    <path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg>
+                  </span>
+                }
+              </button>
+            }
+            @if (org_id) {
+              <button class="mist-idrow" [class.copied]="focused == 'org_id'"
                 (click)="copyId(org_id, 'org_id')" title="Copy">
                 <div class="mist-idmain"><span class="mist-idlabel">ORG ID</span><span class="mist-idval">{{ org_id }}</span></div>
-                <span class="mist-copied" *ngIf="focused == 'org_id'">
+                @if (focused == 'org_id') {
+                  <span class="mist-copied">
                     <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8"
-                        stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                </span>
-                <span class="mist-copy" *ngIf="focused != 'org_id'">
-                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </span>
+                  }
+                  @if (focused != 'org_id') {
+                    <span class="mist-copy">
+                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect>
                         <path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg>
-                </span>
-            </button>
-            <button class="mist-idrow" *ngIf="site_id" [class.copied]="focused == 'site_id'"
-                (click)="copyId(site_id, 'site_id')" title="Copy">
-                <div class="mist-idmain"><span class="mist-idlabel">SITE ID</span><span class="mist-idval">{{ site_id }}</span></div>
-                <span class="mist-copied" *ngIf="focused == 'site_id'">
-                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8"
-                        stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                </span>
-                <span class="mist-copy" *ngIf="focused != 'site_id'">
-                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect>
-                        <path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg>
-                </span>
-            </button>
-            <button class="mist-idrow" *ngIf="obj_id" [class.copied]="focused == 'obj_id'"
-                (click)="copyId(obj_id, 'obj_id')" title="Copy">
-                <div class="mist-idmain">
-                    <span class="mist-idlabel" *ngIf="obj_name != 'other device'">{{ obj_name | uppercase }} ID</span>
-                    <span class="mist-idlabel" *ngIf="obj_name == 'other device'">{{ obj_name | uppercase }} MAC</span>
-                    <span class="mist-idval">{{ obj_id }}</span>
-                </div>
-                <span class="mist-copied" *ngIf="focused == 'obj_id'">
-                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8"
-                        stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                </span>
-                <span class="mist-copy" *ngIf="focused != 'obj_id'">
-                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect>
-                        <path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg>
-                </span>
-            </button>
-        </div>
-    </div>
+                      </span>
+                    }
+                  </button>
+                }
+                @if (site_id) {
+                  <button class="mist-idrow" [class.copied]="focused == 'site_id'"
+                    (click)="copyId(site_id, 'site_id')" title="Copy">
+                    <div class="mist-idmain"><span class="mist-idlabel">SITE ID</span><span class="mist-idval">{{ site_id }}</span></div>
+                    @if (focused == 'site_id') {
+                      <span class="mist-copied">
+                        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8"
+                          stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </span>
+                      }
+                      @if (focused != 'site_id') {
+                        <span class="mist-copy">
+                          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect>
+                            <path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg>
+                          </span>
+                        }
+                      </button>
+                    }
+                    @if (obj_id) {
+                      <button class="mist-idrow" [class.copied]="focused == 'obj_id'"
+                        (click)="copyId(obj_id, 'obj_id')" title="Copy">
+                        <div class="mist-idmain">
+                          @if (obj_name != 'other device') {
+                            <span class="mist-idlabel">{{ obj_name | uppercase }} ID</span>
+                          }
+                          @if (obj_name == 'other device') {
+                            <span class="mist-idlabel">{{ obj_name | uppercase }} MAC</span>
+                          }
+                          <span class="mist-idval">{{ obj_id }}</span>
+                        </div>
+                        @if (focused == 'obj_id') {
+                          <span class="mist-copied">
+                            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.8"
+                              stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            </span>
+                          }
+                          @if (focused != 'obj_id') {
+                            <span class="mist-copy">
+                              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect>
+                                <path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg>
+                              </span>
+                            }
+                          </button>
+                        }
+                      </div>
+                    </div>
+                  }
 
-    <!-- QUICK API ACCESS -->
-    <div class="mist-sec" *ngIf="quick_links.length > 0">
-        <div class="mist-sec-title"><span>Quick API Access</span><span class="count">{{ quick_links.length }} calls</span></div>
-        <div class="mist-glinks">
-            <button class="mist-glink" *ngFor="let quick_link of quick_links" (click)="openApiTab(quick_link.url)"
-                title="Open in a new tab">
-                <span class="mist-gverb">GET</span>
-                <span class="mist-gname">{{ quick_link.name }}</span>
-                <span class="mist-gext">
-                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M7 17L17 7"></path>
-                        <polyline points="7 7 17 7 17 17"></polyline>
-                    </svg>
-                </span>
-            </button>
-        </div>
-    </div>
+                  <!-- QUICK API ACCESS -->
+                  @if (quick_links.length > 0) {
+                    <div class="mist-sec">
+                      <div class="mist-sec-title"><span>Quick API Access</span><span class="count">{{ quick_links.length }} calls</span></div>
+                      <div class="mist-glinks">
+                        @for (quick_link of quick_links; track quick_link) {
+                          <button class="mist-glink" (click)="openApiTab(quick_link.url)"
+                            title="Open in a new tab">
+                            <span class="mist-gverb">GET</span>
+                            <span class="mist-gname">{{ quick_link.name }}</span>
+                            <span class="mist-gext">
+                              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M7 17L17 7"></path>
+                                <polyline points="7 7 17 7 17 17"></polyline>
+                              </svg>
+                            </span>
+                          </button>
+                        }
+                      </div>
+                    </div>
+                  }
 
-    <!-- ACTIONS (run in the popup) -->
-    <div class="mist-sec" *ngIf="quick_actions.length > 0">
-        <div class="mist-sec-title"><span>Actions</span><span class="count">in popup</span></div>
-        <div class="mist-action-wrap">
-            <button class="mist-action" *ngFor="let quick_action of quick_actions"
-                (click)="openActionTab(quick_action.action)">
-                <span class="mist-action-icon">
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="8" cy="15" r="4"></circle>
-                        <path d="M10.8 12.2 21 2"></path>
-                        <path d="M18 5l3 3"></path>
-                        <path d="M15 8l3 3"></path>
-                    </svg>
-                </span>
-                <span class="mist-action-text">
-                    <div class="mist-action-name">{{ quick_action.name }}</div>
-                </span>
-                <span class="mist-action-caret">
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="9 6 15 12 9 18"></polyline>
-                    </svg>
-                </span>
-            </button>
-        </div>
-    </div>
+                  <!-- ACTIONS (run in the popup) -->
+                  @if (quick_actions.length > 0) {
+                    <div class="mist-sec">
+                      <div class="mist-sec-title"><span>Actions</span><span class="count">in popup</span></div>
+                      <div class="mist-action-wrap">
+                        @for (quick_action of quick_actions; track quick_action) {
+                          <button class="mist-action"
+                            (click)="openActionTab(quick_action.action)">
+                            <span class="mist-action-icon">
+                              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="8" cy="15" r="4"></circle>
+                                <path d="M10.8 12.2 21 2"></path>
+                                <path d="M18 5l3 3"></path>
+                                <path d="M15 8l3 3"></path>
+                              </svg>
+                            </span>
+                            <span class="mist-action-text">
+                              <div class="mist-action-name">{{ quick_action.name }}</div>
+                            </span>
+                            <span class="mist-action-caret">
+                              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="9 6 15 12 9 18"></polyline>
+                              </svg>
+                            </span>
+                          </button>
+                        }
+                      </div>
+                    </div>
+                  }
 
-    <!-- missing fields -->
-    <div class="mist-empty-note" *ngIf="missing_fields.length > 0">
-        Can't generate the API quick links — I couldn't find the
-        <span *ngIf="missing_fields.length == 1">field <b>{{ missing_fields[0] }}</b></span>
-        <span *ngIf="missing_fields.length > 1">fields <b>{{ missing_fields.slice(0, missing_fields.length - 1).join(', ') }}</b> and <b>{{ missing_fields[missing_fields.length - 1] }}</b></span>.
-    </div>
+                  <!-- missing fields -->
+                  @if (missing_fields.length > 0) {
+                    <div class="mist-empty-note">
+                      Can't generate the API quick links — I couldn't find the
+                      @if (missing_fields.length == 1) {
+                        <span>field <b>{{ missing_fields[0] }}</b></span>
+                      @if (missing_fields.length == 1) {
+                        <span>field <b>{{ missing_fields[0] }}</b></span>.
+                      }
+                      @if (missing_fields.length > 1) {
+                        <span>fields <b>{{ missing_fields.slice(0, missing_fields.length - 1).join(', ') }}</b> and <b>{{ missing_fields[missing_fields.length - 1] }}</b></span>.
+                      }
+                    </div>
+                    }
 
-</div>
+                  </div>
 
-<app-ztp-password [class.mist-hidden]="action != 'ztp_password'" (closeActionTab)="closeActionTab()"
-    [site_id]="site_id" [device_id]="obj_id" [device_type]="obj_name"
-    [eventZtpPassword]="eventZtpPassword.asObservable()"></app-ztp-password>
+                  <app-ztp-password [class.mist-hidden]="action != 'ztp_password'" (closeActionTab)="closeActionTab()"
+                    [site_id]="site_id" [device_id]="obj_id" [device_type]="obj_name"
+                  [eventZtpPassword]="eventZtpPassword.asObservable()"></app-ztp-password>

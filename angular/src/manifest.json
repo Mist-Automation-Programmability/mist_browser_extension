@@ -2,12 +2,22 @@
   "manifest_version": 3,
   "name": "Mist Extension",
   "short_name": "mist-extension",
-  "version": "6.2.0",
+  "version": "6.3.0",
   "description": "Web Browser Extension for Mist Developers to provide easier access to Mist APIs",
   "icons": {
     "16": "assets/favicon-16x16.png",
     "48": "assets/favicon-48x48.png",
     "128": "assets/favicon-128x128.png"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{46f824d5-3c9d-468e-950f-cd2448e488d5}",
+      "data_collection_permissions": {
+        "required": [
+          "none"
+        ]
+      }
+    }
   },
   "action": {
     "default_popup": "index.html?#/popup",
@@ -38,16 +48,16 @@
       ],
       "js": [
         "assets/js/content.js",
-        "assets/js/mist_hosts.js",
-        "assets/js/content_api.js",
-        "assets/js/content_safari.js",
         "assets/js/django_links.js",
         "assets/js/django_automation.js"
       ]
     }
   ],
   "background": {
-    "service_worker": "assets/js/bg-safari.js"
+    "scripts": [
+      "assets/js/bg-common.js",
+      "assets/js/bg-firefox.js"
+    ]
   },
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'"
@@ -59,6 +69,12 @@
     "clipboardWrite"
   ],
   "host_permissions": [
+    "https://*.mist.com/*",
+    "https://*.mistsys.com/*",
+    "https://*.mist-federal.com/*",
+    "https://*.ai.juniper.net/*"
+  ],
+  "optional_host_permissions": [
     "https://*.mist.com/*",
     "https://*.mistsys.com/*",
     "https://*.mist-federal.com/*",

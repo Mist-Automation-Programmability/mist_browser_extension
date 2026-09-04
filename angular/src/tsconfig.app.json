@@ -3,7 +3,7 @@
   "compilerOptions": {
     "outDir": "../out-tsc/app",
     "strictPropertyInitialization": false,
-    // "types": ["chrome"],
+    "types": ["node", "chrome"],
     "paths": {
       "@app/*": [
         "app/*"

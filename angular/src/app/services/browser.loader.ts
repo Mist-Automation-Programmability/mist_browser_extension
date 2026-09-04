@@ -1,6 +1,6 @@
-import { loadSafariSessions } from "./browser.safari";
+import { loadFirefoxSessions } from "./browser.firefox";
 import type { BrowserSessionContext } from "./browser.loader.context";
 
 export function loadSessions(context: BrowserSessionContext, cb: () => void): void {
-    loadSafariSessions(context, cb);
+    loadFirefoxSessions(context, cb);
 }

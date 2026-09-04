@@ -15,7 +15,9 @@
     <div class="mist-select-wrap">
       <select class="mist-select" name="cloud_id" [(ngModel)]="cloud_id" (ngModelChange)="token_updated()">
         <option value="none">Auto</option>
-        <option *ngFor="let cloud of api_hosts | keyvalue: sortClouds" [value]="cloud.key">{{ cloud.value }}</option>
+        @for (cloud of api_hosts | keyvalue: sortClouds; track cloud) {
+          <option [value]="cloud.key">{{ cloud.value }}</option>
+        }
       </select>
       <span class="mist-select-chev">
         <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"
@@ -25,32 +27,42 @@
       </span>
     </div>
   </div>
-  
+
   <div class="mist-fieldset">
     <div class="mist-field-label">API Token</div>
     <div class="mist-token-row">
       <input class="mist-token-input" type="text" [(ngModel)]="api_token" (ngModelChange)="token_updated()"
         placeholder="Paste an API token" [readonly]="working" [class.is-invalid]="invalid" />
       <button class="mist-getinfo" [disabled]="!api_token || working || invalid" (click)="check_usage()">
-        <span *ngIf="!working && !invalid">Get Info</span>
-        <span *ngIf="invalid">Invalid</span>
-        <span *ngIf="working">{{ check_index }} / {{ check_total }}</span>
+        @if (!working && !invalid) {
+          <span>Get Info</span>
+        }
+        @if (invalid) {
+          <span>Invalid</span>
+        }
+        @if (working) {
+          <span>{{ check_index }} / {{ check_total }}</span>
+        }
       </button>
     </div>
   </div>
 
-  <div class="mist-usage-card" *ngIf="usage.requests > -1">
-    <div class="mist-donut lg" [style.--usage]="usage.request_percentage + '%'"
-      [style.--arc]="usage.request_percentage >= 100 ? 'var(--c-danger)' : (usage.request_percentage >= 80 ? 'var(--c-warning)' : 'var(--c-accent)')">
-      <div class="mist-donut-pct">{{ usage.request_percentage | number : '1.0-0' }}<small>%</small></div>
-    </div>
-    <div class="mist-usage-meta">
-      <div class="mist-usage-cloud"><ng-container *ngIf="usage.cloud">{{ usage.cloud }} · </ng-container>{{ usage.host }}</div>
-      <div class="mist-usage-kv">
-        <div class="mist-usage-line"><span class="k">API request usage</span><span class="v">{{ usage.requests }}</span></div>
-        <div class="mist-usage-line"><span class="k">API request limit</span><span class="v">{{ usage.request_limit }}</span></div>
+  @if (usage.requests > -1) {
+    <div class="mist-usage-card">
+      <div class="mist-donut lg" [style.--usage]="usage.request_percentage + '%'"
+        [style.--arc]="usage.request_percentage >= 100 ? 'var(--c-danger)' : (usage.request_percentage >= 80 ? 'var(--c-warning)' : 'var(--c-accent)')">
+        <div class="mist-donut-pct">{{ usage.request_percentage | number : '1.0-0' }}<small>%</small></div>
+      </div>
+      <div class="mist-usage-meta">
+        <div class="mist-usage-cloud">@if (usage.cloud) {
+          {{ usage.cloud }} ·
+        }{{ usage.host }}</div>
+        <div class="mist-usage-kv">
+          <div class="mist-usage-line"><span class="k">API request usage</span><span class="v">{{ usage.requests }}</span></div>
+          <div class="mist-usage-line"><span class="k">API request limit</span><span class="v">{{ usage.request_limit }}</span></div>
+        </div>
       </div>
     </div>
-  </div>
+  }
 
 </div>

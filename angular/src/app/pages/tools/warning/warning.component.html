@@ -12,7 +12,9 @@
       <div class="mist-modal-title">Warning</div>
     </div>
     <div class="mist-modal-body">
-      <span class="exp" *ngIf="experimentalMessage">This is an experimental feature.</span>
+      @if (experimentalMessage) {
+        <span class="exp">This is an experimental feature.</span>
+      }
       {{ warningMessage }} Do you want to continue?
     </div>
     <div class="mist-actions">
