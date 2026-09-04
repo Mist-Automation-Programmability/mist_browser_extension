@@ -1801,7 +1801,6 @@ export class ApiManageComponent implements OnInit {
 
   ////////////////////// MARVIS MINIS SLE
   private MarvisMinisSLEUrl(res: RegExpExecArray): void {
-    console.log(res);
     this.org_id = res?.groups?.org_id;
     const host = res?.groups?.host;
     const org_id = res?.groups?.org_id;
