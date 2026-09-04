@@ -192,11 +192,13 @@
                       Can't generate the API quick links — I couldn't find the
                       @if (missing_fields.length == 1) {
                         <span>field <b>{{ missing_fields[0] }}</b></span>
+                      @if (missing_fields.length == 1) {
+                        <span>field <b>{{ missing_fields[0] }}</b></span>.
                       }
                       @if (missing_fields.length > 1) {
-                        <span>fields <b>{{ missing_fields.slice(0, missing_fields.length - 1).join(', ') }}</b> and <b>{{ missing_fields[missing_fields.length - 1] }}</b></span>
-                        }.
-                      </div>
+                        <span>fields <b>{{ missing_fields.slice(0, missing_fields.length - 1).join(', ') }}</b> and <b>{{ missing_fields[missing_fields.length - 1] }}</b></span>.
+                      }
+                    </div>
                     }
 
                   </div>
