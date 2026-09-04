@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { BrowserService } from "../../services/browser.service";
 
 
@@ -12,6 +12,7 @@ import { BrowserService } from "../../services/browser.service";
 export class ApiComponent implements OnInit {
 
   constructor(
+    private _cd: ChangeDetectorRef,
     private _browser: BrowserService
   ) { }
 
@@ -35,6 +36,7 @@ export class ApiComponent implements OnInit {
           if (this.hosts_manage.includes(host)) this.display = "manage";
           else if (this.hosts_api.includes(host) && tabUrl.indexOf("/api/v1/docs") < 0) this.display = "django";
         }
+        this._cd.detectChanges();
       })
       .catch(error => { console.log(error) })
   }

@@ -31,15 +31,19 @@ export class SettingsComponent implements OnInit {
     this.theme = this._theme.get();
     this._browser.getStorage("id_links", (result) => {
       this.id_links = !!result && result.id_links == "true";
+      this._cd.detectChanges();
     })
     this._browser.getStorage("ts_human", (result) => {
       this.ts_human = !!result && result.ts_human == "true";
+      this._cd.detectChanges();
     })
     this._browser.getStorage("copy_json", (result) => {
       this.copy_json = !!result && result.copy_json == "true";
+      this._cd.detectChanges();
     })
     this._browser.getStorage("dark_manage", (result) => {
       this.dark_manage = !!result && result.dark_manage == "true";
+      this._cd.detectChanges();
     })
   }
 
