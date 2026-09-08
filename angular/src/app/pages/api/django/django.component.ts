@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { BrowserService } from "../../../services/browser.service";
-const api_structure = require('../../../../assets/api.json');
+import api_structure from '../../../../assets/api.json';
 
 export interface linkElement {
   url: string,
@@ -15,12 +15,12 @@ interface QueryParamsInterface {
 }
 
 @Component({
-    selector: 'app-api-django',
-    templateUrl: 'django.component.html',
-    styleUrls: [
-        'django.component.scss',
-    ],
-    standalone: false
+  selector: 'app-api-django',
+  templateUrl: 'django.component.html',
+  styleUrls: [
+    'django.component.scss',
+  ],
+  standalone: false
 })
 export class ApiDjangoComponent implements OnInit {
   message: string;
@@ -100,7 +100,8 @@ export class ApiDjangoComponent implements OnInit {
         }
       })
       if (this.docs["get"]) {
-        this.processQuery(query, tmp["specs"]["get"]["parameters"])
+        this.processQuery(query, tmp["specs"]["get"]["parameters"]);
+        this._cd.detectChanges();
       }
     }
 
