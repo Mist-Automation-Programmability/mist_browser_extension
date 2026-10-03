@@ -39,7 +39,7 @@
     "@angular/material": "^22.1.5",
     "@angular/platform-browser": "^22.1.5",
     "@angular/platform-browser-dynamic": "^22.1.5",
-    "@angular/router": "^22.1.5",
+    "@angular/router": "^22.2.0",
     "@types/webextension-polyfill": "^0.12.6",
     "ngx-build-plus": "^20.0.0",
     "rxjs": "^7.8.2",
