@@ -16,7 +16,7 @@
   "private": true,
   "overrides": {
     "fast-uri": "^3.1.7",
-    "qs": "^6.16.0"
+    "qs": "^6.17.1"
   },
   "xo": {
     "envs": [
